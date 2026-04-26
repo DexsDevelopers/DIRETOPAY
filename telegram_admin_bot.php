@@ -89,34 +89,58 @@ if (in_array($command, ['ranking', 'ranking7', 'ranking30'])) {
     // Determinar período
     if ($command === 'ranking7') {
         $days = 7;
+        $allTime = false;
     } elseif ($command === 'ranking30') {
         $days = 30;
+        $allTime = false;
     } elseif (strtolower($arg) === 'hoje') {
         $days = 1;
+        $allTime = false;
     } elseif (is_numeric($arg) && (int)$arg > 0) {
         $days = (int)$arg;
+        $allTime = false;
     } else {
-        $days = 30;
+        // /ranking sem argumento = todos os tempos
+        $days = 0;
+        $allTime = true;
     }
 
-    $label = $days === 1 ? 'Hoje' : "Últimos {$days} dias";
+    $label = $allTime ? 'Todos os Tempos' : ($days === 1 ? 'Hoje' : "Últimos {$days} dias");
 
-    $stmt = $pdo->prepare("
-        SELECT u.id, u.full_name, u.whatsapp, u.email,
-               COUNT(t.id) AS sales,
-               COALESCE(SUM(t.amount_brl), 0) AS volume,
-               COALESCE(SUM(t.amount_net_brl), 0) AS net_volume
-        FROM users u
-        LEFT JOIN transactions t
-            ON u.id = t.user_id
-            AND t.status = 'paid'
-            AND t.created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
-        WHERE u.status = 'approved' AND u.is_admin = 0 AND u.is_demo = 0
-        GROUP BY u.id
-        ORDER BY volume DESC
-        LIMIT 15
-    ");
-    $stmt->execute([$days]);
+    if ($allTime) {
+        $stmt = $pdo->prepare("
+            SELECT u.id, u.full_name, u.whatsapp, u.email,
+                   COUNT(t.id) AS sales,
+                   COALESCE(SUM(t.amount_brl), 0) AS volume,
+                   COALESCE(SUM(t.amount_net_brl), 0) AS net_volume
+            FROM users u
+            LEFT JOIN transactions t
+                ON u.id = t.user_id
+                AND t.status = 'paid'
+            WHERE u.status = 'approved' AND u.is_admin = 0 AND u.is_demo = 0
+            GROUP BY u.id
+            ORDER BY volume DESC
+            LIMIT 15
+        ");
+        $stmt->execute();
+    } else {
+        $stmt = $pdo->prepare("
+            SELECT u.id, u.full_name, u.whatsapp, u.email,
+                   COUNT(t.id) AS sales,
+                   COALESCE(SUM(t.amount_brl), 0) AS volume,
+                   COALESCE(SUM(t.amount_net_brl), 0) AS net_volume
+            FROM users u
+            LEFT JOIN transactions t
+                ON u.id = t.user_id
+                AND t.status = 'paid'
+                AND t.created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+            WHERE u.status = 'approved' AND u.is_admin = 0 AND u.is_demo = 0
+            GROUP BY u.id
+            ORDER BY volume DESC
+            LIMIT 15
+        ");
+        $stmt->execute([$days]);
+    }
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $totalSellers = (int)$pdo->query("SELECT COUNT(*) FROM users WHERE status = 'approved' AND is_admin = 0 AND is_demo = 0")->fetchColumn();
@@ -184,10 +208,10 @@ if ($command === 'resumo') {
 if (in_array($command, ['ajuda', 'help', 'start'])) {
     $reply = "🤖 <b>Ghost Pix — Bot Admin</b>\n" . div() . "\n\n"
            . "Comandos disponíveis:\n\n"
-           . "🏆 <b>/ranking</b> — Ranking 30 dias (nomes + WhatsApp)\n"
+           . "🏆 <b>/ranking</b> — Ranking geral (todos os tempos)\n"
            . "🏆 <b>/ranking hoje</b> — Ranking do dia\n"
-           . "🏆 <b>/ranking 7</b> — Ranking últimos 7 dias\n"
-           . "🏆 <b>/ranking7</b> — Atalho para 7 dias\n"
+           . "🏆 <b>/ranking 7</b> — Últimos 7 dias\n"
+           . "🏆 <b>/ranking 30</b> — Últimos 30 dias\n"
            . "📊 <b>/resumo</b> — Visão geral da plataforma\n\n"
            . "<i>Apenas este chat autorizado recebe respostas.</i>";
 
