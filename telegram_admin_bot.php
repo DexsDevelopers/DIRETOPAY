@@ -117,7 +117,7 @@ if (in_array($command, ['ranking', 'ranking7', 'ranking30'])) {
             LEFT JOIN transactions t
                 ON u.id = t.user_id
                 AND t.status = 'paid'
-            WHERE u.status = 'approved' AND u.is_admin = 0 AND u.is_demo = 0
+            WHERE u.status = 'approved' AND u.is_demo = 0
             GROUP BY u.id
             ORDER BY volume DESC
             LIMIT 15
@@ -134,7 +134,7 @@ if (in_array($command, ['ranking', 'ranking7', 'ranking30'])) {
                 ON u.id = t.user_id
                 AND t.status = 'paid'
                 AND t.created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
-            WHERE u.status = 'approved' AND u.is_admin = 0 AND u.is_demo = 0
+            WHERE u.status = 'approved' AND u.is_demo = 0
             GROUP BY u.id
             ORDER BY volume DESC
             LIMIT 15
@@ -143,7 +143,7 @@ if (in_array($command, ['ranking', 'ranking7', 'ranking30'])) {
     }
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $totalSellers = (int)$pdo->query("SELECT COUNT(*) FROM users WHERE status = 'approved' AND is_admin = 0 AND is_demo = 0")->fetchColumn();
+    $totalSellers = (int)$pdo->query("SELECT COUNT(*) FROM users WHERE status = 'approved' AND is_demo = 0")->fetchColumn();
     $totalVol = array_sum(array_column($rows, 'volume'));
 
     $medals = ['🥇','🥈','🥉'];
