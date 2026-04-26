@@ -1248,16 +1248,17 @@ function handleRanking(string $chatId, array $user): void {
     sendTyping($chatId);
     $userId = (int)$user['id'];
 
-    // Top 10 sellers by volume (last 30 days) — includes all users
+    // Top 10 — todos os tempos, inclui admins, exclui demo
     $stmt = $pdo->query("
         SELECT u.id, u.full_name, COUNT(t.id) AS sales, COALESCE(SUM(t.amount_brl), 0) AS volume
-        FROM users u LEFT JOIN transactions t ON u.id = t.user_id AND t.status = 'paid' AND t.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
-        WHERE u.status = 'approved'
+        FROM users u
+        LEFT JOIN transactions t ON u.id = t.user_id AND t.status = 'paid'
+        WHERE u.status = 'approved' AND u.is_demo = 0
         GROUP BY u.id ORDER BY volume DESC LIMIT 10
     ");
     $ranking = $stmt->fetchAll();
 
-    $msg = "🏆 <b>Ranking de Vendedores</b>\n<i>Últimos 30 dias</i>" . div() . "\n\n";
+    $msg = "🏆 <b>Ranking de Vendedores</b>\n<i>Todos os tempos</i>" . div() . "\n\n";
     $myPos = 0;
     $medals = ['🥇', '🥈', '🥉'];
     foreach ($ranking as $i => $r) {
@@ -1275,11 +1276,12 @@ function handleRanking(string $chatId, array $user): void {
         $posStmt = $pdo->prepare("
             SELECT COUNT(*) + 1 FROM (
                 SELECT u2.id, COALESCE(SUM(t2.amount_brl), 0) AS vol
-                FROM users u2 LEFT JOIN transactions t2 ON u2.id = t2.user_id AND t2.status = 'paid' AND t2.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
-                WHERE u2.status = 'approved'
+                FROM users u2
+                LEFT JOIN transactions t2 ON u2.id = t2.user_id AND t2.status = 'paid'
+                WHERE u2.status = 'approved' AND u2.is_demo = 0
                 GROUP BY u2.id
                 HAVING vol > (
-                    SELECT COALESCE(SUM(amount_brl), 0) FROM transactions WHERE user_id = ? AND status = 'paid' AND created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+                    SELECT COALESCE(SUM(amount_brl), 0) FROM transactions WHERE user_id = ? AND status = 'paid'
                 )
             ) sub
         ");
@@ -1288,7 +1290,7 @@ function handleRanking(string $chatId, array $user): void {
         $msg .= "┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n📍 <b>Sua posição: {$myPos}º lugar</b>\n";
     }
 
-    $totalSellers = $pdo->query("SELECT COUNT(*) FROM users WHERE status = 'approved'")->fetchColumn();
+    $totalSellers = $pdo->query("SELECT COUNT(*) FROM users WHERE status = 'approved' AND is_demo = 0")->fetchColumn();
     $msg .= "\n<i>🏅 Entre {$totalSellers} vendedores ativos</i>" . footer();
 
     uReply($chatId, $msg, afterActionKeyboard());
