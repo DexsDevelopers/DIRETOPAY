@@ -311,17 +311,11 @@ export default function CheckoutPage() {
                             >
                                 <QrCode size={15} /> PIX
                             </button>
-                            <button
-                                type="button"
-                                onClick={() => setPaymentMethod('card')}
-                                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl border font-black text-sm transition-all ${
-                                    paymentMethod === 'card'
-                                        ? 'bg-blue-500/15 border-blue-500/40 text-blue-400'
-                                        : 'bg-white/5 border-white/10 text-white/40 hover:bg-white/10'
-                                }`}
-                            >
-                                <CreditCard size={15} /> Cartão
-                            </button>
+                            <div className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl border border-white/5 bg-white/[0.02] text-white/20 cursor-not-allowed select-none relative overflow-hidden">
+                                <CreditCard size={15} />
+                                <span className="text-sm font-black">Cartão</span>
+                                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] font-black uppercase bg-amber-500/15 text-amber-400 border border-amber-500/20 px-1.5 py-0.5 rounded-full tracking-widest">Manutenção</span>
+                            </div>
                         </div>
 
                         <div className="flex items-center gap-3 mb-6">

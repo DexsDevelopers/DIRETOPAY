@@ -26,7 +26,7 @@ if (!$isAuth) {
     <title>Ghost Pix - Dashboard Premium</title>
     
     <!-- React Build Assets -->
-    <script type="module" crossorigin src="/assets/dashboard-react/index-CoZXK2BK.js"></script>
+    <script type="module" crossorigin src="/assets/dashboard-react/index-D_FoOU8Z.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-DpGTD3ho.css">
     
     <!-- Preload fonts to avoid layout shift -->
