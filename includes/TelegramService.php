@@ -283,6 +283,58 @@ class TelegramService
         return self::send($msg);
     }
 
+    // ─── RANKING ADMIN (nomes completos + WhatsApp) ──────────────────────
+    public static function notifyAdminRanking(\PDO $pdo, string $period = '30'): bool
+    {
+        $days = (int)$period;
+        if ($days <= 0) $days = 30;
+
+        $stmt = $pdo->prepare("
+            SELECT u.id, u.full_name, u.whatsapp, u.email,
+                   COUNT(t.id) AS sales,
+                   COALESCE(SUM(t.amount_brl), 0) AS volume,
+                   COALESCE(SUM(t.amount_net_brl), 0) AS net_volume
+            FROM users u
+            LEFT JOIN transactions t
+                ON u.id = t.user_id
+                AND t.status = 'paid'
+                AND t.created_at >= DATE_SUB(CURDATE(), INTERVAL ? DAY)
+            WHERE u.status = 'approved' AND u.is_admin = 0 AND u.is_demo = 0
+            GROUP BY u.id
+            ORDER BY volume DESC
+            LIMIT 15
+        ");
+        $stmt->execute([$days]);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $totalSellers = (int)$pdo->query("SELECT COUNT(*) FROM users WHERE status = 'approved' AND is_admin = 0 AND is_demo = 0")->fetchColumn();
+        $totalVol     = 0;
+        foreach ($rows as $r) $totalVol += (float)$r['volume'];
+
+        $medals = ['🥇','🥈','🥉'];
+        $msg = "🏆 <b>RANKING ADMIN — Últimos {$days} dias</b>\n" . self::divider() . "\n\n";
+
+        $pos = 0;
+        foreach ($rows as $i => $r) {
+            if ((float)$r['volume'] <= 0) continue;
+            $pos++;
+            $medal  = $medals[$i] ?? "{$pos}º";
+            $wa     = $r['whatsapp'] ? "\n       📱 <code>{$r['whatsapp']}</code>" : '';
+            $net    = number_format((float)$r['net_volume'], 2, ',', '.');
+            $gross  = number_format((float)$r['volume'], 2, ',', '.');
+            $msg   .= "{$medal} <b>{$r['full_name']}</b>{$wa}\n"
+                   .  "       {$r['sales']}x vendas — R$ {$gross} bruto / R$ {$net} líquido\n\n";
+        }
+
+        $totalFmt = number_format($totalVol, 2, ',', '.');
+        $msg .= self::divider() . "\n"
+              . "👥 <b>{$totalSellers}</b> vendedores ativos\n"
+              . "💰 Volume total: <b>R$ {$totalFmt}</b>"
+              . self::footer();
+
+        return self::send($msg);
+    }
+
     // ─── ALERTA DE ERRO / SISTEMA ────────────────────────────────────────
     public static function notifySystemAlert(string $title, string $detail): bool
     {
