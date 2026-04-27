@@ -520,6 +520,15 @@ input,textarea{font-family:inherit;outline:none}
           <input type="text" class="form-input" id="inp-doc" placeholder="000.000.000-00" autocomplete="off" maxlength="18">
         </div>
 
+        <div class="form-group">
+          <label class="form-label">Chave PIX para Reembolso <small style="text-transform:none;letter-spacing:0">(opcional)</small></label>
+          <input type="text" class="form-input" id="inp-pix-key" placeholder="CPF, e-mail, telefone ou chave aleatória" autocomplete="off">
+          <div style="display:flex;align-items:flex-start;gap:8px;margin-top:8px;padding:10px 12px;background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.2);border-radius:10px">
+            <span style="font-size:1rem;line-height:1">⚠️</span>
+            <p style="font-size:.72rem;color:rgba(234,179,8,.85);line-height:1.5;margin:0">Em caso de não entrega, o reembolso via PIX pode levar <strong>até 1 dia útil</strong> para ser processado.</p>
+          </div>
+        </div>
+
         <?php if (!$isSub): ?>
         <div class="form-group">
           <label class="form-label">Cupom de Desconto</label>
@@ -603,7 +612,45 @@ input,textarea{font-family:inherit;outline:none}
             <h4>📦 Como receber seu produto</h4>
             <p id="success-delivery-text"></p>
           </div>
-          <button class="btn-submit" style="background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 8px 32px rgba(34,197,94,.25)" onclick="closeOverlay()">
+
+          <!-- ── Chat com Vendedor ── -->
+          <div id="chat-section" style="display:none;margin-top:20px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--primary)"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <span style="font-size:.8rem;font-weight:800;color:var(--text)">Chat com o Vendedor</span>
+              <span id="chat-status-badge" style="font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:50px;background:rgba(34,197,94,.15);color:#4ade80;border:1px solid rgba(34,197,94,.25)">Online</span>
+            </div>
+
+            <div id="chat-messages" style="
+              background:rgba(255,255,255,.02);
+              border:1px solid var(--border);
+              border-radius:14px;
+              height:220px;
+              overflow-y:auto;
+              padding:14px;
+              display:flex;
+              flex-direction:column;
+              gap:8px;
+              scroll-behavior:smooth;
+            ">
+              <div id="chat-empty" style="text-align:center;margin:auto;color:var(--dim);font-size:.78rem">
+                💬 Nenhuma mensagem ainda. Diga olá para o vendedor!
+              </div>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <input type="text" id="chat-input" placeholder="Digite sua mensagem..." maxlength="500"
+                style="flex:1;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:12px;padding:10px 14px;font-size:.82rem;color:var(--text);font-family:inherit"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();sendChatMsg();}">
+              <button onclick="sendChatMsg()" id="btn-send-chat"
+                style="background:var(--primary);border:none;border-radius:12px;padding:10px 16px;color:#fff;font-weight:800;font-size:.8rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+            <p style="font-size:.67rem;color:var(--dim);margin-top:6px;text-align:center">O vendedor será notificado e responderá em breve.</p>
+          </div>
+
+          <button class="btn-submit" style="background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 8px 32px rgba(34,197,94,.25);margin-top:16px" onclick="closeOverlay()">
             Fechar
           </button>
         </div>
@@ -762,9 +809,10 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
 
   try {
     const endpoint = IS_SUB ? '/subscribe.php' : '/buy_product.php';
+    const pixKey   = document.getElementById('inp-pix-key')?.value.trim() || '';
     const payload  = IS_SUB
-      ? { product_id: PRODUCT.id, variant_id: state.variantId||0, customer_name: name, customer_email: email, customer_document: doc.replace(/\D/g,'') }
-      : { product_id: PRODUCT.id, variant_id: state.variantId||0, customer_name: name, customer_document: doc.replace(/\D/g,''), coupon_code: state.couponCode||'' };
+      ? { product_id: PRODUCT.id, variant_id: state.variantId||0, customer_name: name, customer_email: email, customer_document: doc.replace(/\D/g,''), buyer_pix_key: pixKey }
+      : { product_id: PRODUCT.id, variant_id: state.variantId||0, customer_name: name, customer_document: doc.replace(/\D/g,''), coupon_code: state.couponCode||'', buyer_pix_key: pixKey };
 
     const res  = await fetch(endpoint, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
     const data = await res.json();
@@ -772,6 +820,7 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
     if (!data.success) { showError(data.message || data.error || 'Erro ao gerar PIX.'); resetBtn(); return; }
 
     state.deliveryToken = data.delivery_token || data.subscription_id || null;
+    state.chatToken = null;
     document.getElementById('qr-img').src       = data.qr_image || '';
     document.getElementById('pix-code').value   = data.pix_code || '';
     document.getElementById('modal-title').textContent = '🔑 Pague com PIX';
@@ -828,6 +877,11 @@ function startPolling() {
           el.style.display = 'block';
           txt.textContent  = data.delivery_info || data.delivery_data || '';
         }
+        if (data.chat_token) {
+          state.chatToken = data.chat_token;
+          document.getElementById('chat-section').style.display = 'block';
+          initBuyerChat(data.chat_token);
+        }
         document.getElementById('modal-title').textContent = '✅ Confirmado!';
         showStep('step-success');
       } else if (data.status === 'expired') {
@@ -836,6 +890,75 @@ function startPolling() {
       }
     } catch {}
   }, 4000);
+}
+
+/* ── Buyer Chat ── */
+let chatPollTimer = null;
+let chatLastId    = 0;
+
+function initBuyerChat(token) {
+  chatLastId = 0;
+  loadChatMessages(token, false);
+  if (chatPollTimer) clearInterval(chatPollTimer);
+  chatPollTimer = setInterval(() => loadChatMessages(token, true), 3000);
+}
+
+async function loadChatMessages(token, polling) {
+  try {
+    const url = '/chat_api.php?action=buyer_get&token=' + encodeURIComponent(token) + (chatLastId ? '&after=' + chatLastId : '');
+    const res  = await fetch(url);
+    const data = await res.json();
+    if (!data.success) return;
+
+    const msgs = data.messages || [];
+    if (msgs.length > 0) {
+      const box = document.getElementById('chat-messages');
+      document.getElementById('chat-empty').style.display = 'none';
+      msgs.forEach(m => {
+        chatLastId = Math.max(chatLastId, parseInt(m.id));
+        const isBuyer = m.sender_type === 'buyer';
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'display:flex;' + (isBuyer ? 'justify-content:flex-end' : 'justify-content:flex-start');
+        const bubble = document.createElement('div');
+        bubble.style.cssText = 'max-width:80%;padding:8px 12px;border-radius:14px;font-size:.78rem;line-height:1.5;' +
+          (isBuyer
+            ? 'background:rgba(168,85,247,.18);border:1px solid rgba(168,85,247,.3);color:#e2c4ff'
+            : 'background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);color:rgba(255,255,255,.85)');
+        const name = document.createElement('div');
+        name.style.cssText = 'font-size:.62rem;font-weight:800;margin-bottom:3px;' + (isBuyer ? 'color:rgba(168,85,247,.8)' : 'color:rgba(255,255,255,.35)');
+        name.textContent = m.sender_name;
+        const text = document.createElement('div');
+        text.textContent = m.message;
+        bubble.appendChild(name);
+        bubble.appendChild(text);
+        wrap.appendChild(bubble);
+        box.appendChild(wrap);
+      });
+      box.scrollTop = box.scrollHeight;
+    }
+  } catch {}
+}
+
+async function sendChatMsg() {
+  const token = state.chatToken;
+  const input = document.getElementById('chat-input');
+  const msg   = input.value.trim();
+  if (!msg || !token) return;
+  const btn = document.getElementById('btn-send-chat');
+  btn.disabled = true;
+  try {
+    const res  = await fetch('/chat_api.php?action=buyer_send', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ token, message: msg })
+    });
+    const data = await res.json();
+    if (data.success) {
+      input.value = '';
+      await loadChatMessages(token, false);
+    }
+  } catch {}
+  btn.disabled = false;
 }
 
 /* ── Tabs ── */

@@ -17,10 +17,12 @@ try {
     $stmt = $pdo->prepare("
         SELECT o.status AS order_status, o.delivery_data,
                t.status AS tx_status,
-               p.delivery_info
+               p.delivery_info,
+               cr.chat_token
         FROM orders o
         JOIN transactions t ON t.id = o.transaction_id
         JOIN products p     ON p.id = o.product_id
+        LEFT JOIN chat_rooms cr ON cr.order_id = o.id
         WHERE o.delivery_token = ?
         LIMIT 1
     ");
@@ -35,6 +37,7 @@ try {
         };
         echo json_encode([
             'status'        => $status,
+            'chat_token'    => $status === 'paid' ? ($order['chat_token'] ?? null) : null,
             'delivery_info' => $status === 'paid' ? ($order['delivery_info'] ?? null) : null,
             'delivery_data' => $status === 'paid' ? ($order['delivery_data'] ?? null) : null,
         ]);

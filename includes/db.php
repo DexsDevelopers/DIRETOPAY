@@ -271,6 +271,11 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
     } catch (PDOException $e) {}
 
+    // Auto-Migração: Chave PIX de reembolso do comprador
+    try {
+        $pdo->exec("ALTER TABLE orders ADD COLUMN buyer_pix_key VARCHAR(255) NULL AFTER buyer_document");
+    } catch (PDOException $e) {}
+
 } catch (PDOException $e) {
     die("Erro ao conectar ao banco de dados: " . $e->getMessage());
 }
