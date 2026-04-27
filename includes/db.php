@@ -276,6 +276,21 @@ try {
         $pdo->exec("ALTER TABLE orders ADD COLUMN buyer_pix_key VARCHAR(255) NULL AFTER buyer_document");
     } catch (PDOException $e) {}
 
+    // Auto-Migração: Banners da loja pública
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS banners (
+            id          INT AUTO_INCREMENT PRIMARY KEY,
+            title       VARCHAR(255) NOT NULL DEFAULT '',
+            image_url   VARCHAR(500) NOT NULL,
+            link_url    VARCHAR(500) NULL,
+            link_target ENUM('_self','_blank') NOT NULL DEFAULT '_blank',
+            active      TINYINT(1) NOT NULL DEFAULT 1,
+            sort_order  INT NOT NULL DEFAULT 0,
+            created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_banners_active (active, sort_order)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+
 } catch (PDOException $e) {
     die("Erro ao conectar ao banco de dados: " . $e->getMessage());
 }

@@ -45,6 +45,7 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import AdminProdutosPage from './pages/AdminProdutosPage';
 import AdminUsersPage from './pages/AdminUsersPage';
 import AdminAnunciosPage from './pages/AdminAnunciosPage';
+import AdminBannersPage from './pages/AdminBannersPage';
 import EntregaPage from './pages/EntregaPage';
 import ChatPage from './pages/ChatPage';
 import AdminChatsPage from './pages/AdminChatsPage';
@@ -373,6 +374,16 @@ export default function App() {
             <AdminRoute userData={userData}>
               <DashboardLayout {...commonProps} activeTab="admin-produtos">
                 <AdminProdutosPage />
+              </DashboardLayout>
+            </AdminRoute>
+          </PrivateRoute>
+        } />
+
+        <Route path="/admin/banners" element={
+          <PrivateRoute>
+            <AdminRoute userData={userData}>
+              <DashboardLayout {...commonProps} activeTab="admin-banners">
+                <AdminBannersPage />
               </DashboardLayout>
             </AdminRoute>
           </PrivateRoute>
