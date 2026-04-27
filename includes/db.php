@@ -279,16 +279,20 @@ try {
     // Auto-Migração: Banners da loja pública
     try {
         $pdo->exec("CREATE TABLE IF NOT EXISTS banners (
-            id          INT AUTO_INCREMENT PRIMARY KEY,
-            title       VARCHAR(255) NOT NULL DEFAULT '',
-            image_url   VARCHAR(500) NOT NULL,
-            link_url    VARCHAR(500) NULL,
-            link_target ENUM('_self','_blank') NOT NULL DEFAULT '_blank',
-            active      TINYINT(1) NOT NULL DEFAULT 1,
-            sort_order  INT NOT NULL DEFAULT 0,
-            created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            id               INT AUTO_INCREMENT PRIMARY KEY,
+            title            VARCHAR(255) NOT NULL DEFAULT '',
+            image_url        VARCHAR(500) NOT NULL,
+            image_url_mobile VARCHAR(500) NULL,
+            link_url         VARCHAR(500) NULL,
+            link_target      ENUM('_self','_blank') NOT NULL DEFAULT '_blank',
+            active           TINYINT(1) NOT NULL DEFAULT 1,
+            sort_order       INT NOT NULL DEFAULT 0,
+            created_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             INDEX idx_banners_active (active, sort_order)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+    try {
+        $pdo->exec("ALTER TABLE banners ADD COLUMN image_url_mobile VARCHAR(500) NULL AFTER image_url");
     } catch (PDOException $e) {}
 
 } catch (PDOException $e) {

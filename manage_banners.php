@@ -7,7 +7,7 @@ $action = $_GET['action'] ?? $_POST['action'] ?? '';
 
 // ── Public: list active banners ─────────────────────────────────────
 if ($action === 'list_public') {
-    $stmt = $pdo->query("SELECT id, title, image_url, link_url, link_target FROM banners WHERE active = 1 ORDER BY sort_order ASC, id ASC");
+    $stmt = $pdo->query("SELECT id, title, image_url, image_url_mobile, link_url, link_target FROM banners WHERE active = 1 ORDER BY sort_order ASC, id ASC");
     echo json_encode(['success' => true, 'banners' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
     exit;
 }
@@ -29,16 +29,17 @@ if ($action === 'list') {
 
 // ── Create ──────────────────────────────────────────────────────────
 if ($action === 'create') {
-    $title      = trim($input['title']      ?? '');
-    $image_url  = trim($input['image_url']  ?? '');
-    $link_url   = trim($input['link_url']   ?? '');
-    $link_target= in_array($input['link_target'] ?? '_blank', ['_self','_blank']) ? $input['link_target'] : '_blank';
-    $sort_order = (int)($input['sort_order'] ?? 0);
+    $title            = trim($input['title']            ?? '');
+    $image_url        = trim($input['image_url']        ?? '');
+    $image_url_mobile = trim($input['image_url_mobile'] ?? '');
+    $link_url         = trim($input['link_url']         ?? '');
+    $link_target      = in_array($input['link_target'] ?? '_blank', ['_self','_blank']) ? $input['link_target'] : '_blank';
+    $sort_order       = (int)($input['sort_order'] ?? 0);
 
-    if (!$image_url) { echo json_encode(['success' => false, 'error' => 'URL da imagem é obrigatória']); exit; }
+    if (!$image_url) { echo json_encode(['success' => false, 'error' => 'URL da imagem desktop é obrigatória']); exit; }
 
-    $pdo->prepare("INSERT INTO banners (title, image_url, link_url, link_target, sort_order) VALUES (?, ?, ?, ?, ?)")
-        ->execute([$title, $image_url, $link_url ?: null, $link_target, $sort_order]);
+    $pdo->prepare("INSERT INTO banners (title, image_url, image_url_mobile, link_url, link_target, sort_order) VALUES (?, ?, ?, ?, ?, ?)")
+        ->execute([$title, $image_url, $image_url_mobile ?: null, $link_url ?: null, $link_target, $sort_order]);
 
     echo json_encode(['success' => true, 'id' => (int)$pdo->lastInsertId()]);
     exit;
@@ -46,18 +47,19 @@ if ($action === 'create') {
 
 // ── Update ──────────────────────────────────────────────────────────
 if ($action === 'update') {
-    $id         = (int)($input['id'] ?? 0);
-    $title      = trim($input['title']      ?? '');
-    $image_url  = trim($input['image_url']  ?? '');
-    $link_url   = trim($input['link_url']   ?? '');
-    $link_target= in_array($input['link_target'] ?? '_blank', ['_self','_blank']) ? $input['link_target'] : '_blank';
-    $sort_order = (int)($input['sort_order'] ?? 0);
-    $active     = isset($input['active']) ? (int)(bool)$input['active'] : null;
+    $id               = (int)($input['id'] ?? 0);
+    $title            = trim($input['title']            ?? '');
+    $image_url        = trim($input['image_url']        ?? '');
+    $image_url_mobile = trim($input['image_url_mobile'] ?? '');
+    $link_url         = trim($input['link_url']         ?? '');
+    $link_target      = in_array($input['link_target'] ?? '_blank', ['_self','_blank']) ? $input['link_target'] : '_blank';
+    $sort_order       = (int)($input['sort_order'] ?? 0);
+    $active           = isset($input['active']) ? (int)(bool)$input['active'] : null;
 
     if (!$id) { echo json_encode(['success' => false, 'error' => 'ID inválido']); exit; }
 
-    $sets = "title=?, image_url=?, link_url=?, link_target=?, sort_order=?";
-    $params = [$title, $image_url, $link_url ?: null, $link_target, $sort_order];
+    $sets = "title=?, image_url=?, image_url_mobile=?, link_url=?, link_target=?, sort_order=?";
+    $params = [$title, $image_url, $image_url_mobile ?: null, $link_url ?: null, $link_target, $sort_order];
 
     if ($active !== null) { $sets .= ', active=?'; $params[] = $active; }
     $params[] = $id;

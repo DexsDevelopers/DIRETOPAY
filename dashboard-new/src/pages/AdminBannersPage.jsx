@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Image, Plus, Trash2, Edit3, Eye, EyeOff, RefreshCw, Save, X, ExternalLink, ArrowUp, ArrowDown, LayoutTemplate } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const EMPTY = { id: null, title: '', image_url: '', link_url: '', link_target: '_blank', sort_order: 0, active: true };
+const EMPTY = { id: null, title: '', image_url: '', image_url_mobile: '', link_url: '', link_target: '_blank', sort_order: 0, active: true };
 
 function BannerForm({ initial, onSave, onCancel, loading }) {
     const [form, setForm] = useState(initial);
@@ -20,13 +20,25 @@ function BannerForm({ initial, onSave, onCancel, loading }) {
                 {initial.id ? 'Editar Banner' : 'Novo Banner'}
             </h3>
 
-            {/* Preview */}
-            {form.image_url && (
-                <div className="relative overflow-hidden rounded-xl border border-white/10 aspect-[21/6] bg-white/[0.02]">
-                    <img src={form.image_url} alt="Preview" className="w-full h-full object-cover" onError={e => e.target.style.display='none'} />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 hover:opacity-100 transition-opacity">
-                        <span className="text-xs font-bold text-white/60">Preview</span>
-                    </div>
+            {/* Previews */}
+            {(form.image_url || form.image_url_mobile) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {form.image_url && (
+                        <div>
+                            <p className="text-[10px] font-bold text-white/25 uppercase tracking-widest mb-1.5">Preview Desktop</p>
+                            <div className="relative overflow-hidden rounded-xl border border-white/10 aspect-[3/1] bg-white/[0.02]">
+                                <img src={form.image_url} alt="Desktop" className="w-full h-full object-cover" onError={e => e.target.style.display='none'} />
+                            </div>
+                        </div>
+                    )}
+                    {form.image_url_mobile && (
+                        <div>
+                            <p className="text-[10px] font-bold text-white/25 uppercase tracking-widest mb-1.5">Preview Mobile</p>
+                            <div className="relative overflow-hidden rounded-xl border border-white/10 aspect-[16/7] bg-white/[0.02]">
+                                <img src={form.image_url_mobile} alt="Mobile" className="w-full h-full object-cover" onError={e => e.target.style.display='none'} />
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
 
@@ -44,12 +56,28 @@ function BannerForm({ initial, onSave, onCancel, loading }) {
                 </div>
             </div>
 
-            <div className="space-y-1">
-                <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest">URL da Imagem *</label>
-                <input value={form.image_url} onChange={e => set('image_url', e.target.value)}
-                    placeholder="https://exemplo.com/banner.jpg"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/40 font-mono text-xs" />
-                <p className="text-[10px] text-white/20">Recomendado: 1200×400px ou proporção 3:1</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                    <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest flex items-center gap-1.5">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        Imagem Desktop *
+                    </label>
+                    <input value={form.image_url} onChange={e => set('image_url', e.target.value)}
+                        placeholder="https://exemplo.com/banner-desktop.jpg"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/40 font-mono text-xs" />
+                    <p className="text-[10px] text-white/20">Recomendado: 1200×400px (3:1)</p>
+                </div>
+                <div className="space-y-1">
+                    <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest flex items-center gap-1.5">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                        Imagem Mobile
+                        <span className="text-[9px] text-white/20 font-normal normal-case tracking-normal">(opcional)</span>
+                    </label>
+                    <input value={form.image_url_mobile} onChange={e => set('image_url_mobile', e.target.value)}
+                        placeholder="https://exemplo.com/banner-mobile.jpg"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/40 font-mono text-xs" />
+                    <p className="text-[10px] text-white/20">Recomendado: 800×350px (se vazio, usa desktop)</p>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
