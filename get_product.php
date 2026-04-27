@@ -45,6 +45,11 @@ try {
     $reviewStmt->execute([$id]);
     $reviews = $reviewStmt->fetchAll();
 
+    // Fetch variants
+    $varStmt = $pdo->prepare("SELECT id, name, description, price, stock FROM product_variants WHERE product_id = ? AND active = 1 ORDER BY sort_order ASC, id ASC");
+    $varStmt->execute([$id]);
+    $variants = $varStmt->fetchAll();
+
     // Fetch related products (same category, exclude current)
     $relatedStmt = $pdo->prepare("
         SELECT p.id, p.name, p.price, p.image_url, p.category, p.type,
@@ -79,10 +84,11 @@ try {
     }
 
     echo json_encode([
-        'success' => true,
-        'product' => $product,
-        'reviews' => $reviews,
-        'related' => $related,
+        'success'    => true,
+        'product'    => $product,
+        'variants'   => $variants,
+        'reviews'    => $reviews,
+        'related'    => $related,
         'can_review' => $canReview,
     ]);
 } catch (PDOException $e) {

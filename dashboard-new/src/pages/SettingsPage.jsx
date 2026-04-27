@@ -3,7 +3,7 @@ import { Settings, User, Lock, Code, Shield, Key, Copy, Check, Save, Camera, Loa
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
 
-export default function SettingsPage({ userData }) {
+export default function SettingsPage({ userData, onProfileSaved }) {
     const [activeSubTab, setActiveSubTab] = useState('perfil');
     const [copied, setCopied] = useState(false);
     const [copiedCurl, setCopiedCurl] = useState(false);
@@ -136,6 +136,7 @@ export default function SettingsPage({ userData }) {
             const data = await res.json();
             if (data.success) {
                 alert('Perfil salvo com sucesso!');
+                if (onProfileSaved) onProfileSaved();
             } else {
                 alert(data.error || 'Erro ao salvar perfil');
             }

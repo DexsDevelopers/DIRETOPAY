@@ -22,6 +22,7 @@ import {
     Ticket,
     Megaphone,
     MessageCircle,
+    RefreshCw,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../lib/utils';
@@ -87,6 +88,7 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
         { id: 'checkout-builder', icon: <Palette size={18} />, label: 'Criar Checkout', path: '/checkout-builder' },
         { id: 'produtos', icon: <Package size={18} />, label: 'Produtos', path: '/vendedor/produtos' },
         { id: 'cupons',   icon: <Ticket size={18} />,  label: 'Cupons',   path: '/vendedor/cupons' },
+        { id: 'assinaturas', icon: <RefreshCw size={18} />, label: 'Assinaturas', path: '/vendedor/assinaturas' },
         { id: 'loja', icon: <Store size={18} />, label: 'Minha Loja', path: '/vendedor/loja' },
         { id: 'chat', icon: <MessageCircle size={18} />, label: 'Chat', path: '/chat' },
     ];

@@ -13,6 +13,13 @@ const TYPES = [
   { value: 'digital', label: '💾 Digital (arquivo, acesso online)' },
   { value: 'physical', label: '📦 Físico (envio pelos Correios)' },
   { value: 'service', label: '🛠️ Serviço (prestação de serviço)' },
+  { value: 'subscription', label: '🔄 Assinatura (cobrança recorrente)' },
+];
+
+const INTERVALS = [
+  { value: 'weekly',  label: '📅 Semanal' },
+  { value: 'monthly', label: '📅 Mensal' },
+  { value: 'yearly',  label: '📅 Anual' },
 ];
 
 const DELIVERY_METHODS = [
@@ -57,7 +64,16 @@ export default function CriarProdutoPage() {
     delivery_info: '',
     vitrine: '0',
     stock: -1,
+    subscription_interval: 'monthly',
   });
+
+  // Variants state
+  const [variants, setVariants] = useState([]);
+  const [variantForm, setVariantForm] = useState({ name: '', description: '', price: '', stock: -1 });
+  const [variantError, setVariantError] = useState('');
+  const [savingVariant, setSavingVariant] = useState(false);
+  const [deletingVariant, setDeletingVariant] = useState(null);
+  const [savedProductId, setSavedProductId] = useState(isEdit ? id : null);
 
   const [imageMode, setImageMode] = useState('url');
   const [uploadPreview, setUploadPreview] = useState(null);
@@ -97,6 +113,7 @@ export default function CriarProdutoPage() {
             delivery_info: product.delivery_info || '',
             vitrine: product.vitrine ? '1' : '0',
             stock: product.stock ?? -1,
+            subscription_interval: product.subscription_interval || 'monthly',
           });
           if (product.image_url) setUploadPreview(product.image_url);
         }
@@ -105,11 +122,54 @@ export default function CriarProdutoPage() {
           setExistingStock(stockData.stats);
           setAutoDelivery(true);
         }
+        // Load variants
+        const varRes = await fetch(`/manage_product_variants.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || '' },
+          body: JSON.stringify({ action: 'list', product_id: parseInt(id) })
+        });
+        const varData = await varRes.json();
+        if (varData.success) setVariants(varData.variants || []);
       } catch {}
       setLoadingProduct(false);
     };
     load();
   }, [id, isEdit]);
+
+  const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+  const addVariant = async () => {
+    setVariantError('');
+    if (!variantForm.name.trim()) { setVariantError('Nome da variante é obrigatório.'); return; }
+    if (!variantForm.price || parseFloat(variantForm.price) <= 0) { setVariantError('Preço inválido.'); return; }
+    const pid = savedProductId;
+    if (!pid) { setVariantError('Salve o produto primeiro para adicionar variantes.'); return; }
+    setSavingVariant(true);
+    try {
+      const res = await fetch('/manage_product_variants.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf },
+        body: JSON.stringify({ action: 'create', product_id: parseInt(pid), ...variantForm, price: parseFloat(variantForm.price), stock: parseInt(variantForm.stock) })
+      });
+      const data = await res.json();
+      if (data.success) {
+        const reloadRes = await fetch('/manage_product_variants.php', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf }, body: JSON.stringify({ action: 'list', product_id: parseInt(pid) }) });
+        const reloadData = await reloadRes.json();
+        if (reloadData.success) setVariants(reloadData.variants || []);
+        setVariantForm({ name: '', description: '', price: '', stock: -1 });
+      } else { setVariantError(data.error || 'Erro ao adicionar variante.'); }
+    } catch { setVariantError('Erro de conexão.'); }
+    setSavingVariant(false);
+  };
+
+  const deleteVariant = async (varId) => {
+    setDeletingVariant(varId);
+    try {
+      await fetch('/manage_product_variants.php', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf }, body: JSON.stringify({ action: 'delete', id: varId }) });
+      setVariants(prev => prev.filter(v => v.id !== varId));
+    } catch {}
+    setDeletingVariant(null);
+  };
 
   const addSingleItem = () => {
     const v = singleItem.trim();
@@ -152,13 +212,13 @@ export default function CriarProdutoPage() {
     if (!form.name.trim())          { setError('Nome do produto é obrigatório.'); return; }
     if (!form.price)                 { setError('Preço é obrigatório.'); return; }
     if (!form.type)                  { setError('Selecione o tipo do produto.'); return; }
-    if (!form.delivery_method)       { setError('Selecione a forma de entrega.'); return; }
-    if (!form.delivery_info.trim())  { setError('Descreva como o produto será entregue.'); return; }
+    if (form.type !== 'subscription') {
+      if (!form.delivery_method)     { setError('Selecione a forma de entrega.'); return; }
+      if (!form.delivery_info.trim()) { setError('Descreva como o produto será entregue.'); return; }
+    }
 
     setSaving(true);
     try {
-      const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
-
       // 1. Save product
       const res = await fetch('/manage_product.php', {
         method: 'POST',
@@ -175,6 +235,7 @@ export default function CriarProdutoPage() {
       if (!data.success) { setError(data.error || 'Erro ao salvar.'); setSaving(false); return; }
 
       const productId = isEdit ? id : data.id;
+      setSavedProductId(productId);
 
       // 2. If auto-delivery enabled and we have new items, bulk-add to stock
       if (autoDelivery && allNewItems.length > 0 && productId) {
@@ -268,7 +329,9 @@ export default function CriarProdutoPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className={labelCls}>Preço (R$) <span className="text-red-400">*</span></label>
+              <label className={labelCls}>
+                {form.type === 'subscription' ? 'Preço por Ciclo (R$)' : 'Preço (R$)'} <span className="text-red-400">*</span>
+              </label>
               <input
                 type="number" step="0.01" min="0"
                 value={form.price}
@@ -292,6 +355,25 @@ export default function CriarProdutoPage() {
               </select>
             </div>
           </div>
+
+          {/* Subscription interval */}
+          {form.type === 'subscription' && (
+            <div className="p-4 bg-blue-500/5 border border-blue-500/20 rounded-xl space-y-3">
+              <p className="text-xs font-black text-blue-400 uppercase tracking-widest flex items-center gap-2">🔄 Configuração da Assinatura</p>
+              <div>
+                <label className={labelCls}>Intervalo de Cobrança</label>
+                <div className="flex gap-2">
+                  {INTERVALS.map(iv => (
+                    <button key={iv.value} type="button" onClick={() => setForm(f => ({ ...f, subscription_interval: iv.value }))}
+                      className={`flex-1 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${form.subscription_interval === iv.value ? 'bg-blue-500 text-white' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>
+                      {iv.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <p className="text-[11px] text-blue-300/50">O cliente paga {form.subscription_interval === 'weekly' ? 'toda semana' : form.subscription_interval === 'monthly' ? 'todo mês' : 'todo ano'} o valor configurado acima.</p>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -394,7 +476,82 @@ export default function CriarProdutoPage() {
           )}
         </div>
 
+        {/* Seção 2.5: Variantes */}
+        {form.type !== 'subscription' && (
+        <div className={sectionCls}>
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-black text-white/60 uppercase tracking-widest flex items-center gap-2">
+              <Plus size={14} className="text-primary" /> Variantes / Opções
+            </h2>
+            <span className="text-[10px] text-white/20 font-bold">Opcional — crie opções com preços diferentes</span>
+          </div>
+
+          {/* Existing variants */}
+          {variants.length > 0 && (
+            <div className="space-y-2">
+              {variants.map(v => (
+                <div key={v.id} className="flex items-center gap-3 p-3 bg-white/[0.03] border border-white/5 rounded-xl">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-white text-sm">{v.name}</p>
+                    {v.description && <p className="text-xs text-white/30 truncate">{v.description}</p>}
+                  </div>
+                  <span className="text-primary font-black text-sm">R$ {parseFloat(v.price).toFixed(2)}</span>
+                  {v.stock !== -1 && <span className="text-[10px] text-white/30 bg-white/5 px-2 py-0.5 rounded-full">{v.stock} un.</span>}
+                  <button type="button" onClick={() => deleteVariant(v.id)} disabled={deletingVariant === v.id}
+                    className="p-1.5 text-red-400/40 hover:text-red-400 transition-colors rounded-lg hover:bg-red-500/10">
+                    {deletingVariant === v.id ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Add variant form */}
+          <div className="space-y-3 p-4 bg-white/[0.02] border border-white/5 rounded-xl">
+            <p className="text-[10px] text-white/30 font-black uppercase tracking-widest">Nova Variante</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input value={variantForm.name} onChange={e => setVariantForm(f => ({ ...f, name: e.target.value }))}
+                placeholder="Nome (ex: Plano Pro, Tamanho G)" className={inputCls} />
+              <input type="number" step="0.01" min="0" value={variantForm.price} onChange={e => setVariantForm(f => ({ ...f, price: e.target.value }))}
+                placeholder="Preço (R$)" className={inputCls} />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input value={variantForm.description} onChange={e => setVariantForm(f => ({ ...f, description: e.target.value }))}
+                placeholder="Descrição curta (opcional)" className={inputCls} />
+              <input type="number" min="-1" value={variantForm.stock} onChange={e => setVariantForm(f => ({ ...f, stock: e.target.value }))}
+                placeholder="Estoque (-1 = ilimitado)" className={inputCls} />
+            </div>
+            {variantError && <p className="text-xs text-red-400">{variantError}</p>}
+            {!savedProductId && (
+              <p className="text-[11px] text-amber-400/70">⚠️ Salve o produto primeiro para adicionar variantes.</p>
+            )}
+            <button type="button" onClick={addVariant} disabled={savingVariant || !savedProductId}
+              className="flex items-center gap-2 px-4 py-2 bg-primary text-black font-black text-xs rounded-xl hover:bg-primary/90 transition-all disabled:opacity-50">
+              {savingVariant ? <Loader2 size={13} className="animate-spin" /> : <Plus size={13} />}
+              Adicionar Variante
+            </button>
+          </div>
+
+          {variants.length > 0 && (
+            <p className="text-[11px] text-white/25">💡 Com variantes, o cliente escolhe uma opção na hora da compra. O preço do produto principal se torna o preço de exibição.</p>
+          )}
+        </div>
+        )}
+
         {/* Seção 3: Entrega */}
+        {form.type === 'subscription' ? (
+        <div className={sectionCls}>
+          <h2 className="text-sm font-black text-white/60 uppercase tracking-widest flex items-center gap-2">
+            <Truck size={14} className="text-primary" /> Entrega / Acesso
+          </h2>
+          <div>
+            <label className={labelCls}>O que o assinante recebe após assinar?</label>
+            <textarea rows={4} value={form.delivery_info} onChange={e => setForm(f => ({ ...f, delivery_info: e.target.value }))}
+              placeholder="Ex: Após a confirmação do pagamento você receberá acesso à área de membros pelo e-mail informado..."
+              className={`${inputCls} resize-none`} />
+          </div>
+        </div>
+        ) : (
         <div className={sectionCls}>
           <h2 className="text-sm font-black text-white/60 uppercase tracking-widest flex items-center gap-2">
             <Truck size={14} className="text-primary" /> Entrega <span className="text-red-400">*</span>
@@ -427,6 +584,7 @@ export default function CriarProdutoPage() {
             <p className="text-xs text-white/20 mt-1.5">Este texto será exibido ao comprador após o pagamento</p>
           </div>
         </div>
+        )}
 
         {/* Seção 4: Entrega Automática (Stock) */}
         <div className={`${sectionCls} transition-all`}>

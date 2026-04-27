@@ -17,7 +17,9 @@ try {
     switch ($action) {
 
         case 'create':
-            $stmt = $pdo->prepare("INSERT INTO products (user_id, name, description, price, image_url, category, type, delivery_method, delivery_info, vitrine, stock, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+            $type = $input['type'] ?? 'digital';
+            $subInterval = in_array($type, ['subscription']) ? ($input['subscription_interval'] ?? 'monthly') : null;
+            $stmt = $pdo->prepare("INSERT INTO products (user_id, name, description, price, image_url, category, type, delivery_method, delivery_info, vitrine, stock, subscription_interval, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
             $stmt->execute([
                 $userId,
                 trim($input['name'] ?? ''),
@@ -25,11 +27,12 @@ try {
                 (float)($input['price'] ?? 0),
                 trim($input['image_url'] ?? ''),
                 $input['category'] ?? 'Digital',
-                $input['type'] ?? 'digital',
+                $type,
                 trim($input['delivery_method'] ?? ''),
                 trim($input['delivery_info'] ?? ''),
                 ($input['vitrine'] ?? '0') === '1' ? 1 : 0,
                 (int)($input['stock'] ?? -1),
+                $subInterval,
             ]);
             $newId = (int) $pdo->lastInsertId();
 
@@ -70,18 +73,21 @@ try {
                 $newVitrine = 0;
             }
 
-            $stmt = $pdo->prepare("UPDATE products SET name=?, description=?, price=?, image_url=?, category=?, type=?, delivery_method=?, delivery_info=?, vitrine=?, stock=?, status=?, updated_at=NOW() WHERE id = ? AND user_id = ?");
+            $updType = $input['type'] ?? 'digital';
+            $updInterval = in_array($updType, ['subscription']) ? ($input['subscription_interval'] ?? 'monthly') : null;
+            $stmt = $pdo->prepare("UPDATE products SET name=?, description=?, price=?, image_url=?, category=?, type=?, delivery_method=?, delivery_info=?, vitrine=?, stock=?, subscription_interval=?, status=?, updated_at=NOW() WHERE id = ? AND user_id = ?");
             $stmt->execute([
                 trim($input['name'] ?? ''),
                 trim($input['description'] ?? ''),
                 (float)($input['price'] ?? 0),
                 trim($input['image_url'] ?? ''),
                 $input['category'] ?? 'Digital',
-                $input['type'] ?? 'digital',
+                $updType,
                 trim($input['delivery_method'] ?? ''),
                 trim($input['delivery_info'] ?? ''),
                 $newVitrine,
                 (int)($input['stock'] ?? -1),
+                $updInterval,
                 $newStatus,
                 $id,
                 $userId,

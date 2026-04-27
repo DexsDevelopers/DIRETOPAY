@@ -35,9 +35,15 @@ function StarInput({ value, onChange }) {
   );
 }
 
-function BuyModal({ product, onClose }) {
+const INTERVAL_LABELS = { weekly: 'semana', monthly: 'mês', yearly: 'ano' };
+
+function BuyModal({ product, variants = [], onClose }) {
+  const isSubscription = product.type === 'subscription';
+  const hasVariants = variants.length > 0;
+
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [doc, setDoc] = useState('');
   const [loading, setLoading] = useState(false);
   const [pixData, setPixData] = useState(null);
@@ -49,9 +55,11 @@ function BuyModal({ product, onClose }) {
   const [couponLoading, setCouponLoading] = useState(false);
   const [couponError, setCouponError] = useState('');
   const [copied, setCopied] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState(hasVariants ? null : undefined);
 
   const deliveryUrl = pixData?.delivery_token ? `${window.location.origin}/entrega/${pixData.delivery_token}` : null;
-  const finalPrice = couponInfo ? couponInfo.final_amount : parseFloat(product.price);
+  const basePrice = selectedVariant ? parseFloat(selectedVariant.price) : parseFloat(product.price);
+  const finalPrice = couponInfo ? couponInfo.final_amount : basePrice;
 
   const applyCoupon = async () => {
     const code = couponInput.trim().toUpperCase();
@@ -61,7 +69,7 @@ function BuyModal({ product, onClose }) {
       const res = await fetch('/validate_coupon.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, product_id: product.id, amount: parseFloat(product.price) }),
+        body: JSON.stringify({ code, product_id: product.id, amount: basePrice }),
       });
       const data = await res.json();
       if (data.valid) { setCouponInfo(data); setCouponCode(code); }
@@ -74,13 +82,24 @@ function BuyModal({ product, onClose }) {
 
   const handleCheckout = async () => {
     if (!name.trim()) { setError('Informe seu nome.'); return; }
+    if (isSubscription && !email.trim()) { setError('Informe seu e-mail para a assinatura.'); return; }
+    if (hasVariants && !selectedVariant) { setError('Selecione uma opção do produto.'); return; }
     setLoading(true); setError('');
     try {
-      if (paymentMethod === 'card') {
+      if (isSubscription) {
+        const res = await fetch('/subscribe.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ product_id: product.id, customer_name: name, customer_email: email, customer_document: doc, variant_id: selectedVariant?.id }),
+        });
+        const data = await res.json();
+        if (data.success) { setPixData(data); setStep(2); }
+        else setError(data.message || 'Erro ao criar assinatura.');
+      } else if (paymentMethod === 'card') {
         const res = await fetch('/buy_product_card.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ product_id: product.id, customer_name: name, customer_document: doc, coupon_code: couponCode }),
+          body: JSON.stringify({ product_id: product.id, customer_name: name, customer_document: doc, coupon_code: couponCode, variant_id: selectedVariant?.id }),
         });
         const data = await res.json();
         if (data.success && data.checkout_url) { window.open(data.checkout_url, '_blank'); onClose(); }
@@ -89,7 +108,7 @@ function BuyModal({ product, onClose }) {
         const res = await fetch('/buy_product.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ product_id: product.id, customer_name: name, customer_document: doc, coupon_code: couponCode }),
+          body: JSON.stringify({ product_id: product.id, customer_name: name, customer_document: doc, coupon_code: couponCode, variant_id: selectedVariant?.id }),
         });
         const data = await res.json();
         if (data.success) { setPixData(data); setStep(2); }
@@ -103,12 +122,13 @@ function BuyModal({ product, onClose }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
       <div className="bg-[#111] border border-white/10 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-5 border-b border-white/5">
-          <h2 className="font-black">{step === 1 ? 'Finalizar Compra' : 'Pagar com PIX'}</h2>
+          <h2 className="font-black">{step === 1 ? (isSubscription ? 'Assinar Plano' : 'Finalizar Compra') : 'Pagar com PIX'}</h2>
           <button onClick={onClose} className="p-2 text-white/40 hover:text-white rounded-lg hover:bg-white/5 transition-all"><X size={16} /></button>
         </div>
 
         {step === 1 ? (
           <div className="p-5 space-y-4">
+            {/* Product/plan summary */}
             <div className="flex gap-3 p-3 bg-white/[0.02] rounded-xl">
               {product.image_url && <img src={product.image_url} alt={product.name} className="w-12 h-12 rounded-lg object-cover" />}
               <div className="flex-1 min-w-0">
@@ -116,17 +136,40 @@ function BuyModal({ product, onClose }) {
                 <div className="flex items-center gap-2">
                   {couponInfo ? (
                     <>
-                      <span className="text-white/30 line-through text-xs">R$ {parseFloat(product.price).toFixed(2).replace('.', ',')}</span>
+                      <span className="text-white/30 line-through text-xs">R$ {basePrice.toFixed(2).replace('.', ',')}</span>
                       <span className="text-primary font-black">R$ {finalPrice.toFixed(2).replace('.', ',')}</span>
                     </>
                   ) : (
-                    <p className="text-primary font-black">R$ {parseFloat(product.price).toFixed(2).replace('.', ',')}</p>
+                    <p className="text-primary font-black">
+                      R$ {basePrice.toFixed(2).replace('.', ',')}
+                      {isSubscription && <span className="text-white/40 text-xs font-normal">/{INTERVAL_LABELS[product.subscription_interval] || 'mês'}</span>}
+                    </p>
                   )}
+                  {selectedVariant && <span className="text-[10px] bg-white/10 text-white/50 px-2 py-0.5 rounded-full">{selectedVariant.name}</span>}
                 </div>
               </div>
             </div>
+
+            {/* Variant selector */}
+            {hasVariants && (
+              <div>
+                <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-2">Selecione uma Opção *</label>
+                <div className="grid grid-cols-1 gap-2">
+                  {variants.map(v => (
+                    <button key={v.id} type="button" onClick={() => { setSelectedVariant(v); setCouponInfo(null); }}
+                      className={`flex items-center justify-between px-4 py-3 rounded-xl border font-bold text-sm transition-all text-left ${selectedVariant?.id === v.id ? 'bg-primary/15 border-primary/40 text-white' : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'}`}>
+                      <span>{v.name}{v.description && <span className="text-white/30 text-xs font-normal block">{v.description}</span>}</span>
+                      <span className="text-primary font-black ml-4">R$ {parseFloat(v.price).toFixed(2).replace('.', ',')}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {error && <p className="text-red-400 text-xs bg-red-500/10 border border-red-500/20 rounded-xl p-3">{error}</p>}
 
+            {/* Payment method — not shown for subscriptions */}
+            {!isSubscription && (
             <div>
               <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-1.5">Forma de Pagamento</label>
               <div className="grid grid-cols-2 gap-2">
@@ -140,8 +183,10 @@ function BuyModal({ product, onClose }) {
                 </button>
               </div>
             </div>
+            )}
 
-            {!couponInfo ? (
+            {/* Coupon — not shown for subscriptions */}
+            {!isSubscription && (!couponInfo ? (
               <div>
                 <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-1.5">Cupom de Desconto</label>
                 <div className="flex gap-2">
@@ -165,6 +210,7 @@ function BuyModal({ product, onClose }) {
                 </div>
                 <button onClick={removeCoupon} className="p-1 text-white/30 hover:text-white"><X size={13} /></button>
               </div>
+            )
             )}
 
             <div>
@@ -172,18 +218,31 @@ function BuyModal({ product, onClose }) {
               <input value={name} onChange={e => setName(e.target.value)} placeholder="Nome completo"
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/40" />
             </div>
+            {isSubscription && (
+            <div>
+              <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-1.5">E-mail *</label>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="seu@email.com"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/40" />
+              <p className="text-[10px] text-white/20 mt-1.5">Usado para enviar cobranças de renovação</p>
+            </div>
+            )}
             <div>
               <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-1.5">CPF (opcional)</label>
               <input value={doc} onChange={e => setDoc(e.target.value)} placeholder="000.000.000-00"
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/40" />
             </div>
             <button onClick={handleCheckout} disabled={loading}
-              className={`w-full py-3 font-black rounded-xl transition-all disabled:opacity-50 ${paymentMethod === 'card' ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-primary text-black hover:bg-primary/90'}`}>
-              {loading ? 'Processando...' : `Pagar R$ ${finalPrice.toFixed(2).replace('.', ',')}`}
+              className={`w-full py-3 font-black rounded-xl transition-all disabled:opacity-50 ${paymentMethod === 'card' && !isSubscription ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-primary text-black hover:bg-primary/90'}`}>
+              {loading ? 'Processando...' : isSubscription ? `Assinar — R$ ${finalPrice.toFixed(2).replace('.', ',')}/${INTERVAL_LABELS[product.subscription_interval] || 'mês'}` : `Pagar R$ ${finalPrice.toFixed(2).replace('.', ',')}`}
             </button>
           </div>
         ) : (
           <div className="p-5 space-y-4 text-center">
+            {isSubscription && (
+              <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-xs text-blue-300 font-semibold">
+                🔄 Após o pagamento sua assinatura será ativada automaticamente
+              </div>
+            )}
             {pixData?.qr_image && <img src={pixData.qr_image} alt="QR Code" className="w-48 h-48 mx-auto rounded-xl border border-white/10" />}
             <p className="text-sm text-white/60">Escaneie o QR Code ou copie o código PIX</p>
             {pixData?.pix_code && (
@@ -255,6 +314,7 @@ export default function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
+  const [variants, setVariants] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [related, setRelated] = useState([]);
   const [canReview, setCanReview] = useState(false);
@@ -278,6 +338,7 @@ export default function ProductDetailPage() {
       const data = await res.json();
       if (data.success) {
         setProduct(data.product);
+        setVariants(data.variants || []);
         setReviews(data.reviews || []);
         setRelated(data.related || []);
         setCanReview(data.can_review);
@@ -349,7 +410,7 @@ export default function ProductDetailPage() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-500">
-      {buyModal && <BuyModal product={product} onClose={() => setBuyModal(false)} />}
+      {buyModal && <BuyModal product={product} variants={variants} onClose={() => setBuyModal(false)} />}
 
       {/* Back */}
       <button onClick={() => navigate('/vitrine')} className="flex items-center gap-2 text-sm text-white/40 hover:text-white font-bold transition-colors">
@@ -408,7 +469,7 @@ export default function ProductDetailPage() {
           <div className="flex gap-3 pt-2">
             <button onClick={() => setBuyModal(true)}
               className="flex-1 py-4 bg-primary text-black font-black text-sm rounded-xl hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-[0_10px_30px_rgba(168,85,247,0.2)]">
-              <ShoppingCart size={16} /> Comprar Agora
+              <ShoppingCart size={16} /> {product.type === 'subscription' ? 'Assinar Agora' : 'Comprar Agora'}
             </button>
           </div>
 

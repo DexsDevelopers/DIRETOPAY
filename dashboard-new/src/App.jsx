@@ -36,6 +36,7 @@ import DemoPage from './pages/DemoPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import ProdutosPage from './pages/ProdutosPage';
+import AssinaturasPage from './pages/AssinaturasPage';
 import CuponsPage from './pages/CuponsPage';
 import CriarProdutoPage from './pages/CriarProdutoPage';
 import LojaPage from './pages/LojaPage';
@@ -306,7 +307,7 @@ export default function App() {
         <Route path="/config" element={
           <PrivateRoute>
             <DashboardLayout {...commonProps} activeTab="settings">
-              <SettingsPage userData={commonProps.userData} />
+              <SettingsPage userData={commonProps.userData} onProfileSaved={fetchDashboard} />
             </DashboardLayout>
           </PrivateRoute>
         } />
@@ -423,6 +424,14 @@ export default function App() {
           <PrivateRoute>
             <DashboardLayout {...commonProps} activeTab="cupons">
               <CuponsPage />
+            </DashboardLayout>
+          </PrivateRoute>
+        } />
+
+        <Route path="/vendedor/assinaturas" element={
+          <PrivateRoute>
+            <DashboardLayout {...commonProps} activeTab="assinaturas">
+              <AssinaturasPage />
             </DashboardLayout>
           </PrivateRoute>
         } />

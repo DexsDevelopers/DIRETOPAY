@@ -209,6 +209,68 @@ try {
         $pdo->exec("INSERT IGNORE INTO settings (`key`, `value`) VALUES ('card_extra_fee', '0')");
     } catch (PDOException $e) {}
 
+    // Auto-Migração: Tabela de variantes de produto
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS product_variants (
+            id          INT AUTO_INCREMENT PRIMARY KEY,
+            product_id  INT NOT NULL,
+            name        VARCHAR(255) NOT NULL,
+            description TEXT,
+            price       DECIMAL(10,2) NOT NULL,
+            stock       INT NOT NULL DEFAULT -1,
+            active      TINYINT(1) NOT NULL DEFAULT 1,
+            sort_order  INT NOT NULL DEFAULT 0,
+            created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_pv_product (product_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: Flag de variantes em produtos
+    try {
+        $pdo->exec("ALTER TABLE products ADD COLUMN has_variants TINYINT(1) NOT NULL DEFAULT 0");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: Intervalo de cobrança para assinaturas
+    try {
+        $pdo->exec("ALTER TABLE products ADD COLUMN subscription_interval ENUM('weekly','monthly','yearly') DEFAULT NULL");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: Tabela de assinaturas recorrentes
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS subscriptions (
+            id                  INT AUTO_INCREMENT PRIMARY KEY,
+            product_id          INT NOT NULL,
+            seller_id           INT NOT NULL,
+            subscriber_name     VARCHAR(255) NOT NULL,
+            subscriber_email    VARCHAR(255),
+            subscriber_document VARCHAR(30),
+            status              ENUM('pending','active','cancelled','expired') NOT NULL DEFAULT 'pending',
+            billing_amount      DECIMAL(10,2) NOT NULL,
+            next_billing_at     DATE,
+            created_at          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            cancelled_at        DATETIME NULL,
+            INDEX idx_sub_product (product_id),
+            INDEX idx_sub_seller  (seller_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: Tabela de pagamentos de assinatura
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS subscription_payments (
+            id              INT AUTO_INCREMENT PRIMARY KEY,
+            subscription_id INT NOT NULL,
+            transaction_id  INT NULL,
+            amount          DECIMAL(10,2) NOT NULL,
+            status          ENUM('pending','paid','failed','expired') NOT NULL DEFAULT 'pending',
+            pix_code        TEXT,
+            qr_image        VARCHAR(500),
+            due_at          DATE,
+            paid_at         DATETIME NULL,
+            created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_sp_sub (subscription_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+
 } catch (PDOException $e) {
     die("Erro ao conectar ao banco de dados: " . $e->getMessage());
 }

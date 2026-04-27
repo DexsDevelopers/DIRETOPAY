@@ -8,6 +8,7 @@ header('Content-Type: application/json');
 try {
     $input        = json_decode(file_get_contents('php://input'), true);
     $productId    = (int)($input['product_id'] ?? 0);
+    $variantId    = (int)($input['variant_id'] ?? 0);
     $customerName = trim($input['customer_name'] ?? '');
     $customerDoc  = trim($input['customer_document'] ?? '');
     $couponCode   = strtoupper(trim($input['coupon_code'] ?? ''));
@@ -28,8 +29,23 @@ try {
     if (!$product) throw new Exception('Produto não disponível.');
     if ($product['user_status'] !== 'approved') throw new Exception('Vendedor não autorizado.');
     if (empty($product['pix_key'])) throw new Exception('Vendedor sem chave PIX configurada.');
+    if ($product['type'] === 'subscription') throw new Exception('Use o checkout de assinatura para este produto.');
 
-    $amount         = (float)$product['price'];
+    // Resolve price: use variant price if applicable
+    $selectedVariantName = null;
+    if ($variantId) {
+        $vStmt = $pdo->prepare("SELECT id, name, price, stock FROM product_variants WHERE id = ? AND product_id = ? AND active = 1");
+        $vStmt->execute([$variantId, $productId]);
+        $variant = $vStmt->fetch();
+        if (!$variant) throw new Exception('Opção de produto inválida.');
+        if ($variant['stock'] !== -1 && $variant['stock'] <= 0) throw new Exception('Esta opção está sem estoque.');
+        $selectedVariantName = $variant['name'];
+        $amount = (float)$variant['price'];
+    } elseif (!empty($product['has_variants'])) {
+        throw new Exception('Selecione uma opção do produto.');
+    } else {
+        $amount = (float)$product['price'];
+    }
     $originalAmount = $amount;
     $discountAmount = 0;
     $couponId       = null;
