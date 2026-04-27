@@ -9,7 +9,7 @@ RewriteRule ^(dashboard|vendas|relatorios|saques|config|admin|admin/apis|admin/c
 RewriteRule ^vitrine/produto/(.+)$ index.php [L,QSA]
 RewriteRule ^reset-password/(.+)$ index.php [L,QSA]
 RewriteRule ^chat/(.+)$ index.php [L,QSA]
-RewriteRule ^p/(.+)$ index.php [L,QSA]
+RewriteRule ^p/(.+)$ produto.php [L,QSA]
 
 # Fallback SPA: rotas que não são arquivos nem diretórios
 RewriteCond %{REQUEST_FILENAME} !-f
