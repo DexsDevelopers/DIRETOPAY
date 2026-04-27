@@ -1,8 +1,114 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Image, Plus, Trash2, Edit3, Eye, EyeOff, RefreshCw, Save, X, ExternalLink, ArrowUp, ArrowDown, LayoutTemplate } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Image, Plus, Trash2, Edit3, Eye, EyeOff, RefreshCw, Save, X, ExternalLink, LayoutTemplate, Upload, Link as LinkIcon, Monitor, Smartphone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const EMPTY = { id: null, title: '', image_url: '', image_url_mobile: '', link_url: '', link_target: '_blank', sort_order: 0, active: true };
+
+/* ── ImageField: URL input + file upload toggle ── */
+function ImageField({ label, hint, fieldName, value, onChange, required = false }) {
+    const [mode, setMode]       = useState('url');   // 'url' | 'upload'
+    const [uploading, setUploading] = useState(false);
+    const [uploadErr, setUploadErr] = useState('');
+    const [dragOver, setDragOver]   = useState(false);
+    const inputRef = useRef(null);
+
+    const handleFile = async (file) => {
+        if (!file) return;
+        setUploadErr('');
+        setUploading(true);
+        const fd = new FormData();
+        fd.append('field', 'file');
+        fd.append('file', file);
+        try {
+            const res  = await fetch('../upload_banner.php', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (data.success) {
+                onChange(data.url);
+                setMode('url');
+            } else {
+                setUploadErr(data.error || 'Erro no upload');
+            }
+        } catch { setUploadErr('Erro de conexão'); }
+        setUploading(false);
+    };
+
+    return (
+        <div className="space-y-2">
+            {/* Label + mode toggle */}
+            <div className="flex items-center justify-between">
+                <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest flex items-center gap-1.5">
+                    {fieldName === 'image_url'
+                        ? <Monitor size={11} className="text-white/30" />
+                        : <Smartphone size={11} className="text-white/30" />}
+                    {label}
+                    {!required && <span className="text-[9px] text-white/20 font-normal normal-case tracking-normal">(opcional)</span>}
+                </label>
+                <div className="flex rounded-lg overflow-hidden border border-white/10 text-[10px] font-black">
+                    <button type="button" onClick={() => setMode('url')}
+                        className={`px-3 py-1 flex items-center gap-1 transition-colors ${mode === 'url' ? 'bg-primary/20 text-primary' : 'bg-white/[0.03] text-white/30 hover:text-white/60'}`}>
+                        <LinkIcon size={9} /> URL
+                    </button>
+                    <button type="button" onClick={() => setMode('upload')}
+                        className={`px-3 py-1 flex items-center gap-1 transition-colors ${mode === 'upload' ? 'bg-primary/20 text-primary' : 'bg-white/[0.03] text-white/30 hover:text-white/60'}`}>
+                        <Upload size={9} /> Arquivo
+                    </button>
+                </div>
+            </div>
+
+            {/* Preview thumbnail */}
+            {value && (
+                <div className="relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.02]"
+                    style={{ aspectRatio: fieldName === 'image_url' ? '3/1' : '16/7' }}>
+                    <img src={value} alt="preview" className="w-full h-full object-cover"
+                        onError={e => { e.target.style.display = 'none'; }} />
+                    <button type="button" onClick={() => onChange('')}
+                        className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/60 text-white/60 hover:text-white flex items-center justify-center transition-colors"
+                        title="Remover imagem">
+                        <X size={11} />
+                    </button>
+                </div>
+            )}
+
+            {/* URL mode */}
+            {mode === 'url' && (
+                <input value={value} onChange={e => onChange(e.target.value)}
+                    placeholder={fieldName === 'image_url' ? 'https://exemplo.com/banner-desktop.jpg' : 'https://exemplo.com/banner-mobile.jpg'}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/40 font-mono text-xs" />
+            )}
+
+            {/* Upload mode */}
+            {mode === 'upload' && (
+                <div
+                    onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+                    onDragLeave={() => setDragOver(false)}
+                    onDrop={e => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]); }}
+                    onClick={() => !uploading && inputRef.current?.click()}
+                    className={`relative cursor-pointer rounded-xl border-2 border-dashed transition-all p-6 text-center
+                        ${dragOver ? 'border-primary bg-primary/10' : 'border-white/15 hover:border-primary/40 hover:bg-white/[0.02]'}`}>
+                    <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif"
+                        className="hidden" onChange={e => handleFile(e.target.files[0])} />
+                    {uploading ? (
+                        <div className="flex flex-col items-center gap-2">
+                            <RefreshCw size={22} className="animate-spin text-primary" />
+                            <p className="text-xs font-bold text-white/40">Enviando...</p>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col items-center gap-2 pointer-events-none">
+                            <Upload size={22} className="text-white/20" />
+                            <p className="text-xs font-bold text-white/50">
+                                <span className="text-primary">Clique para escolher</span> ou arraste aqui
+                            </p>
+                            <p className="text-[10px] text-white/20">JPG, PNG, WEBP, GIF · máx. 5 MB</p>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {uploadErr && <p className="text-[11px] text-red-400 font-semibold">⚠ {uploadErr}</p>}
+            <p className="text-[10px] text-white/15">{hint}</p>
+        </div>
+    );
+}
 
 function BannerForm({ initial, onSave, onCancel, loading }) {
     const [form, setForm] = useState(initial);
@@ -13,35 +119,14 @@ function BannerForm({ initial, onSave, onCancel, loading }) {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="bg-white/[0.03] border border-primary/20 rounded-2xl p-6 space-y-4"
+            className="bg-white/[0.03] border border-primary/20 rounded-2xl p-6 space-y-5"
         >
             <h3 className="font-black text-sm flex items-center gap-2">
                 <LayoutTemplate size={16} className="text-primary" />
                 {initial.id ? 'Editar Banner' : 'Novo Banner'}
             </h3>
 
-            {/* Previews */}
-            {(form.image_url || form.image_url_mobile) && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {form.image_url && (
-                        <div>
-                            <p className="text-[10px] font-bold text-white/25 uppercase tracking-widest mb-1.5">Preview Desktop</p>
-                            <div className="relative overflow-hidden rounded-xl border border-white/10 aspect-[3/1] bg-white/[0.02]">
-                                <img src={form.image_url} alt="Desktop" className="w-full h-full object-cover" onError={e => e.target.style.display='none'} />
-                            </div>
-                        </div>
-                    )}
-                    {form.image_url_mobile && (
-                        <div>
-                            <p className="text-[10px] font-bold text-white/25 uppercase tracking-widest mb-1.5">Preview Mobile</p>
-                            <div className="relative overflow-hidden rounded-xl border border-white/10 aspect-[16/7] bg-white/[0.02]">
-                                <img src={form.image_url_mobile} alt="Mobile" className="w-full h-full object-cover" onError={e => e.target.style.display='none'} />
-                            </div>
-                        </div>
-                    )}
-                </div>
-            )}
-
+            {/* Título + Ordem */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
                     <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest">Título (interno)</label>
@@ -51,35 +136,29 @@ function BannerForm({ initial, onSave, onCancel, loading }) {
                 </div>
                 <div className="space-y-1">
                     <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest">Ordem <span className="text-white/20">(menor = primeiro)</span></label>
-                    <input type="number" value={form.sort_order} onChange={e => set('sort_order', parseInt(e.target.value)||0)}
+                    <input type="number" value={form.sort_order} onChange={e => set('sort_order', parseInt(e.target.value) || 0)}
                         className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary/40" />
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                    <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest flex items-center gap-1.5">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                        Imagem Desktop *
-                    </label>
-                    <input value={form.image_url} onChange={e => set('image_url', e.target.value)}
-                        placeholder="https://exemplo.com/banner-desktop.jpg"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/40 font-mono text-xs" />
-                    <p className="text-[10px] text-white/20">Recomendado: 1200×400px (3:1)</p>
-                </div>
-                <div className="space-y-1">
-                    <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest flex items-center gap-1.5">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-                        Imagem Mobile
-                        <span className="text-[9px] text-white/20 font-normal normal-case tracking-normal">(opcional)</span>
-                    </label>
-                    <input value={form.image_url_mobile} onChange={e => set('image_url_mobile', e.target.value)}
-                        placeholder="https://exemplo.com/banner-mobile.jpg"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/40 font-mono text-xs" />
-                    <p className="text-[10px] text-white/20">Recomendado: 800×350px (se vazio, usa desktop)</p>
-                </div>
+            {/* Imagens */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <ImageField
+                    label="Imagem Desktop *"
+                    hint="Recomendado: 1200×400px (proporção 3:1)"
+                    fieldName="image_url"
+                    value={form.image_url}
+                    onChange={v => set('image_url', v)}
+                    required />
+                <ImageField
+                    label="Imagem Mobile"
+                    hint="Recomendado: 800×350px — se vazio, usa a imagem desktop"
+                    fieldName="image_url_mobile"
+                    value={form.image_url_mobile}
+                    onChange={v => set('image_url_mobile', v)} />
             </div>
 
+            {/* Link */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="md:col-span-2 space-y-1">
                     <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest">Link ao Clicar</label>
@@ -97,7 +176,8 @@ function BannerForm({ initial, onSave, onCancel, loading }) {
                 </div>
             </div>
 
-            <div className="flex items-center gap-3 pt-2">
+            {/* Actions */}
+            <div className="flex items-center gap-3 pt-1">
                 <button onClick={() => onSave(form)} disabled={loading || !form.image_url}
                     className="flex-1 py-3 bg-primary text-black font-black text-sm rounded-xl hover:bg-primary/90 transition-all disabled:opacity-40 flex items-center justify-center gap-2">
                     {loading ? <RefreshCw size={15} className="animate-spin" /> : <Save size={15} />}
