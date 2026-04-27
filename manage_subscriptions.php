@@ -7,12 +7,14 @@ header('Content-Type: application/json');
 
 if (!isLoggedIn()) { echo json_encode(['success' => false, 'error' => 'Não autorizado']); exit; }
 
-$headers   = getallheaders();
-$csrfToken = $headers['X-CSRF-Token'] ?? ($headers['x-csrf-token'] ?? '');
-check_csrf($csrfToken);
-
 $userId = $_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
+
+if ($method === 'POST') {
+    $headers   = getallheaders();
+    $csrfToken = $headers['X-CSRF-Token'] ?? ($headers['x-csrf-token'] ?? '');
+    check_csrf($csrfToken);
+}
 $input  = json_decode(file_get_contents('php://input'), true) ?? [];
 $action = $input['action'] ?? ($_GET['action'] ?? '');
 

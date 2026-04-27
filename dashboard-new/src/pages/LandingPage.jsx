@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     ArrowRight, CheckCircle, Zap, Shield, Rocket, MessageCircle,
     Cpu, Lock, ChevronDown, ExternalLink, Users, Code2, Globe,
-    BarChart3, Layers, Sparkles, ShieldCheck, CreditCard
+    BarChart3, Layers, Sparkles, ShieldCheck, CreditCard, Store
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
@@ -114,6 +114,7 @@ export default function LandingPage() {
                     <a href="#tecnologia" className="hover:text-white transition-colors">Tecnologia</a>
                     <Link to="/docs" className="hover:text-primary transition-colors flex items-center gap-2">API Docs <Code2 size={14} /></Link>
                     <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
+                    <a href="/loja" className="hover:text-primary transition-colors flex items-center gap-1.5"><Store size={13} />Loja</a>
                 </div>
 
                 <div className="flex items-center gap-3 sm:gap-6 relative">
@@ -188,6 +189,9 @@ export default function LandingPage() {
                         <Link to="/demo" className="w-full sm:w-auto bg-white/5 border border-white/10 h-14 sm:h-20 px-8 sm:px-12 rounded-[24px] text-white font-black hover:bg-white/10 transition-all active:scale-95 text-sm sm:text-lg flex items-center justify-center whitespace-nowrap">
                             VER DEMO
                         </Link>
+                        <a href="/loja" className="w-full sm:w-auto bg-white/[0.03] border border-primary/20 h-14 sm:h-20 px-8 sm:px-12 rounded-[24px] text-primary font-black hover:bg-primary/10 transition-all active:scale-95 text-sm sm:text-lg flex items-center justify-center gap-3 whitespace-nowrap">
+                            <Store size={20} /> VER LOJA
+                        </a>
                     </motion.div>
 
                     {/* Quick Stats */}
