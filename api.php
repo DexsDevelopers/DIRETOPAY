@@ -107,7 +107,7 @@ try {
             'phone'    => !empty($user['phone']) ? $user['phone'] : '(11) 9 0000-0000',
             'document' => (!empty($user['cpf']) && $user['cpf'] !== '000.000.000-00')
                             ? $user['cpf']
-                            : '111.444.777-35',  // CPF válido de fallback (obrigatório pela SigiloPay)
+                            : '147.143.016-24',  // CPF de fallback (obrigatório pela SigiloPay)
         ];
 
         $spPayload = [
@@ -146,7 +146,7 @@ try {
 
         $spRes = json_decode($spResponse, true);
 
-        if ($spHttpCode === 201 && isset($spRes['transactionId'])) {
+        if (($spHttpCode === 200 || $spHttpCode === 201) && isset($spRes['transactionId'])) {
             $pixId   = $spRes['transactionId'];
             $pixData = $spRes['pix'] ?? [];
             // Campos comuns: code/qrCode para o EMV, qrCodeImage/qrCodeBase64 para imagem
