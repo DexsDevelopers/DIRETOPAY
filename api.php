@@ -53,17 +53,21 @@ try {
     $getSetting = function(string $key) use ($pdo): string {
         $s = $pdo->prepare("SELECT `value` FROM settings WHERE `key` = ?");
         $s->execute([$key]);
-        return (string)($s->fetchColumn() ?: '');
+        $val = $s->fetchColumn();
+        return ($val === false) ? '' : (string)$val;  // não usa ?: para não tratar '0' como vazio
     };
 
-    $pixgoEnabled    = (int)($getSetting('pixgo_enabled') ?: 1);
+    $pixgoRaw        = $getSetting('pixgo_enabled');
+    $pixgoEnabled    = ($pixgoRaw === '') ? 1 : (int)$pixgoRaw;  // default 1 se não configurado
+
     $sigiloEnabled   = $getSetting('sigilopay_enabled') === '1';
     $sigiloPublicKey = $getSetting('sigilopay_public_key');
     $sigiloSecretKey = $getSetting('sigilopay_secret_key');
 
-    // Decide qual gateway usar
-    $usePixGo    = ($pixgoEnabled === 1);
+    $usePixGo     = ($pixgoEnabled === 1);
     $useSigiloPay = ($sigiloEnabled && $sigiloPublicKey && $sigiloSecretKey);
+
+    write_log('info', "Gateway select: pixgo_raw=$pixgoRaw usePixGo=$usePixGo sigiloEnabled=$sigiloEnabled useSigiloPay=$useSigiloPay");
 
     if (!$usePixGo && !$useSigiloPay) {
         throw new Exception('Nenhum gateway de pagamento ativo. Contate o administrador.', 503);
