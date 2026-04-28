@@ -78,6 +78,9 @@ export default function AdminPage() {
     const [cardExtraFee, setCardExtraFee] = useState(0);
     const [cardFeesSaving, setCardFeesSaving] = useState(false);
 
+    const [pixgoEnabled, setPixgoEnabled] = useState(true);
+    const [pixgoToggling, setPixgoToggling] = useState(false);
+
     const [caktoForm, setCaktoForm] = useState({ client_id: '', client_secret: '' });
     const [caktoStatus, setCaktoStatus] = useState(null);
     const [caktoLoading, setCaktoLoading] = useState(false);
@@ -97,6 +100,7 @@ export default function AdminPage() {
                     default_tax: data.stats.default_tax
                 });
                 if (data.card_extra_fee !== undefined) setCardExtraFee(data.card_extra_fee);
+                if (data.pixgo_enabled !== undefined) setPixgoEnabled(data.pixgo_enabled === 1);
                 if (data.cakto) {
                     setCaktoForm(f => ({ ...f, client_id: data.cakto.client_id || '' }));
                     if (data.cakto.webhook_id) {
@@ -257,6 +261,47 @@ export default function AdminPage() {
                             <UserPlus size={18} /> CRIAR USUÁRIO
                         </button>
                     </div>
+                </div>
+            </div>
+
+            {/* ── Gateway Toggle ── */}
+            <div className="bg-white/[0.03] border border-white/8 rounded-3xl p-5">
+                <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-4">Gateways de Pagamento</p>
+                <div className="flex items-center justify-between gap-4 flex-wrap">
+                    {/* PixGo toggle */}
+                    <div className="flex items-center gap-4">
+                        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${pixgoEnabled ? 'bg-primary/10' : 'bg-white/5'}`}>
+                            <Zap size={18} className={pixgoEnabled ? 'text-primary' : 'text-white/20'} />
+                        </div>
+                        <div>
+                            <p className="font-black text-sm">PixGo <span className={`text-[10px] font-black rounded-full px-2 py-0.5 ml-1 ${pixgoEnabled ? 'bg-primary/10 text-primary' : 'bg-white/5 text-white/30'}`}>{pixgoEnabled ? 'ATIVO' : 'INATIVO'}</span></p>
+                            <p className="text-[11px] text-white/30">Gateway PIX principal da plataforma</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={async () => {
+                            setPixgoToggling(true);
+                            const next = !pixgoEnabled;
+                            try {
+                                const fd = new FormData();
+                                fd.append('action', 'toggle_pixgo');
+                                fd.append('enabled', next ? '1' : '0');
+                                const res = await fetch('../admin_actions.php', { method: 'POST', body: fd });
+                                const d = await res.json();
+                                if (d.success) setPixgoEnabled(next);
+                            } catch {}
+                            finally { setPixgoToggling(false); }
+                        }}
+                        disabled={pixgoToggling}
+                        className={`px-5 py-2.5 rounded-2xl font-black text-sm flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50 ${
+                            pixgoEnabled
+                                ? 'bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20'
+                                : 'bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20'
+                        }`}
+                    >
+                        {pixgoToggling ? <RefreshCw size={14} className="animate-spin"/> : <Zap size={14}/>}
+                        {pixgoEnabled ? 'Desativar PixGo' : 'Ativar PixGo'}
+                    </button>
                 </div>
             </div>
 

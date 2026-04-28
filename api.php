@@ -49,6 +49,13 @@ try {
         throw new Exception('Não autorizado.', 401);
     }
 
+    // Verifica se o gateway PixGo está ativado
+    $pixgoEnabledStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'pixgo_enabled'");
+    $pixgoEnabled = $pixgoEnabledStmt ? (int)$pixgoEnabledStmt->fetchColumn() : 1;
+    if ($pixgoEnabled === 0) {
+        throw new Exception('Gateway PIX temporariamente desativado pelo administrador.', 503);
+    }
+
     $inputRaw = file_get_contents('php://input');
     $input = json_decode($inputRaw, true);
     

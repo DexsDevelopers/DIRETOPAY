@@ -276,6 +276,13 @@ try {
             echo json_encode(['success' => true, 'med' => $newMed]);
             break;
 
+        case 'toggle_pixgo':
+            $enabled = (int)($data['enabled'] ?? 0);
+            $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES ('pixgo_enabled',?) ON DUPLICATE KEY UPDATE `value`=?")
+                ->execute([$enabled, $enabled]);
+            echo json_encode(['success' => true, 'pixgo_enabled' => $enabled]);
+            break;
+
         case 'setup_cakto_webhook':
             $clientId     = trim($data['client_id'] ?? '');
             $clientSecret = trim($data['client_secret'] ?? '');

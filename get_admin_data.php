@@ -170,6 +170,7 @@ echo json_encode([
     'all_transactions' => $allTransactions,
     'apis'             => $apis,
     'card_extra_fee'   => $cardExtraFee,
+    'pixgo_enabled'    => (int)($pdo->query("SELECT `value` FROM settings WHERE `key`='pixgo_enabled'")->fetchColumn() ?? 1),
     'cakto'            => [
         'client_id'      => $pdo->query("SELECT `value` FROM settings WHERE `key`='cakto_client_id'")->fetchColumn() ?: '',
         'webhook_id'     => $pdo->query("SELECT `value` FROM settings WHERE `key`='cakto_webhook_id'")->fetchColumn() ?: '',
