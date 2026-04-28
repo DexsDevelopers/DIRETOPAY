@@ -1,6 +1,8 @@
 config.php
+setup_deploy.py
 logs/
 .DS_Store
 node_modules/
 .env
 *.log
+deploy.log

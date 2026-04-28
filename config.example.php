@@ -9,6 +9,9 @@ define('DB_USER', 'seu_usuario');
 define('DB_PASS', 'sua_senha');
 define('DB_NAME', 'seu_banco');
 
+// Auto-Deploy GitHub Webhook
+define('DEPLOY_SECRET', 'sua_chave_secreta_deploy'); // Gere com: openssl rand -hex 20
+
 // Configurações do PixGo.org
 define('PIXGO_API_KEY', 'sua_chave_pixgo');
 define('PIXGO_PROJECT_ID', ''); 
