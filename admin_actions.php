@@ -276,6 +276,76 @@ try {
             echo json_encode(['success' => true, 'med' => $newMed]);
             break;
 
+        case 'setup_cakto_webhook':
+            $clientId     = trim($data['client_id'] ?? '');
+            $clientSecret = trim($data['client_secret'] ?? '');
+            if (!$clientId || !$clientSecret) {
+                echo json_encode(['success' => false, 'error' => 'Preencha CLIENT ID e CLIENT SECRET']);
+                break;
+            }
+
+            // 1. Get access token from Cakto
+            $ch = curl_init('https://api.cakto.com.br/public_api/token/');
+            curl_setopt_array($ch, [
+                CURLOPT_POST           => 1,
+                CURLOPT_POSTFIELDS     => "client_id=$clientId&client_secret=$clientSecret",
+                CURLOPT_HTTPHEADER     => ['Content-Type: application/x-www-form-urlencoded'],
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT        => 15,
+                CURLOPT_SSL_VERIFYPEER => false,
+            ]);
+            $tokenResult = curl_exec($ch);
+            curl_close($ch);
+
+            $tokenData   = json_decode($tokenResult, true);
+            $accessToken = $tokenData['access_token'] ?? '';
+            if (!$accessToken) {
+                echo json_encode(['success' => false, 'error' => 'Credenciais inválidas: ' . ($tokenData['error'] ?? $tokenResult)]);
+                break;
+            }
+
+            // 2. Save credentials + token in settings
+            $upsert = $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES (?,?) ON DUPLICATE KEY UPDATE `value`=?");
+            $upsert->execute(['cakto_client_id',     $clientId,     $clientId]);
+            $upsert->execute(['cakto_client_secret',  $clientSecret, $clientSecret]);
+            $upsert->execute(['cakto_token',           $accessToken,  $accessToken]);
+            $upsert->execute(['cakto_token_expiry',    (string)(time() + 35000), (string)(time() + 35000)]);
+
+            // 3. Register webhook in Cakto
+            $webhookUrl  = 'https://pixghost.site/cakto_webhook.php';
+            $webhookBody = json_encode([
+                'name'   => 'Ghost Pix - Compra Aprovada',
+                'url'    => $webhookUrl,
+                'events' => ['purchase_approved'],
+                'status' => 'active',
+            ]);
+            $ch = curl_init('https://api.cakto.com.br/public_api/webhook/');
+            curl_setopt_array($ch, [
+                CURLOPT_POST           => 1,
+                CURLOPT_POSTFIELDS     => $webhookBody,
+                CURLOPT_HTTPHEADER     => ['Content-Type: application/json', "Authorization: Bearer $accessToken"],
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT        => 15,
+                CURLOPT_SSL_VERIFYPEER => false,
+            ]);
+            $whResult = curl_exec($ch);
+            curl_close($ch);
+
+            $whData        = json_decode($whResult, true);
+            $webhookId     = $whData['id'] ?? '';
+            $webhookSecret = $whData['fields']['secret'] ?? '';
+
+            if ($webhookId) {
+                $upsert->execute(['cakto_webhook_id',     (string)$webhookId, (string)$webhookId]);
+                $upsert->execute(['cakto_webhook_secret',  $webhookSecret,     $webhookSecret]);
+                echo json_encode(['success' => true, 'webhook_id' => $webhookId, 'webhook_url' => $webhookUrl]);
+            } else {
+                // Credentials valid but webhook registration may have already existed
+                $upsert->execute(['cakto_webhook_id',    '', '']);
+                echo json_encode(['success' => true, 'warning' => 'Credenciais salvas. Webhook: ' . ($whData['detail'] ?? $whResult), 'token_ok' => true]);
+            }
+            break;
+
         default:
             echo json_encode(['success' => false, 'error' => 'Ação desconhecida']);
             break;

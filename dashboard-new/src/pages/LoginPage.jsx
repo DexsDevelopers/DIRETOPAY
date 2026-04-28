@@ -1,7 +1,46 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Lock, Mail, ArrowRight, Shield, ChevronLeft, KeyRound, Check } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Shield, ChevronLeft, KeyRound, Check, Zap, CreditCard, Package, Users, Wallet, Bell, BarChart3, Activity, Globe, MessageCircle, QrCode, ShieldCheck, Webhook } from 'lucide-react';
+
+const LEFT_PILLS = [
+    { Icon: Zap,          label: 'PIX Instantâneo', top: '13%', left: '4%',  delay: 0.1, float: -7 },
+    { Icon: CreditCard,   label: 'Checkout',         top: '26%', left: '9%',  delay: 0.3, float: 8  },
+    { Icon: Package,      label: 'Produtos',          top: '41%', left: '3%',  delay: 0.5, float: -6 },
+    { Icon: Users,        label: 'Afiliados',         top: '56%', left: '7%',  delay: 0.7, float: 9  },
+    { Icon: Wallet,       label: 'Saques',            top: '70%', left: '4%',  delay: 0.9, float: -8 },
+    { Icon: Bell,         label: 'Notificações',      top: '82%', left: '10%', delay: 1.1, float: 7  },
+];
+
+const RIGHT_PILLS = [
+    { Icon: ShieldCheck,  label: 'Anti-fraude',    top: '11%', right: '5%',  delay: 0.2, float: 8  },
+    { Icon: BarChart3,    label: 'Relatórios',     top: '24%', right: '9%',  delay: 0.4, float: -7 },
+    { Icon: QrCode,       label: 'QR Code PIX',    top: '38%', right: '3%',  delay: 0.6, float: 9  },
+    { Icon: Globe,        label: 'Multi-domínio',  top: '52%', right: '7%',  delay: 0.8, float: -6 },
+    { Icon: Activity,     label: 'Tempo Real',     top: '65%', right: '4%',  delay: 1.0, float: 8  },
+    { Icon: MessageCircle,label: 'Chat Suporte',   top: '78%', right: '8%',  delay: 1.2, float: -9 },
+];
+
+function FloatingPill({ Icon, label, delay, float: floatY }) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay, duration: 0.5, ease: 'easeOut' }}
+        >
+            <motion.div
+                animate={{ y: [0, floatY, 0] }}
+                transition={{ delay: delay + 0.5, duration: 3.5 + delay * 0.4, repeat: Infinity, ease: 'easeInOut' }}
+                className="flex items-center gap-2.5 bg-white/[0.04] border border-purple-500/20 hover:border-purple-400/40 rounded-full px-4 py-2.5 backdrop-blur-sm shadow-[0_4px_24px_rgba(168,85,247,0.12)] hover:shadow-[0_4px_28px_rgba(168,85,247,0.22)] transition-all whitespace-nowrap"
+            >
+                <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
+                    <Icon size={12} className="text-primary" />
+                </div>
+                <span className="text-white/55 text-xs font-bold">{label}</span>
+            </motion.div>
+        </motion.div>
+    );
+}
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -87,6 +126,47 @@ export default function LoginPage() {
             {/* Background Ambience */}
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] -z-10 animate-pulse" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px] -z-10" />
+            <div className="absolute top-[40%] left-[20%] w-[20%] h-[20%] bg-purple-700/5 rounded-full blur-[80px] -z-10" />
+            <div className="absolute top-[30%] right-[20%] w-[20%] h-[20%] bg-violet-600/5 rounded-full blur-[80px] -z-10" />
+
+            {/* Floating Pills — left side (hidden on small screens) */}
+            <div className="hidden lg:block pointer-events-none">
+                {LEFT_PILLS.map((pill, i) => (
+                    <div key={i} className="absolute" style={{ top: pill.top, left: pill.left }}>
+                        <FloatingPill {...pill} />
+                    </div>
+                ))}
+            </div>
+
+            {/* Floating Pills — right side (hidden on small screens) */}
+            <div className="hidden lg:block pointer-events-none">
+                {RIGHT_PILLS.map((pill, i) => (
+                    <div key={i} className="absolute" style={{ top: pill.top, right: pill.right }}>
+                        <FloatingPill {...pill} />
+                    </div>
+                ))}
+            </div>
+
+            {/* Decorative SVG lines converging to center */}
+            <svg className="hidden lg:block absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="rgb(168,85,247)" stopOpacity="0" />
+                        <stop offset="50%" stopColor="rgb(168,85,247)" stopOpacity="0.15" />
+                        <stop offset="100%" stopColor="rgb(168,85,247)" stopOpacity="0" />
+                    </linearGradient>
+                </defs>
+                <line x1="18%" y1="13%" x2="50%" y2="50%" stroke="url(#lineGrad)" strokeWidth="0.8" />
+                <line x1="20%" y1="26%" x2="50%" y2="50%" stroke="url(#lineGrad)" strokeWidth="0.8" />
+                <line x1="16%" y1="41%" x2="50%" y2="50%" stroke="url(#lineGrad)" strokeWidth="0.8" />
+                <line x1="19%" y1="56%" x2="50%" y2="50%" stroke="url(#lineGrad)" strokeWidth="0.8" />
+                <line x1="17%" y1="70%" x2="50%" y2="50%" stroke="url(#lineGrad)" strokeWidth="0.8" />
+                <line x1="82%" y1="11%" x2="50%" y2="50%" stroke="url(#lineGrad)" strokeWidth="0.8" />
+                <line x1="80%" y1="24%" x2="50%" y2="50%" stroke="url(#lineGrad)" strokeWidth="0.8" />
+                <line x1="84%" y1="38%" x2="50%" y2="50%" stroke="url(#lineGrad)" strokeWidth="0.8" />
+                <line x1="81%" y1="52%" x2="50%" y2="50%" stroke="url(#lineGrad)" strokeWidth="0.8" />
+                <line x1="83%" y1="65%" x2="50%" y2="50%" stroke="url(#lineGrad)" strokeWidth="0.8" />
+            </svg>
 
             {/* Header / Back Button */}
             <div className="p-8">

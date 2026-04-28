@@ -28,7 +28,10 @@ import {
     Activity,
     CalendarDays,
     CalendarRange,
-    BarChart3
+    BarChart3,
+    Plug,
+    Link2,
+    ShoppingCart
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -75,6 +78,11 @@ export default function AdminPage() {
     const [cardExtraFee, setCardExtraFee] = useState(0);
     const [cardFeesSaving, setCardFeesSaving] = useState(false);
 
+    const [caktoForm, setCaktoForm] = useState({ client_id: '', client_secret: '' });
+    const [caktoStatus, setCaktoStatus] = useState(null);
+    const [caktoLoading, setCaktoLoading] = useState(false);
+    const [showCaktoSecret, setShowCaktoSecret] = useState(false);
+
     const [showDemoModal, setShowDemoModal]     = useState(false);
     const [showNormalModal, setShowNormalModal] = useState(false);
 
@@ -89,6 +97,12 @@ export default function AdminPage() {
                     default_tax: data.stats.default_tax
                 });
                 if (data.card_extra_fee !== undefined) setCardExtraFee(data.card_extra_fee);
+                if (data.cakto) {
+                    setCaktoForm(f => ({ ...f, client_id: data.cakto.client_id || '' }));
+                    if (data.cakto.webhook_id) {
+                        setCaktoStatus({ ok: true, webhook_id: data.cakto.webhook_id, token_expiry: data.cakto.token_expiry });
+                    }
+                }
             } else {
                 setError(data.error || 'Erro ao carregar dados admin');
             }
@@ -242,6 +256,99 @@ export default function AdminPage() {
                         >
                             <UserPlus size={18} /> CRIAR USUÁRIO
                         </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* ── Cakto Integration ── */}
+            <div className="bg-white/[0.03] border border-white/8 rounded-3xl p-6">
+                <div className="flex items-center gap-3 mb-5">
+                    <div className="w-10 h-10 bg-green-500/10 rounded-2xl flex items-center justify-center">
+                        <ShoppingCart size={20} className="text-green-400" />
+                    </div>
+                    <div>
+                        <h2 className="font-black text-base flex items-center gap-2">
+                            Integração Cakto
+                            {caktoStatus?.ok && <span className="text-[10px] bg-green-500/10 text-green-400 border border-green-500/20 rounded-full px-2 py-0.5 font-black">✓ ATIVO</span>}
+                        </h2>
+                        <p className="text-[11px] text-white/30 font-medium">Recebe pagamentos aprovados na Cakto automaticamente</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label className="text-[10px] font-black text-white/30 uppercase tracking-widest block mb-1.5">CLIENT ID</label>
+                        <input
+                            type="text"
+                            value={caktoForm.client_id}
+                            onChange={e => setCaktoForm(f => ({ ...f, client_id: e.target.value }))}
+                            placeholder="GMNzedIlktgq..."
+                            className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-4 font-mono text-sm focus:outline-none focus:border-green-500/40 text-white/80"
+                        />
+                    </div>
+                    <div>
+                        <label className="text-[10px] font-black text-white/30 uppercase tracking-widest block mb-1.5">CLIENT SECRET</label>
+                        <div className="relative">
+                            <input
+                                type={showCaktoSecret ? 'text' : 'password'}
+                                value={caktoForm.client_secret}
+                                onChange={e => setCaktoForm(f => ({ ...f, client_secret: e.target.value }))}
+                                placeholder="IJp9k7ypp..."
+                                className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-4 pr-10 font-mono text-sm focus:outline-none focus:border-green-500/40 text-white/80"
+                            />
+                            <button type="button" onClick={() => setShowCaktoSecret(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60">
+                                {showCaktoSecret ? <EyeOff size={16}/> : <Eye size={16}/>}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {caktoStatus && (
+                    <div className={`mb-4 px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-2 ${
+                        caktoStatus.ok
+                            ? 'bg-green-500/10 border border-green-500/20 text-green-400'
+                            : 'bg-red-500/10 border border-red-500/20 text-red-400'
+                    }`}>
+                        {caktoStatus.ok ? <CheckCircle size={14}/> : <XCircle size={14}/>}
+                        {caktoStatus.ok
+                            ? `Webhook registrado (ID: ${caktoStatus.webhook_id}) — URL: https://pixghost.site/cakto_webhook.php`
+                            : caktoStatus.error}
+                    </div>
+                )}
+
+                <div className="flex flex-wrap gap-3">
+                    <button
+                        onClick={async () => {
+                            if (!caktoForm.client_id || !caktoForm.client_secret) {
+                                setCaktoStatus({ ok: false, error: 'Preencha CLIENT ID e CLIENT SECRET' });
+                                return;
+                            }
+                            setCaktoLoading(true);
+                            setCaktoStatus(null);
+                            try {
+                                const fd = new FormData();
+                                fd.append('action', 'setup_cakto_webhook');
+                                fd.append('client_id', caktoForm.client_id);
+                                fd.append('client_secret', caktoForm.client_secret);
+                                const res = await fetch('../admin_actions.php', { method: 'POST', body: fd });
+                                const d = await res.json();
+                                if (d.success) {
+                                    setCaktoStatus({ ok: true, webhook_id: d.webhook_id || '(existente)', warning: d.warning });
+                                } else {
+                                    setCaktoStatus({ ok: false, error: d.error || 'Erro desconhecido' });
+                                }
+                            } catch { setCaktoStatus({ ok: false, error: 'Erro de conexão' }); }
+                            finally { setCaktoLoading(false); }
+                        }}
+                        disabled={caktoLoading}
+                        className="bg-green-500 text-black px-6 py-3 rounded-2xl font-black text-sm flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all disabled:opacity-50"
+                    >
+                        {caktoLoading ? <RefreshCw size={16} className="animate-spin"/> : <Plug size={16}/>}
+                        {caktoLoading ? 'Conectando...' : 'Salvar e Registrar Webhook'}
+                    </button>
+                    <div className="flex items-center gap-2 text-[11px] text-white/30 font-medium">
+                        <Link2 size={12}/>
+                        Webhook: <span className="text-white/50 font-mono">pixghost.site/cakto_webhook.php</span>
                     </div>
                 </div>
             </div>

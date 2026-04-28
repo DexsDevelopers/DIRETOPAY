@@ -169,5 +169,10 @@ echo json_encode([
     'withdrawals'      => $withdrawals,
     'all_transactions' => $allTransactions,
     'apis'             => $apis,
-    'card_extra_fee'   => $cardExtraFee
+    'card_extra_fee'   => $cardExtraFee,
+    'cakto'            => [
+        'client_id'      => $pdo->query("SELECT `value` FROM settings WHERE `key`='cakto_client_id'")->fetchColumn() ?: '',
+        'webhook_id'     => $pdo->query("SELECT `value` FROM settings WHERE `key`='cakto_webhook_id'")->fetchColumn() ?: '',
+        'token_expiry'   => (int)($pdo->query("SELECT `value` FROM settings WHERE `key`='cakto_token_expiry'")->fetchColumn() ?: 0),
+    ]
 ]);
