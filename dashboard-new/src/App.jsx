@@ -50,6 +50,7 @@ import EntregaPage from './pages/EntregaPage';
 import ChatPage from './pages/ChatPage';
 import AdminChatsPage from './pages/AdminChatsPage';
 import AdminSaquesPage from './pages/AdminSaquesPage';
+import AdminGatewaysPage from './pages/AdminGatewaysPage';
 import BuyerChatPage from './pages/BuyerChatPage';
 import AnnouncementModal from './components/AnnouncementModal';
 
@@ -338,6 +339,16 @@ export default function App() {
             <AdminRoute userData={userData}>
               <DashboardLayout {...commonProps} activeTab="apis">
                 <AdminApisPage />
+              </DashboardLayout>
+            </AdminRoute>
+          </PrivateRoute>
+        } />
+
+        <Route path="/admin/gateways" element={
+          <PrivateRoute>
+            <AdminRoute userData={userData}>
+              <DashboardLayout {...commonProps} activeTab="admin-gateways">
+                <AdminGatewaysPage />
               </DashboardLayout>
             </AdminRoute>
           </PrivateRoute>

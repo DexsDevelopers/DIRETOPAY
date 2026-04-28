@@ -24,6 +24,7 @@ import {
     Megaphone,
     MessageCircle,
     RefreshCw,
+    Cpu,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../lib/utils';
@@ -111,6 +112,7 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
         { id: 'admin-banners',  icon: <Image size={18} />,    label: 'Banners da Loja', path: '/admin/banners',  accent: true },
         { id: 'admin-anuncios', icon: <Megaphone size={18} />, label: 'Anúncios', path: '/admin/anuncios', accent: true },
         { id: 'admin-chats', icon: <MessageCircle size={18} />, label: 'Chats', path: '/admin/chats', accent: true },
+        { id: 'admin-gateways', icon: <Cpu size={18} />, label: 'Gateways', path: '/admin/gateways', accent: true },
         { id: 'admin-saques', icon: <Wallet size={18} />, label: 'Saques', path: '/admin/saques', accent: true },
     ];
 
