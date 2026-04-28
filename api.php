@@ -101,14 +101,19 @@ try {
 
     // ── GATEWAY: SigiloPay ───────────────────────────────────────────
     if ($useSigiloPay && !$usePixGo) {
+        $clientData = [
+            'name'  => !empty($user['full_name']) ? $user['full_name'] : 'Cliente',
+            'email' => $user['email'] ?? '',
+            'phone' => !empty($user['phone']) ? $user['phone'] : '(11) 9 0000-0000',  // obrigatório
+        ];
+        if (!empty($user['cpf']) && $user['cpf'] !== '000.000.000-00') {
+            $clientData['document'] = $user['cpf'];
+        }
+
         $spPayload = [
-            'identifier' => $externalId,
-            'amount'     => $amount,
-            'client'     => [
-                'name'     => $user['full_name'] ?? 'Cliente Ghost Pix',
-                'email'    => $user['email'] ?? '',
-                'document' => $user['cpf'] ?? '000.000.000-00',
-            ],
+            'identifier'  => $externalId,
+            'amount'      => (float)$amount,
+            'client'      => $clientData,
             'callbackUrl' => getFullUrl('sigilopay_webhook.php'),
         ];
 
@@ -171,8 +176,9 @@ try {
 
             Response::success(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
         } else {
-            $errMsg = $spRes['message'] ?? ($spRes['errorCode'] ?? 'Erro de comunicação com SigiloPay');
-            write_log('error', "SigiloPay FALHA: HTTP=$spHttpCode | $errMsg | $spResponse");
+            $errMsg     = $spRes['message'] ?? ($spRes['errorCode'] ?? 'Erro de comunicação com SigiloPay');
+            $errDetails = isset($spRes['details']) ? json_encode($spRes['details']) : '';
+            write_log('error', "SigiloPay FALHA: HTTP=$spHttpCode | $errMsg | details=$errDetails | payload=" . json_encode($spPayload) . " | response=$spResponse");
             throw new Exception("Erro SigiloPay: $errMsg (HTTP $spHttpCode)");
         }
     }
