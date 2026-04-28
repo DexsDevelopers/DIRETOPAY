@@ -149,9 +149,13 @@ try {
         if (($spHttpCode === 200 || $spHttpCode === 201) && isset($spRes['transactionId'])) {
             $pixId   = $spRes['transactionId'];
             $pixData = $spRes['pix'] ?? [];
-            // Campos comuns: code/qrCode para o EMV, qrCodeImage/qrCodeBase64 para imagem
-            $pixCode = $pixData['code'] ?? ($pixData['qrCode'] ?? ($pixData['emv'] ?? ''));
-            $qrImage = $pixData['qrCodeImage'] ?? ($pixData['qrCodeBase64'] ?? '');
+            // Tenta vários campos possíveis para o EMV (copia e cola)
+            $pixCode = $pixData['code'] ?? ($pixData['qrCode'] ?? ($pixData['emv'] ?? ($pixData['brCode'] ?? '')));
+            // Tenta vários campos para a imagem do QR; gera via qrserver se vier vazio
+            $qrImage = $pixData['qrCodeImage'] ?? ($pixData['qrCodeBase64'] ?? ($pixData['qrCodeUrl'] ?? ($pixData['imageUrl'] ?? '')));
+            if (empty($qrImage) && !empty($pixCode)) {
+                $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($pixCode);
+            }
 
             // Salva token do webhook SigiloPay (primeiro uso)
             if (!empty($spRes['token'])) {
