@@ -58,8 +58,10 @@ $user = $stmt->fetch();
 if (!$user) {
     // Auto-create account
     $randomPass = password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT);
-    $stmt = $pdo->prepare("INSERT INTO users (email, password, full_name, status, commission_rate) VALUES (?, ?, ?, 'approved', 5.00)");
-    $stmt->execute([$email, $randomPass, $name]);
+    $defTaxStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'default_user_tax'");
+    $defaultTax = (float)($defTaxStmt->fetchColumn() ?: '5.0');
+    $stmt = $pdo->prepare("INSERT INTO users (email, password, full_name, status, commission_rate) VALUES (?, ?, ?, 'approved', ?)");
+    $stmt->execute([$email, $randomPass, $name, $defaultTax]);
     $userId = $pdo->lastInsertId();
 } else {
     if ($user['status'] === 'blocked') {

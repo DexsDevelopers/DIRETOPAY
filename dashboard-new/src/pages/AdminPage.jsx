@@ -165,43 +165,68 @@ export default function AdminPage() {
                     </div>
 
                     {/* Config Global Taxas */}
-                    <div className="glass p-5 rounded-3xl border-white/10 flex items-center gap-6">
-                        <div className="flex items-center gap-4 border-r border-white/10 pr-6">
-                            <div>
-                                <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Afiliados</p>
-                                <div className="flex items-center gap-1">
+                    <div className="glass p-5 rounded-3xl border-white/10 flex flex-col gap-4 min-w-[320px]">
+                        <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Configuração de Taxas</p>
+
+                        {/* Breakdown de custos */}
+                        <div className="bg-white/[0.03] border border-white/8 rounded-2xl p-3 space-y-1.5 text-[11px]">
+                            <p className="text-[9px] font-black text-white/20 uppercase tracking-widest mb-2">Custos da plataforma</p>
+                            <div className="flex justify-between items-center">
+                                <span className="text-white/40 font-semibold">Gateway PixGo (recebimento)</span>
+                                <span className="text-yellow-400 font-black">2,00%</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-white/40 font-semibold">BrSwap (DEPIX → cripto)</span>
+                                <span className="text-orange-400 font-black">2,00%</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-white/40 font-semibold">Saque Binance PIX</span>
+                                <span className="text-blue-400 font-black">R$ 3,50 / saque</span>
+                            </div>
+                            <div className="border-t border-white/8 pt-1.5 flex justify-between items-center">
+                                <span className="text-white/60 font-bold">Seu lucro (taxa padrão)</span>
+                                <span className="text-primary font-black">{globalSettings.default_tax}%</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-white/40 font-semibold">Total cobrado do vendedor</span>
+                                <span className="text-white font-black">{(2 + Number(globalSettings.default_tax)).toFixed(2)}% + R$3,50</span>
+                            </div>
+                        </div>
+
+                        <div className="flex items-end gap-4">
+                            <div className="flex-1">
+                                <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-1">Afiliados</p>
+                                <div className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2">
                                     <input
                                         type="number"
                                         value={globalSettings.affiliate_rate}
                                         onChange={e => setGlobalSettings({ ...globalSettings, affiliate_rate: e.target.value })}
-                                        className="bg-transparent border-none text-white font-bold text-lg w-12 focus:outline-none"
+                                        className="bg-transparent border-none text-white font-bold text-base w-12 focus:outline-none"
                                     />
                                     <span className="text-white/40 text-sm">%</span>
                                 </div>
                             </div>
-                        </div>
-                        <div className="flex items-center gap-4 pr-4">
-                            <div>
-                                <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Taxa Padrão</p>
-                                <div className="flex items-center gap-1">
+                            <div className="flex-1">
+                                <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-1">Meu Lucro (padrão)</p>
+                                <div className="flex items-center gap-1 bg-primary/10 border border-primary/30 rounded-xl px-3 py-2">
                                     <input
                                         type="number"
                                         step="0.1"
                                         value={globalSettings.default_tax}
                                         onChange={e => setGlobalSettings({ ...globalSettings, default_tax: e.target.value })}
-                                        className="bg-transparent border-none text-white font-bold text-lg w-12 focus:outline-none"
+                                        className="bg-transparent border-none text-primary font-bold text-base w-12 focus:outline-none"
                                     />
-                                    <span className="text-white/40 text-sm">%</span>
+                                    <span className="text-primary/60 text-sm">%</span>
                                 </div>
                             </div>
+                            <button
+                                onClick={() => handleAction('update_global_settings', globalSettings)}
+                                disabled={actionLoading === 'update_global_settings-global'}
+                                className="bg-primary text-black px-4 py-2 rounded-xl font-black text-sm hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-1.5 whitespace-nowrap"
+                            >
+                                <Save size={14} /> Salvar
+                            </button>
                         </div>
-                        <button
-                            onClick={() => handleAction('update_global_settings', globalSettings)}
-                            disabled={actionLoading === 'update_global_settings-global'}
-                            className="bg-primary text-black p-2 rounded-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
-                        >
-                            <Save size={20} />
-                        </button>
                     </div>
 
                     <div className="flex flex-wrap gap-3">

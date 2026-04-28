@@ -44,7 +44,7 @@ try {
             $pix_key = strip_tags(trim($data['pix_key'] ?? 'demo@pix.com'));
             
             $defTaxStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'default_user_tax'");
-            $defaultTax = (float)($defTaxStmt->fetchColumn() ?: '4.0');
+            $defaultTax = (float)($defTaxStmt->fetchColumn() ?: '5.0');
 
             $stmt = $pdo->prepare("INSERT INTO users (email, password, full_name, pix_key, balance, status, referral_token, is_demo, commission_rate) VALUES (?, ?, ?, ?, ?, 'approved', ?, 1, ?)");
             $stmt->execute([$email, $password, $full_name, $pix_key, $balance, bin2hex(random_bytes(8)), $defaultTax]);
@@ -60,7 +60,7 @@ try {
             $status    = in_array($data['status'] ?? 'pending', ['pending','approved']) ? $data['status'] : 'pending';
 
             $defTaxStmt  = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'default_user_tax'");
-            $defaultTax  = (float)($defTaxStmt->fetchColumn() ?: '4.0');
+            $defaultTax  = (float)($defTaxStmt->fetchColumn() ?: '5.0');
 
             $stmt = $pdo->prepare("INSERT INTO users (email, password, full_name, pix_key, status, referral_token, is_demo, commission_rate) VALUES (?, ?, ?, ?, ?, ?, 0, ?)");
             $stmt->execute([$email, $password, $full_name, $pix_key, $status, bin2hex(random_bytes(8)), $defaultTax]);

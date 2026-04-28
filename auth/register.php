@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Buscar taxa padrão
     $defTaxStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'default_user_tax'");
-    $defaultTax = (float)($defTaxStmt->fetchColumn() ?: '4.0');
+    $defaultTax = (float)($defTaxStmt->fetchColumn() ?: '5.0');
 
     try {
         $stmt = $pdo->prepare("INSERT INTO users (email, password, full_name, pix_key, status, affiliate_id, referral_token, commission_rate) VALUES (?, ?, ?, ?, 'approved', ?, ?, ?)");

@@ -62,15 +62,73 @@ input,select{font-family:inherit;outline:none;border:none}
 /* ─────────────────────────────────────────────
    BANNER SLIDER
 ───────────────────────────────────────────── */
-.slider-wrap{position:relative;overflow:hidden;background:var(--card2);margin-bottom:0}
+.slider-wrap{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg,#0e0e18,#131326);
+  margin:20px auto;
+  max-width:1160px;
+  border-radius:24px;
+  box-shadow:
+    0 0 0 1px rgba(168,85,247,.2),
+    0 8px 40px rgba(168,85,247,.12),
+    0 32px 80px rgba(0,0,0,.55);
+}
+.slider-wrap::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:24px;
+  padding:1px;
+  background:linear-gradient(135deg,rgba(168,85,247,.45),rgba(109,40,217,.1),rgba(168,85,247,.3));
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  pointer-events:none;
+  z-index:5;
+}
 .slider-track{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1);will-change:transform}
 .slide{min-width:100%;position:relative;cursor:pointer;user-select:none}
 .slide a{display:block;width:100%}
-.slide img{width:100%;aspect-ratio:21/7;object-fit:cover;display:block}
-@media(max-width:480px){.slide img{aspect-ratio:16/7}}
-.slide-placeholder{width:100%;aspect-ratio:21/7;background:linear-gradient(135deg,#0e0e16,#1a1a28);display:flex;align-items:center;justify-content:center}
-@media(max-width:480px){.slide-placeholder{aspect-ratio:16/7}}
+.slide img{width:100%;height:360px;object-fit:scale-down;display:block;background:#0e0e16}
+.slide-placeholder{width:100%;aspect-ratio:3/1;background:linear-gradient(135deg,#0e0e16,#1a1a28);display:flex;align-items:center;justify-content:center}
 .slide-placeholder svg{opacity:.08}
+
+/* Mobile: banner card */
+@media(max-width:600px){
+  .slider-wrap{
+    margin:0;
+    border-radius:18px;
+    box-shadow:0 0 0 1px rgba(168,85,247,.22),
+               0 8px 32px rgba(168,85,247,.18),
+               0 24px 60px rgba(0,0,0,.5);
+    background:linear-gradient(135deg,#0e0e18,#131326);
+  }
+  .slider-wrap::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    border-radius:18px;
+    padding:1.5px;
+    background:linear-gradient(135deg,rgba(168,85,247,.4),rgba(109,40,217,.15),rgba(168,85,247,.35));
+    -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    pointer-events:none;
+    z-index:5;
+  }
+  .slide img{
+    width:100%;
+    height:180px;
+    object-fit:scale-down;
+    background:transparent;
+    display:block;
+    padding:10px 14px;
+  }
+  /* Se a imagem for landscape (proporção certa), ela preenche bem o card */
+  .slider-dots{padding:6px 0 10px}
+  .slider-arrow{display:none}
+}
 
 /* Dots */
 .slider-dots{display:flex;justify-content:center;gap:6px;padding:10px 0}
@@ -238,6 +296,7 @@ footer a{color:var(--primary)}
 </nav>
 
 <!-- ── Banner Slider ── -->
+<div style="padding:0 20px">
 <div class="slider-wrap" id="slider-wrap" style="display:none">
   <div class="slider-track" id="slider-track"></div>
   <button class="slider-arrow prev" id="slider-prev" aria-label="Anterior">
@@ -248,6 +307,7 @@ footer a{color:var(--primary)}
   </button>
   <div class="slider-dots" id="slider-dots"></div>
 </div>
+</div><!-- /slider padding -->
 
 <!-- ── Trust Bar ── -->
 <div class="trust">
@@ -377,7 +437,7 @@ let state = { search:'', category:'Todos', sort:'popular', page:1, total:0, perP
         slide.innerHTML = inner +
           `<picture>` +
           (mobileSrc !== desktopSrc ? `<source media="(max-width:600px)" srcset="${escHtml(mobileSrc)}">` : '') +
-          `<img src="${escHtml(desktopSrc)}" alt="${escHtml(b.title)}" loading="${i===0?'eager':'lazy'}" style="width:100%;display:block">` +
+          `<img src="${escHtml(desktopSrc)}" alt="${escHtml(b.title)}" loading="${i===0?'eager':'lazy'}">` +
           `</picture>` + innerClose;
       } else {
         slide.innerHTML = `<div class="slide-placeholder"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;

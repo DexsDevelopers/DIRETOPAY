@@ -11,7 +11,7 @@ $affRateStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'affiliat
 $currentAffRate = (float)($affRateStmt->fetchColumn() ?: '10');
 
 $defTaxStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'default_user_tax'");
-$currentDefTax = (float)($defTaxStmt->fetchColumn() ?: '4.0');
+$currentDefTax = (float)($defTaxStmt->fetchColumn() ?: '5.0');
 
 // Card extra fee (platform markup on top of MedusaPay fees)
 $cardExtraFeeStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'card_extra_fee'");
