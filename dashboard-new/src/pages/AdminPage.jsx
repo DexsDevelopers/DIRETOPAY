@@ -81,6 +81,12 @@ export default function AdminPage() {
     const [pixgoEnabled, setPixgoEnabled] = useState(true);
     const [pixgoToggling, setPixgoToggling] = useState(false);
 
+    const [sigiloForm, setSigiloForm] = useState({ public_key: '', secret_key: '' });
+    const [sigiloEnabled, setSigiloEnabled] = useState(false);
+    const [sigiloSaving, setSigiloSaving] = useState(false);
+    const [sigiloStatus, setSigiloStatus] = useState(null);
+    const [showSigiloSecret, setShowSigiloSecret] = useState(false);
+
     const [caktoForm, setCaktoForm] = useState({ client_id: '', client_secret: '' });
     const [caktoStatus, setCaktoStatus] = useState(null);
     const [caktoLoading, setCaktoLoading] = useState(false);
@@ -101,6 +107,11 @@ export default function AdminPage() {
                 });
                 if (data.card_extra_fee !== undefined) setCardExtraFee(data.card_extra_fee);
                 if (data.pixgo_enabled !== undefined) setPixgoEnabled(data.pixgo_enabled === 1);
+                if (data.sigilopay) {
+                    setSigiloEnabled(data.sigilopay.enabled);
+                    setSigiloForm(f => ({ ...f, public_key: data.sigilopay.public_key || '' }));
+                    if (data.sigilopay.enabled) setSigiloStatus({ ok: true });
+                }
                 if (data.cakto) {
                     setCaktoForm(f => ({ ...f, client_id: data.cakto.client_id || '' }));
                     if (data.cakto.webhook_id) {
@@ -303,6 +314,94 @@ export default function AdminPage() {
                         {pixgoEnabled ? 'Desativar PixGo' : 'Ativar PixGo'}
                     </button>
                 </div>
+            </div>
+
+            {/* ── SigiloPay Integration ── */}
+            <div className="bg-white/[0.03] border border-white/8 rounded-3xl p-6">
+                <div className="flex items-center gap-3 mb-5">
+                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${sigiloEnabled ? 'bg-blue-500/10' : 'bg-white/5'}`}>
+                        <Zap size={20} className={sigiloEnabled ? 'text-blue-400' : 'text-white/20'} />
+                    </div>
+                    <div>
+                        <h2 className="font-black text-base flex items-center gap-2">
+                            SigiloPay
+                            {sigiloEnabled && <span className="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full px-2 py-0.5 font-black">✓ ATIVO</span>}
+                        </h2>
+                        <p className="text-[11px] text-white/30 font-medium">Gateway PIX com saque D+0 automático</p>
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <label className="text-[10px] font-black text-white/30 uppercase tracking-widest block mb-1.5">Public Key</label>
+                        <input
+                            type="text"
+                            value={sigiloForm.public_key}
+                            onChange={e => setSigiloForm(f => ({ ...f, public_key: e.target.value }))}
+                            placeholder="Sua chave pública SigiloPay"
+                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm font-mono focus:outline-none focus:border-blue-500/40"
+                        />
+                    </div>
+                    <div className="relative">
+                        <label className="text-[10px] font-black text-white/30 uppercase tracking-widest block mb-1.5">Secret Key</label>
+                        <input
+                            type={showSigiloSecret ? 'text' : 'password'}
+                            value={sigiloForm.secret_key}
+                            onChange={e => setSigiloForm(f => ({ ...f, secret_key: e.target.value }))}
+                            placeholder="Sua chave secreta SigiloPay"
+                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm font-mono focus:outline-none focus:border-blue-500/40 pr-12"
+                        />
+                        <button onClick={() => setShowSigiloSecret(s => !s)} className="absolute right-3 top-9 text-white/30 hover:text-white">
+                            {showSigiloSecret ? <EyeOff size={16}/> : <Eye size={16}/>}
+                        </button>
+                    </div>
+                </div>
+                <div className="flex items-center gap-3 flex-wrap">
+                    <button
+                        onClick={async () => {
+                            setSigiloSaving(true); setSigiloStatus(null);
+                            try {
+                                const fd = new FormData();
+                                fd.append('action', 'save_sigilopay');
+                                fd.append('sigilopay_public_key', sigiloForm.public_key);
+                                fd.append('sigilopay_secret_key', sigiloForm.secret_key);
+                                fd.append('sigilopay_enabled', sigiloEnabled ? '1' : '0');
+                                const res = await fetch('../admin_actions.php', { method: 'POST', body: fd });
+                                const d = await res.json();
+                                if (d.success) setSigiloStatus({ ok: true });
+                                else setSigiloStatus({ ok: false, error: d.error });
+                            } catch (e) { setSigiloStatus({ ok: false, error: e.message }); }
+                            finally { setSigiloSaving(false); }
+                        }}
+                        disabled={sigiloSaving}
+                        className="bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 px-5 py-2.5 rounded-2xl font-black text-sm flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
+                    >
+                        {sigiloSaving ? <RefreshCw size={14} className="animate-spin"/> : <Zap size={14}/>}
+                        Salvar Credenciais
+                    </button>
+                    <button
+                        onClick={async () => {
+                            const next = !sigiloEnabled;
+                            setSigiloEnabled(next);
+                            const fd = new FormData();
+                            fd.append('action', 'save_sigilopay');
+                            fd.append('sigilopay_public_key', sigiloForm.public_key);
+                            fd.append('sigilopay_secret_key', sigiloForm.secret_key);
+                            fd.append('sigilopay_enabled', next ? '1' : '0');
+                            await fetch('../admin_actions.php', { method: 'POST', body: fd });
+                        }}
+                        className={`px-5 py-2.5 rounded-2xl font-black text-sm flex items-center gap-2 transition-all active:scale-95 ${
+                            sigiloEnabled
+                                ? 'bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20'
+                                : 'bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20'
+                        }`}
+                    >
+                        <Zap size={14}/>
+                        {sigiloEnabled ? 'Desativar' : 'Ativar'}
+                    </button>
+                    {sigiloStatus?.ok && <span className="text-[11px] text-green-400 font-black">✓ Salvo com sucesso</span>}
+                    {sigiloStatus?.error && <span className="text-[11px] text-red-400 font-black">{sigiloStatus.error}</span>}
+                </div>
+                <p className="text-[10px] text-white/20 mt-3 font-medium">Webhook: pixghost.site/sigilopay_webhook.php</p>
             </div>
 
             {/* ── Cakto Integration ── */}

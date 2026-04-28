@@ -276,6 +276,25 @@ try {
             echo json_encode(['success' => true, 'med' => $newMed]);
             break;
 
+        case 'save_sigilopay':
+            $pubKey = trim($data['sigilopay_public_key'] ?? '');
+            $secKey = trim($data['sigilopay_secret_key'] ?? '');
+            $enabled = (int)($data['sigilopay_enabled'] ?? 0);
+            if (!$pubKey || !$secKey) {
+                echo json_encode(['success' => false, 'error' => 'Preencha Public Key e Secret Key']);
+                break;
+            }
+            foreach ([
+                'sigilopay_public_key'  => $pubKey,
+                'sigilopay_secret_key'  => $secKey,
+                'sigilopay_enabled'     => $enabled,
+            ] as $k => $v) {
+                $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES (?,?) ON DUPLICATE KEY UPDATE `value`=?")
+                    ->execute([$k, $v, $v]);
+            }
+            echo json_encode(['success' => true]);
+            break;
+
         case 'toggle_pixgo':
             $enabled = (int)($data['enabled'] ?? 0);
             $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES ('pixgo_enabled',?) ON DUPLICATE KEY UPDATE `value`=?")

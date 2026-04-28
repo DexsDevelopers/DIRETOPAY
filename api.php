@@ -49,17 +49,29 @@ try {
         throw new Exception('Não autorizado.', 401);
     }
 
-    // Verifica se o gateway PixGo está ativado
-    $pixgoEnabledStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'pixgo_enabled'");
-    $pixgoEnabled = $pixgoEnabledStmt ? (int)$pixgoEnabledStmt->fetchColumn() : 1;
-    if ($pixgoEnabled === 0) {
-        throw new Exception('Gateway PIX temporariamente desativado pelo administrador.', 503);
+    // ── Seleciona gateway ativo ──────────────────────────────────────
+    $getSetting = function(string $key) use ($pdo): string {
+        $s = $pdo->prepare("SELECT `value` FROM settings WHERE `key` = ?");
+        $s->execute([$key]);
+        return (string)($s->fetchColumn() ?: '');
+    };
+
+    $pixgoEnabled    = (int)($getSetting('pixgo_enabled') ?: 1);
+    $sigiloEnabled   = $getSetting('sigilopay_enabled') === '1';
+    $sigiloPublicKey = $getSetting('sigilopay_public_key');
+    $sigiloSecretKey = $getSetting('sigilopay_secret_key');
+
+    // Decide qual gateway usar
+    $usePixGo    = ($pixgoEnabled === 1);
+    $useSigiloPay = ($sigiloEnabled && $sigiloPublicKey && $sigiloSecretKey);
+
+    if (!$usePixGo && !$useSigiloPay) {
+        throw new Exception('Nenhum gateway de pagamento ativo. Contate o administrador.', 503);
     }
 
     $inputRaw = file_get_contents('php://input');
     $input = json_decode($inputRaw, true);
-    
-    // Verificando erro de parsing JSON
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && $inputRaw && json_last_error() !== JSON_ERROR_NONE) {
         throw new Exception('Erro no formato JSON: ' . json_last_error_msg());
     }
@@ -67,7 +79,6 @@ try {
     $callbackUrl = $input['callback_url'] ?? null;
     $amount = (float)($input['amount'] ?? 0);
 
-    // Anti-bot: Rate Limit check
     if (!checkRateLimit($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0')) {
         throw new Exception('Limite de geração excedido. Tente novamente em 1 minuto.');
     }
@@ -82,6 +93,87 @@ try {
         throw new Exception('Usuário não está habilitado para receber pagamentos.');
     }
 
+    $externalId = 'user_' . $userId . '_' . time();
+
+    // ── GATEWAY: SigiloPay ───────────────────────────────────────────
+    if ($useSigiloPay && !$usePixGo) {
+        $spPayload = [
+            'identifier' => $externalId,
+            'amount'     => $amount,
+            'client'     => [
+                'name'     => $user['full_name'] ?? 'Cliente Ghost Pix',
+                'email'    => $user['email'] ?? '',
+                'document' => $user['cpf'] ?? '000.000.000-00',
+            ],
+            'callbackUrl' => getFullUrl('sigilopay_webhook.php'),
+        ];
+
+        write_log('info', "SigiloPay Request: amount=$amount | externalId=$externalId");
+
+        $ch = curl_init('https://app.sigilopay.com.br/api/v1/gateway/pix/receive');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => json_encode($spPayload),
+            CURLOPT_HTTPHEADER     => [
+                'x-public-key: ' . $sigiloPublicKey,
+                'x-secret-key: ' . $sigiloSecretKey,
+                'Content-Type: application/json',
+                'Accept: application/json',
+            ],
+            CURLOPT_TIMEOUT        => 30,
+            CURLOPT_SSL_VERIFYPEER => true,
+        ]);
+        $spResponse  = curl_exec($ch);
+        $spHttpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $spCurlError = curl_error($ch);
+        curl_close($ch);
+
+        write_log('info', "SigiloPay Response: HTTP=$spHttpCode | " . substr($spResponse ?: '(empty)', 0, 500));
+
+        if ($spResponse === false) {
+            throw new Exception("Falha na conexão com SigiloPay: $spCurlError");
+        }
+
+        $spRes = json_decode($spResponse, true);
+
+        if ($spHttpCode === 201 && isset($spRes['transactionId'])) {
+            $pixId   = $spRes['transactionId'];
+            $pixData = $spRes['pix'] ?? [];
+            // Campos comuns: code/qrCode para o EMV, qrCodeImage/qrCodeBase64 para imagem
+            $pixCode = $pixData['code'] ?? ($pixData['qrCode'] ?? ($pixData['emv'] ?? ''));
+            $qrImage = $pixData['qrCodeImage'] ?? ($pixData['qrCodeBase64'] ?? '');
+
+            // Salva token do webhook SigiloPay (primeiro uso)
+            if (!empty($spRes['token'])) {
+                $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES ('sigilopay_webhook_token',?) ON DUPLICATE KEY UPDATE `value`=?")
+                    ->execute([$spRes['token'], $spRes['token']]);
+            }
+
+            $platformFee = $amount * ($user['commission_rate'] / 100);
+            $gatewayFee  = (float)($spRes['fee'] ?? ($amount * 0.02));
+            $netAmount   = $amount - $gatewayFee - $platformFee;
+
+            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Recarga Ghost Pix', $externalId, 'pix');
+
+            if (class_exists('PushService')) {
+                try { PushService::notifyUser($userId, '⚡ PIX Gerado!', 'Cobrança de R$ ' . number_format($amount, 2, ',', '.') . ' gerada.'); } catch (Throwable $e) {}
+            }
+            $txId = (int)$pdo->lastInsertId();
+            try { TelegramService::notifyNewCharge($amount, $user['full_name'] ?? 'N/A', $txId); } catch (Throwable $e) {}
+            if (class_exists('PushService')) {
+                try { PushService::notifyAdmins('⚡ Nova Cobrança #' . $txId, 'R$ ' . number_format($amount, 2, ',', '.') . ' — ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {}
+            }
+
+            Response::success(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
+        } else {
+            $errMsg = $spRes['message'] ?? ($spRes['errorCode'] ?? 'Erro de comunicação com SigiloPay');
+            write_log('error', "SigiloPay FALHA: HTTP=$spHttpCode | $errMsg | $spResponse");
+            throw new Exception("Erro SigiloPay: $errMsg (HTTP $spHttpCode)");
+        }
+    }
+
+    // ── GATEWAY: PixGo ───────────────────────────────────────────────
     $currentPixGoKey = getActivePixGoKey(!empty($user['is_admin']));
 
     // Ambiente de Simulação / Teste
@@ -94,62 +186,50 @@ try {
         $platformFee = $amount * ($user['commission_rate'] / 100);
         $netAmount = $amount - $pixgoFee - $platformFee;
 
-        $externalId = 'user_' . $userId . '_' . time();
         saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Recarga Ghost Pix', $externalId, 'pix');
 
         if (class_exists('PushService')) {
-            try {
-                PushService::notifyUser($userId, '⚡ PIX Gerado!', 'Uma nova cobrança de R$ ' . number_format($amount, 2, ',', '.') . ' foi gerada.');
-            } catch (Throwable $e) {}
+            try { PushService::notifyUser($userId, '⚡ PIX Gerado!', 'Cobrança de R$ ' . number_format($amount, 2, ',', '.') . ' gerada.'); } catch (Throwable $e) {}
         }
-
-        // Notificar Admin (Push + In-App + Telegram)
         $txId = (int)$pdo->lastInsertId();
         try { TelegramService::notifyNewCharge($amount, $user['full_name'] ?? 'N/A', $txId); } catch (Throwable $e) {}
         if (class_exists('PushService')) {
-            try { PushService::notifyAdmins('⚡ Nova Cobrança #' . $txId, 'R$ ' . number_format($amount, 2, ',', '.') . ' — Lojista: ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {}
+            try { PushService::notifyAdmins('⚡ Nova Cobrança #' . $txId, 'R$ ' . number_format($amount, 2, ',', '.') . ' — ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {}
         }
 
-        Response::success([
-            'qr_image' => $qrImage, 
-            'pix_code' => $pixCode, 
-            'amount' => $amount, 
-            'pix_id' => $pixId
-        ]);
+        Response::success(['qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount, 'pix_id' => $pixId]);
     }
 
-    // Chamada Real ao Gateway PixGo (conforme docs: https://pixgo.org/api/v1/docs)
-    $externalId = 'user_' . $userId . '_' . time();
     $data = [
-        'amount' => $amount,
+        'amount'      => $amount,
         'description' => 'Recarga Ghost Pix',
         'webhook_url' => getFullUrl('webhook.php'),
         'external_id' => $externalId
     ];
 
     $pixGoUrl = 'https://pixgo.org/api/v1/payment/create';
-    $maskedKey = substr($currentPixGoKey, 0, 8) . '...' . substr($currentPixGoKey, -6);
-    write_log('info', "PixGo Request: URL=$pixGoUrl | Key=$maskedKey | Body=" . json_encode($data));
+    write_log('info', "PixGo Request: URL=$pixGoUrl | Body=" . json_encode($data));
 
     $ch = curl_init($pixGoUrl);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'X-API-Key: ' . $currentPixGoKey,
-        'Content-Type: application/json',
-        'Accept: application/json'
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => json_encode($data),
+        CURLOPT_HTTPHEADER     => [
+            'X-API-Key: ' . $currentPixGoKey,
+            'Content-Type: application/json',
+            'Accept: application/json',
+        ],
+        CURLOPT_TIMEOUT        => 30,
+        CURLOPT_SSL_VERIFYPEER => true,
     ]);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $response  = curl_exec($ch);
+    $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curlError = curl_error($ch);
     $curlErrno = curl_errno($ch);
     curl_close($ch);
 
-    write_log('info', "PixGo Response: HTTP=$httpCode | curlErrno=$curlErrno | curlError=$curlError | Body=" . substr($response ?: '(empty)', 0, 500));
+    write_log('info', "PixGo Response: HTTP=$httpCode | " . substr($response ?: '(empty)', 0, 500));
 
     if ($response === false) {
         throw new Exception("Falha na conexão com PixGo: [$curlErrno] $curlError");
@@ -157,42 +237,30 @@ try {
 
     $res = json_decode($response, true);
 
-    // PixGo retorna HTTP 201 em sucesso (conforme docs)
     if (($httpCode === 200 || $httpCode === 201) && isset($res['success']) && $res['success']) {
-        $pixData = $res['data'] ?? [];
-        // Campos conforme docs PixGo: payment_id, qr_code, qr_image_url
-        $pixId = $pixData['payment_id'] ?? '';
-        $qrImage = $pixData['qr_image_url'] ?? '';
-        $pixCode = $pixData['qr_code'] ?? '';
-        
-        $pixgoFee = $amount * 0.02;
+        $pixData   = $res['data'] ?? [];
+        $pixId     = $pixData['payment_id'] ?? '';
+        $qrImage   = $pixData['qr_image_url'] ?? '';
+        $pixCode   = $pixData['qr_code'] ?? '';
+        $pixgoFee  = $amount * 0.02;
         if ($amount < 50) $pixgoFee += 1.00;
         $platformFee = $amount * ($user['commission_rate'] / 100);
-        $netAmount = $amount - $pixgoFee - $platformFee;
+        $netAmount   = $amount - $pixgoFee - $platformFee;
         saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Recarga Ghost Pix', $externalId, 'pix');
 
         if (class_exists('PushService')) {
-            try {
-                PushService::notifyUser($userId, '⚡ PIX Gerado!', 'Uma nova cobrança de R$ ' . number_format($amount, 2, ',', '.') . ' foi gerada.');
-            } catch (Throwable $e) {}
+            try { PushService::notifyUser($userId, '⚡ PIX Gerado!', 'Cobrança de R$ ' . number_format($amount, 2, ',', '.') . ' gerada.'); } catch (Throwable $e) {}
         }
-
-        // Notificar Admin (Push + In-App + Telegram)
         $txId = (int)$pdo->lastInsertId();
         try { TelegramService::notifyNewCharge($amount, $user['full_name'] ?? 'N/A', $txId); } catch (Throwable $e) {}
         if (class_exists('PushService')) {
-            try { PushService::notifyAdmins('⚡ Nova Cobrança #' . $txId, 'R$ ' . number_format($amount, 2, ',', '.') . ' — Lojista: ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {}
+            try { PushService::notifyAdmins('⚡ Nova Cobrança #' . $txId, 'R$ ' . number_format($amount, 2, ',', '.') . ' — ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {}
         }
 
-        Response::success([
-            'pix_id' => $pixId, 
-            'qr_image' => $qrImage, 
-            'pix_code' => $pixCode, 
-            'amount' => $amount
-        ]);
+        Response::success(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
     } else {
         $errorMsg = $res['message'] ?? ($res['error'] ?? 'Erro de comunicação com o serviço de pagamento');
-        write_log('error', "PixGo FALHA: HTTP=$httpCode | Msg=$errorMsg | FullResponse=$response");
+        write_log('error', "PixGo FALHA: HTTP=$httpCode | $errorMsg | $response");
         throw new Exception("Erro PixGo: $errorMsg (CS: $httpCode)");
     }
 
