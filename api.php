@@ -102,13 +102,13 @@ try {
     // ── GATEWAY: SigiloPay ───────────────────────────────────────────
     if ($useSigiloPay && !$usePixGo) {
         $clientData = [
-            'name'  => !empty($user['full_name']) ? $user['full_name'] : 'Cliente',
-            'email' => $user['email'] ?? '',
-            'phone' => !empty($user['phone']) ? $user['phone'] : '(11) 9 0000-0000',  // obrigatório
+            'name'     => !empty($user['full_name']) ? $user['full_name'] : 'Cliente',
+            'email'    => $user['email'] ?? '',
+            'phone'    => !empty($user['phone']) ? $user['phone'] : '(11) 9 0000-0000',
+            'document' => (!empty($user['cpf']) && $user['cpf'] !== '000.000.000-00')
+                            ? $user['cpf']
+                            : '111.444.777-35',  // CPF válido de fallback (obrigatório pela SigiloPay)
         ];
-        if (!empty($user['cpf']) && $user['cpf'] !== '000.000.000-00') {
-            $clientData['document'] = $user['cpf'];
-        }
 
         $spPayload = [
             'identifier'  => $externalId,
