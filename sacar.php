@@ -59,32 +59,33 @@ try {
                     </div>
 
                     <div style="margin-bottom: 1.5rem;">
-                        <label class="stat-label" style="display:block; margin-bottom: 0.6rem;">Valor para Saque (Mínimo R$ 50,00)</label>
+                        <label class="stat-label" style="display:block; margin-bottom: 0.6rem;">Valor para Saque (Mínimo R$ 20,00)</label>
                         <div class="amount-input-wrap">
                             <span class="amount-prefix">R$</span>
                             <input type="number" id="withdraw-amount" class="amount-input" placeholder="0,00" step="0.01">
                         </div>
                     </div>
 
-                    <div style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.15); padding: 1rem; border-radius: 10px; margin-bottom: 2.2rem;">
-                        <p style="font-size: 0.75rem; color: var(--red); margin: 0; line-height: 1.5; font-weight: 500;">
-                            <i class="fas fa-triangle-exclamation"></i> <strong>Aviso:</strong> O processamento pode levar até <strong>2 dias úteis</strong>. Certifique-se de que os dados acima estão corretos.
-                        </p>
-                    </div>
-
-                    <button id="btn-confirm-withdraw" class="btn-primary">
+                    <button id="btn-confirm-withdraw" class="btn-primary" style="margin-bottom:1rem;">
                         <i class="fas fa-paper-plane"></i> Confirmar Saque
                     </button>
-                    <p class="card-hint center" style="margin-top: 1.2rem;">
-                        <i class="fas fa-lock"></i> Transferência via PIX Instantâneo
-                    </p>
+
+                    <div style="text-align:center; margin-bottom:0.5rem;">
+                        <button type="button" id="btn-info-toggle" onclick="document.getElementById('withdraw-info').classList.toggle('hidden')" style="background:none;border:none;color:var(--text-dim);font-size:0.72rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.35rem;opacity:0.6;transition:opacity .2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">
+                            <i class="fas fa-circle-info"></i> Informações sobre o saque
+                        </button>
+                    </div>
+
+                    <div id="withdraw-info" class="hidden" style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);padding:0.85rem 1rem;border-radius:10px;">
+                        <p style="font-size:0.73rem;color:var(--red);margin:0;line-height:1.6;font-weight:500;">
+                            <i class="fas fa-triangle-exclamation"></i> <strong>Aviso:</strong> O processamento pode levar até <strong>2 dias úteis</strong>. Certifique-se de que os dados acima estão corretos antes de confirmar.
+                        </p>
+                    </div>
                 </div>
             </div>
             </div>
         </main>
     </div>
-
-    <script src="script.js?v=124.0"></script>
 
     <!-- Modal de Sucesso -->
     <div class="modal hidden" id="modal-success">
