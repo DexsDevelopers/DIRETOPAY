@@ -209,7 +209,7 @@ input,textarea{font-family:inherit;outline:none}
 
 /* Form */
 .form-group{display:flex;flex-direction:column;gap:8px}
-.form-label{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--dim)}
+.form-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.6)}
 .form-input{background:rgba(255,255,255,.04);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:14px 16px;font-size:.9rem;color:var(--text);transition:border-color .2s}
 .form-input:focus{border-color:rgba(168,85,247,.5);background:rgba(168,85,247,.03)}
 .form-input::placeholder{color:var(--dim)}
