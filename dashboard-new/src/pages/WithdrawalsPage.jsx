@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Wallet, ArrowUpRight, ShieldCheck, History, Loader2, CheckCircle, XCircle, Clock, RefreshCw, CreditCard, AlertTriangle } from 'lucide-react';
+import { Wallet, ArrowUpRight, ShieldCheck, History, Loader2, CheckCircle, XCircle, Clock, RefreshCw, CreditCard, AlertTriangle, Info, ChevronDown, ChevronUp } from 'lucide-react';
 
 const BADGE = {
     approved: 'bg-primary/10 text-primary border-primary/20',
@@ -13,6 +13,7 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
     const [result, setResult] = useState(null);
     const [withdrawals, setWithdrawals] = useState([]);
     const [loadingW, setLoadingW] = useState(true);
+    const [showInfo, setShowInfo] = useState(false);
     const withdrawFee = 3.50;
 
     const displayAvailable = availableForWithdraw ?? balance;
@@ -32,8 +33,8 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
 
     const handleWithdraw = async () => {
         const val = parseFloat(amount);
-        if (!val || val < 10) {
-            setResult({ success: false, error: 'O valor mínimo para saque é R$ 10,00.' });
+        if (!val || val < 20) {
+            setResult({ success: false, error: 'O valor mínimo para saque é R$ 20,00.' });
             return;
         }
 
@@ -56,7 +57,7 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
             });
             const data = await res.json();
             if (data.status === 'success') {
-                setResult({ success: true, message: `Saque de R$ ${val.toFixed(2).replace('.', ',')} solicitado com sucesso! Prazo: até 2 dias úteis.` });
+                setResult({ success: true, message: `Saque de R$ ${val.toFixed(2).replace('.', ',')} solicitado! Entre 12h e 00h cai em ~1 hora.` });
                 setAmount('');
                 fetchWithdrawals();
             } else {
@@ -81,40 +82,6 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-6">
-                    {/* Aviso Cartão de Crédito */}
-                    <div className="bg-amber-500/[0.06] border border-amber-500/20 rounded-[28px] p-5 flex gap-4 items-start">
-                        <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center shrink-0 mt-0.5">
-                            <CreditCard size={20} className="text-amber-400" />
-                        </div>
-                        <div className="space-y-1">
-                            <h4 className="text-sm font-black text-amber-400 flex items-center gap-2">
-                                <AlertTriangle size={14} />
-                                Vendas por Cartão de Crédito — Atenção
-                            </h4>
-                            <p className="text-xs text-white/50 leading-relaxed font-medium">
-                                Vendas realizadas via <strong className="text-white/70">cartão de crédito</strong> possuem prazo de liberação de <strong className="text-white/70">D+3 (3 dias úteis)</strong> e apresentam <strong className="text-red-400">alto risco de reembolso (chargeback)</strong> caso o cliente conteste a cobrança junto ao banco. Recomendamos aguardar o prazo antes de sacar valores provenientes de vendas por cartão.
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Aviso MED / Reembolso PIX */}
-                    <div className="bg-red-500/[0.06] border border-red-500/20 rounded-[28px] p-5 flex gap-4 items-start">
-                        <div className="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center shrink-0 mt-0.5">
-                            <AlertTriangle size={20} className="text-red-400" />
-                        </div>
-                        <div className="space-y-1">
-                            <h4 className="text-sm font-black text-red-400 flex items-center gap-2">
-                                <AlertTriangle size={14} />
-                                Risco de MED (Reembolso PIX) — Importante
-                            </h4>
-                            <p className="text-xs text-white/50 leading-relaxed font-medium">
-                                Clientes que utilizam <strong className="text-white/70">Nubank, PicPay</strong> ou outros bancos com fácil acesso ao reembolso podem solicitar a devolução do PIX <strong className="text-red-400">(MED - Mecanismo Especial de Devolução)</strong>. O processo de liquidação do pagamento leva <strong className="text-white/70">até 1 dia útil</strong> — se o reembolso for solicitado no <strong className="text-white/70">mesmo dia da venda</strong>, existe risco real do seu saldo ser impactado.
-                            </p>
-                            <p className="text-xs text-white/50 leading-relaxed font-medium mt-1">
-                                Se seu saldo diminuiu inesperadamente, verifique se alguma venda recebeu um <strong className="text-red-400">MED</strong> na página de vendas. Vendas marcadas com MED aparecerão com um aviso vermelho.
-                            </p>
-                        </div>
-                    </div>
 
                     <div className="glass p-8 rounded-[40px] space-y-8 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -z-10" />
@@ -155,12 +122,12 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
                                         value={amount}
                                         onChange={(e) => setAmount(e.target.value)}
                                         placeholder="0,00"
-                                        min="10"
+                                        min="20"
                                         step="0.01"
                                         className="w-full bg-white/5 border border-white/10 rounded-[24px] py-6 pl-16 pr-8 text-2xl font-black focus:outline-none focus:border-primary/50 focus:bg-white/[0.08] transition-all"
                                     />
                                 </div>
-                                <p className="text-[10px] text-white/20 ml-2">Mínimo: R$ 10,00</p>
+                                <p className="text-[10px] text-white/20 ml-2">Mínimo: R$ 20,00</p>
                             </div>
 
                             <button
@@ -175,14 +142,36 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
                                 )}
                             </button>
 
-                            <div className="bg-amber-500/[0.08] border border-amber-500/25 rounded-2xl p-4 flex items-center gap-3">
-                                <div className="w-9 h-9 bg-amber-500/15 rounded-xl flex items-center justify-center shrink-0">
-                                    <Clock size={18} className="text-amber-400" />
+                            <button
+                                onClick={() => setShowInfo(v => !v)}
+                                className="w-full flex items-center justify-between gap-2 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/10 text-white/30 hover:text-white/60 text-xs font-bold transition-all"
+                            >
+                                <span className="flex items-center gap-2"><Info size={14} /> Informações sobre o saque</span>
+                                {showInfo ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                            </button>
+
+                            {showInfo && (
+                                <div className="space-y-3 rounded-2xl border border-white/10 p-4 bg-white/[0.02]">
+                                    <div className="flex gap-3 items-start">
+                                        <Clock size={16} className="text-primary shrink-0 mt-0.5" />
+                                        <p className="text-xs text-white/50 leading-relaxed font-medium">
+                                            <strong className="text-white/80">Tempo de processamento:</strong> Entre <strong className="text-primary">12:00 e 00:00</strong>, o saque cai em <strong className="text-primary">aproximadamente 1 hora</strong>. Fora desse horário pode demorar um pouco mais.
+                                        </p>
+                                    </div>
+                                    <div className="flex gap-3 items-start">
+                                        <CreditCard size={16} className="text-amber-400 shrink-0 mt-0.5" />
+                                        <p className="text-xs text-white/50 leading-relaxed font-medium">
+                                            <strong className="text-amber-400">Cartão de crédito:</strong> Vendas via cartão têm prazo D+3 e risco de chargeback. Aguarde antes de sacar.
+                                        </p>
+                                    </div>
+                                    <div className="flex gap-3 items-start">
+                                        <AlertTriangle size={16} className="text-red-400 shrink-0 mt-0.5" />
+                                        <p className="text-xs text-white/50 leading-relaxed font-medium">
+                                            <strong className="text-red-400">Risco de MED:</strong> Clientes (Nubank, PicPay etc.) podem solicitar reembolso do PIX no mesmo dia. Verifique na página de vendas se alguma transação foi marcada com MED.
+                                        </p>
+                                    </div>
                                 </div>
-                                <p className="text-sm text-white/60 font-bold leading-snug">
-                                    O saque pode levar até <strong className="text-amber-400">1 dia útil</strong> para ser processado e enviado à sua conta.
-                                </p>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>
