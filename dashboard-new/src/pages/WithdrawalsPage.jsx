@@ -136,11 +136,11 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
                                 </div>
                                 {amount && parseFloat(amount) >= 20 ? (
                                 <div className="ml-2 space-y-0.5">
-                                    <p className="text-[10px] text-white/30">Taxa plataforma: R$ 3,50 &nbsp;|&nbsp; Taxa SigiloPay: R$ 4,00 + 0,2%</p>
+                                    <p className="text-[10px] text-white/30">Taxa plataforma: R$ 3,50 &nbsp;|&nbsp; Taxa de saque: R$ 4,00 + 0,2%</p>
                                     <p className="text-[10px] text-white/50 font-bold">Total de taxas: R$ {totalFee(parseFloat(amount)).toFixed(2).replace('.', ',')} &nbsp;→&nbsp; <span className="text-primary">Você recebe: R$ {netAmount(parseFloat(amount)).toFixed(2).replace('.', ',')}</span></p>
                                 </div>
                             ) : (
-                                <p className="text-[10px] text-white/20 ml-2">Mínimo: R$ 20,00 &nbsp;|&nbsp; Taxas: R$ 3,50 + R$ 4,00 + 0,2% (SigiloPay)</p>
+                                <p className="text-[10px] text-white/20 ml-2">Mínimo: R$ 20,00 &nbsp;|&nbsp; Taxas: R$ 3,50 + R$ 4,00 + 0,2%</p>
                             )}
                             </div>
 
