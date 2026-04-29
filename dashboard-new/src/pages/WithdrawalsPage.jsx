@@ -162,7 +162,7 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
                                     <div className="flex gap-3 items-start">
                                         <CreditCard size={16} className="text-amber-400 shrink-0 mt-0.5" />
                                         <p className="text-sm text-white/80 leading-relaxed">
-                                            <strong className="text-amber-400">Cartão de crédito:</strong> Vendas via cartão têm prazo D+3 e risco de chargeback. Aguarde antes de sacar.
+                                            <strong className="text-amber-400">Cartão de crédito:</strong> Vendas via cartão ficam disponíveis para saque em <strong className="text-white">aproximadamente 1 dia</strong>. Risco de chargeback — aguarde antes de sacar.
                                         </p>
                                     </div>
                                     <div className="w-full h-px bg-white/10" />
