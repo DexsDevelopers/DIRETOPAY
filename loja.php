@@ -65,27 +65,10 @@ input,select{font-family:inherit;outline:none;border:none}
 .slider-wrap{
   position:relative;
   overflow:hidden;
-  background:linear-gradient(135deg,#0e0e18,#131326);
-  margin:20px auto;
+  background:#0e0e16;
+  margin:0 auto;
   max-width:1160px;
-  border-radius:24px;
-  box-shadow:
-    0 0 0 1px rgba(168,85,247,.2),
-    0 8px 40px rgba(168,85,247,.12),
-    0 32px 80px rgba(0,0,0,.55);
-}
-.slider-wrap::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  border-radius:24px;
-  padding:1px;
-  background:linear-gradient(135deg,rgba(168,85,247,.45),rgba(109,40,217,.1),rgba(168,85,247,.3));
-  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-  -webkit-mask-composite:xor;
-  mask-composite:exclude;
-  pointer-events:none;
-  z-index:5;
+  border-radius:0;
 }
 .slider-track{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1);will-change:transform}
 .slide{min-width:100%;position:relative;cursor:pointer;user-select:none}
@@ -98,24 +81,8 @@ input,select{font-family:inherit;outline:none;border:none}
 @media(max-width:600px){
   .slider-wrap{
     margin:0;
-    border-radius:18px;
-    box-shadow:0 0 0 1px rgba(168,85,247,.22),
-               0 8px 32px rgba(168,85,247,.18),
-               0 24px 60px rgba(0,0,0,.5);
-    background:linear-gradient(135deg,#0e0e18,#131326);
-  }
-  .slider-wrap::before{
-    content:'';
-    position:absolute;
-    inset:0;
-    border-radius:18px;
-    padding:1.5px;
-    background:linear-gradient(135deg,rgba(168,85,247,.4),rgba(109,40,217,.15),rgba(168,85,247,.35));
-    -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-    -webkit-mask-composite:xor;
-    mask-composite:exclude;
-    pointer-events:none;
-    z-index:5;
+    border-radius:0;
+    box-shadow:none;
   }
   .slide img{
     width:100%;
@@ -296,7 +263,7 @@ footer a{color:var(--primary)}
 </nav>
 
 <!-- ── Banner Slider ── -->
-<div style="padding:0 20px">
+<div>
 <div class="slider-wrap" id="slider-wrap" style="display:none">
   <div class="slider-track" id="slider-track"></div>
   <button class="slider-arrow prev" id="slider-prev" aria-label="Anterior">
