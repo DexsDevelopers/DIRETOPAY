@@ -113,9 +113,9 @@ input,select{font-family:inherit;outline:none;border:none}
    TRUST BAR
 ───────────────────────────────────────────── */
 .trust{background:var(--card);border-bottom:1px solid var(--border)}
-.trust-inner{display:flex;align-items:center;gap:0;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.trust-inner{display:flex;align-items:center;gap:0;overflow-x:auto;padding:12px 0;scrollbar-width:none}
 .trust-inner::-webkit-scrollbar{display:none}
-.trust-item{display:flex;align-items:center;gap:6px;padding:4px 16px;font-size:.68rem;font-weight:700;color:var(--muted);white-space:nowrap;flex-shrink:0;border-right:1px solid var(--border)}
+.trust-item{display:flex;align-items:center;gap:7px;padding:4px 20px;font-size:.78rem;font-weight:700;color:rgba(255,255,255,.65);white-space:nowrap;flex-shrink:0;border-right:1px solid var(--border)}
 .trust-item:last-child{border-right:none}
 .trust-item svg{color:var(--primary);flex-shrink:0}
 
