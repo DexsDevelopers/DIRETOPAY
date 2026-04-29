@@ -1,6 +1,7 @@
 <?php
 require_once 'includes/db.php';
 require_once 'includes/TelegramService.php';
+require_once 'includes/PushService.php';
 header('Content-Type: application/json');
 
 if (!isLoggedIn()) { echo json_encode(['success' => false, 'error' => 'Não autorizado']); exit; }
@@ -159,6 +160,11 @@ if ($method === 'GET') {
                             $pdo->prepare("INSERT INTO chat_messages (room_id, sender_type, sender_name, message) VALUES (?, 'admin', 'Dono da Plataforma', ?)")
                                 ->execute([$roomId, $chatMsg]);
                             $pdo->prepare("UPDATE chat_rooms SET last_message_at = NOW(), product_id = ? WHERE id = ?")->execute([$id, $roomId]);
+
+                            // Notificação push para o vendedor
+                            $pushTitle = $isPending ? '❌ Produto Reprovado' : '📤 Produto Removido da Vitrine';
+                            $pushBody  = 'Mensagem da moderação sobre "' . $prod['name'] . '": ' . mb_substr($reason, 0, 80);
+                            try { PushService::notifyUser($prod['user_id'], $pushTitle, $pushBody, 'warning'); } catch (Throwable $e) {}
                         } catch (Throwable $e) {}
                     }
                 }

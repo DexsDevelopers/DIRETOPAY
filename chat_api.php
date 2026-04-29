@@ -1,5 +1,6 @@
 <?php
 require_once 'includes/db.php';
+require_once 'includes/PushService.php';
 header('Content-Type: application/json');
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -73,6 +74,9 @@ if ($action === 'buyer_send') {
     $pdo->prepare("INSERT INTO chat_messages (room_id, sender_type, sender_name, message) VALUES (?, 'buyer', ?, ?)")
         ->execute([$room['id'], $room['buyer_name'], mb_substr($message, 0, 2000)]);
     $pdo->prepare("UPDATE chat_rooms SET last_message_at = NOW() WHERE id = ?")->execute([$room['id']]);
+
+    // Notificar vendedor via push
+    try { PushService::notifyUser($room['seller_id'], ' Nova mensagem no chat', $room['buyer_name'] . ': ' . mb_substr($message, 0, 80), 'chat'); } catch (Throwable $e) {}
 
     echo json_encode(['success' => true, 'message_id' => (int)$pdo->lastInsertId()]);
     exit;
@@ -178,6 +182,11 @@ if ($action === 'send') {
     $pdo->prepare("INSERT INTO chat_messages (room_id, sender_type, sender_name, message) VALUES (?, ?, ?, ?)")
         ->execute([$roomId, $senderType, $senderName, mb_substr($msg, 0, 2000)]);
     $pdo->prepare("UPDATE chat_rooms SET last_message_at = NOW() WHERE id = ?")->execute([$roomId]);
+
+    // Se admin enviou, notificar o vendedor dono da sala
+    if ($isAdm && $room['seller_id'] !== $userId) {
+        try { PushService::notifyUser((int)$room['seller_id'], ' Mensagem da Plataforma', mb_substr($msg, 0, 100), 'chat'); } catch (Throwable $e) {}
+    }
 
     echo json_encode(['success' => true, 'message_id' => (int)$pdo->lastInsertId()]);
     exit;
