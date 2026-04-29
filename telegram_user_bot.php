@@ -375,7 +375,7 @@ if (isset($input['callback_query'])) {
             "💳 <b>Gerar Cobrança via Cartão</b>" . div() . "\n\n"
             . "Escolha um valor rápido ou digite:\n"
             . "<code>/cartao 75</code> para valor personalizado.\n\n"
-            . "<i>O comprador receberá um link seguro para pagar com cartão de crédito em até 12x.</i>",
+            . "<i>O comprador receberá um link seguro para pagar com cartão de crédito em até 12x.</i>\n⏱ <i>Disponível para saque em ~1 dia após o pagamento.</i>",
             cardAmountKeyboard()
         );
         http_response_code(200); exit;
@@ -938,7 +938,7 @@ function handlePix(string $chatId, array $user, float $amount): void {
     }
 }
 
-// ── GERAR LINK CARTÃO (MedusaPay) ──────────────────────────────────────
+// ── GERAR LINK CARTÃO (SigiloPay) ──────────────────────────────────────
 function handleCard(string $chatId, array $user, float $amount): void {
     global $pdo;
     $userId = (int)$user['id'];
@@ -964,7 +964,7 @@ function handleCard(string $chatId, array $user, float $amount): void {
         $stmt = $pdo->prepare("SELECT `value` FROM settings WHERE `key` = 'medusapay_secret_key' LIMIT 1");
         $stmt->execute();
         $secret = trim((string)($stmt->fetchColumn() ?: ''));
-        if ($secret === '') throw new Exception('MedusaPay não configurado. Fale com o administrador.');
+        if ($secret === '') throw new Exception('Gateway de cartão não configurado. Fale com o administrador.');
 
         $amountCents = (int)round($amount * 100);
         $postbackUrl = getFullUrl('medusa_webhook.php') . '?tx_user=' . $userId;
@@ -1007,12 +1007,12 @@ function handleCard(string $chatId, array $user, float $amount): void {
         $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if ($response === false || $response === '') throw new Exception('Erro de conexão com MedusaPay' . ($curlErr ? ": {$curlErr}" : ''));
+        if ($response === false || $response === '') throw new Exception('Erro de conexão com o gateway de cartão' . ($curlErr ? ": {$curlErr}" : ''));
 
         $res = json_decode($response, true) ?: [];
         if ($httpCode < 200 || $httpCode >= 300) {
             $errMsg = $res['message'] ?? $res['error'] ?? "HTTP {$httpCode}";
-            throw new Exception('MedusaPay: ' . $errMsg);
+            throw new Exception('Erro no gateway: ' . $errMsg);
         }
 
         // Busca recursiva por qualquer campo que seja uma URL http(s)
@@ -1043,7 +1043,8 @@ function handleCard(string $chatId, array $user, float $amount): void {
         $successMsg = "✅ <b>LINK DE CARTÃO GERADO!</b>" . div() . "\n\n"
             . "💳 <b>Valor:</b> " . formatBRL($amount) . "\n"
             . "🔗 <b>Link de pagamento:</b>\n" . $checkoutUrl . "\n\n"
-            . "💡 <i>Envie este link ao seu cliente. Ele pode pagar em até 12x no cartão.</i>" . footer();
+            . "💡 <i>Envie este link ao seu cliente. Ele pode pagar em até 12x no cartão.</i>\n"
+            . "⏱ <i>Vendas no cartão ficam disponíveis para saque em aproximadamente 1 dia.</i>" . footer();
 
         if ($loadingMsgId) uEditMessage($chatId, $loadingMsgId, $successMsg, afterActionKeyboard());
 
