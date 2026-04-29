@@ -151,22 +151,24 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
                             </button>
 
                             {showInfo && (
-                                <div className="space-y-3 rounded-2xl border border-white/10 p-4 bg-white/[0.02]">
+                                <div className="space-y-4 rounded-2xl border border-white/15 p-5 bg-white/[0.04]">
                                     <div className="flex gap-3 items-start">
                                         <Clock size={16} className="text-primary shrink-0 mt-0.5" />
-                                        <p className="text-xs text-white/50 leading-relaxed font-medium">
-                                            <strong className="text-white/80">Tempo de processamento:</strong> Entre <strong className="text-primary">12:00 e 00:00</strong>, o saque cai em <strong className="text-primary">aproximadamente 1 hora</strong>. Fora desse horário pode demorar um pouco mais.
+                                        <p className="text-sm text-white/80 leading-relaxed">
+                                            <strong className="text-white">Tempo de processamento:</strong> Entre <strong className="text-primary">12:00 e 00:00</strong>, o saque cai em <strong className="text-primary">aproximadamente 1 hora</strong>. Fora desse horário pode demorar um pouco mais.
                                         </p>
                                     </div>
+                                    <div className="w-full h-px bg-white/10" />
                                     <div className="flex gap-3 items-start">
                                         <CreditCard size={16} className="text-amber-400 shrink-0 mt-0.5" />
-                                        <p className="text-xs text-white/50 leading-relaxed font-medium">
+                                        <p className="text-sm text-white/80 leading-relaxed">
                                             <strong className="text-amber-400">Cartão de crédito:</strong> Vendas via cartão têm prazo D+3 e risco de chargeback. Aguarde antes de sacar.
                                         </p>
                                     </div>
+                                    <div className="w-full h-px bg-white/10" />
                                     <div className="flex gap-3 items-start">
                                         <AlertTriangle size={16} className="text-red-400 shrink-0 mt-0.5" />
-                                        <p className="text-xs text-white/50 leading-relaxed font-medium">
+                                        <p className="text-sm text-white/80 leading-relaxed">
                                             <strong className="text-red-400">Risco de MED:</strong> Clientes (Nubank, PicPay etc.) podem solicitar reembolso do PIX no mesmo dia. Verifique na página de vendas se alguma transação foi marcada com MED.
                                         </p>
                                     </div>
