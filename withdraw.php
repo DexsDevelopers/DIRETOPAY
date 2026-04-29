@@ -21,7 +21,9 @@ $csrfToken = $headers['X-CSRF-Token'] ?? ($headers['x-csrf-token'] ?? '');
 check_csrf($csrfToken);
 
 $amount = (float)($input['amount'] ?? 0);
-$withdrawFee = 3.50;
+$platformFee = 3.50;
+$sigiloFee   = round($amount * 0.002 + 4.00, 2);
+$withdrawFee = $platformFee + $sigiloFee;
 
 try {
     $stmt = $pdo->prepare("SELECT balance, pix_key FROM users WHERE id = ?");
@@ -68,7 +70,7 @@ try {
     $stmt->execute([$userId, $netAmount, $user['pix_key']]);
 
     $pdo->commit();
-    write_log('INFO', 'Pedido de Saque Realizado', ['user_id' => $userId, 'amount' => $amount, 'fee' => $withdrawFee, 'net' => $netAmount]);
+    write_log('INFO', 'Pedido de Saque Realizado', ['user_id' => $userId, 'amount' => $amount, 'platform_fee' => $platformFee, 'sigilo_fee' => $sigiloFee, 'total_fee' => $withdrawFee, 'net' => $netAmount]);
     // Buscar nome do usuário
     $userInfo = $pdo->prepare("SELECT full_name FROM users WHERE id = ?");
     $userInfo->execute([$userId]);

@@ -14,7 +14,10 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
     const [withdrawals, setWithdrawals] = useState([]);
     const [loadingW, setLoadingW] = useState(true);
     const [showInfo, setShowInfo] = useState(false);
-    const withdrawFee = 3.50;
+    const platformFee = 3.50;
+    const sigiloFee = (val) => Math.round((val * 0.002 + 4.00) * 100) / 100;
+    const totalFee = (val) => platformFee + sigiloFee(val);
+    const netAmount = (val) => Math.max(0, val - totalFee(val));
 
     const displayAvailable = availableForWithdraw ?? balance;
     const hasPending = pendingWithdrawals && parseFloat(String(pendingWithdrawals).replace(/\./g, '').replace(',', '.')) > 0;
@@ -34,7 +37,11 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
     const handleWithdraw = async () => {
         const val = parseFloat(amount);
         if (!val || val < 20) {
-            setResult({ success: false, error: 'O valor mínimo para saque é R$ 20,00.' });
+            setResult({ success: false, error: `O valor mínimo para saque é R$ 20,00.` });
+            return;
+        }
+        if (netAmount(val) <= 0) {
+            setResult({ success: false, error: 'Valor insuficiente para cobrir as taxas.' });
             return;
         }
 
@@ -57,7 +64,7 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
             });
             const data = await res.json();
             if (data.status === 'success') {
-                setResult({ success: true, message: `Saque de R$ ${val.toFixed(2).replace('.', ',')} solicitado! Entre 12h e 00h cai em ~1 hora.` });
+                setResult({ success: true, message: `Saque solicitado! Você receberá R$ ${netAmount(val).toFixed(2).replace('.', ',')}. Entre 12h e 00h cai em ~1 hora.` });
                 setAmount('');
                 fetchWithdrawals();
             } else {
@@ -127,7 +134,14 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
                                         className="w-full bg-white/5 border border-white/10 rounded-[24px] py-6 pl-16 pr-8 text-2xl font-black focus:outline-none focus:border-primary/50 focus:bg-white/[0.08] transition-all"
                                     />
                                 </div>
-                                <p className="text-[10px] text-white/20 ml-2">Mínimo: R$ 20,00</p>
+                                {amount && parseFloat(amount) >= 20 ? (
+                                <div className="ml-2 space-y-0.5">
+                                    <p className="text-[10px] text-white/30">Taxa plataforma: R$ 3,50 &nbsp;|&nbsp; Taxa SigiloPay: R$ 4,00 + 0,2%</p>
+                                    <p className="text-[10px] text-white/50 font-bold">Total de taxas: R$ {totalFee(parseFloat(amount)).toFixed(2).replace('.', ',')} &nbsp;→&nbsp; <span className="text-primary">Você recebe: R$ {netAmount(parseFloat(amount)).toFixed(2).replace('.', ',')}</span></p>
+                                </div>
+                            ) : (
+                                <p className="text-[10px] text-white/20 ml-2">Mínimo: R$ 20,00 &nbsp;|&nbsp; Taxas: R$ 3,50 + R$ 4,00 + 0,2% (SigiloPay)</p>
+                            )}
                             </div>
 
                             <button
