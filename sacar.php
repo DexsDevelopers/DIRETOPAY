@@ -76,9 +76,14 @@ try {
                         </button>
                     </div>
 
-                    <div id="withdraw-info" class="hidden" style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);padding:0.85rem 1rem;border-radius:10px;">
+                    <div id="withdraw-info" class="hidden" style="background:rgba(0,0,0,0.25);border:1px solid var(--border);padding:0.9rem 1rem;border-radius:10px;">
+                        <p style="font-size:0.73rem;color:var(--text-dim);margin:0 0 0.6rem 0;line-height:1.6;font-weight:500;">
+                            <i class="fas fa-clock" style="color:var(--primary)"></i> <strong style="color:var(--text)">Tempo de processamento:</strong><br>
+                            Entre <strong>12:00 e 00:00</strong>, o saque cai em <strong>aproximadamente 1 hora</strong>.<br>
+                            Fora desse horário pode demorar um pouco mais.
+                        </p>
                         <p style="font-size:0.73rem;color:var(--red);margin:0;line-height:1.6;font-weight:500;">
-                            <i class="fas fa-triangle-exclamation"></i> <strong>Aviso:</strong> O processamento pode levar até <strong>2 dias úteis</strong>. Certifique-se de que os dados acima estão corretos antes de confirmar.
+                            <i class="fas fa-triangle-exclamation"></i> <strong>Aviso:</strong> Verifique seus dados de PIX antes de confirmar. Saques incorretos não são reembolsados.
                         </p>
                     </div>
                 </div>
