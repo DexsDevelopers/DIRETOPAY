@@ -97,7 +97,7 @@ try {
         throw new Exception('Usuário não está habilitado para receber pagamentos.');
     }
 
-    $externalId = 'user_' . $userId . '_' . time();
+    $externalId = !empty($input['external_id']) ? (string)$input['external_id'] : ('user_' . $userId . '_' . time());
 
     // ── GATEWAY: SigiloPay ───────────────────────────────────────────
     if ($useSigiloPay && !$usePixGo) {
