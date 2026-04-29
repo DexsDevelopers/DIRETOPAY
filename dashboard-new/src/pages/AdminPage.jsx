@@ -201,16 +201,16 @@ export default function AdminPage() {
                         <div className="bg-white/[0.03] border border-white/8 rounded-2xl p-3 space-y-1.5 text-[11px]">
                             <p className="text-[9px] font-black text-white/20 uppercase tracking-widest mb-2">Custos da plataforma</p>
                             <div className="flex justify-between items-center">
-                                <span className="text-white/40 font-semibold">Gateway PixGo (recebimento)</span>
-                                <span className="text-yellow-400 font-black">2,00%</span>
+                                <span className="text-white/40 font-semibold">Gateway PIX (recebimento)</span>
+                                <span className="text-yellow-400 font-black">6,49% + R$0,99</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-white/40 font-semibold">BrSwap (DEPIX → cripto)</span>
-                                <span className="text-orange-400 font-black">2,00%</span>
+                                <span className="text-white/40 font-semibold">Taxa de saque</span>
+                                <span className="text-blue-400 font-black">R$4,00 + 0,2% / saque</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-white/40 font-semibold">Saque Binance PIX</span>
-                                <span className="text-blue-400 font-black">R$ 3,50 / saque</span>
+                                <span className="text-white/40 font-semibold">Taxa plataforma (saque)</span>
+                                <span className="text-orange-400 font-black">R$ 3,50 / saque</span>
                             </div>
                             <div className="border-t border-white/8 pt-1.5 flex justify-between items-center">
                                 <span className="text-white/60 font-bold">Seu lucro (taxa padrão)</span>
@@ -218,7 +218,7 @@ export default function AdminPage() {
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-white/40 font-semibold">Total cobrado do vendedor</span>
-                                <span className="text-white font-black">{(2 + Number(globalSettings.default_tax)).toFixed(2)}% + R$3,50</span>
+                                <span className="text-white font-black">{Number(globalSettings.default_tax).toFixed(2)}% + R$0,99</span>
                             </div>
                         </div>
 
