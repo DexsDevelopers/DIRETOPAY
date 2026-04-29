@@ -1069,8 +1069,8 @@ function handleSacar(string $chatId, array $user, float $amount): void {
     $userId = (int)$user['id'];
     $withdrawFee = 3.50;
 
-    if ($amount < 10) {
-        uReply($chatId, "⚠️ <b>Mínimo para saque: R$ 10,00</b>\n📉 Taxa fixa: R$ 3,50\n\nExemplo: <code>/sacar 50</code>" . footer(), afterActionKeyboard());
+    if ($amount < 20) {
+        uReply($chatId, "⚠️ <b>Mínimo para saque: R$ 20,00</b>\n📉 Taxa fixa: R$ 3,50\n\nExemplo: <code>/sacar 50</code>" . footer(), afterActionKeyboard());
         return;
     }
     if (empty($user['pix_key'])) {
