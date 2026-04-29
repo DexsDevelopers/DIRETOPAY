@@ -65,7 +65,7 @@ try {
     }
 
     // Atualiza transação existente (criada em api.php) para 'paid'
-    $upd = $pdo->prepare("UPDATE transactions SET status='paid', updated_at=NOW() WHERE pix_id=? AND status='pending'");
+    $upd = $pdo->prepare("UPDATE transactions SET status='paid' WHERE pix_id=? AND status='pending'");
     $upd->execute([$sigiloTxId]);
 
     if ($upd->rowCount() > 0) {
