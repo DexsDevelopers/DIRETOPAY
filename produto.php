@@ -1,10 +1,18 @@
 <?php
 require_once __DIR__ . '/includes/db.php';
 
-/* ── Resolve product ID from URL (/p/123) ── */
+/* ── Resolve product ID from URL (/p/123 or /p/custom-slug) ── */
 $uri     = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $parts   = array_values(array_filter(explode('/', $uri)));
 $rawSlug = end($parts);
+
+// Non-numeric slug → custom checkout (pay.php)
+if ($rawSlug && !is_numeric($rawSlug)) {
+    $_GET['c'] = $rawSlug;
+    require_once __DIR__ . '/pay.php';
+    exit;
+}
+
 $productId = (int)($rawSlug ?: ($_GET['slug'] ?? 0));
 
 if (!$productId) { http_response_code(404); }
