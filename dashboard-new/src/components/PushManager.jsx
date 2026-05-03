@@ -75,34 +75,81 @@ async function registerAndSubscribe() {
     return true;
 }
 
+async function silentSubscribe() {
+    try {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+        if (Notification.permission !== 'granted') return;
+
+        const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+        const registration = await navigator.serviceWorker.ready;
+
+        // Verificar se já há subscription ativa no browser
+        let subscription = await registration.pushManager.getSubscription();
+
+        if (!subscription) {
+            // Não tem subscription — criar uma nova
+            const res = await fetch('/get_vapid_key.php');
+            const vapidData = await res.json();
+            if (!vapidData.success || !vapidData.publicKey) return;
+
+            const padding = '='.repeat((4 - (vapidData.publicKey.length % 4)) % 4);
+            const base64 = (vapidData.publicKey + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const appServerKey = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) appServerKey[i] = rawData.charCodeAt(i);
+
+            subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: appServerKey
+            });
+        }
+
+        // Sempre salvar/atualizar subscription no backend
+        const subJson = subscription.toJSON();
+        await fetch('/save_subscription.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                endpoint: subJson.endpoint,
+                keys: { p256dh: subJson.keys.p256dh, auth: subJson.keys.auth }
+            })
+        });
+    } catch (e) {
+        console.warn('[Push] silentSubscribe falhou:', e.message);
+    }
+}
+
 export default function PushManager() {
     const [showPrompt, setShowPrompt] = useState(false);
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
+    // hidden controla apenas o PROMPT visual — não bloqueia o fluxo silencioso
     const [hidden, setHidden] = useState(() => {
         return localStorage.getItem('push_subscribed') === '1' || 
                localStorage.getItem('push_prompt_dismissed') === '1';
     });
 
     useEffect(() => {
-        if (hidden) return;
         if (!('serviceWorker' in navigator)) return;
         if (!('PushManager' in window) && !('Notification' in window)) return;
 
-        // Se já deu permissão e tem subscription, registra SW silenciosamente
+        // Se permissão já concedida: subscribe silencioso (garante subscription no backend)
         if (Notification.permission === 'granted') {
-            navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {});
-            localStorage.setItem('push_prompt_dismissed', '1');
-            setHidden(true);
+            silentSubscribe();
+            if (!hidden) {
+                localStorage.setItem('push_prompt_dismissed', '1');
+                setHidden(true);
+            }
             return;
         }
 
         if (Notification.permission === 'denied') {
-            setHidden(true);
+            if (!hidden) setHidden(true);
             return;
         }
 
-        // Mostrar prompt após 3s
+        // Permissão ainda não solicitada — mostrar prompt após 3s
+        if (hidden) return;
         const timer = setTimeout(() => setShowPrompt(true), 3000);
         return () => clearTimeout(timer);
     }, [hidden]);
@@ -144,7 +191,7 @@ export default function PushManager() {
                 initial={{ opacity: 0, y: 50, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 50, scale: 0.95 }}
-                className="fixed bottom-6 right-6 z-[9999] w-[340px] bg-[#111113] border border-white/10 rounded-[24px] shadow-2xl shadow-black/60 overflow-hidden"
+                className="fixed bottom-6 right-6 z-[9999] w-[340px] bg-white border border-gray-200 rounded-[24px] shadow-2xl shadow-black/10 overflow-hidden"
             >
                 <div className="p-6 space-y-4">
                     {success ? (
@@ -153,8 +200,8 @@ export default function PushManager() {
                                 <CheckCircle size={22} className="text-primary" />
                             </div>
                             <div>
-                                <h3 className="text-sm font-black text-white mb-1">Notificações Ativadas!</h3>
-                                <p className="text-[11px] text-white/40">Você receberá uma notificação de teste agora.</p>
+                                <h3 className="text-sm font-black text-gray-900 mb-1">Notificações Ativadas!</h3>
+                                <p className="text-[11px] text-gray-500">Você receberá uma notificação de teste agora.</p>
                             </div>
                         </div>
                     ) : (
@@ -163,14 +210,14 @@ export default function PushManager() {
                                 <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
                                     <Bell size={22} className="text-primary" />
                                 </div>
-                                <button onClick={dismissPrompt} className="p-1 hover:bg-white/5 rounded-lg transition-colors">
-                                    <X size={16} className="text-white/40" />
+                                <button onClick={dismissPrompt} className="p-1 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <X size={16} className="text-gray-400" />
                                 </button>
                             </div>
 
                             <div>
-                                <h3 className="text-sm font-black text-white mb-1">Ativar Notificações</h3>
-                                <p className="text-[11px] text-white/40 leading-relaxed">
+                                <h3 className="text-sm font-black text-gray-900 mb-1">Ativar Notificações</h3>
+                                <p className="text-[11px] text-gray-500 leading-relaxed">
                                     Receba alertas de pagamentos confirmados, saques e avisos importantes em tempo real no seu dispositivo.
                                 </p>
                             </div>
@@ -179,14 +226,14 @@ export default function PushManager() {
                                 <button
                                     onClick={handleActivate}
                                     disabled={loading}
-                                    className="flex-1 h-10 bg-primary text-black rounded-xl font-black text-xs flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_10px_30px_rgba(74,222,128,0.2)] disabled:opacity-50"
+                                    className="flex-1 h-10 bg-primary text-white rounded-xl font-black text-xs flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_10px_30px_rgba(168,85,247,0.2)] disabled:opacity-50"
                                 >
                                     {loading ? <Loader2 size={14} className="animate-spin" /> : <Bell size={14} />}
                                     {loading ? 'Ativando...' : 'Ativar'}
                                 </button>
                                 <button
                                     onClick={dismissPrompt}
-                                    className="flex-1 h-10 bg-white/5 border border-white/10 rounded-xl font-black text-xs text-white/60 hover:bg-white/10 transition-all"
+                                    className="flex-1 h-10 bg-gray-100 border border-gray-200 rounded-xl font-black text-xs text-gray-500 hover:bg-gray-200 transition-all"
                                 >
                                     Agora não
                                 </button>
