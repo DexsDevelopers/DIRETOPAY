@@ -42,8 +42,13 @@ if ($isAuth && $requestPath === '/') {
     <title>Ghost Pix - Dashboard Premium</title>
     
     <!-- React Build Assets -->
-    <script type="module" crossorigin src="/assets/dashboard-react/index-pMpSxLxd.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-Bpu4B3GQ.css">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-react-CIFpnPib.js">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-lucide-owoi_Ylx.js">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-motion-BKEh_tME.js">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js">
+    <script type="module" crossorigin src="/assets/dashboard-react/index-BOn8jWox.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-DrOYxgbL.css">
     
     <!-- Preload fonts to avoid layout shift -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -51,24 +56,14 @@ if ($isAuth && $requestPath === '/') {
     <style>
       body {
         margin: 0;
-        background-color: #08080a;
-        color: white;
+        background-color: #ffffff;
+        color: #1E1B4B;
         font-family: 'Outfit', sans-serif;
       }
-      /* Custom scrollbar for better aesthetics */
-      ::-webkit-scrollbar {
-        width: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #08080a;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #222;
-        border-radius: 10px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #333;
-      }
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(168,85,247,0.5); }
     </style>
   </head>
   <body>
