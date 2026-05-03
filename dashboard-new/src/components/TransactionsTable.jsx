@@ -39,10 +39,10 @@ export default function TransactionsTable({ transactions = [], loading = false, 
 
     if (loading) {
         return (
-            <div className="bg-[#0a0a0b]/50 border border-white/5 rounded-3xl p-8 min-h-[400px] flex items-center justify-center">
+            <div className="bg-white border border-gray-100 rounded-3xl p-8 min-h-[400px] flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-                    <p className="text-white/40 font-medium font-['Outfit']">Sincronizando banco de dados...</p>
+                    <p className="text-gray-400 font-medium font-['Outfit']">Sincronizando banco de dados...</p>
                 </div>
             </div>
         );
@@ -50,12 +50,12 @@ export default function TransactionsTable({ transactions = [], loading = false, 
 
     if (transactions.length === 0) {
         return (
-            <div className="bg-[#0a0a0b]/50 border border-white/5 rounded-3xl p-12 text-center">
-                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <History className="text-white/20" size={32} />
+            <div className="bg-white border border-gray-100 rounded-3xl p-12 text-center">
+                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <History className="text-gray-300" size={32} />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Sem movimentação</h3>
-                <p className="text-white/40 max-w-sm mx-auto">{showSeller ? 'Nenhuma venda na plataforma ainda.' : 'Suas vendas aparecerão aqui em tempo real.'}</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Sem movimentação</h3>
+                <p className="text-gray-500 max-w-sm mx-auto">{showSeller ? 'Nenhuma venda na plataforma ainda.' : 'Suas vendas aparecerão aqui em tempo real.'}</p>
             </div>
         );
     }
@@ -65,11 +65,11 @@ export default function TransactionsTable({ transactions = [], loading = false, 
             {/* Mobile Cards */}
             <div className="md:hidden space-y-2">
                 {transactions.map((tx) => (
-                    <div key={tx.id} className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 space-y-3">
+                    <div key={tx.id} className="bg-white border border-gray-100 rounded-2xl p-4 space-y-3 shadow-sm">
                         <div className="flex items-center justify-between gap-3">
                             <div className="flex-1 min-w-0">
-                                <span className="text-white font-bold text-sm block truncate">{tx.customer_name || 'Sem nome'}</span>
-                                <span className="text-white/20 text-[10px] font-medium uppercase tracking-wider">#{tx.id} • {tx.date}</span>
+                                <span className="text-gray-900 font-bold text-sm block truncate">{tx.customer_name || 'Sem nome'}</span>
+                                <span className="text-gray-400 text-[10px] font-medium uppercase tracking-wider">#{tx.id} • {tx.date}</span>
                             </div>
                             <div className="flex flex-col items-end gap-1">
                                 <span className={cn(
@@ -88,13 +88,13 @@ export default function TransactionsTable({ transactions = [], loading = false, 
                             </div>
                         </div>
                         {showSeller && tx.seller_name && (
-                            <span className="text-white/70 font-semibold text-xs bg-white/5 px-2.5 py-1 rounded-full border border-white/10">{tx.seller_name}</span>
+                            <span className="text-gray-600 font-semibold text-xs bg-gray-50 px-2.5 py-1 rounded-full border border-gray-200">{tx.seller_name}</span>
                         )}
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <span className="text-white font-black text-base">R$ {tx.amount_brl}</span>
+                                <span className="text-gray-900 font-black text-base">R$ {tx.amount_brl}</span>
                                 {tx.badge === 'pending' && (
-                                    <div className="flex items-center gap-1 text-[11px] font-bold text-white/30">
+                                    <div className="flex items-center gap-1 text-[11px] font-bold text-gray-400">
                                         <Clock size={10} className="text-orange-500/50" />
                                         <CountdownTimer secondsOld={tx.seconds_old} />
                                     </div>
@@ -111,7 +111,7 @@ export default function TransactionsTable({ transactions = [], loading = false, 
                                             secondsOld: tx.seconds_old || 0,
                                             createdAt: Date.now() - ((tx.seconds_old || 0) * 1000)
                                         })}
-                                        className="p-2 rounded-full bg-white/5 text-primary border border-white/5"
+                                        className="p-2 rounded-full bg-primary/10 text-primary border border-primary/20"
                                         title="Ver QR Code"
                                     >
                                         <QrCode size={16} />
@@ -119,14 +119,14 @@ export default function TransactionsTable({ transactions = [], loading = false, 
                                 )}
                                 <button
                                     onClick={() => handleCopy(tx.pix_code, tx.id)}
-                                    className="p-2 rounded-full bg-white/5 text-white/40 border border-white/5"
+                                    className="p-2 rounded-full bg-gray-50 text-gray-400 border border-gray-100"
                                     title="Copiar Código"
                                 >
                                     {copiedId === tx.id ? <Check size={16} className="text-primary" /> : <Copy size={16} />}
                                 </button>
                                 <button
                                     onClick={() => onDelete && onDelete(tx.id)}
-                                    className="p-2 rounded-full bg-red-500/5 text-red-500/40 border border-white/5"
+                                    className="p-2 rounded-full bg-red-50 text-red-400 border border-red-100"
                                     title="Excluir"
                                 >
                                     <Trash2 size={16} />
@@ -141,7 +141,7 @@ export default function TransactionsTable({ transactions = [], loading = false, 
             <div className="hidden md:block overflow-x-auto custom-scrollbar">
                 <table className="w-full text-left border-separate border-spacing-y-3">
                     <thead>
-                        <tr className="text-white/20 text-[10px] uppercase tracking-[0.2em] font-black">
+                        <tr className="text-gray-500 text-[10px] uppercase tracking-[0.15em] font-black">
                             <th className="px-6 py-2">Cliente / ID</th>
                             {showSeller && <th className="px-6 py-2">Vendedor</th>}
                             <th className="px-6 py-2">Valor Total</th>
@@ -152,21 +152,21 @@ export default function TransactionsTable({ transactions = [], loading = false, 
                     <tbody>
                         {transactions.map((tx) => (
                             <tr key={tx.id} className="group transition-all duration-500">
-                                <td className="px-6 py-5 bg-white/[0.01] group-hover:bg-white/[0.03] rounded-l-[24px] border-y border-l border-white/5">
+                                <td className="px-6 py-5 bg-white group-hover:bg-gray-50/70 rounded-l-[24px] border-y border-l border-gray-100">
                                     <div className="flex flex-col gap-1">
-                                        <span className="text-white font-bold text-sm tracking-tight">{tx.customer_name || 'Sem nome'}</span>
-                                        <span className="text-white/20 text-[10px] font-medium uppercase tracking-wider">#{tx.id} • {tx.date}</span>
+                                        <span className="text-gray-900 font-bold text-sm tracking-tight">{tx.customer_name || 'Sem nome'}</span>
+                                        <span className="text-gray-400 text-[10px] font-medium uppercase tracking-wider">#{tx.id} • {tx.date}</span>
                                     </div>
                                 </td>
                                 {showSeller && (
-                                    <td className="px-6 py-5 bg-white/[0.01] group-hover:bg-white/[0.03] border-y border-white/5">
-                                        <span className="text-white/70 font-semibold text-xs bg-white/5 px-2.5 py-1 rounded-full border border-white/10">{tx.seller_name || '—'}</span>
+                                    <td className="px-6 py-5 bg-white group-hover:bg-gray-50/70 border-y border-gray-100">
+                                        <span className="text-gray-600 font-semibold text-xs bg-gray-50 px-2.5 py-1 rounded-full border border-gray-200">{tx.seller_name || '—'}</span>
                                     </td>
                                 )}
-                                <td className="px-6 py-5 bg-white/[0.01] group-hover:bg-white/[0.03] border-y border-white/5">
-                                    <span className="text-white font-black text-base">R$ {tx.amount_brl}</span>
+                                <td className="px-6 py-5 bg-white group-hover:bg-gray-50/70 border-y border-gray-100">
+                                    <span className="text-gray-900 font-black text-base">R$ {tx.amount_brl}</span>
                                 </td>
-                                <td className="px-6 py-5 bg-white/[0.01] group-hover:bg-white/[0.03] border-y border-white/5 text-center">
+                                <td className="px-6 py-5 bg-white group-hover:bg-gray-50/70 border-y border-gray-100 text-center">
                                     <div className="flex flex-col items-center gap-2">
                                         <span className={cn(
                                             "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.1em]",
@@ -182,14 +182,14 @@ export default function TransactionsTable({ transactions = [], loading = false, 
                                             </span>
                                         )}
                                         {tx.badge === 'pending' && (
-                                            <div className="flex items-center gap-1.5 text-[11px] font-bold text-white/30">
+                                            <div className="flex items-center gap-1.5 text-[11px] font-bold text-gray-400">
                                                 <Clock size={10} className="text-orange-500/50" />
                                                 <CountdownTimer secondsOld={tx.seconds_old} />
                                             </div>
                                         )}
                                     </div>
                                 </td>
-                                <td className="px-6 py-5 bg-white/[0.01] group-hover:bg-white/[0.03] border-y border-r border-white/5 rounded-r-[24px] text-right">
+                                <td className="px-6 py-5 bg-white group-hover:bg-gray-50/70 border-y border-r border-gray-100 rounded-r-[24px] text-right">
                                     <div className="flex items-center justify-end gap-2.5">
                                         {tx.badge === 'pending' && (
                                             <button
@@ -201,7 +201,7 @@ export default function TransactionsTable({ transactions = [], loading = false, 
                                                     secondsOld: tx.seconds_old || 0,
                                                     createdAt: Date.now() - ((tx.seconds_old || 0) * 1000)
                                                 })}
-                                                className="p-2.5 rounded-full bg-white/5 text-primary hover:bg-primary hover:text-black transition-all duration-300 border border-white/5 hover:border-primary active:scale-95"
+                                                className="p-2.5 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all duration-300 border border-primary/20 hover:border-primary active:scale-95"
                                                 title="Ver QR Code"
                                             >
                                                 <QrCode size={18} />
@@ -209,7 +209,7 @@ export default function TransactionsTable({ transactions = [], loading = false, 
                                         )}
                                         <button
                                             onClick={() => handleCopy(tx.pix_code, tx.id)}
-                                            className="p-2.5 rounded-full bg-white/5 text-white/40 hover:bg-white/10 hover:text-white transition-all duration-300 border border-white/5 active:scale-95"
+                                            className="p-2.5 rounded-full bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-gray-900 transition-all duration-300 border border-gray-200 active:scale-95"
                                             title="Copiar Código"
                                         >
                                             {copiedId === tx.id ? <Check size={18} className="text-primary" /> : <Copy size={18} />}

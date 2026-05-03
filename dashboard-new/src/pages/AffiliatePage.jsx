@@ -49,7 +49,7 @@ export default function AffiliatePage() {
 
     if (!data) {
         return (
-            <div className="flex items-center justify-center h-[60vh] text-white/30 text-sm font-bold">
+            <div className="flex items-center justify-center h-[60vh] text-gray-400 text-sm font-bold">
                 Erro ao carregar dados de afiliado.
             </div>
         );
@@ -59,11 +59,11 @@ export default function AffiliatePage() {
         <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-black tracking-tight text-white flex items-center gap-3">
+                <h1 className="text-3xl font-black tracking-tight text-gray-900 flex items-center gap-3">
                     <Gift className="text-primary" size={32} />
                     Programa de <span className="text-primary italic">Afiliados</span>
                 </h1>
-                <p className="text-white/40 font-medium mt-1">Compartilhe seu link e ganhe comissões automáticas sobre cada transação.</p>
+                <p className="text-gray-500 font-medium mt-1">Compartilhe seu link e ganhe comissões automáticas sobre cada transação.</p>
             </div>
 
             {/* Stats Cards */}
@@ -98,14 +98,14 @@ export default function AffiliatePage() {
             {/* Referral Link + How it Works */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Link Card */}
-                <div className="glass p-8 rounded-[32px] border-white/5 space-y-6">
+                <div className="bg-white border border-gray-100 shadow-sm p-8 rounded-[32px] space-y-6">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
                             <Link2 size={20} className="text-primary" />
                         </div>
                         <div>
-                            <h3 className="text-lg font-black">Seu Link de Indicação</h3>
-                            <p className="text-xs text-white/30">Compartilhe para ganhar comissões</p>
+                            <h3 className="text-lg font-black text-gray-900">Seu Link de Indicação</h3>
+                            <p className="text-xs text-gray-400">Compartilhe para ganhar comissões</p>
                         </div>
                     </div>
 
@@ -114,7 +114,7 @@ export default function AffiliatePage() {
                             type="text"
                             value={data.ref_link}
                             readOnly
-                            className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 font-mono text-xs text-white/50 focus:outline-none select-all"
+                            className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 font-mono text-xs text-gray-500 focus:outline-none select-all"
                             onClick={(e) => e.target.select()}
                         />
                         <button
@@ -122,8 +122,8 @@ export default function AffiliatePage() {
                             className={cn(
                                 "w-14 rounded-2xl flex items-center justify-center transition-all font-bold shrink-0",
                                 copied
-                                    ? "bg-primary text-black"
-                                    : "bg-white text-black hover:scale-105"
+                                    ? "bg-primary text-white"
+                                    : "bg-gradient-to-r from-purple-500 to-violet-600 text-white hover:scale-105"
                             )}
                         >
                             {copied ? <Check size={20} /> : <Copy size={20} />}
@@ -133,7 +133,7 @@ export default function AffiliatePage() {
                     <div className="flex gap-3">
                         <button
                             onClick={handleCopy}
-                            className="flex-1 py-3 bg-white/5 border border-white/10 rounded-2xl text-xs font-black uppercase tracking-widest text-white/60 hover:text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+                            className="flex-1 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-xs font-black uppercase tracking-widest text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all flex items-center justify-center gap-2"
                         >
                             <Copy size={14} />
                             {copied ? 'Copiado!' : 'Copiar Link'}
@@ -153,14 +153,14 @@ export default function AffiliatePage() {
                 </div>
 
                 {/* How it works */}
-                <div className="glass p-8 rounded-[32px] border-white/5 space-y-6">
+                <div className="bg-white border border-gray-100 shadow-sm p-8 rounded-[32px] space-y-6">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/10">
-                            <Info size={20} className="text-white/60" />
+                        <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-200">
+                            <Info size={20} className="text-gray-500" />
                         </div>
                         <div>
-                            <h3 className="text-lg font-black">Como Funciona?</h3>
-                            <p className="text-xs text-white/30">Processo simples em 4 etapas</p>
+                            <h3 className="text-lg font-black text-gray-900">Como Funciona?</h3>
+                            <p className="text-xs text-gray-400">Processo simples em 4 etapas</p>
                         </div>
                     </div>
 
@@ -176,8 +176,8 @@ export default function AffiliatePage() {
                                     {item.step}
                                 </div>
                                 <div>
-                                    <p className="text-sm font-bold text-white/80">{item.title}</p>
-                                    <p className="text-xs text-white/30 mt-0.5 leading-relaxed">{item.desc}</p>
+                                    <p className="text-sm font-bold text-gray-700">{item.title}</p>
+                                    <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">{item.desc}</p>
                                 </div>
                             </div>
                         ))}
@@ -186,21 +186,21 @@ export default function AffiliatePage() {
             </div>
 
             {/* Referrals Table */}
-            <div className="glass rounded-[32px] border-white/5 overflow-hidden">
-                <div className="p-6 lg:p-8 border-b border-white/5 flex items-center justify-between">
+            <div className="bg-white border border-gray-100 shadow-sm rounded-[32px] overflow-hidden">
+                <div className="p-6 lg:p-8 border-b border-gray-100 flex items-center justify-between">
                     <div>
-                        <h3 className="text-xl font-black flex items-center gap-3">
+                        <h3 className="text-xl font-black flex items-center gap-3 text-gray-900">
                             <UserPlus size={20} className="text-primary" />
                             Seus Indicados
                         </h3>
-                        <p className="text-xs text-white/30 mt-1">{data.total_referrals} indicação{data.total_referrals !== 1 ? 'ões' : ''} registrada{data.total_referrals !== 1 ? 's' : ''}</p>
+                        <p className="text-xs text-gray-400 mt-1">{data.total_referrals} indicação{data.total_referrals !== 1 ? 'ões' : ''} registrada{data.total_referrals !== 1 ? 's' : ''}</p>
                     </div>
                 </div>
 
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead>
-                            <tr className="text-left border-b border-white/5 text-white/20 text-[10px] font-black uppercase tracking-widest">
+                            <tr className="text-left border-b border-gray-100 text-gray-400 text-[10px] font-black uppercase tracking-widest">
                                 <th className="p-4 lg:p-6 pl-6 lg:pl-8">Indicado</th>
                                 <th className="p-4 lg:p-6">Data de Registro</th>
                                 <th className="p-4 lg:p-6 text-center">Transações</th>
@@ -208,27 +208,27 @@ export default function AffiliatePage() {
                                 <th className="p-4 lg:p-6 pr-6 lg:pr-8 text-right">Ganhos Gerados</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5">
+                        <tbody className="divide-y divide-gray-50">
                             {data.referrals.length === 0 ? (
                                 <tr>
                                     <td colSpan="5" className="p-16 text-center">
-                                        <Users className="mx-auto text-white/10 mb-4" size={40} />
-                                        <p className="text-sm font-bold text-white/20">Nenhuma indicação ainda</p>
-                                        <p className="text-xs text-white/10 mt-1">Compartilhe seu link para começar a ganhar!</p>
+                                        <Users className="mx-auto text-gray-200 mb-4" size={40} />
+                                        <p className="text-sm font-bold text-gray-400">Nenhuma indicação ainda</p>
+                                        <p className="text-xs text-gray-300 mt-1">Compartilhe seu link para começar a ganhar!</p>
                                     </td>
                                 </tr>
                             ) : data.referrals.map((ref, i) => (
-                                <tr key={i} className="hover:bg-white/[0.01] transition-colors">
+                                <tr key={i} className="hover:bg-gray-50 transition-colors">
                                     <td className="p-4 lg:p-6 pl-6 lg:pl-8">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-xs font-black text-white/40">
+                                            <div className="w-9 h-9 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-xs font-black text-gray-400">
                                                 {ref.initial}
                                             </div>
-                                            <span className="text-sm font-bold text-white/70">{ref.name}</span>
+                                            <span className="text-sm font-bold text-gray-700">{ref.name}</span>
                                         </div>
                                     </td>
-                                    <td className="p-4 lg:p-6 text-sm text-white/30 font-medium">{ref.created_at}</td>
-                                    <td className="p-4 lg:p-6 text-center text-sm text-white/50 font-bold">{ref.transactions}</td>
+                                    <td className="p-4 lg:p-6 text-sm text-gray-400 font-medium">{ref.created_at}</td>
+                                    <td className="p-4 lg:p-6 text-center text-sm text-gray-500 font-bold">{ref.transactions}</td>
                                     <td className="p-4 lg:p-6 text-center">
                                         <span className={cn(
                                             "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border",
@@ -256,7 +256,7 @@ export default function AffiliatePage() {
                 </div>
                 <div className="space-y-2">
                     <h4 className="text-lg font-black">Dicas para Maximizar Seus Ganhos</h4>
-                    <ul className="space-y-1.5 text-sm text-white/40">
+                    <ul className="space-y-1.5 text-sm text-gray-500">
                         <li className="flex items-center gap-2"><ArrowUpRight size={12} className="text-primary shrink-0" /> Compartilhe em grupos de empreendedores e vendedores online</li>
                         <li className="flex items-center gap-2"><ArrowUpRight size={12} className="text-primary shrink-0" /> Poste em redes sociais como Instagram, Twitter e TikTok</li>
                         <li className="flex items-center gap-2"><ArrowUpRight size={12} className="text-primary shrink-0" /> Ajude seus indicados a começar — quanto mais eles vendem, mais você ganha</li>
@@ -274,17 +274,17 @@ function StatCard({ icon, label, value, sub, highlight }) {
             "p-5 rounded-[24px] border backdrop-blur-md transition-all duration-300 group",
             highlight
                 ? "bg-primary/[0.05] border-primary/10 hover:border-primary/20"
-                : "bg-[#0a0a0b]/50 border-white/5 hover:border-white/10"
+                : "bg-white border-gray-100 hover:border-purple-100 shadow-sm"
         )}>
             <div className={cn(
                 "p-2.5 rounded-xl w-fit mb-3 group-hover:scale-110 transition-transform duration-300",
-                highlight ? "bg-primary/10 text-primary" : "bg-white/[0.04] text-white/40"
+                highlight ? "bg-primary/10 text-primary" : "bg-gray-50 text-gray-400"
             )}>
                 {icon}
             </div>
-            <p className="text-white/40 text-[10px] font-black uppercase tracking-widest">{label}</p>
-            <h4 className={cn("text-2xl font-black mt-1", highlight ? "text-primary" : "text-white")}>{value}</h4>
-            {sub && <p className="text-[10px] text-white/20 font-bold mt-1">{sub}</p>}
+            <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest">{label}</p>
+            <h4 className={cn("text-2xl font-black mt-1", highlight ? "text-primary" : "text-gray-900")}>{value}</h4>
+            {sub && <p className="text-[10px] text-gray-400 font-bold mt-1">{sub}</p>}
         </div>
     );
 }

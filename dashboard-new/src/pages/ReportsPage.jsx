@@ -12,10 +12,10 @@ import {
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
-            <div className="bg-[#1a1a2e] border border-white/10 rounded-2xl px-4 py-3 shadow-xl shadow-black/40">
-                <p className="text-white/50 text-xs font-semibold mb-1">{label}</p>
+            <div className="bg-white border border-gray-200 rounded-2xl px-4 py-3 shadow-xl shadow-gray-200/80">
+                <p className="text-gray-500 text-xs font-semibold mb-1">{label}</p>
                 {payload.map((entry, i) => (
-                    <p key={i} className="text-white font-bold text-sm">
+                    <p key={i} className="text-gray-900 font-bold text-sm">
                         {entry.name === 'sales' ? `R$ ${entry.value.toLocaleString('pt-BR')}` : `${entry.value}%`}
                     </p>
                 ))}
@@ -58,23 +58,23 @@ export default function ReportsPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-3xl font-black tracking-tight text-white flex items-center gap-3">
+                    <h1 className="text-3xl font-black tracking-tight text-gray-900 flex items-center gap-3">
                         <BarChart3 className="text-primary" size={32} />
                         Relatórios <span className="text-primary italic">Analíticos</span>
                     </h1>
-                    <p className="text-white/40 font-medium">Acompanhe o desempenho das suas vendas com precisão.</p>
+                    <p className="text-gray-500 font-medium">Acompanhe o desempenho das suas vendas com precisão.</p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">
-                    <div className="flex bg-white/[0.03] rounded-full border border-white/10 p-1">
+                    <div className="flex bg-gray-50 rounded-full border border-gray-200 p-1">
                         {['7d', '30d', '90d', 'anual'].map((range) => (
                             <button
                                 key={range}
                                 onClick={() => setDateRange(range)}
                                 className={`px-4 py-1.5 text-sm font-bold rounded-full transition-all duration-200 ${
                                     dateRange === range
-                                        ? 'bg-primary text-black shadow-lg shadow-primary/30'
-                                        : 'text-white/50 hover:text-white/80'
+                                        ? 'bg-primary text-white shadow-lg shadow-primary/30'
+                                        : 'text-gray-500 hover:text-gray-900'
                                 }`}
                             >
                                 {range === 'anual' ? 'Anual' : range}
@@ -82,8 +82,8 @@ export default function ReportsPage() {
                         ))}
                     </div>
 
-                    <button className="bg-white/5 hover:bg-white/10 border border-white/10 rounded-full p-3 transition-all" title="Exportar">
-                        <Download size={18} className="text-white/60" />
+                    <button className="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-full p-3 transition-all" title="Exportar">
+                        <Download size={18} className="text-gray-500" />
                     </button>
                 </div>
             </div>
@@ -92,7 +92,7 @@ export default function ReportsPage() {
                 <div className="flex items-center justify-center py-32">
                     <div className="flex flex-col items-center gap-4">
                         <Loader2 className="w-10 h-10 text-primary animate-spin" />
-                        <p className="text-white/40 font-medium">Carregando relatórios...</p>
+                        <p className="text-gray-400 font-medium">Carregando relatórios...</p>
                     </div>
                 </div>
             ) : (
@@ -128,13 +128,13 @@ export default function ReportsPage() {
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Main Area Chart */}
-                <div className="lg:col-span-2 bg-[#0a0a0b]/50 rounded-[32px] border border-white/5 backdrop-blur-md p-6">
+                <div className="lg:col-span-2 bg-white rounded-[32px] border border-gray-100 shadow-sm p-6">
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h3 className="text-lg font-black text-white">Histórico de Faturamento</h3>
-                            <p className="text-white/30 text-sm font-medium">Desempenho financeiro diário</p>
+                            <h3 className="text-lg font-black text-gray-900">Histórico de Faturamento</h3>
+                            <p className="text-gray-400 text-sm font-medium">Desempenho financeiro diário</p>
                         </div>
-                        <div className="flex items-center gap-2 text-xs font-bold text-white/40">
+                        <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
                             <div className="w-2.5 h-2.5 rounded-full bg-primary"></div>
                             Vendas (R$)
                         </div>
@@ -150,18 +150,18 @@ export default function ReportsPage() {
                                         <stop offset="95%" stopColor="#a78bfa" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
                                 <XAxis
                                     dataKey="name"
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 12, fontWeight: 600 }}
+                                    tick={{ fill: '#9ca3af', fontSize: 12, fontWeight: 600 }}
                                     dy={10}
                                 />
                                 <YAxis
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 12, fontWeight: 600 }}
+                                    tick={{ fill: '#9ca3af', fontSize: 12, fontWeight: 600 }}
                                     dx={-10}
                                     tickFormatter={(v) => `R$ ${v}`}
                                 />
@@ -178,29 +178,29 @@ export default function ReportsPage() {
                         </ResponsiveContainer>
                         ) : (
                             <div className="h-full flex items-center justify-center">
-                                <p className="text-white/20 font-medium">Sem dados no período selecionado</p>
+                                <p className="text-gray-300 font-medium">Sem dados no período selecionado</p>
                             </div>
                         )}
                     </div>
                 </div>
 
                 {/* Conversion Chart */}
-                <div className="bg-[#0a0a0b]/50 rounded-[32px] border border-white/5 backdrop-blur-md p-6 flex flex-col">
+                <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-6 flex flex-col">
                     <div className="mb-6">
-                        <h3 className="text-lg font-black text-white">Efetividade de Vendas</h3>
-                        <p className="text-white/30 text-sm font-medium">Taxa de conversão por dia</p>
+                        <h3 className="text-lg font-black text-gray-900">Efetividade de Vendas</h3>
+                        <p className="text-gray-400 text-sm font-medium">Taxa de conversão por dia</p>
                     </div>
 
                     <div className="h-[220px] w-full">
                         {convData.length > 0 ? (
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={convData}>
-                                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
                                 <XAxis
                                     dataKey="name"
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11, fontWeight: 600 }}
+                                    tick={{ fill: '#9ca3af', fontSize: 11, fontWeight: 600 }}
                                 />
                                 <YAxis hide />
                                 <Tooltip content={<CustomTooltip />} />
@@ -214,19 +214,19 @@ export default function ReportsPage() {
                         </ResponsiveContainer>
                         ) : (
                             <div className="h-full flex items-center justify-center">
-                                <p className="text-white/20 font-medium text-sm">Sem dados</p>
+                                <p className="text-gray-300 font-medium text-sm">Sem dados</p>
                             </div>
                         )}
                     </div>
 
-                    <div className="mt-auto pt-5 border-t border-white/5 grid grid-cols-2 gap-3">
-                        <div className="p-3 bg-white/[0.03] rounded-2xl text-center border border-white/5">
-                            <p className="text-[11px] font-bold text-white/40 mb-0.5">Total Pedidos</p>
-                            <p className="text-xl font-black text-white">{m.total_orders || 0}</p>
+                    <div className="mt-auto pt-5 border-t border-gray-100 grid grid-cols-2 gap-3">
+                        <div className="p-3 bg-gray-50 rounded-2xl text-center border border-gray-100">
+                            <p className="text-[11px] font-bold text-gray-400 mb-0.5">Total Pedidos</p>
+                            <p className="text-xl font-black text-gray-900">{m.total_orders || 0}</p>
                         </div>
-                        <div className="p-3 bg-white/[0.03] rounded-2xl text-center border border-white/5">
-                            <p className="text-[11px] font-bold text-white/40 mb-0.5">Ticket Médio</p>
-                            <p className="text-xl font-black text-white">R$ {m.avg_ticket || '0,00'}</p>
+                        <div className="p-3 bg-gray-50 rounded-2xl text-center border border-gray-100">
+                            <p className="text-[11px] font-bold text-gray-400 mb-0.5">Ticket Médio</p>
+                            <p className="text-xl font-black text-gray-900">R$ {m.avg_ticket || '0,00'}</p>
                         </div>
                     </div>
                 </div>
@@ -235,8 +235,8 @@ export default function ReportsPage() {
             {/* Bottom Row - Top Checkouts */}
             {checkoutData.length > 0 && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="bg-[#0a0a0b]/50 rounded-[32px] border border-white/5 backdrop-blur-md p-6">
-                    <h3 className="text-lg font-black text-white mb-4">Top Checkouts</h3>
+                <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-6">
+                    <h3 className="text-lg font-black text-gray-900 mb-4">Top Checkouts</h3>
                     <div className="h-[250px] w-full relative">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
@@ -256,18 +256,18 @@ export default function ReportsPage() {
                                 </Pie>
                                 <Tooltip
                                     contentStyle={{
-                                        backgroundColor: '#1a1a2e',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        backgroundColor: '#ffffff',
+                                        border: '1px solid #e5e7eb',
                                         borderRadius: '16px',
                                     }}
-                                    itemStyle={{ color: '#fff' }}
+                                    itemStyle={{ color: '#111827' }}
                                 />
                             </PieChart>
                         </ResponsiveContainer>
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                             <div className="text-center">
-                                <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Vendas</p>
-                                <p className="text-lg font-black text-white">{totalCheckoutValue}</p>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Vendas</p>
+                                <p className="text-lg font-black text-gray-900">{totalCheckoutValue}</p>
                             </div>
                         </div>
                     </div>
@@ -277,9 +277,9 @@ export default function ReportsPage() {
                             <div key={i} className="flex items-center justify-between">
                                 <div className="flex items-center gap-2.5">
                                     <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }}></div>
-                                    <span className="text-sm font-semibold text-white/60">{item.name}</span>
+                                    <span className="text-sm font-semibold text-gray-500">{item.name}</span>
                                 </div>
-                                <span className="text-sm font-black text-white">{totalCheckoutValue > 0 ? Math.round((item.value / totalCheckoutValue) * 100) : 0}%</span>
+                                <span className="text-sm font-black text-gray-900">{totalCheckoutValue > 0 ? Math.round((item.value / totalCheckoutValue) * 100) : 0}%</span>
                             </div>
                         ))}
                     </div>
@@ -297,9 +297,9 @@ function MetricCard({ title, value, change, icon }) {
     const isUp = hasComparison && change >= 0;
     const changeStr = !hasComparison ? null : change === 0 ? '0%' : `${isUp ? '+' : ''}${change}%`;
     return (
-        <div className="bg-[#0a0a0b]/50 p-5 rounded-[24px] border border-white/5 backdrop-blur-md hover:border-white/10 transition-all duration-300 group">
+        <div className="bg-white p-5 rounded-[24px] border border-gray-100 shadow-sm hover:shadow-md hover:border-purple-100 transition-all duration-300 group">
             <div className="flex items-center justify-between mb-3">
-                <div className="p-2.5 rounded-xl bg-white/[0.04] text-primary group-hover:scale-110 transition-transform duration-300">
+                <div className="p-2.5 rounded-xl bg-primary/10 text-primary group-hover:scale-110 transition-transform duration-300">
                     {icon}
                 </div>
                 {changeStr !== null ? (
@@ -310,13 +310,13 @@ function MetricCard({ title, value, change, icon }) {
                         {changeStr}
                     </div>
                 ) : (
-                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold text-white/30 bg-white/5">
+                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold text-gray-400 bg-gray-50">
                         — sem comparação
                     </div>
                 )}
             </div>
-            <p className="text-white/40 text-xs font-bold uppercase tracking-wider">{title}</p>
-            <h4 className="text-2xl font-black text-white mt-1">{value}</h4>
+            <p className="text-gray-400 text-xs font-bold uppercase tracking-wider">{title}</p>
+            <h4 className="text-2xl font-black text-gray-900 mt-1">{value}</h4>
         </div>
     );
 }

@@ -23,7 +23,7 @@ const AnnouncementBar = ({ onClose }) => {
           animate={{ height: 'auto', opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           className="relative overflow-hidden shrink-0 z-20 border-b border-[#25D366]/10"
-          style={{ background: 'linear-gradient(135deg, #071a0e 0%, #0a0a0c 40%, #0a0a0c 60%, #071a0e 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #f8fafc 40%, #f8fafc 60%, #f0fdf4 100%)' }}
         >
           {/* Shimmer sweep */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -54,12 +54,12 @@ const AnnouncementBar = ({ onClose }) => {
               
               <div className="hidden sm:flex flex-col">
                 <span className="text-[10px] font-black uppercase tracking-[0.15em] text-[#25D366]/80">Canal Oficial</span>
-                <span className="text-[11px] font-medium text-white/50 -mt-0.5">Novidades, dicas e suporte em tempo real</span>
+                <span className="text-[11px] font-medium text-gray-500 -mt-0.5">Novidades, dicas e suporte em tempo real</span>
               </div>
-              <span className="sm:hidden text-[11px] font-bold text-white/50">Canal WhatsApp</span>
+              <span className="sm:hidden text-[11px] font-bold text-gray-500">Canal WhatsApp</span>
             </div>
 
-            <div className="h-5 w-px bg-white/[0.06] hidden sm:block" />
+            <div className="h-5 w-px bg-gray-200 hidden sm:block" />
 
             {/* CTA Button */}
             <a
@@ -85,7 +85,7 @@ const AnnouncementBar = ({ onClose }) => {
             {/* Close */}
             <button
               onClick={() => setIsVisible(false)}
-              className="absolute right-3 sm:right-4 p-1.5 rounded-full hover:bg-white/5 transition-all text-white/20 hover:text-white/60"
+              className="absolute right-3 sm:right-4 p-1.5 rounded-full hover:bg-gray-100 transition-all text-gray-300 hover:text-gray-600"
             >
               <X size={12} />
             </button>

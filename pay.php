@@ -549,7 +549,7 @@ $secondary = $checkout['secondary_color'];
             btnSubmit.innerHTML = '<div class="spinner"></div> Gerando...';
 
             try {
-                const response = await fetch('process_checkout.php', {
+                const response = await fetch('/process_checkout.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -602,7 +602,7 @@ $secondary = $checkout['secondary_color'];
             
             pollingInterval = setInterval(async () => {
                 try {
-                    const res = await fetch(`check_checkout_status.php?pix_id=${pixId}`);
+                    const res = await fetch(`/check_checkout_status.php?pix_id=${pixId}`);
                     const data = await res.json();
                     
                     if (data.status === 'paid') {

@@ -33,7 +33,7 @@ function CopyButton({ text }) {
     return (
         <button
             onClick={handle}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${copied ? 'bg-green-500/20 text-green-400 border border-green-500/20' : 'bg-white/5 text-white/60 border border-white/10 hover:bg-white/10 hover:text-white'}`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${copied ? 'bg-green-500/10 text-green-600 border border-green-500/20' : 'bg-gray-50 text-gray-500 border border-gray-200 hover:bg-gray-100 hover:text-gray-900'}`}
         >
             {copied ? <><Check size={14} /> Copiado!</> : <><Copy size={14} /> Copiar</>}
         </button>
@@ -93,19 +93,19 @@ export default function EntregaPage() {
     }, [paid, loading, error]);
 
     if (loading) return (
-        <div className="min-h-screen bg-[#08080a] flex items-center justify-center">
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
             <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
     );
 
     if (error) return (
-        <div className="min-h-screen bg-[#08080a] flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
             <div className="text-center max-w-sm">
                 <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <AlertCircle size={28} className="text-red-400" />
                 </div>
-                <h1 className="text-xl font-black text-white mb-2">Pedido não encontrado</h1>
-                <p className="text-white/40 text-sm">{error}</p>
+                <h1 className="text-xl font-black text-gray-900 mb-2">Pedido não encontrado</h1>
+                <p className="text-gray-500 text-sm">{error}</p>
             </div>
         </div>
     );
@@ -113,39 +113,39 @@ export default function EntregaPage() {
     const deliveryMethod = order?.delivery_method || 'other';
 
     return (
-        <div className="min-h-screen bg-[#08080a] flex flex-col items-center justify-center p-4 font-['Outfit',sans-serif]">
+        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-['Outfit',sans-serif]">
             <div className="w-full max-w-lg">
                 {/* Logo */}
                 <div className="text-center mb-8">
-                    <span className="font-black text-2xl tracking-tight text-white">GHOST<span className="text-[#4ade80] italic">PIX</span></span>
+                    <span className="font-black text-2xl tracking-tight text-gray-900">GHOST<span className="text-primary italic">PIX</span></span>
                 </div>
 
                 {/* Status Card */}
                 {paid ? (
-                    <div className="bg-[#111] border border-white/10 rounded-3xl overflow-hidden">
+                    <div className="bg-white border border-gray-100 shadow-md rounded-3xl overflow-hidden">
                         {/* Success header */}
-                        <div className="bg-[#4ade80]/10 border-b border-[#4ade80]/20 p-6 text-center">
-                            <div className="w-16 h-16 bg-[#4ade80]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                                <CheckCircle size={32} className="text-[#4ade80]" />
+                        <div className="bg-green-500/5 border-b border-green-500/15 p-6 text-center">
+                            <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <CheckCircle size={32} className="text-green-500" />
                             </div>
-                            <h1 className="text-xl font-black text-white">Pagamento Confirmado!</h1>
-                            <p className="text-white/50 text-sm mt-1">Olá, {order.buyer_name}. Seu pedido foi processado.</p>
+                            <h1 className="text-xl font-black text-gray-900">Pagamento Confirmado!</h1>
+                            <p className="text-gray-500 text-sm mt-1">Olá, {order.buyer_name}. Seu pedido foi processado.</p>
                         </div>
 
                         <div className="p-6 space-y-5">
                             {/* Product */}
-                            <div className="flex items-center gap-4 p-4 bg-white/[0.03] border border-white/5 rounded-2xl">
+                            <div className="flex items-center gap-4 p-4 bg-gray-50 border border-gray-100 rounded-2xl">
                                 {order.product_image ? (
                                     <img src={order.product_image} alt={order.product_name} className="w-14 h-14 rounded-xl object-cover flex-shrink-0" onError={e => e.target.style.display='none'} />
                                 ) : (
-                                    <div className="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <Package size={20} className="text-white/20" />
+                                    <div className="w-14 h-14 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <Package size={20} className="text-gray-300" />
                                     </div>
                                 )}
                                 <div className="flex-1 min-w-0">
-                                    <p className="font-black truncate">{order.product_name}</p>
-                                    <p className="text-xs text-white/40 mt-0.5">Vendido por {order.seller_store || order.seller_name}</p>
-                                    <p className="text-sm text-[#4ade80] font-bold mt-0.5">
+                                    <p className="font-black truncate text-gray-900">{order.product_name}</p>
+                                    <p className="text-xs text-gray-400 mt-0.5">Vendido por {order.seller_store || order.seller_name}</p>
+                                    <p className="text-sm text-green-600 font-bold mt-0.5">
                                         R$ {parseFloat(order.amount).toFixed(2).replace('.', ',')}
                                     </p>
                                 </div>
@@ -154,25 +154,25 @@ export default function EntregaPage() {
                             {/* Delivery Content */}
                             {order.delivered_content && (
                                 <div className="space-y-2">
-                                    <div className="flex items-center gap-2 text-xs font-black text-white/40 uppercase tracking-widest">
+                                    <div className="flex items-center gap-2 text-xs font-black text-gray-400 uppercase tracking-widest">
                                         {DELIVERY_ICONS[deliveryMethod]}
                                         {DELIVERY_LABELS[deliveryMethod] || 'Seu produto'}
                                     </div>
-                                    <div className="bg-[#4ade80]/5 border border-[#4ade80]/20 rounded-2xl p-4">
+                                    <div className="bg-primary/5 border border-primary/15 rounded-2xl p-4">
                                         {isUrl(order.delivered_content) ? (
                                             <div className="space-y-3">
-                                                <p className="text-sm text-white/60 font-mono break-all">{order.delivered_content}</p>
+                                                <p className="text-sm text-gray-600 font-mono break-all">{order.delivered_content}</p>
                                                 <div className="flex gap-2">
                                                     <CopyButton text={order.delivered_content} />
                                                     <a href={order.delivered_content} target="_blank" rel="noopener noreferrer"
-                                                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#4ade80] text-black text-sm font-bold hover:bg-[#4ade80]/90 transition-all">
+                                                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-all">
                                                         <ExternalLink size={14} /> Acessar
                                                     </a>
                                                 </div>
                                             </div>
                                         ) : (
                                             <div className="space-y-3">
-                                                <pre className="text-sm text-[#4ade80] font-mono whitespace-pre-wrap break-all">{order.delivered_content}</pre>
+                                                <pre className="text-sm text-primary font-mono whitespace-pre-wrap break-all">{order.delivered_content}</pre>
                                                 <CopyButton text={order.delivered_content} />
                                             </div>
                                         )}
@@ -183,15 +183,15 @@ export default function EntregaPage() {
                             {/* Delivery instructions (if no auto content) */}
                             {!order.delivered_content && order.delivery_info && (
                                 <div className="space-y-2">
-                                    <p className="text-xs font-black text-white/40 uppercase tracking-widest">Instruções de entrega</p>
-                                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4">
-                                        <p className="text-sm text-white/70 leading-relaxed">{order.delivery_info}</p>
+                                    <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Instruções de entrega</p>
+                                    <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4">
+                                        <p className="text-sm text-gray-700 leading-relaxed">{order.delivery_info}</p>
                                     </div>
                                 </div>
                             )}
 
                             {/* Footer note */}
-                            <p className="text-[11px] text-white/20 leading-relaxed">
+                            <p className="text-[11px] text-gray-400 leading-relaxed">
                                 Guarde esta página — é a sua prova de entrega.<br />
                                 Em caso de problemas, contate o vendedor.
                             </p>
@@ -199,7 +199,7 @@ export default function EntregaPage() {
                         {chatToken && (
                             <a
                                 href={`/chat/${chatToken}`}
-                                className="flex items-center justify-center gap-2 w-full py-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 font-bold text-sm hover:bg-emerald-500/15 transition-all mt-4"
+                                className="flex items-center justify-center gap-2 w-full py-3 bg-primary/10 border border-primary/20 rounded-2xl text-primary font-bold text-sm hover:bg-primary/15 transition-all mt-4"
                             >
                                 <MessageCircle size={16} /> Chat com o Vendedor
                             </a>
@@ -207,7 +207,7 @@ export default function EntregaPage() {
                     </div>
                 ) : (
                     /* Waiting for payment */
-                    <div className="bg-[#111] border border-white/10 rounded-3xl p-8 text-center">
+                    <div className="bg-white border border-gray-100 shadow-md rounded-3xl p-8 text-center">
                         <div className="w-16 h-16 bg-yellow-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
                             {polling ? (
                                 <RefreshCw size={28} className="text-yellow-400 animate-spin" />
@@ -215,22 +215,22 @@ export default function EntregaPage() {
                                 <Clock size={28} className="text-yellow-400" />
                             )}
                         </div>
-                        <h1 className="text-xl font-black text-white mb-2">Aguardando Pagamento</h1>
-                        <p className="text-white/40 text-sm mb-6">
+                        <h1 className="text-xl font-black text-gray-900 mb-2">Aguardando Pagamento</h1>
+                        <p className="text-gray-500 text-sm mb-6">
                             Assim que o PIX for confirmado, seu produto aparecerá aqui automaticamente.
                         </p>
-                        <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl text-left mb-4">
-                            <p className="text-xs text-white/30 uppercase tracking-widest font-bold mb-1">Produto</p>
-                            <p className="font-bold">{order?.product_name}</p>
+                        <div className="p-4 bg-gray-50 border border-gray-100 rounded-2xl text-left mb-4">
+                            <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">Produto</p>
+                            <p className="font-bold text-gray-900">{order?.product_name}</p>
                             {order?.amount && (
-                                <p className="text-sm text-[#4ade80] font-bold mt-1">
+                                <p className="text-sm text-green-600 font-bold mt-1">
                                     R$ {parseFloat(order.amount).toFixed(2).replace('.', ',')}
                                 </p>
                             )}
                         </div>
-                        {polling && <p className="text-xs text-white/20">Verificando pagamento automaticamente...</p>}
+                        {polling && <p className="text-xs text-gray-400">Verificando pagamento automaticamente...</p>}
                         {!polling && (
-                            <button onClick={fetchOrder} className="px-4 py-2 rounded-xl bg-white/5 text-white/50 text-sm font-semibold hover:bg-white/10 transition-all">
+                            <button onClick={fetchOrder} className="px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-500 text-sm font-semibold hover:bg-gray-100 transition-all">
                                 Verificar manualmente
                             </button>
                         )}

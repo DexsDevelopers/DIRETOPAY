@@ -63,7 +63,7 @@ function AdminRoute({ children, userData }) {
 // Layout do Dashboard (Privado)
 function DashboardLayout({ children, activeTab, setActiveTab, isSidebarOpen, setIsSidebarOpen, userData, balance, notifications, onMarkRead, onMarkAllRead }) {
   return (
-    <div className="flex h-screen bg-black text-white font-['Outfit'] overflow-hidden">
+    <div className="flex h-screen bg-gray-50 text-gray-900 font-['Outfit'] overflow-hidden">
       <AnimatePresence>
         {isSidebarOpen && (
           <motion.div
@@ -90,7 +90,7 @@ function DashboardLayout({ children, activeTab, setActiveTab, isSidebarOpen, set
       <AnnouncementModal />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         <AnnouncementBar />
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-100/40 rounded-full blur-[120px] -z-10 pointer-events-none" />
 
         <Header
           userData={userData}
@@ -245,8 +245,8 @@ export default function App() {
               <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                      <h1 className="text-3xl font-black tracking-tight text-white">Olá, <span className="text-primary italic">{userData?.name?.split(' ')[0] || 'Ghost'}</span> 👋</h1>
-                      <p className="text-white/40 font-medium">Aqui está o resumo do seu império hoje.</p>
+                      <h1 className="text-3xl font-black tracking-tight text-gray-900">Olá, <span className="text-primary italic">{userData?.name?.split(' ')[0] || 'Ghost'}</span> 👋</h1>
+                      <p className="text-gray-500 font-medium">Aqui está o resumo do seu império hoje.</p>
                     </div>
                     <button onClick={fetchDashboard} className="lp-btn-primary py-2 px-6 text-sm">ATUALIZAR STATUS</button>
                   </div>
@@ -263,7 +263,7 @@ export default function App() {
                       <GeneratePixCard onGenerate={handleManualPix} />
                     </div>
                     <div className="lg:col-span-2 space-y-6">
-                      <h2 className="text-xl font-black flex items-center gap-2 border-b border-white/5 pb-4">
+                      <h2 className="text-xl font-black flex items-center gap-2 border-b border-gray-100 pb-4 text-gray-900">
                         <History className="text-primary" size={20} /> Minhas Vendas Recentes
                       </h2>
                       <TransactionsTable transactions={dashboardData?.transactions} loading={loading} onViewQr={setActivePix} onDelete={handleDeleteTransaction} />

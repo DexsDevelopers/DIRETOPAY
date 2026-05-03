@@ -43,9 +43,9 @@ const DELIVERY_PLACEHOLDERS = {
   other: 'Descreva exatamente como o comprador vai receber o produto...',
 };
 
-const inputCls = 'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/40 focus:bg-white/[0.07] transition-all';
-const labelCls = 'block text-xs font-bold text-white/40 uppercase tracking-widest mb-2';
-const sectionCls = 'bg-white/[0.03] border border-white/5 rounded-2xl p-6 space-y-5';
+const inputCls = 'w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/40 transition-all';
+const labelCls = 'block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2';
+const sectionCls = 'bg-white border border-gray-100 shadow-sm rounded-2xl p-6 space-y-5';
 
 export default function CriarProdutoPage() {
   const navigate = useNavigate();
@@ -271,7 +271,7 @@ export default function CriarProdutoPage() {
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate('/vendedor/produtos')}
-          className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-white/50 hover:text-white transition-all"
+          className="p-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 border border-gray-200 text-gray-500 hover:text-gray-900 transition-all"
         >
           <ArrowLeft size={18} />
         </button>
@@ -280,7 +280,7 @@ export default function CriarProdutoPage() {
             {isEdit ? 'Editar ' : 'Novo '}
             <span className="text-primary italic">Produto</span>
           </h1>
-          <p className="text-white/40 text-sm mt-0.5">
+          <p className="text-gray-500 text-sm mt-0.5">
             {isEdit ? 'Atualize as informações do produto' : 'Preencha os dados para criar um novo produto'}
           </p>
         </div>
@@ -302,7 +302,7 @@ export default function CriarProdutoPage() {
 
         {/* Seção 1: Informações básicas */}
         <div className={sectionCls}>
-          <h2 className="text-sm font-black text-white/60 uppercase tracking-widest flex items-center gap-2">
+          <h2 className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
             <Package size={14} className="text-primary" /> Informações Básicas
           </h2>
 
@@ -345,10 +345,10 @@ export default function CriarProdutoPage() {
               <select
                 value={form.type}
                 onChange={e => setForm(f => ({ ...f, type: e.target.value }))}
-                className={`${inputCls} ${!form.type ? 'text-white/30' : 'text-white'}`}
+                className={`${inputCls} ${!form.type ? 'text-gray-300' : 'text-gray-900'}`}
               >
                 {TYPES.map(t => (
-                  <option key={t.value} value={t.value} disabled={!t.value} className="bg-[#111] text-white">
+                  <option key={t.value} value={t.value} disabled={!t.value} className="bg-white text-gray-900">
                     {t.label}
                   </option>
                 ))}
@@ -365,13 +365,13 @@ export default function CriarProdutoPage() {
                 <div className="flex gap-2">
                   {INTERVALS.map(iv => (
                     <button key={iv.value} type="button" onClick={() => setForm(f => ({ ...f, subscription_interval: iv.value }))}
-                      className={`flex-1 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${form.subscription_interval === iv.value ? 'bg-blue-500 text-white' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>
+                      className={`flex-1 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${form.subscription_interval === iv.value ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
                       {iv.label}
                     </button>
                   ))}
                 </div>
               </div>
-              <p className="text-[11px] text-blue-300/50">O cliente paga {form.subscription_interval === 'weekly' ? 'toda semana' : form.subscription_interval === 'monthly' ? 'todo mês' : 'todo ano'} o valor configurado acima.</p>
+              <p className="text-[11px] text-blue-400/70">O cliente paga {form.subscription_interval === 'weekly' ? 'toda semana' : form.subscription_interval === 'monthly' ? 'todo mês' : 'todo ano'} o valor configurado acima.</p>
             </div>
           )}
 
@@ -383,11 +383,11 @@ export default function CriarProdutoPage() {
                 onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
                 className={inputCls}
               >
-                {CATEGORIES.map(c => <option key={c} value={c} className="bg-[#111]">{c}</option>)}
+                {CATEGORIES.map(c => <option key={c} value={c} className="bg-white text-gray-900">{c}</option>)}
               </select>
             </div>
             <div>
-              <label className={labelCls}>Estoque <span className="text-white/20 font-normal normal-case">(-1 = ilimitado)</span></label>
+              <label className={labelCls}>Estoque <span className="text-gray-300 font-normal normal-case">(-1 = ilimitado)</span></label>
               <input
                 type="number" min="-1"
                 value={form.stock}
@@ -401,21 +401,21 @@ export default function CriarProdutoPage() {
         {/* Seção 2: Imagem */}
         <div className={sectionCls}>
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-black text-white/60 uppercase tracking-widest flex items-center gap-2">
+            <h2 className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
               <ImageIcon size={14} className="text-primary" /> Imagem do Produto
             </h2>
-            <div className="flex gap-1 bg-white/5 p-1 rounded-lg">
+            <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
               <button
                 type="button"
                 onClick={() => setImageMode('upload')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${imageMode === 'upload' ? 'bg-white/10 text-white' : 'text-white/30 hover:text-white'}`}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${imageMode === 'upload' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-700'}`}
               >
                 <Upload size={12} /> Upload
               </button>
               <button
                 type="button"
                 onClick={() => setImageMode('url')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${imageMode === 'url' ? 'bg-white/10 text-white' : 'text-white/30 hover:text-white'}`}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${imageMode === 'url' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-700'}`}
               >
                 <Link size={12} /> URL
               </button>
@@ -429,26 +429,26 @@ export default function CriarProdutoPage() {
                 type="button"
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
-                className="w-full border-2 border-dashed border-white/10 rounded-xl py-10 flex flex-col items-center gap-3 hover:border-primary/30 hover:bg-primary/5 transition-all disabled:opacity-50"
+                className="w-full border-2 border-dashed border-gray-200 rounded-xl py-10 flex flex-col items-center gap-3 hover:border-primary/30 hover:bg-primary/5 transition-all disabled:opacity-50"
               >
                 {uploading ? (
                   <>
                     <Loader2 size={28} className="text-primary animate-spin" />
-                    <span className="text-sm text-white/40">Enviando imagem...</span>
+                    <span className="text-sm text-gray-400">Enviando imagem...</span>
                   </>
                 ) : uploadPreview ? (
                   <>
-                    <img src={uploadPreview} alt="preview" className="w-32 h-32 object-cover rounded-xl border border-white/10" />
+                    <img src={uploadPreview} alt="preview" className="w-32 h-32 object-cover rounded-xl border border-gray-200" />
                     <span className="text-xs text-primary font-bold">Clique para trocar a imagem</span>
                   </>
                 ) : (
                   <>
-                    <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center">
-                      <ImageIcon size={24} className="text-white/20" />
+                    <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center">
+                      <ImageIcon size={24} className="text-gray-300" />
                     </div>
                     <div className="text-center">
-                      <p className="text-sm text-white/40 font-semibold">Clique para selecionar</p>
-                      <p className="text-xs text-white/20 mt-1">JPG, PNG, WEBP — máximo 5MB</p>
+                      <p className="text-sm text-gray-500 font-semibold">Clique para selecionar</p>
+                      <p className="text-xs text-gray-400 mt-1">JPG, PNG, WEBP — máximo 5MB</p>
                     </div>
                   </>
                 )}
@@ -464,7 +464,7 @@ export default function CriarProdutoPage() {
                 className={inputCls}
               />
               {form.image_url && (
-                <div className="mt-3 rounded-xl overflow-hidden border border-white/10 h-40">
+                <div className="mt-3 rounded-xl overflow-hidden border border-gray-200 h-40">
                   <img
                     src={form.image_url} alt="preview"
                     className="w-full h-full object-cover"
@@ -480,23 +480,23 @@ export default function CriarProdutoPage() {
         {form.type !== 'subscription' && (
         <div className={sectionCls}>
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-black text-white/60 uppercase tracking-widest flex items-center gap-2">
+            <h2 className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
               <Plus size={14} className="text-primary" /> Variantes / Opções
             </h2>
-            <span className="text-[10px] text-white/20 font-bold">Opcional — crie opções com preços diferentes</span>
+            <span className="text-[10px] text-gray-400 font-bold">Opcional — crie opções com preços diferentes</span>
           </div>
 
           {/* Existing variants */}
           {variants.length > 0 && (
             <div className="space-y-2">
               {variants.map(v => (
-                <div key={v.id} className="flex items-center gap-3 p-3 bg-white/[0.03] border border-white/5 rounded-xl">
+                <div key={v.id} className="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-xl">
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-white text-sm">{v.name}</p>
-                    {v.description && <p className="text-xs text-white/30 truncate">{v.description}</p>}
+                    <p className="font-bold text-gray-900 text-sm">{v.name}</p>
+                    {v.description && <p className="text-xs text-gray-400 truncate">{v.description}</p>}
                   </div>
                   <span className="text-primary font-black text-sm">R$ {parseFloat(v.price).toFixed(2)}</span>
-                  {v.stock !== -1 && <span className="text-[10px] text-white/30 bg-white/5 px-2 py-0.5 rounded-full">{v.stock} un.</span>}
+                  {v.stock !== -1 && <span className="text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{v.stock} un.</span>}
                   <button type="button" onClick={() => deleteVariant(v.id)} disabled={deletingVariant === v.id}
                     className="p-1.5 text-red-400/40 hover:text-red-400 transition-colors rounded-lg hover:bg-red-500/10">
                     {deletingVariant === v.id ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
@@ -507,8 +507,8 @@ export default function CriarProdutoPage() {
           )}
 
           {/* Add variant form */}
-          <div className="space-y-3 p-4 bg-white/[0.02] border border-white/5 rounded-xl">
-            <p className="text-[10px] text-white/30 font-black uppercase tracking-widest">Nova Variante</p>
+          <div className="space-y-3 p-4 bg-gray-50 border border-gray-100 rounded-xl">
+            <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Nova Variante</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input value={variantForm.name} onChange={e => setVariantForm(f => ({ ...f, name: e.target.value }))}
                 placeholder="Nome (ex: Plano Pro, Tamanho G)" className={inputCls} />
@@ -526,14 +526,14 @@ export default function CriarProdutoPage() {
               <p className="text-[11px] text-amber-400/70">⚠️ Salve o produto primeiro para adicionar variantes.</p>
             )}
             <button type="button" onClick={addVariant} disabled={savingVariant || !savedProductId}
-              className="flex items-center gap-2 px-4 py-2 bg-primary text-black font-black text-xs rounded-xl hover:bg-primary/90 transition-all disabled:opacity-50">
+              className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-black text-xs rounded-xl hover:bg-primary/90 transition-all disabled:opacity-50">
               {savingVariant ? <Loader2 size={13} className="animate-spin" /> : <Plus size={13} />}
               Adicionar Variante
             </button>
           </div>
 
           {variants.length > 0 && (
-            <p className="text-[11px] text-white/25">💡 Com variantes, o cliente escolhe uma opção na hora da compra. O preço do produto principal se torna o preço de exibição.</p>
+            <p className="text-[11px] text-gray-400">💡 Com variantes, o cliente escolhe uma opção na hora da compra. O preço do produto principal se torna o preço de exibição.</p>
           )}
         </div>
         )}
@@ -541,7 +541,7 @@ export default function CriarProdutoPage() {
         {/* Seção 3: Entrega */}
         {form.type === 'subscription' ? (
         <div className={sectionCls}>
-          <h2 className="text-sm font-black text-white/60 uppercase tracking-widest flex items-center gap-2">
+          <h2 className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
             <Truck size={14} className="text-primary" /> Entrega / Acesso
           </h2>
           <div>
@@ -553,7 +553,7 @@ export default function CriarProdutoPage() {
         </div>
         ) : (
         <div className={sectionCls}>
-          <h2 className="text-sm font-black text-white/60 uppercase tracking-widest flex items-center gap-2">
+          <h2 className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
             <Truck size={14} className="text-primary" /> Entrega <span className="text-red-400">*</span>
           </h2>
 
@@ -562,10 +562,10 @@ export default function CriarProdutoPage() {
             <select
               value={form.delivery_method}
               onChange={e => setForm(f => ({ ...f, delivery_method: e.target.value }))}
-              className={`${inputCls} ${!form.delivery_method ? 'text-white/30' : 'text-white'}`}
+              className={`${inputCls} ${!form.delivery_method ? 'text-gray-300' : 'text-gray-900'}`}
             >
               {DELIVERY_METHODS.map(d => (
-                <option key={d.value} value={d.value} disabled={!d.value} className="bg-[#111] text-white">
+                <option key={d.value} value={d.value} disabled={!d.value} className="bg-white text-gray-900">
                   {d.label}
                 </option>
               ))}
@@ -581,7 +581,7 @@ export default function CriarProdutoPage() {
               placeholder={DELIVERY_PLACEHOLDERS[form.delivery_method] || 'Descreva exatamente como o comprador vai receber o produto...'}
               className={`${inputCls} resize-none`}
             />
-            <p className="text-xs text-white/20 mt-1.5">Este texto será exibido ao comprador após o pagamento</p>
+            <p className="text-xs text-gray-400 mt-1.5">Este texto será exibido ao comprador após o pagamento</p>
           </div>
         </div>
         )}
@@ -591,12 +591,12 @@ export default function CriarProdutoPage() {
           {/* Toggle header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${autoDelivery ? 'bg-primary/20' : 'bg-white/5'}`}>
-                <Zap size={16} className={autoDelivery ? 'text-primary' : 'text-white/30'} />
+              <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${autoDelivery ? 'bg-primary/20' : 'bg-gray-100'}`}>
+                <Zap size={16} className={autoDelivery ? 'text-primary' : 'text-gray-400'} />
               </div>
               <div>
-                <p className="font-black text-white text-sm">Entrega Automática via Estoque</p>
-                <p className="text-xs text-white/40 mt-0.5">Cadastre suas chaves, contas ou links — o sistema entrega automaticamente após o pagamento</p>
+                <p className="font-black text-gray-900 text-sm">Entrega Automática via Estoque</p>
+                <p className="text-xs text-gray-500 mt-0.5">Cadastre suas chaves, contas ou links — o sistema entrega automaticamente após o pagamento</p>
               </div>
             </div>
             <button
@@ -606,7 +606,7 @@ export default function CriarProdutoPage() {
             >
               {autoDelivery
                 ? <ToggleRight size={40} className="text-primary" />
-                : <ToggleLeft size={40} className="text-white/20" />}
+                : <ToggleLeft size={40} className="text-gray-300" />}
             </button>
           </div>
 
@@ -616,10 +616,10 @@ export default function CriarProdutoPage() {
               {/* Existing stock stats (edit mode) */}
               {existingStock && (
                 <div className="grid grid-cols-3 gap-3">
-                  {[['Disponíveis', existingStock.available, 'text-green-400'], ['Usados', existingStock.used, 'text-white/40'], ['Total', existingStock.total, 'text-white']].map(([l, v, c]) => (
-                    <div key={l} className="bg-white/[0.03] rounded-xl p-3 text-center border border-white/5">
+                  {[['Disponíveis', existingStock.available, 'text-green-500'], ['Usados', existingStock.used, 'text-gray-400'], ['Total', existingStock.total, 'text-gray-900']].map(([l, v, c]) => (
+                    <div key={l} className="bg-gray-50 rounded-xl p-3 text-center border border-gray-100">
                       <p className={`text-xl font-black ${c}`}>{v}</p>
-                      <p className="text-[10px] text-white/30 font-bold uppercase tracking-widest">{l}</p>
+                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{l}</p>
                     </div>
                   ))}
                 </div>
@@ -628,8 +628,8 @@ export default function CriarProdutoPage() {
               {/* Info banner */}
               <div className="flex items-start gap-2 p-3 bg-primary/5 border border-primary/10 rounded-xl">
                 <Zap size={14} className="text-primary mt-0.5 flex-shrink-0" />
-                <p className="text-xs text-white/50 leading-relaxed">
-                  Cada item é uma <strong className="text-white/70">conta, chave, link ou código</strong>. Após o pagamento, o sistema sorteia e entrega um item automaticamente para o comprador.
+                <p className="text-xs text-gray-500 leading-relaxed">
+                  Cada item é uma <strong className="text-gray-700">conta, chave, link ou código</strong>. Após o pagamento, o sistema sorteia e entrega um item automaticamente para o comprador.
                 </p>
               </div>
 
@@ -648,7 +648,7 @@ export default function CriarProdutoPage() {
                     type="button"
                     onClick={addSingleItem}
                     disabled={!singleItem.trim()}
-                    className="px-4 py-2 rounded-xl bg-primary text-black font-black disabled:opacity-30 hover:bg-primary/90 transition-all flex-shrink-0"
+                    className="px-4 py-2 rounded-xl bg-primary text-white font-black disabled:opacity-30 hover:bg-primary/90 transition-all flex-shrink-0"
                   >
                     <Plus size={16} />
                   </button>
@@ -659,9 +659,9 @@ export default function CriarProdutoPage() {
               {stockItems.length > 0 && (
                 <div className="space-y-1.5">
                   {stockItems.map((item, i) => (
-                    <div key={i} className="flex items-center gap-2 px-3 py-2 bg-white/[0.03] border border-white/10 rounded-xl">
+                    <div key={i} className="flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl">
                       <KeyRound size={12} className="text-primary/60 flex-shrink-0" />
-                      <span className="flex-1 text-xs font-mono text-white/70 truncate">{item}</span>
+                      <span className="flex-1 text-xs font-mono text-gray-700 truncate">{item}</span>
                       <button type="button" onClick={() => removeSingleItem(i)} className="p-1 text-red-400/40 hover:text-red-400 transition-colors rounded">
                         <X size={11} />
                       </button>
@@ -674,7 +674,7 @@ export default function CriarProdutoPage() {
               <div>
                 <label className={labelCls}>
                   Colar em massa
-                  <span className="ml-2 text-white/20 font-normal normal-case">— um item por linha</span>
+                  <span className="ml-2 text-gray-300 font-normal normal-case">— um item por linha</span>
                 </label>
                 <textarea
                   rows={6}
@@ -706,8 +706,8 @@ export default function CriarProdutoPage() {
         <div className={`${sectionCls} !space-y-0`}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-bold text-white">Exibir na Vitrine PixGhost</p>
-              <p className="text-xs text-white/40 mt-1">Seu produto ficará visível para todos os usuários da plataforma</p>
+              <p className="font-bold text-gray-900">Exibir na Vitrine PixGhost</p>
+              <p className="text-xs text-gray-500 mt-1">Seu produto ficará visível para todos os usuários da plataforma</p>
             </div>
             <button
               type="button"
@@ -716,7 +716,7 @@ export default function CriarProdutoPage() {
             >
               {form.vitrine === '1'
                 ? <ToggleRight size={40} className="text-primary" />
-                : <ToggleLeft size={40} className="text-white/20" />
+                : <ToggleLeft size={40} className="text-gray-300" />
               }
             </button>
           </div>
@@ -724,7 +724,7 @@ export default function CriarProdutoPage() {
 
         {/* Note */}
         {!isEdit && (
-          <p className="text-xs text-white/20 text-center">
+          <p className="text-xs text-gray-400 text-center">
             Após criado, o produto ficará <span className="text-yellow-400/60">pendente de aprovação</span> pelo admin antes de aparecer na vitrine.
           </p>
         )}
@@ -734,14 +734,14 @@ export default function CriarProdutoPage() {
           <button
             type="button"
             onClick={() => navigate('/vendedor/produtos')}
-            className="flex-1 py-3.5 rounded-xl border border-white/10 text-white/50 hover:bg-white/5 transition-all font-semibold"
+            className="flex-1 py-3.5 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 transition-all font-semibold"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="flex-1 py-3.5 rounded-xl bg-primary text-black font-black hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 py-3.5 rounded-xl bg-primary text-white font-black hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {saving ? (
               <><Loader2 size={16} className="animate-spin" /> Salvando...</>

@@ -39,8 +39,9 @@ try {
             'primary_color' => $checkout['primary_color'],
             'secondary_color' => $checkout['secondary_color'],
             'banner_url' => $checkout['checkout_banner_url'],
-            'custom_html_head' => $checkout['custom_html_head'],
-            'custom_html_body' => $checkout['custom_html_body'],
+            'custom_html_head' => $checkout['custom_html_head'] ?? '',
+            'custom_html_body' => $checkout['custom_html_body'] ?? '',
+            'custom_settings' => $checkout['custom_settings'] ? json_decode($checkout['custom_settings'], true) : (object)[],
         ],
         'items' => $items,
         'total' => $total

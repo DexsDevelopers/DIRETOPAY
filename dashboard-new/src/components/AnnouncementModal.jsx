@@ -66,7 +66,7 @@ const AnnouncementModal = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 30 }}
             transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-            className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-gradient-to-b from-[#141420] to-[#0c0c14] rounded-2xl border border-white/[0.06] shadow-2xl"
+            className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl border border-gray-100 shadow-2xl"
           >
             {/* Header badge */}
             <div className="flex items-center justify-between px-5 pt-4 pb-2">
@@ -78,7 +78,7 @@ const AnnouncementModal = () => {
               </div>
               <button
                 onClick={handleDismiss}
-                className="p-1.5 rounded-full hover:bg-white/5 transition text-white/30 hover:text-white/70"
+                className="p-1.5 rounded-full hover:bg-gray-100 transition text-gray-400 hover:text-gray-700"
               >
                 <X size={16} />
               </button>
@@ -116,9 +116,9 @@ const AnnouncementModal = () => {
 
             {/* Content */}
             <div className="px-5 pt-4 pb-2">
-              <h2 className="text-lg font-bold text-white leading-tight">{ann.title}</h2>
+              <h2 className="text-lg font-bold text-gray-900 leading-tight">{ann.title}</h2>
               {ann.message && (
-                <p className="text-sm text-white/50 mt-2 leading-relaxed whitespace-pre-line">{ann.message}</p>
+                <p className="text-sm text-gray-500 mt-2 leading-relaxed whitespace-pre-line">{ann.message}</p>
               )}
             </div>
 
@@ -142,7 +142,7 @@ const AnnouncementModal = () => {
               )}
               <button
                 onClick={handleDismiss}
-                className="w-full py-2.5 rounded-xl text-sm font-medium text-white/40 hover:text-white/70 hover:bg-white/5 transition-all"
+                className="w-full py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-gray-700 hover:bg-gray-50 transition-all"
               >
                 {currentIndex < total - 1 ? 'Pular' : 'Fechar'}
               </button>
@@ -155,7 +155,7 @@ const AnnouncementModal = () => {
                   <div
                     key={i}
                     className={`h-1 rounded-full transition-all duration-300 ${
-                      i === currentIndex ? 'w-6 bg-purple-500' : 'w-1.5 bg-white/10'
+                      i === currentIndex ? 'w-6 bg-purple-500' : 'w-1.5 bg-gray-200'
                     }`}
                   />
                 ))}

@@ -31,12 +31,12 @@ function FloatingPill({ Icon, label, delay, float: floatY }) {
             <motion.div
                 animate={{ y: [0, floatY, 0] }}
                 transition={{ delay: delay + 0.5, duration: 3.5 + delay * 0.4, repeat: Infinity, ease: 'easeInOut' }}
-                className="flex items-center gap-2.5 bg-white/[0.04] border border-purple-500/20 hover:border-purple-400/40 rounded-full px-4 py-2.5 backdrop-blur-sm shadow-[0_4px_24px_rgba(168,85,247,0.12)] hover:shadow-[0_4px_28px_rgba(168,85,247,0.22)] transition-all whitespace-nowrap"
+                className="flex items-center gap-2.5 bg-white border border-purple-100 hover:border-primary/30 rounded-full px-4 py-2.5 shadow-[0_4px_20px_rgba(124,58,237,0.08)] hover:shadow-[0_4px_28px_rgba(124,58,237,0.16)] transition-all whitespace-nowrap"
             >
-                <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
+                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <Icon size={12} className="text-primary" />
                 </div>
-                <span className="text-white/55 text-xs font-bold">{label}</span>
+                <span className="text-gray-500 text-xs font-bold">{label}</span>
             </motion.div>
         </motion.div>
     );
@@ -122,12 +122,10 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white font-['Outfit'] flex flex-col relative overflow-hidden">
-            {/* Background Ambience */}
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] -z-10 animate-pulse" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px] -z-10" />
-            <div className="absolute top-[40%] left-[20%] w-[20%] h-[20%] bg-purple-700/5 rounded-full blur-[80px] -z-10" />
-            <div className="absolute top-[30%] right-[20%] w-[20%] h-[20%] bg-violet-600/5 rounded-full blur-[80px] -z-10" />
+        <div className="min-h-screen bg-white text-gray-900 font-['Outfit'] flex flex-col relative overflow-hidden">
+            {/* Decorative blobs */}
+            <div className="absolute top-[-5%] right-[-5%] w-[45%] h-[45%] bg-gradient-to-bl from-purple-100 to-violet-50 rounded-full blur-[100px] -z-10 opacity-70" />
+            <div className="absolute bottom-[-5%] left-[-5%] w-[35%] h-[35%] bg-gradient-to-tr from-purple-50 to-transparent rounded-full blur-[80px] -z-10 opacity-50" />
 
             {/* Floating Pills — left side (hidden on small screens) */}
             <div className="hidden lg:block pointer-events-none">
@@ -147,12 +145,12 @@ export default function LoginPage() {
                 ))}
             </div>
 
-            {/* Decorative SVG lines converging to center */}
+            {/* Decorative SVG lines */}
             <svg className="hidden lg:block absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                         <stop offset="0%" stopColor="rgb(168,85,247)" stopOpacity="0" />
-                        <stop offset="50%" stopColor="rgb(168,85,247)" stopOpacity="0.15" />
+                        <stop offset="50%" stopColor="rgb(168,85,247)" stopOpacity="0.12" />
                         <stop offset="100%" stopColor="rgb(168,85,247)" stopOpacity="0" />
                     </linearGradient>
                 </defs>
@@ -170,7 +168,7 @@ export default function LoginPage() {
 
             {/* Header / Back Button */}
             <div className="p-8">
-                <Link to="/" className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors group">
+                <Link to="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-gray-900 transition-colors group">
                     <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                     <span className="text-xs font-black uppercase tracking-widest">Voltar para Home</span>
                 </Link>
@@ -183,15 +181,15 @@ export default function LoginPage() {
                     className="w-full max-w-md"
                 >
                     <div className="text-center mb-10">
-                        <div className="w-16 h-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
+                        <div className="w-16 h-16 bg-gradient-to-br from-purple-500/10 to-violet-600/10 border border-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_8px_30px_rgba(124,58,237,0.15)]">
                             <Shield className="text-primary" size={32} />
                         </div>
-                        <h1 className="text-4xl font-black mb-2 tracking-tight">Bem-vindo de <span className="text-primary italic">Volta</span></h1>
-                        <p className="text-white/40 font-medium text-sm px-4">Acesse sua central de comando blindada Ghost Pix.</p>
+                        <h1 className="text-4xl font-black mb-2 tracking-tight text-gray-900">Bem-vindo de <span className="text-primary italic">Volta</span></h1>
+                        <p className="text-gray-500 font-medium text-sm px-4">Acesse sua central de comando blindada Ghost Pix.</p>
                     </div>
 
-                    <div className="glass p-8 md:p-10 rounded-[48px] border-white/10 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] -z-10" />
+                    <div className="bg-white border border-purple-100 shadow-[0_20px_60px_rgba(124,58,237,0.1)] p-8 md:p-10 rounded-[48px] relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full blur-[50px] -z-10" />
 
                         {resetSuccess && (
                             <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-bold p-4 rounded-2xl text-center mb-6 animate-in fade-in zoom-in duration-300 flex items-center justify-center gap-2">
@@ -205,8 +203,8 @@ export default function LoginPage() {
                                     <div className="w-14 h-14 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                         <KeyRound className="text-amber-500" size={28} />
                                     </div>
-                                    <h2 className="text-xl font-black">Crie uma Nova Senha</h2>
-                                    <p className="text-white/40 text-xs mt-1">Sua senha foi resetada pelo administrador.</p>
+                                    <h2 className="text-xl font-black text-gray-900">Crie uma Nova Senha</h2>
+                                    <p className="text-gray-400 text-xs mt-1">Sua senha foi resetada pelo administrador.</p>
                                 </div>
 
                                 {error && (
@@ -216,31 +214,31 @@ export default function LoginPage() {
                                 )}
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-4">Nova Senha</label>
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Nova Senha</label>
                                     <div className="relative group">
-                                        <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-primary transition-colors" size={18} />
+                                        <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors" size={18} />
                                         <input
                                             required
                                             type="password"
                                             placeholder="Mínimo 6 caracteres"
                                             value={newPassword}
                                             onChange={e => setNewPassword(e.target.value)}
-                                            className="w-full bg-white/5 border border-white/10 rounded-full py-4 pl-14 pr-6 font-bold focus:outline-none focus:border-primary/50 focus:bg-white/[0.08] transition-all"
+                                            className="w-full bg-gray-50 border border-gray-200 rounded-full py-4 pl-14 pr-6 font-bold text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/50 focus:bg-white transition-all"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-4">Confirmar Nova Senha</label>
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Confirmar Nova Senha</label>
                                     <div className="relative group">
-                                        <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-primary transition-colors" size={18} />
+                                        <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors" size={18} />
                                         <input
                                             required
                                             type="password"
                                             placeholder="Repita a senha"
                                             value={confirmPassword}
                                             onChange={e => setConfirmPassword(e.target.value)}
-                                            className="w-full bg-white/5 border border-white/10 rounded-full py-4 pl-14 pr-6 font-bold focus:outline-none focus:border-primary/50 focus:bg-white/[0.08] transition-all"
+                                            className="w-full bg-gray-50 border border-gray-200 rounded-full py-4 pl-14 pr-6 font-bold text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/50 focus:bg-white transition-all"
                                         />
                                     </div>
                                 </div>
@@ -248,7 +246,7 @@ export default function LoginPage() {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full h-16 bg-primary text-black rounded-full font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_20px_50px_rgba(74,222,128,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full h-16 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-full font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(124,58,237,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {loading ? 'Salvando...' : 'Definir Nova Senha'} <ArrowRight size={20} />
                                 </button>
@@ -256,7 +254,7 @@ export default function LoginPage() {
                                 <button
                                     type="button"
                                     onClick={() => { setMustResetPassword(false); setError(''); }}
-                                    className="w-full text-center text-white/30 text-xs font-bold hover:text-white/60 transition-colors"
+                                    className="w-full text-center text-gray-400 text-xs font-bold hover:text-gray-700 transition-colors"
                                 >
                                     Voltar ao Login
                                 </button>
@@ -269,34 +267,34 @@ export default function LoginPage() {
                                 </div>
                             )}
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-4">Endereço de E-mail</label>
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Endereço de E-mail</label>
                                 <div className="relative group">
-                                    <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-primary transition-colors" size={18} />
+                                    <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors" size={18} />
                                     <input
                                         required
                                         type="email"
                                         placeholder="seu@email.com"
                                         value={email}
                                         onChange={e => setEmail(e.target.value)}
-                                        className="w-full bg-white/5 border border-white/10 rounded-full py-4 pl-14 pr-6 font-bold focus:outline-none focus:border-primary/50 focus:bg-white/[0.08] transition-all"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-full py-4 pl-14 pr-6 font-bold text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/50 focus:bg-white transition-all"
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center ml-4">
-                                    <label className="text-[10px] font-black text-white/30 uppercase tracking-widest">Senha de Acesso</label>
-                                    <Link to="/forgot-password" className="text-[10px] font-black text-primary/60 uppercase tracking-widest hover:text-primary">Esqueci a senha</Link>
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Senha de Acesso</label>
+                                    <Link to="/forgot-password" className="text-[10px] font-black text-primary/70 uppercase tracking-widest hover:text-primary transition-colors">Esqueci a senha</Link>
                                 </div>
                                 <div className="relative group">
-                                    <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-primary transition-colors" size={18} />
+                                    <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors" size={18} />
                                     <input
                                         required
                                         type="password"
                                         placeholder="••••••••"
                                         value={password}
                                         onChange={e => setPassword(e.target.value)}
-                                        className="w-full bg-white/5 border border-white/10 rounded-full py-4 pl-14 pr-6 font-bold focus:outline-none focus:border-primary/50 focus:bg-white/[0.08] transition-all"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-full py-4 pl-14 pr-6 font-bold text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/50 focus:bg-white transition-all"
                                     />
                                 </div>
                             </div>
@@ -304,7 +302,7 @@ export default function LoginPage() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full h-16 bg-white text-black rounded-full font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full h-16 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-full font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(124,58,237,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {loading ? 'Autenticando...' : 'Entrar no Painel'} <ArrowRight size={20} />
                             </button>
@@ -312,15 +310,15 @@ export default function LoginPage() {
                         )}
                     </div>
 
-                    <p className="text-center mt-8 text-white/40 text-sm font-medium">
+                    <p className="text-center mt-8 text-gray-500 text-sm font-medium">
                         Não tem uma conta ainda? {' '}
-                        <Link to="/register" className="text-white font-black hover:text-primary transition-colors">Criar Conta Blindada</Link>
+                        <Link to="/register" className="text-primary font-black hover:text-secondary transition-colors">Criar Conta Blindada</Link>
                     </p>
                 </motion.div>
             </div>
 
             <footer className="p-8 text-center">
-                <p className="text-[10px] font-black text-white/10 uppercase tracking-[0.4em]">GHOST PIX v2.0 • Security FIRST</p>
+                <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">GHOST PIX v2.0 • Security FIRST</p>
             </footer>
         </div>
     );

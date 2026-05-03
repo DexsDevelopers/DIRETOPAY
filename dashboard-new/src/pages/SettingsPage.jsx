@@ -262,24 +262,24 @@ export default function SettingsPage({ userData, onProfileSaved }) {
     return (
         <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
             <div>
-                <h1 className="text-3xl font-black tracking-tight text-white flex items-center gap-3">
+                <h1 className="text-3xl font-black tracking-tight text-gray-900 flex items-center gap-3">
                     <Settings className="text-primary" size={32} />
                     Configurações do <span className="text-primary italic">Sistema</span>
                 </h1>
-                <p className="text-white/40 font-medium">Gerencie sua conta, segurança e integrações.</p>
+                <p className="text-gray-500 font-medium">Gerencie sua conta, segurança e integrações.</p>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8">
                 {/* Navigation */}
                 <div className="lg:w-64 flex-shrink-0">
-                    <div className="glass p-4 rounded-[32px] space-y-1">
+                    <div className="bg-white border border-gray-100 shadow-sm p-4 rounded-[32px] space-y-1">
                         {tabs.map(t => (
                             <button
                                 key={t.id}
                                 onClick={() => setActiveSubTab(t.id)}
                                 className={cn(
                                     "w-full flex items-center gap-3 px-5 py-3.5 rounded-full text-xs font-black uppercase tracking-widest transition-all",
-                                    activeSubTab === t.id ? "bg-white text-black shadow-lg" : "text-white/40 hover:bg-white/5 hover:text-white"
+                                    activeSubTab === t.id ? "bg-primary text-white shadow-lg" : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
                                 )}
                             >
                                 {t.icon}
@@ -291,7 +291,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
 
                 {/* Content Area */}
                 <div className="flex-1">
-                    <div className="glass p-10 rounded-[48px] relative overflow-hidden">
+                    <div className="bg-white border border-gray-100 shadow-sm p-10 rounded-[48px] relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-80 h-80 bg-primary/5 rounded-full blur-[100px] -z-10" />
 
                         {activeSubTab === 'perfil' && (
@@ -307,12 +307,12 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                     <button
                                         onClick={handleAvatarClick}
                                         disabled={uploading}
-                                        className="relative w-24 h-24 rounded-[32px] border border-white/20 flex items-center justify-center text-3xl font-black shadow-2xl overflow-hidden group cursor-pointer shrink-0"
+                                        className="relative w-24 h-24 rounded-[32px] border border-gray-200 flex items-center justify-center text-3xl font-black shadow-sm overflow-hidden group cursor-pointer shrink-0"
                                     >
                                         {avatarUrl ? (
                                             <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
                                         ) : (
-                                            <span className="bg-white/10 w-full h-full flex items-center justify-center">
+                                            <span className="bg-primary/10 text-primary w-full h-full flex items-center justify-center">
                                                 {userData?.name?.charAt(0).toUpperCase() || 'G'}
                                             </span>
                                         )}
@@ -321,8 +321,8 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                         </div>
                                     </button>
                                     <div>
-                                        <h3 className="text-2xl font-black">Identidade Visual</h3>
-                                        <p className="text-white/40 text-sm">Atualize sua foto e dados públicos.</p>
+                                        <h3 className="text-2xl font-black text-gray-900">Identidade Visual</h3>
+                                        <p className="text-gray-500 text-sm">Atualize sua foto e dados públicos.</p>
                                         <button onClick={handleAvatarClick} disabled={uploading} className="mt-4 text-xs font-black uppercase text-primary tracking-widest hover:text-primary/80 transition-colors">
                                             {uploading ? 'Enviando...' : 'Alterar Avatar'}
                                         </button>
@@ -332,23 +332,23 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                 <div className="space-y-6">
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-4">Nome Completo</label>
-                                            <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-4 font-bold focus:outline-none focus:border-primary/50 transition-all" />
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Nome Completo</label>
+                                            <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-full px-6 py-4 font-bold text-gray-900 focus:outline-none focus:border-primary/50 transition-all" />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-4">E-mail Principal</label>
-                                            <input type="email" defaultValue={userData?.email || "vendedor@ghostpix.site"} disabled className="w-full bg-white/[0.02] border border-white/5 rounded-full px-6 py-4 font-bold opacity-50 cursor-not-allowed" />
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">E-mail Principal</label>
+                                            <input type="email" defaultValue={userData?.email || "vendedor@ghostpix.site"} disabled className="w-full bg-gray-100 border border-gray-200 rounded-full px-6 py-4 font-bold text-gray-500 opacity-50 cursor-not-allowed" />
                                         </div>
                                     </div>
 
-                                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 space-y-5">
+                                    <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-5">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                                                 <Zap size={18} className="text-primary" />
                                             </div>
                                             <div>
-                                                <h4 className="font-black text-white">Método de Recebimento</h4>
-                                                <p className="text-xs text-white/40">Escolha como deseja receber seus saques.</p>
+                                                <h4 className="font-black text-gray-900">Método de Recebimento</h4>
+                                                <p className="text-xs text-gray-500">Escolha como deseja receber seus saques.</p>
                                             </div>
                                         </div>
 
@@ -363,7 +363,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                 return (
                                                     <div key={m.id} className={cn(
                                                         "border rounded-2xl overflow-hidden transition-all",
-                                                        isActive ? "border-primary/30 bg-primary/[0.04]" : "border-white/5 bg-white/[0.02]"
+                                                        isActive ? "border-primary/30 bg-primary/[0.04]" : "border-gray-200 bg-white"
                                                     )}>
                                                         {/* Card Header / Toggle Row */}
                                                         <button
@@ -373,17 +373,17 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                             <div className="flex items-center gap-3">
                                                                 <span className={cn(
                                                                     "w-10 h-10 rounded-xl flex items-center justify-center text-lg transition-all",
-                                                                    isActive ? "bg-primary/10" : "bg-white/5"
+                                                                    isActive ? "bg-primary/10" : "bg-gray-100"
                                                                 )}>{m.emoji}</span>
                                                                 <div>
-                                                                    <p className={cn("font-black text-sm", isActive ? "text-primary" : "text-white/60")}>{m.label}</p>
-                                                                    <p className="text-[11px] text-white/25">{m.desc}</p>
+                                                                    <p className={cn("font-black text-sm", isActive ? "text-primary" : "text-gray-600")}>{m.label}</p>
+                                                                    <p className="text-[11px] text-gray-400">{m.desc}</p>
                                                                 </div>
                                                             </div>
                                                             {/* Toggle Switch */}
                                                             <div className={cn(
                                                                 "w-11 h-6 rounded-full transition-all relative shrink-0",
-                                                                isActive ? "bg-primary" : "bg-white/10"
+                                                                isActive ? "bg-primary" : "bg-gray-200"
                                                             )}>
                                                                 <span className={cn(
                                                                     "absolute top-1 w-4 h-4 rounded-full bg-white transition-all shadow-sm",
@@ -394,7 +394,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
 
                                                         {/* Expanded Fields */}
                                                         {isActive && (
-                                                            <div className="px-4 pb-4 pt-1 space-y-3 border-t border-white/5 animate-in fade-in duration-200">
+                                                            <div className="px-4 pb-4 pt-1 space-y-3 border-t border-gray-100 animate-in fade-in duration-200">
                                                                 {/* $10 minimum warning for crypto */}
                                                                 {m.limit && (
                                                                     <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-2.5 mt-3">
@@ -408,15 +408,15 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                                 {/* PIX key field */}
                                                                 {m.id === 'pix' && (
                                                                     <div className="space-y-2 pt-1">
-                                                                        <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-2">Sua Chave PIX</label>
+                                                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">Sua Chave PIX</label>
                                                                         <input
                                                                             type="text"
                                                                             value={pixKey}
                                                                             onChange={(e) => setPixKey(e.target.value)}
                                                                             placeholder="CPF, CNPJ, Email, Telefone ou Chave Aleatória"
-                                                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3.5 font-mono text-sm text-white/70 focus:outline-none focus:border-primary/50 transition-all"
+                                                                            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 font-mono text-sm text-gray-700 focus:outline-none focus:border-primary/50 transition-all"
                                                                         />
-                                                                        <p className="text-[10px] text-white/25 ml-2">Esta chave será usada para saques do seu saldo disponível</p>
+                                                                        <p className="text-[10px] text-gray-400 ml-2">Esta chave será usada para saques do seu saldo disponível</p>
                                                                     </div>
                                                                 )}
 
@@ -424,7 +424,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                                 {(m.id === 'btc' || m.id === 'usdt') && (
                                                                     <div className="space-y-3 pt-1">
                                                                         <div className="space-y-2">
-                                                                            <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-2">
+                                                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">
                                                                                 Endereço {m.id === 'btc' ? 'Bitcoin (BTC)' : 'USDT'}
                                                                             </label>
                                                                             <input
@@ -432,27 +432,27 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                                                 value={cryptoAddress}
                                                                                 onChange={(e) => setCryptoAddress(e.target.value)}
                                                                                 placeholder={m.id === 'btc' ? 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfj...' : 'TXqH4j5bME1chy5g7j2bN3n...'}
-                                                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3.5 font-mono text-[11px] text-white/70 focus:outline-none focus:border-primary/50 transition-all"
+                                                                                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 font-mono text-[11px] text-gray-700 focus:outline-none focus:border-primary/50 transition-all"
                                                                             />
                                                                         </div>
                                                                         <div className="space-y-2">
-                                                                            <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-2">Rede (Network)</label>
+                                                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">Rede (Network)</label>
                                                                             <select
                                                                                 value={cryptoNetwork}
                                                                                 onChange={(e) => setCryptoNetwork(e.target.value)}
-                                                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3.5 text-sm text-white/60 focus:outline-none focus:border-primary/50 transition-all appearance-none cursor-pointer"
+                                                                                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 text-sm text-gray-700 focus:outline-none focus:border-primary/50 transition-all appearance-none cursor-pointer"
                                                                             >
-                                                                                <option value="" className="bg-[#111]">Selecione a rede</option>
+                                                                                <option value="" className="bg-white">Selecione a rede</option>
                                                                                 {m.id === 'btc' ? (
                                                                                     <>
-                                                                                        <option value="bitcoin"   className="bg-[#111]">Bitcoin (BTC) — Rede Principal</option>
-                                                                                        <option value="lightning" className="bg-[#111]">Lightning Network — Mais Rápido</option>
+                                                                                        <option value="bitcoin"   className="bg-white">Bitcoin (BTC) — Rede Principal</option>
+                                                                                        <option value="lightning" className="bg-white">Lightning Network — Mais Rápido</option>
                                                                                     </>
                                                                                 ) : (
                                                                                     <>
-                                                                                        <option value="trc20" className="bg-[#111]">TRC-20 (Tron) — Mais Barato</option>
-                                                                                        <option value="erc20" className="bg-[#111]">ERC-20 (Ethereum) — Mais Usado</option>
-                                                                                        <option value="bep20" className="bg-[#111]">BEP-20 (BSC) — Rápido e Barato</option>
+                                                                                        <option value="trc20" className="bg-white">TRC-20 (Tron) — Mais Barato</option>
+                                                                                        <option value="erc20" className="bg-white">ERC-20 (Ethereum) — Mais Usado</option>
+                                                                                        <option value="bep20" className="bg-white">BEP-20 (BSC) — Rápido e Barato</option>
                                                                                     </>
                                                                                 )}
                                                                             </select>
@@ -469,7 +469,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                                             </div>
                                                                         </div>
                                                                         {/* How-to */}
-                                                                        <div className="bg-white/[0.02] border border-white/5 rounded-xl p-3 space-y-2">
+                                                                        <div className="bg-gray-50 border border-gray-100 rounded-xl p-3 space-y-2">
                                                                             <span className="text-[10px] font-black text-primary uppercase tracking-widest">Como receber em {m.id === 'btc' ? 'Bitcoin' : 'USDT'}</span>
                                                                             <div className="space-y-1.5">
                                                                                 {[
@@ -480,7 +480,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                                                 ].map((step, i) => (
                                                                                     <div key={i} className="flex items-start gap-2">
                                                                                         <span className="w-4 h-4 rounded-full bg-primary/10 text-primary text-[9px] font-black flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
-                                                                                        <span className="text-[10px] text-white/35">{step}</span>
+                                                                                        <span className="text-[10px] text-gray-500">{step}</span>
                                                                                     </div>
                                                                                 ))}
                                                                             </div>
@@ -513,20 +513,20 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                         <BellRing size={28} className="text-primary" />
                                     </div>
                                     <div>
-                                        <h3 className="text-2xl font-black">Push Notifications</h3>
-                                        <p className="text-white/40 text-sm">Receba alertas em tempo real no seu dispositivo.</p>
+                                        <h3 className="text-2xl font-black text-gray-900">Push Notifications</h3>
+                                        <p className="text-gray-500 text-sm">Receba alertas em tempo real no seu dispositivo.</p>
                                     </div>
                                 </div>
 
-                                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 space-y-5">
+                                <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-5">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center">
-                                                <Bell size={18} className="text-white/40" />
+                                            <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                                                <Bell size={18} className="text-gray-400" />
                                             </div>
                                             <div>
-                                                <h4 className="font-black text-white text-sm">Status das Notificações</h4>
-                                                <p className="text-[11px] text-white/40">
+                                                <h4 className="font-black text-gray-900 text-sm">Status das Notificações</h4>
+                                                <p className="text-[11px] text-gray-500">
                                                     {typeof Notification !== 'undefined' && Notification.permission === 'granted'
                                                         ? 'Ativadas — você receberá alertas push'
                                                         : Notification.permission === 'denied'
@@ -546,9 +546,9 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                     </div>
                                 </div>
 
-                                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 space-y-4">
-                                    <h4 className="font-black text-sm text-white">Testar Notificação Push</h4>
-                                    <p className="text-[11px] text-white/40 leading-relaxed">
+                                <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-4">
+                                    <h4 className="font-black text-sm text-gray-900">Testar Notificação Push</h4>
+                                    <p className="text-[11px] text-gray-500 leading-relaxed">
                                         Envie uma notificação de teste para este dispositivo. Se tudo estiver configurado corretamente, você receberá um alerta push em alguns segundos.
                                     </p>
                                     <button
@@ -586,8 +586,8 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                     )}
                                 </div>
 
-                                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 space-y-3">
-                                    <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Tipos de alerta que você recebe</span>
+                                <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-3">
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tipos de alerta que você recebe</span>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         {[
                                             { label: 'Pagamento Confirmado', desc: 'Quando um PIX é pago', icon: '💰' },
@@ -595,11 +595,11 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                             { label: 'Avisos do Sistema', desc: 'Atualizações e manutenções', icon: '⚙️' },
                                             { label: 'Alertas de Segurança', desc: 'Atividades suspeitas', icon: '🔒' },
                                         ].map((item, i) => (
-                                            <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02]">
+                                            <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100">
                                                 <span className="text-lg">{item.icon}</span>
                                                 <div>
-                                                    <p className="text-xs font-bold text-white">{item.label}</p>
-                                                    <p className="text-[10px] text-white/30">{item.desc}</p>
+                                                    <p className="text-xs font-bold text-gray-900">{item.label}</p>
+                                                    <p className="text-[10px] text-gray-400">{item.desc}</p>
                                                 </div>
                                             </div>
                                         ))}
@@ -621,7 +621,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
 
                                 {/* API Key Section */}
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-4 flex items-center gap-2">
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4 flex items-center gap-2">
                                         <Key size={12} /> Chave Privada (API Token)
                                     </label>
                                     <div className="flex gap-2">
@@ -630,12 +630,12 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                 type={showToken ? "text" : "password"}
                                                 value={apiToken || "Nenhuma chave gerada"}
                                                 readOnly
-                                                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 font-mono text-sm text-white/60 pr-14 select-all focus:outline-none focus:border-primary/30"
+                                                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 font-mono text-sm text-gray-700 pr-14 select-all focus:outline-none focus:border-primary/30"
                                                 onClick={(e) => { if (apiToken) e.target.select(); }}
                                             />
                                             <button
                                                 onClick={() => setShowToken(!showToken)}
-                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors"
                                             >
                                                 {showToken ? <EyeOff size={18} /> : <Eye size={18} />}
                                             </button>
@@ -645,7 +645,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                             disabled={!apiToken}
                                             className={cn(
                                                 "w-14 rounded-2xl flex items-center justify-center transition-all shrink-0",
-                                                copied ? "bg-primary text-black" : "bg-white text-black hover:scale-105"
+                                                copied ? "bg-primary text-white" : "bg-gray-100 text-gray-900 hover:bg-gray-200 hover:scale-105"
                                             )}
                                         >
                                             {copied ? <Check size={18} /> : <Copy size={18} />}
@@ -660,7 +660,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                         <button
                                             onClick={handleRegenerateKey}
                                             disabled={regenerating}
-                                            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-primary transition-colors mr-2"
+                                            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-primary transition-colors mr-2"
                                         >
                                             {regenerating ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
                                             {regenerating ? 'Gerando...' : 'Gerar Nova Chave'}
@@ -670,18 +670,18 @@ export default function SettingsPage({ userData, onProfileSaved }) {
 
                                 {/* Quick Start */}
                                 <div className="space-y-3">
-                                    <h4 className="text-sm font-black uppercase tracking-widest text-white/50 flex items-center gap-2 ml-1">
+                                    <h4 className="text-sm font-black uppercase tracking-widest text-gray-400 flex items-center gap-2 ml-1">
                                         <Zap size={14} className="text-primary" /> Quick Start
                                     </h4>
-                                    <div className="bg-[#0a0a0b] border border-white/5 rounded-2xl overflow-hidden">
-                                        <div className="flex items-center justify-between px-5 py-3 border-b border-white/5">
+                                    <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+                                        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-800">
                                             <div className="flex items-center gap-2">
                                                 <Terminal size={14} className="text-primary" />
-                                                <span className="text-[10px] font-black uppercase tracking-widest text-white/30">cURL — Criar Cobrança Pix</span>
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-white/40">cURL — Criar Cobrança Pix</span>
                                             </div>
                                             <button
                                                 onClick={handleCopyCurl}
-                                                className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-primary transition-colors"
+                                                className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-primary transition-colors"
                                             >
                                                 {copiedCurl ? <><Check size={12} className="text-primary" /> Copiado</> : <><Copy size={12} /> Copiar</>}
                                             </button>
@@ -700,32 +700,32 @@ export default function SettingsPage({ userData, onProfileSaved }) {
 
                                 {/* Info Cards */}
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 space-y-2">
+                                    <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-2">
                                         <Globe size={18} className="text-primary" />
-                                        <p className="text-xs font-black text-white/60">Base URL</p>
-                                        <p className="text-[11px] font-mono text-white/30">https://pixghost.site/api.php</p>
+                                        <p className="text-xs font-black text-gray-700">Base URL</p>
+                                        <p className="text-[11px] font-mono text-gray-400">https://pixghost.site/api.php</p>
                                     </div>
-                                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 space-y-2">
+                                    <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-2">
                                         <Shield size={18} className="text-primary" />
-                                        <p className="text-xs font-black text-white/60">Autenticação</p>
-                                        <p className="text-[11px] font-mono text-white/30">Bearer Token no Header</p>
+                                        <p className="text-xs font-black text-gray-700">Autenticação</p>
+                                        <p className="text-[11px] font-mono text-gray-400">Bearer Token no Header</p>
                                     </div>
-                                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 space-y-2">
+                                    <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-2">
                                         <Zap size={18} className="text-primary" />
-                                        <p className="text-xs font-black text-white/60">Rate Limit</p>
-                                        <p className="text-[11px] font-mono text-white/30">3 req/min (cobranças)</p>
+                                        <p className="text-xs font-black text-gray-700">Rate Limit</p>
+                                        <p className="text-[11px] font-mono text-gray-400">3 req/min (cobranças)</p>
                                     </div>
                                 </div>
 
                                 {/* Response Example */}
                                 <div className="space-y-3">
-                                    <h4 className="text-sm font-black uppercase tracking-widest text-white/50 flex items-center gap-2 ml-1">
+                                    <h4 className="text-sm font-black uppercase tracking-widest text-gray-400 flex items-center gap-2 ml-1">
                                         <Code size={14} className="text-primary" /> Resposta de Sucesso
                                     </h4>
-                                    <div className="bg-[#0a0a0b] border border-white/5 rounded-2xl overflow-hidden">
-                                        <div className="px-5 py-3 border-b border-white/5 flex items-center gap-2">
+                                    <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+                                        <div className="px-5 py-3 border-b border-gray-800 flex items-center gap-2">
                                             <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-white/30">200 OK — JSON</span>
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-white/40">200 OK — JSON</span>
                                         </div>
                                         <pre className="p-5 text-xs text-white/50 font-mono leading-relaxed overflow-x-auto">
 {`{
@@ -746,7 +746,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                         <ExternalLink size={14} />
                                         Documentação Completa
                                     </Link>
-                                    <Link to="/docs" className="flex-1 flex items-center justify-center gap-2 bg-white/5 border border-white/10 text-white/60 font-black text-xs uppercase tracking-widest py-4 rounded-2xl hover:bg-white/10 transition-all">
+                                    <Link to="/docs" className="flex-1 flex items-center justify-center gap-2 bg-gray-100 border border-gray-200 text-gray-500 font-black text-xs uppercase tracking-widest py-4 rounded-2xl hover:bg-gray-200 transition-all">
                                         <Globe size={14} />
                                         Testar Status Endpoint
                                     </Link>
@@ -847,41 +847,41 @@ function TelegramTab() {
                     <MessageCircle size={28} className="text-blue-400" />
                 </div>
                 <div>
-                    <h3 className="text-2xl font-black">Telegram Bot</h3>
-                    <p className="text-white/40 text-sm">Gerencie sua conta pelo Telegram — PIX, saldo, vendas e saques.</p>
+                    <h3 className="text-2xl font-black text-gray-900">Telegram Bot</h3>
+                    <p className="text-gray-500 text-sm">Gerencie sua conta pelo Telegram — PIX, saldo, vendas e saques.</p>
                 </div>
             </div>
 
             {/* Status */}
-            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6">
+            <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className={cn(
                             "w-10 h-10 rounded-full flex items-center justify-center",
-                            connected ? "bg-primary/10" : "bg-white/5"
+                            connected ? "bg-primary/10" : "bg-gray-100"
                         )}>
-                            {connected ? <Check size={18} className="text-primary" /> : <Unlink size={18} className="text-white/40" />}
+                            {connected ? <Check size={18} className="text-primary" /> : <Unlink size={18} className="text-gray-400" />}
                         </div>
                         <div>
-                            <h4 className="font-black text-white text-sm">
+                            <h4 className="font-black text-gray-900 text-sm">
                                 {connected ? 'Telegram Conectado' : 'Telegram Desconectado'}
                             </h4>
-                            <p className="text-[11px] text-white/40">
+                            <p className="text-[11px] text-gray-500">
                                 {connected
                                     ? 'Sua conta está vinculada ao bot do Telegram'
                                     : 'Conecte para usar o bot diretamente no Telegram'}
                             </p>
                         </div>
                     </div>
-                    <span className={`w-3 h-3 rounded-full ${connected ? 'bg-primary shadow-[0_0_10px_#00ff88]' : 'bg-white/20'}`} />
+                    <span className={`w-3 h-3 rounded-full ${connected ? 'bg-primary shadow-[0_0_10px_rgba(168,85,247,0.5)]' : 'bg-gray-300'}`} />
                 </div>
             </div>
 
             {connected ? (
                 <>
                     {/* Connected — features & disconnect */}
-                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 space-y-4">
-                        <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Comandos disponíveis no bot</span>
+                    <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-4">
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Comandos disponíveis no bot</span>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {[
                                 { cmd: '/saldo', desc: 'Consultar seu saldo', icon: '💰' },
@@ -891,11 +891,11 @@ function TelegramTab() {
                                 { cmd: '/produtos', desc: 'Listar seus produtos', icon: '📦' },
                                 { cmd: '/ajuda', desc: 'Ver todos os comandos', icon: '❓' },
                             ].map((item, i) => (
-                                <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02]">
+                                <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100">
                                     <span className="text-lg">{item.icon}</span>
                                     <div>
-                                        <p className="text-xs font-bold text-white font-mono">{item.cmd}</p>
-                                        <p className="text-[10px] text-white/30">{item.desc}</p>
+                                        <p className="text-xs font-bold text-gray-900 font-mono">{item.cmd}</p>
+                                        <p className="text-[10px] text-gray-400">{item.desc}</p>
                                     </div>
                                 </div>
                             ))}
@@ -927,7 +927,7 @@ function TelegramTab() {
                             ].map((step, i) => (
                                 <div key={i} className="flex items-start gap-3">
                                     <span className="w-6 h-6 rounded-full bg-blue-500/10 text-blue-400 text-xs font-black flex items-center justify-center shrink-0">{i + 1}</span>
-                                    <span className="text-sm text-white/50">{step}</span>
+                                    <span className="text-sm text-gray-600">{step}</span>
                                 </div>
                             ))}
                         </div>
@@ -946,7 +946,7 @@ function TelegramTab() {
                             )}
                         </button>
                     ) : (
-                        <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 space-y-4">
+                        <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-4">
                             <div className="flex items-center gap-2 text-primary">
                                 <Check size={16} />
                                 <span className="text-sm font-black">Código gerado! Expira em 10 minutos.</span>
@@ -965,27 +965,27 @@ function TelegramTab() {
 
                             {/* Manual code */}
                             <div className="space-y-2">
-                                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Ou copie o código manualmente</span>
+                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Ou copie o código manualmente</span>
                                 <div className="flex gap-2">
-                                    <div className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 font-mono text-sm text-white/60 truncate">
+                                    <div className="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 font-mono text-sm text-gray-700 truncate">
                                         /start {linkData.token}
                                     </div>
                                     <button
                                         onClick={() => handleCopy(`/start ${linkData.token}`)}
                                         className={cn(
                                             "px-4 rounded-xl flex items-center gap-2 text-xs font-bold transition-all shrink-0",
-                                            copied ? "bg-primary text-black" : "bg-white/5 text-white/50 hover:bg-white/10"
+                                            copied ? "bg-primary text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                                         )}
                                     >
                                         {copied ? <><Check size={14} /> Copiado</> : <><Copy size={14} /> Copiar</>}
                                     </button>
                                 </div>
-                                <p className="text-[10px] text-white/25">Envie este comando no chat do bot @{linkData.bot_username}</p>
+                                <p className="text-[10px] text-gray-400">Envie este comando no chat do bot @{linkData.bot_username}</p>
                             </div>
 
                             <button
                                 onClick={() => { setLinkData(null); checkStatus(); }}
-                                className="text-xs font-bold text-white/30 hover:text-white/60 transition-colors"
+                                className="text-xs font-bold text-gray-400 hover:text-gray-700 transition-colors"
                             >
                                 Já vinculei — verificar status
                             </button>
@@ -995,8 +995,8 @@ function TelegramTab() {
             )}
 
             {/* Features info */}
-            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 space-y-3">
-                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">O que você pode fazer pelo Telegram</span>
+            <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-3">
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">O que você pode fazer pelo Telegram</span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {[
                         { label: 'Gerar PIX', desc: 'Crie cobranças direto do chat', icon: '⚡' },
@@ -1006,11 +1006,11 @@ function TelegramTab() {
                         { label: 'Linguagem Natural', desc: 'Pergunte em português normal', icon: '💬' },
                         { label: 'Notificações', desc: 'Receba alertas de vendas', icon: '🔔' },
                     ].map((item, i) => (
-                        <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02]">
+                        <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100">
                             <span className="text-lg">{item.icon}</span>
                             <div>
-                                <p className="text-xs font-bold text-white">{item.label}</p>
-                                <p className="text-[10px] text-white/30">{item.desc}</p>
+                                <p className="text-xs font-bold text-gray-900">{item.label}</p>
+                                <p className="text-[10px] text-gray-400">{item.desc}</p>
                             </div>
                         </div>
                     ))}
@@ -1118,44 +1118,44 @@ function WebhooksTab() {
             {!showForm ? (
                 <button
                     onClick={() => setShowForm(true)}
-                    className="w-full border-2 border-dashed border-white/10 rounded-2xl py-5 flex items-center justify-center gap-3 text-white/30 hover:border-primary/30 hover:text-primary transition-all group"
+                    className="w-full border-2 border-dashed border-gray-200 rounded-2xl py-5 flex items-center justify-center gap-3 text-gray-400 hover:border-primary/30 hover:text-primary transition-all group"
                 >
                     <Plus size={18} className="group-hover:rotate-90 transition-transform duration-300" />
                     <span className="text-xs font-black uppercase tracking-widest">Adicionar Webhook</span>
                 </button>
             ) : (
-                <div className="bg-white/[0.03] border border-white/10 rounded-3xl p-6 space-y-4 animate-in fade-in duration-300">
+                <div className="bg-gray-50 border border-gray-200 rounded-3xl p-6 space-y-4 animate-in fade-in duration-300">
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-4">Nome (opcional)</label>
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Nome (opcional)</label>
                         <input
                             type="text"
                             value={newLabel}
                             onChange={(e) => setNewLabel(e.target.value)}
                             placeholder="Ex: Meu Bot Telegram, N8N, Make..."
-                            className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-3 text-sm font-bold focus:outline-none focus:border-primary/50 transition-all"
+                            className="w-full bg-white border border-gray-200 rounded-full px-6 py-3 text-sm font-bold text-gray-900 focus:outline-none focus:border-primary/50 transition-all"
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-4">URL do Webhook</label>
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">URL do Webhook</label>
                         <input
                             type="url"
                             value={newUrl}
                             onChange={(e) => setNewUrl(e.target.value)}
                             placeholder="https://seu-servidor.com/webhook"
-                            className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-3 font-mono text-sm text-white/60 focus:outline-none focus:border-primary/50 transition-all"
+                            className="w-full bg-white border border-gray-200 rounded-full px-6 py-3 font-mono text-sm text-gray-700 focus:outline-none focus:border-primary/50 transition-all"
                         />
                     </div>
                     <div className="flex gap-2">
                         <button
                             onClick={handleAdd}
                             disabled={adding || !newUrl.trim()}
-                            className="flex-1 flex items-center justify-center gap-2 bg-white text-black font-black text-xs uppercase tracking-widest py-3 rounded-full hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                            className="flex-1 flex items-center justify-center gap-2 bg-primary text-white font-black text-xs uppercase tracking-widest py-3 rounded-full hover:bg-primary/90 active:scale-95 transition-all disabled:opacity-50"
                         >
                             {adding ? <><Loader2 size={14} className="animate-spin" /> Salvando...</> : <><Plus size={14} /> Adicionar</>}
                         </button>
                         <button
                             onClick={() => { setShowForm(false); setNewUrl(''); setNewLabel(''); }}
-                            className="px-6 py-3 bg-white/5 border border-white/10 rounded-full text-xs font-black text-white/40 hover:text-white/60 transition-all"
+                            className="px-6 py-3 bg-gray-100 border border-gray-200 rounded-full text-xs font-black text-gray-500 hover:text-gray-700 transition-all"
                         >
                             Cancelar
                         </button>
@@ -1170,24 +1170,24 @@ function WebhooksTab() {
                 </div>
             ) : webhooks.length === 0 ? (
                 <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-white/10">
-                        <Webhook className="text-white/20" size={28} />
+                    <div className="w-16 h-16 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-gray-200">
+                        <Webhook className="text-gray-400" size={28} />
                     </div>
-                    <p className="text-white/30 text-sm font-bold">Nenhum webhook configurado</p>
-                    <p className="text-white/15 text-xs mt-1">Adicione um webhook para receber notificações de pagamentos.</p>
+                    <p className="text-gray-500 text-sm font-bold">Nenhum webhook configurado</p>
+                    <p className="text-gray-400 text-xs mt-1">Adicione um webhook para receber notificações de pagamentos.</p>
                 </div>
             ) : (
                 <div className="space-y-3">
                     {webhooks.map((wh) => (
                         <div key={wh.id} className={cn(
-                            "bg-white/[0.02] border rounded-2xl p-5 transition-all",
-                            wh.active == 1 ? "border-white/10" : "border-white/5 opacity-50"
+                            "bg-white border rounded-2xl p-5 transition-all",
+                            wh.active == 1 ? "border-gray-200" : "border-gray-100 opacity-50"
                         )}>
                             <div className="flex items-start justify-between gap-4">
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-1">
-                                        <CircleDot size={10} className={wh.active == 1 ? "text-emerald-400" : "text-white/20"} />
-                                        <span className="text-sm font-black text-white truncate">
+                                        <CircleDot size={10} className={wh.active == 1 ? "text-emerald-400" : "text-gray-300"} />
+                                        <span className="text-sm font-black text-gray-900 truncate">
                                             {wh.label || 'Webhook'}
                                         </span>
                                         {wh.last_status && (
@@ -1201,16 +1201,16 @@ function WebhooksTab() {
                                             </span>
                                         )}
                                     </div>
-                                    <p className="text-xs font-mono text-white/30 truncate">{wh.url}</p>
+                                    <p className="text-xs font-mono text-gray-400 truncate">{wh.url}</p>
                                     {wh.last_triggered_at && (
-                                        <p className="text-[10px] text-white/15 mt-1">Último disparo: {wh.last_triggered_at}</p>
+                                        <p className="text-[10px] text-gray-400 mt-1">Último disparo: {wh.last_triggered_at}</p>
                                     )}
                                 </div>
                                 <div className="flex items-center gap-1.5 shrink-0">
                                     <button
                                         onClick={() => handleTest(wh.id)}
                                         disabled={testing === wh.id}
-                                        className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/30 hover:text-primary hover:border-primary/30 transition-all"
+                                        className="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 transition-all"
                                         title="Enviar teste"
                                     >
                                         {testing === wh.id ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
@@ -1221,7 +1221,7 @@ function WebhooksTab() {
                                             "w-9 h-9 rounded-xl border flex items-center justify-center transition-all",
                                             wh.active == 1
                                                 ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
-                                                : "bg-white/5 border-white/10 text-white/20 hover:text-white/40"
+                                                : "bg-gray-100 border-gray-200 text-gray-300 hover:text-gray-500"
                                         )}
                                         title={wh.active == 1 ? "Desativar" : "Ativar"}
                                     >
@@ -1229,7 +1229,7 @@ function WebhooksTab() {
                                     </button>
                                     <button
                                         onClick={() => handleDelete(wh.id)}
-                                        className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/20 hover:text-red-400 hover:border-red-500/30 transition-all"
+                                        className="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 hover:text-red-400 hover:border-red-500/30 transition-all"
                                         title="Remover"
                                     >
                                         <Trash2 size={14} />
@@ -1243,13 +1243,13 @@ function WebhooksTab() {
 
             {/* Payload Example */}
             <div className="space-y-3">
-                <h4 className="text-sm font-black uppercase tracking-widest text-white/50 flex items-center gap-2 ml-1">
+                <h4 className="text-sm font-black uppercase tracking-widest text-gray-400 flex items-center gap-2 ml-1">
                     <Code size={14} className="text-primary" /> Payload Enviado
                 </h4>
-                <div className="bg-[#0a0a0b] border border-white/5 rounded-2xl overflow-hidden">
-                    <div className="px-5 py-3 border-b border-white/5 flex items-center gap-2">
+                <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+                    <div className="px-5 py-3 border-b border-gray-800 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-primary" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-white/30">POST — JSON (payment.completed)</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white/40">POST — JSON (payment.completed)</span>
                     </div>
                     <pre className="p-5 text-xs text-white/50 font-mono leading-relaxed overflow-x-auto">
 {`{
@@ -1268,9 +1268,9 @@ function WebhooksTab() {
             </div>
 
             {/* Tips */}
-            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 space-y-3">
-                <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">Dicas</p>
-                <ul className="space-y-2 text-xs text-white/30">
+            <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-3">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dicas</p>
+                <ul className="space-y-2 text-xs text-gray-500">
                     <li className="flex items-start gap-2"><span className="text-primary font-black">•</span> Seu endpoint deve responder com HTTP 200 para confirmar recebimento.</li>
                     <li className="flex items-start gap-2"><span className="text-primary font-black">•</span> O timeout é de 10 segundos. Processe a lógica de forma assíncrona se necessário.</li>
                     <li className="flex items-start gap-2"><span className="text-primary font-black">•</span> Use o botão de teste para verificar se seu endpoint está funcionando.</li>
@@ -1302,11 +1302,11 @@ function SecurityTab() {
     return (
         <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
             <div className="text-center py-6">
-                <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-white/10">
-                    <Key className="text-white/20" size={36} />
+                <div className="w-20 h-20 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-gray-200">
+                    <Key className="text-gray-400" size={36} />
                 </div>
-                <h3 className="text-xl font-black">Gerenciamento de Senha</h3>
-                <p className="text-white/40 max-w-sm mx-auto mt-2 text-sm">
+                <h3 className="text-xl font-black text-gray-900">Gerenciamento de Senha</h3>
+                <p className="text-gray-500 max-w-sm mx-auto mt-2 text-sm">
                     Por segurança, enviaremos um link de redefinição para o seu e-mail cadastrado. O link expira em 30 minutos.
                 </p>
             </div>
@@ -1329,8 +1329,8 @@ function SecurityTab() {
                     className={cn(
                         "flex items-center gap-3 px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all",
                         sending
-                            ? "bg-white/5 text-white/30 cursor-wait"
-                            : "bg-white text-black hover:scale-105 active:scale-95"
+                            ? "bg-gray-100 text-gray-400 cursor-wait"
+                            : "bg-primary text-white hover:bg-primary/90 hover:scale-105 active:scale-95"
                     )}
                 >
                     {sending ? (
@@ -1341,9 +1341,9 @@ function SecurityTab() {
                 </button>
             </div>
 
-            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 space-y-3 max-w-md mx-auto">
-                <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">Como funciona</p>
-                <ul className="space-y-2 text-xs text-white/30">
+            <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-3 max-w-md mx-auto">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Como funciona</p>
+                <ul className="space-y-2 text-xs text-gray-500">
                     <li className="flex items-start gap-2"><span className="text-primary font-black">1.</span> Clique no botão acima</li>
                     <li className="flex items-start gap-2"><span className="text-primary font-black">2.</span> Abra o e-mail que enviaremos</li>
                     <li className="flex items-start gap-2"><span className="text-primary font-black">3.</span> Clique no link e defina a nova senha</li>

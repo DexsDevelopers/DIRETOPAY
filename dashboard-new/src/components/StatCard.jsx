@@ -7,12 +7,12 @@ export default function StatCard({ label, value, icon, trend, loading = false, c
         <motion.div
             whileHover={{ translateY: -4 }}
             className={cn(
-                "bg-[#111111] border border-white/5 p-6 rounded-3xl relative overflow-hidden group",
+                "bg-white border border-gray-100 shadow-[0_2px_16px_rgba(124,58,237,0.07)] p-6 rounded-3xl relative overflow-hidden group",
                 className
             )}
         >
             <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                <div className="w-12 h-12 rounded-2xl bg-primary/8 flex items-center justify-center group-hover:bg-primary/15 transition-colors text-primary">
                     {React.cloneElement(icon, { size: 20 })}
                 </div>
                 {trend && (
@@ -26,10 +26,10 @@ export default function StatCard({ label, value, icon, trend, loading = false, c
                 )}
             </div>
             <div>
-                <p className="text-white/40 text-sm font-medium mb-1">{label}</p>
-                <div className="text-2xl font-bold flex items-baseline gap-1">
+                <p className="text-gray-600 text-sm font-bold mb-1">{label}</p>
+                <div className="text-2xl font-black text-gray-900 flex items-baseline gap-1">
                     {loading ? (
-                        <div className="w-24 h-8 bg-white/5 animate-pulse rounded-lg" />
+                        <div className="w-24 h-8 bg-gray-100 animate-pulse rounded-lg" />
                     ) : (
                         value
                     )}

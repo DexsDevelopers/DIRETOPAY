@@ -3,11 +3,11 @@ import { History, Search, Download, CheckCircle, Clock, XCircle, AlertCircle, La
 import TransactionsTable from '../components/TransactionsTable';
 
 const STATUS_FILTERS = [
-    { key: 'all',      label: 'Todos',    icon: LayoutGrid,    active: 'bg-white/10 text-white',       inactive: 'text-white/40' },
-    { key: 'approved', label: 'Pagos',    icon: CheckCircle,   active: 'bg-primary/20 text-primary border-primary/30', inactive: 'text-white/40' },
-    { key: 'pending',  label: 'Pendentes',icon: Clock,         active: 'bg-orange-500/20 text-orange-400 border-orange-500/30', inactive: 'text-white/40' },
-    { key: 'expired',  label: 'Expirados',icon: XCircle,       active: 'bg-red-500/20 text-red-400 border-red-500/30', inactive: 'text-white/40' },
-    { key: 'rejected', label: 'Rejeitados',icon: AlertCircle,  active: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', inactive: 'text-white/40' },
+    { key: 'all',      label: 'Todos',    icon: LayoutGrid,    active: 'bg-gray-100 text-gray-900 border-gray-300',       inactive: 'text-gray-400' },
+    { key: 'approved', label: 'Pagos',    icon: CheckCircle,   active: 'bg-primary/10 text-primary border-primary/20', inactive: 'text-gray-400' },
+    { key: 'pending',  label: 'Pendentes',icon: Clock,         active: 'bg-orange-500/10 text-orange-500 border-orange-500/20', inactive: 'text-gray-400' },
+    { key: 'expired',  label: 'Expirados',icon: XCircle,       active: 'bg-red-500/10 text-red-500 border-red-500/20', inactive: 'text-gray-400' },
+    { key: 'rejected', label: 'Rejeitados',icon: AlertCircle,  active: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20', inactive: 'text-gray-400' },
 ];
 
 export default function SalesPage({ onViewQr, onDelete }) {
@@ -62,36 +62,36 @@ export default function SalesPage({ onViewQr, onDelete }) {
         <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-3xl font-black tracking-tight text-white flex items-center gap-3">
+                    <h1 className="text-3xl font-black tracking-tight text-gray-900 flex items-center gap-3">
                         <History className="text-primary" size={32} />
                         Relatório de <span className="text-primary italic">Vendas</span>
                     </h1>
-                    <p className="text-white/40 font-medium">Acompanhe e gerencie todas as suas transações em tempo real.</p>
+                    <p className="text-gray-500 font-medium">Acompanhe e gerencie todas as suas transações em tempo real.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button onClick={fetchTransactions} className="bg-white/5 hover:bg-white/10 border border-white/10 rounded-full p-3 transition-all" title="Atualizar">
-                        <RefreshCw size={18} className={`text-white/60 ${loadingTx ? 'animate-spin' : ''}`} />
+                    <button onClick={fetchTransactions} className="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-full p-3 transition-all" title="Atualizar">
+                        <RefreshCw size={18} className={`text-gray-500 ${loadingTx ? 'animate-spin' : ''}`} />
                     </button>
-                    <button className="bg-white/5 hover:bg-white/10 border border-white/10 rounded-full p-3 transition-all" title="Exportar CSV">
-                        <Download size={20} className="text-white/60" />
+                    <button className="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-full p-3 transition-all" title="Exportar CSV">
+                        <Download size={20} className="text-gray-500" />
                     </button>
                 </div>
             </div>
 
             {/* Toolbar */}
-            <div className="flex flex-col gap-3 bg-[#0a0a0b]/50 p-4 rounded-[32px] border border-white/5 backdrop-blur-md">
+            <div className="flex flex-col gap-3 bg-white p-4 rounded-[32px] border border-gray-100 shadow-sm">
                 {/* Search */}
                 <div className="relative group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-primary transition-colors" size={18} />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors" size={18} />
                     <input
                         type="text"
                         value={search}
                         onChange={e => setSearch(e.target.value)}
                         placeholder="Buscar por ID ou Nome do Cliente..."
-                        className="w-full bg-white/[0.03] border border-white/5 rounded-full py-3.5 pl-12 pr-6 text-sm font-medium focus:outline-none focus:border-primary/30 focus:bg-white/[0.05] transition-all"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-full py-3.5 pl-12 pr-6 text-sm font-medium text-gray-700 placeholder:text-gray-300 focus:outline-none focus:border-primary/30 focus:bg-white transition-all"
                     />
                     {search && (
-                        <button onClick={() => setSearch('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white transition-colors text-xs font-bold">✕</button>
+                        <button onClick={() => setSearch('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors text-xs font-bold">✕</button>
                     )}
                 </div>
 
@@ -107,12 +107,12 @@ export default function SalesPage({ onViewQr, onDelete }) {
                                 className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold border transition-all ${
                                     isActive
                                         ? `${f.active} border-current`
-                                        : 'bg-white/[0.03] border-white/5 hover:bg-white/[0.06] text-white/40'
+                                        : 'bg-gray-50 border-gray-200 hover:bg-gray-100 text-gray-400'
                                 }`}
                             >
                                 <Icon size={13} />
                                 {f.label}
-                                <span className={`ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-white/10' : 'bg-white/5'}`}>
+                                <span className={`ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-black/10' : 'bg-gray-200'}`}>
                                     {counts[f.key]}
                                 </span>
                             </button>

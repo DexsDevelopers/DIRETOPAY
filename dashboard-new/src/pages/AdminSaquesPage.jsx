@@ -84,11 +84,11 @@ export default function AdminSaquesPage() {
                         <Wallet className="text-amber-400" size={32} />
                         Saques <span className="text-amber-400 italic">Pendentes</span>
                     </h1>
-                    <p className="text-white/40 font-medium mt-1">Gerencie as solicitações de saque dos vendedores.</p>
+                    <p className="text-gray-500 font-medium mt-1">Gerencie as solicitações de saque dos vendedores.</p>
                 </div>
                 <button
                     onClick={fetchData}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm font-bold text-white/60 hover:text-white hover:bg-white/10 transition-all"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all"
                 >
                     <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
                     Atualizar
@@ -97,74 +97,74 @@ export default function AdminSaquesPage() {
 
             {/* ── Stats Cards ── */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="glass rounded-2xl p-5 border border-white/5">
+                <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
                     <div className="flex items-center gap-3 mb-3">
                         <div className="w-9 h-9 bg-amber-500/10 rounded-xl flex items-center justify-center">
                             <Clock size={16} className="text-amber-400" />
                         </div>
-                        <span className="text-xs font-bold text-white/40 uppercase tracking-widest">Pendentes</span>
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Pendentes</span>
                     </div>
                     <p className="text-2xl font-black text-amber-400">{stats?.pending_count ?? '—'}</p>
-                    <p className="text-xs text-white/30 mt-1">R$ {fmt(stats?.pending_amount)}</p>
+                    <p className="text-xs text-gray-400 mt-1">R$ {fmt(stats?.pending_amount)}</p>
                 </div>
 
-                <div className="glass rounded-2xl p-5 border border-white/5">
+                <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
                     <div className="flex items-center gap-3 mb-3">
                         <div className="w-9 h-9 bg-blue-500/10 rounded-xl flex items-center justify-center">
                             <CalendarClock size={16} className="text-blue-400" />
                         </div>
-                        <span className="text-xs font-bold text-white/40 uppercase tracking-widest">Hoje</span>
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Hoje</span>
                     </div>
                     <p className="text-2xl font-black text-blue-400">{stats?.today_pending ?? '—'}</p>
-                    <p className="text-xs text-white/30 mt-1">novos pedidos hoje</p>
+                    <p className="text-xs text-gray-400 mt-1">novos pedidos hoje</p>
                 </div>
 
-                <div className="glass rounded-2xl p-5 border border-white/5">
+                <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
                     <div className="flex items-center gap-3 mb-3">
                         <div className="w-9 h-9 bg-emerald-500/10 rounded-xl flex items-center justify-center">
                             <TrendingUp size={16} className="text-emerald-400" />
                         </div>
-                        <span className="text-xs font-bold text-white/40 uppercase tracking-widest">Pagos</span>
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Pagos</span>
                     </div>
                     <p className="text-2xl font-black text-emerald-400">{stats?.paid_count ?? '—'}</p>
-                    <p className="text-xs text-white/30 mt-1">R$ {fmt(stats?.paid_amount)}</p>
+                    <p className="text-xs text-gray-400 mt-1">R$ {fmt(stats?.paid_amount)}</p>
                 </div>
 
-                <div className="glass rounded-2xl p-5 border border-white/5">
+                <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
                     <div className="flex items-center gap-3 mb-3">
                         <div className="w-9 h-9 bg-red-500/10 rounded-xl flex items-center justify-center">
                             <Ban size={16} className="text-red-400" />
                         </div>
-                        <span className="text-xs font-bold text-white/40 uppercase tracking-widest">Negados</span>
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Negados</span>
                     </div>
                     <p className="text-2xl font-black text-red-400">{stats?.rejected_count ?? '—'}</p>
-                    <p className="text-xs text-white/30 mt-1">solicitações rejeitadas</p>
+                    <p className="text-xs text-gray-400 mt-1">solicitações rejeitadas</p>
                 </div>
             </div>
 
             {/* ── Filters ── */}
             <div className="flex flex-col sm:flex-row gap-3">
                 <div className="relative flex-1">
-                    <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/20" />
+                    <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300" />
                     <input
                         value={search}
                         onChange={e => setSearch(e.target.value)}
                         placeholder="Buscar por nome, email ou chave PIX..."
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-primary/40 transition-colors"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/40 transition-colors"
                     />
                 </div>
                 <div className="relative">
-                    <Calendar size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/20 pointer-events-none" />
+                    <Calendar size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none" />
                     <input
                         type="date"
                         value={dateFilter}
                         onChange={e => setDateFilter(e.target.value)}
-                        className="bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-3 text-sm text-white/60 focus:outline-none focus:border-primary/40 transition-colors appearance-none [color-scheme:dark]"
+                        className="bg-gray-50 border border-gray-200 rounded-xl py-2.5 pl-10 pr-3 text-sm text-gray-700 focus:outline-none focus:border-primary/40 transition-colors appearance-none"
                     />
                     {dateFilter && (
                         <button
                             onClick={() => setDateFilter('')}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 text-white/30 hover:text-white text-xs font-bold"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 text-xs font-bold"
                         >
                             ✕
                         </button>
@@ -179,7 +179,7 @@ export default function AdminSaquesPage() {
                                 'px-4 py-2.5 rounded-xl text-sm font-bold border transition-all',
                                 statusFilter === val
                                     ? 'bg-primary/15 text-primary border-primary/20'
-                                    : 'bg-white/5 text-white/40 border-white/10 hover:text-white'
+                                    : 'bg-gray-50 text-gray-400 border-gray-200 hover:text-gray-900 hover:bg-gray-100'
                             )}
                         >
                             {label}
@@ -189,27 +189,27 @@ export default function AdminSaquesPage() {
             </div>
 
             {/* ── List ── */}
-            <div className="glass rounded-2xl border border-white/5 overflow-hidden">
+            <div className="bg-white border border-gray-100 shadow-sm rounded-2xl overflow-hidden">
                 {loading ? (
                     <div className="flex items-center justify-center py-16">
-                        <Loader2 size={24} className="animate-spin text-white/20" />
+                        <Loader2 size={24} className="animate-spin text-primary" />
                     </div>
                 ) : withdrawals.length === 0 ? (
                     <div className="text-center py-16">
-                        <Wallet size={40} className="text-white/10 mx-auto mb-3" />
-                        <p className="text-white/30 font-bold">Nenhum saque encontrado</p>
+                        <Wallet size={40} className="text-gray-200 mx-auto mb-3" />
+                        <p className="text-gray-400 font-bold">Nenhum saque encontrado</p>
                     </div>
                 ) : (
                     <>
                         {/* Mobile */}
-                        <div className="md:hidden divide-y divide-white/5">
+                        <div className="md:hidden divide-y divide-gray-100">
                             {withdrawals.map(w => (
                                 <div key={w.id} className="p-4 space-y-3">
                                     <div className="flex items-start justify-between gap-3">
                                         <div className="flex-1 min-w-0">
-                                            <p className="font-bold text-sm truncate">{w.full_name}</p>
-                                            <p className="text-[11px] text-white/30 truncate">{w.email}</p>
-                                            <p className="text-[10px] text-white/20 mt-0.5">{new Date(w.created_at).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })}</p>
+                                            <p className="font-bold text-sm truncate text-gray-900">{w.full_name}</p>
+                                            <p className="text-[11px] text-gray-400 truncate">{w.email}</p>
+                                            <p className="text-[10px] text-gray-400 mt-0.5">{new Date(w.created_at).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })}</p>
                                         </div>
                                         <div className="text-right shrink-0">
                                             <p className="text-lg font-black text-emerald-400">R$ {fmt(w.amount)}</p>
@@ -218,8 +218,8 @@ export default function AdminSaquesPage() {
                                     </div>
 
                                     <div className="flex items-center gap-2">
-                                        <code className="flex-1 bg-white/5 border border-white/5 rounded-lg px-3 py-1.5 text-xs font-mono text-primary truncate">{w.pix_key}</code>
-                                        <button onClick={() => copyPix(w.pix_key)} className="p-2 bg-white/5 rounded-lg text-white/30 shrink-0">
+                                        <code className="flex-1 bg-gray-50 border border-gray-100 rounded-lg px-3 py-1.5 text-xs font-mono text-primary truncate">{w.pix_key}</code>
+                                        <button onClick={() => copyPix(w.pix_key)} className="p-2 bg-gray-50 rounded-lg text-gray-400 shrink-0">
                                             {copied === w.pix_key ? <CheckCircle size={13} className="text-emerald-400" /> : <Copy size={13} />}
                                         </button>
                                     </div>
@@ -231,12 +231,12 @@ export default function AdminSaquesPage() {
                                                 value={txInputs[w.id] || ''}
                                                 onChange={e => setTxInputs(p => ({ ...p, [w.id]: e.target.value }))}
                                                 placeholder="Hash da transação (opcional)"
-                                                className="flex-1 bg-white/5 border border-white/5 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/30 font-mono"
+                                                className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-700 focus:outline-none focus:border-emerald-500/30 font-mono"
                                             />
                                             <button
                                                 onClick={() => handleAction('complete_withdraw', { withdraw_id: w.id, tx_hash: txInputs[w.id] || '' })}
                                                 disabled={!!actionLoading}
-                                                className="bg-emerald-500 text-black px-3 py-2 rounded-lg font-black text-xs shrink-0 disabled:opacity-50"
+                                                className="bg-emerald-500 text-white px-3 py-2 rounded-lg font-black text-xs shrink-0 disabled:opacity-50"
                                             >
                                                 {actionLoading === `complete_withdraw-${w.id}` ? <Loader2 size={12} className="animate-spin" /> : 'PAGO'}
                                             </button>
@@ -250,7 +250,7 @@ export default function AdminSaquesPage() {
                                         </div>
                                     )}
                                     {w.tx_hash && (
-                                        <p className="text-[10px] text-white/20 font-mono truncate">Hash: {w.tx_hash}</p>
+                                        <p className="text-[10px] text-gray-400 font-mono truncate">Hash: {w.tx_hash}</p>
                                     )}
                                 </div>
                             ))}
@@ -260,7 +260,7 @@ export default function AdminSaquesPage() {
                         <div className="hidden md:block overflow-x-auto">
                             <table className="w-full">
                                 <thead>
-                                    <tr className="border-b border-white/5 text-white/20 text-[10px] font-black uppercase tracking-widest">
+                                    <tr className="border-b border-gray-100 text-gray-400 text-[10px] font-black uppercase tracking-widest">
                                         <th className="p-5 pl-6 text-left">Vendedor</th>
                                         <th className="p-5 text-center">Valor</th>
                                         <th className="p-5 text-left">Chave PIX</th>
@@ -269,30 +269,30 @@ export default function AdminSaquesPage() {
                                         <th className="p-5 pr-6 text-right">Ações</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-white/5">
+                                <tbody className="divide-y divide-gray-100">
                                     {withdrawals.map(w => (
-                                        <tr key={w.id} className={cn('transition-colors', w.status === 'pending' ? 'hover:bg-amber-500/[0.02]' : 'hover:bg-white/[0.01]')}>
+                                        <tr key={w.id} className={cn('transition-colors', w.status === 'pending' ? 'hover:bg-amber-50' : 'hover:bg-gray-50')}>
                                             <td className="p-5 pl-6">
-                                                <p className="font-bold text-sm">{w.full_name}</p>
-                                                <p className="text-[11px] text-white/30">{w.email}</p>
+                                                <p className="font-bold text-sm text-gray-900">{w.full_name}</p>
+                                                <p className="text-[11px] text-gray-400">{w.email}</p>
                                             </td>
                                             <td className="p-5 text-center">
                                                 <span className="text-lg font-black text-emerald-400">R$ {fmt(w.amount)}</span>
                                             </td>
                                             <td className="p-5">
                                                 <div className="flex items-center gap-2">
-                                                    <code className="bg-white/5 border border-white/5 px-3 py-1.5 rounded-lg text-xs font-mono text-primary max-w-[180px] truncate">{w.pix_key}</code>
-                                                    <button onClick={() => copyPix(w.pix_key)} className="p-1.5 bg-white/5 rounded-lg text-white/20 hover:text-white transition-colors shrink-0">
+                                                    <code className="bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-lg text-xs font-mono text-primary max-w-[180px] truncate">{w.pix_key}</code>
+                                                    <button onClick={() => copyPix(w.pix_key)} className="p-1.5 bg-gray-50 rounded-lg text-gray-400 hover:text-gray-900 transition-colors shrink-0">
                                                         {copied === w.pix_key ? <CheckCircle size={12} className="text-emerald-400" /> : <Copy size={12} />}
                                                     </button>
                                                 </div>
                                             </td>
                                             <td className="p-5 text-center">
                                                 <StatusBadge status={w.status} />
-                                                {w.tx_hash && <p className="text-[9px] text-white/15 font-mono mt-1 truncate max-w-[100px]">{w.tx_hash}</p>}
+                                                {w.tx_hash && <p className="text-[9px] text-gray-400 font-mono mt-1 truncate max-w-[100px]">{w.tx_hash}</p>}
                                             </td>
                                             <td className="p-5">
-                                                <span className="text-xs text-white/40">
+                                                <span className="text-xs text-gray-500">
                                                     {new Date(w.created_at).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })}
                                                 </span>
                                             </td>
@@ -303,12 +303,12 @@ export default function AdminSaquesPage() {
                                                             value={txInputs[w.id] || ''}
                                                             onChange={e => setTxInputs(p => ({ ...p, [w.id]: e.target.value }))}
                                                             placeholder="Hash (opcional)"
-                                                            className="bg-white/5 border border-white/5 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/30 font-mono w-36"
+                                                            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs text-gray-700 focus:outline-none focus:border-emerald-500/30 font-mono w-36"
                                                         />
                                                         <button
                                                             onClick={() => handleAction('complete_withdraw', { withdraw_id: w.id, tx_hash: txInputs[w.id] || '' })}
                                                             disabled={!!actionLoading}
-                                                            className="bg-emerald-500 text-black px-4 py-2 rounded-xl font-black text-xs hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-1"
+                                                            className="bg-emerald-500 text-white px-4 py-2 rounded-xl font-black text-xs hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-1"
                                                         >
                                                             {actionLoading === `complete_withdraw-${w.id}` ? <Loader2 size={12} className="animate-spin" /> : <><CheckCircle size={12} /> PAGO</>}
                                                         </button>
@@ -321,7 +321,7 @@ export default function AdminSaquesPage() {
                                                         </button>
                                                     </div>
                                                 ) : (
-                                                    <span className="text-xs text-white/20 text-right block">—</span>
+                                                    <span className="text-xs text-gray-400 text-right block">—</span>
                                                 )}
                                             </td>
                                         </tr>

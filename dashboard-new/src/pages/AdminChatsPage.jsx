@@ -145,13 +145,13 @@ export default function AdminChatsPage() {
     const totalUnread = rooms.reduce((s, r) => s + (parseInt(r.unread) || 0), 0);
 
     return (
-        <div className="-m-4 lg:-m-8 h-[calc(100%+2rem)] lg:h-[calc(100%+4rem)] flex flex-col md:flex-row gap-0 overflow-hidden animate-in fade-in duration-500 bg-[#08080a]">
+        <div className="-m-4 lg:-m-8 h-[calc(100%+2rem)] lg:h-[calc(100%+4rem)] flex flex-col md:flex-row gap-0 overflow-hidden animate-in fade-in duration-500 bg-gray-50">
             {/* ── Room List ── */}
             <div className={cn(
-                "w-full md:w-[340px] lg:w-[380px] flex-shrink-0 border-r border-white/5 flex flex-col bg-[#0a0a0c]",
+                "w-full md:w-[340px] lg:w-[380px] flex-shrink-0 border-r border-gray-100 flex flex-col bg-white",
                 showChat ? "hidden md:flex" : "flex"
             )}>
-                <div className="p-4 md:p-5 border-b border-white/5">
+                <div className="p-4 md:p-5 border-b border-gray-100">
                     <div className="flex items-center justify-between mb-3">
                         <h2 className="text-lg font-black flex items-center gap-2">
                             <ShieldCheck size={20} className="text-primary" />
@@ -160,17 +160,17 @@ export default function AdminChatsPage() {
                                 <span className="bg-primary text-black text-[10px] font-black px-2 py-0.5 rounded-full">{totalUnread}</span>
                             )}
                         </h2>
-                        <button onClick={fetchRooms} className="p-1.5 text-white/30 hover:text-white transition-colors">
+                        <button onClick={fetchRooms} className="p-1.5 text-gray-400 hover:text-gray-900 transition-colors">
                             <RefreshCw size={14} />
                         </button>
                     </div>
                     <div className="relative">
-                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20" />
+                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" />
                         <input
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             placeholder="Buscar cliente, produto ou vendedor..."
-                            className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-9 pr-3 text-xs focus:outline-none focus:border-primary/40 transition-colors"
+                            className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2 pl-9 pr-3 text-xs text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/40 transition-colors"
                         />
                     </div>
                     <div className="flex gap-1.5 mt-3">
@@ -180,7 +180,7 @@ export default function AdminChatsPage() {
                                 onClick={() => setFilter(key)}
                                 className={cn(
                                     "px-3 py-1 rounded-lg text-[10px] font-bold transition-all",
-                                    filter === key ? "bg-primary/15 text-primary" : "bg-white/5 text-white/30 hover:text-white"
+                                    filter === key ? "bg-primary/15 text-primary" : "bg-gray-50 text-gray-400 hover:text-gray-900 border border-gray-100"
                                 )}
                             >{label}</button>
                         ))}
@@ -191,25 +191,25 @@ export default function AdminChatsPage() {
                     {loading ? (
                         <div className="p-10 flex justify-center"><RefreshCw className="animate-spin text-primary" size={24} /></div>
                     ) : filtered.length === 0 ? (
-                        <div className="p-10 text-center text-white/20 text-sm font-bold">Nenhum chat</div>
+                        <div className="p-10 text-center text-gray-300 text-sm font-bold">Nenhum chat</div>
                     ) : filtered.map(room => (
                         <button
                             key={room.id}
                             onClick={() => openRoom(room)}
                             className={cn(
-                                "w-full text-left p-4 border-b border-white/5 hover:bg-white/[0.03] transition-colors",
-                                activeRoom?.id === room.id && "bg-white/[0.05]"
+                                "w-full text-left p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors",
+                                activeRoom?.id === room.id && "bg-purple-50"
                             )}
                         >
                             <div className="flex items-start justify-between gap-2 mb-1">
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2">
-                                        <span className="text-sm font-bold truncate">{room.buyer_name}</span>
+                                        <span className="text-sm font-bold truncate text-gray-900">{room.buyer_name}</span>
                                         {room.unread > 0 && (
                                             <span className="bg-primary text-black text-[9px] font-black px-1.5 py-0.5 rounded-full">{room.unread}</span>
                                         )}
                                     </div>
-                                    <p className="text-[11px] text-white/30 truncate mt-0.5">
+                                    <p className="text-[11px] text-gray-400 truncate mt-0.5">
                                         <Package size={10} className="inline mr-1" />
                                         {room.product_name || `Pedido #${room.order_id}`}
                                     </p>
@@ -219,10 +219,10 @@ export default function AdminChatsPage() {
                                     </p>
                                 </div>
                                 <div className="text-right shrink-0">
-                                    <span className="text-[10px] text-white/20">{room.last_message_at ? timeAgo(room.last_message_at) : ''}</span>
+                                    <span className="text-[10px] text-gray-400">{room.last_message_at ? timeAgo(room.last_message_at) : ''}</span>
                                     <div className={cn(
                                         "text-[8px] font-black uppercase mt-1",
-                                        room.status === 'open' ? 'text-emerald-500' : 'text-white/15'
+                                        room.status === 'open' ? 'text-emerald-500' : 'text-gray-300'
                                     )}>{room.status === 'open' ? 'aberto' : 'fechado'}</div>
                                 </div>
                             </div>
@@ -232,19 +232,19 @@ export default function AdminChatsPage() {
             </div>
 
             {/* ── Chat Area ── */}
-            <div className={cn("flex-1 flex flex-col min-h-0 bg-black/50", showChat ? "flex" : "hidden md:flex")}>
+            <div className={cn("flex-1 flex flex-col min-h-0 bg-gray-50", showChat ? "flex" : "hidden md:flex")}>
                 {activeRoom ? (
                     <>
-                        <div className="p-4 border-b border-white/5 flex items-center gap-3 bg-[#0a0a0c]">
+                        <div className="p-4 border-b border-gray-100 flex items-center gap-3 bg-white">
                             <button
                                 onClick={() => { setActiveRoom(null); if (pollRef.current) clearInterval(pollRef.current); }}
-                                className="md:hidden p-1.5 text-white/40 hover:text-white"
+                                className="md:hidden p-1.5 text-gray-400 hover:text-gray-900"
                             >
                                 <ArrowLeft size={18} />
                             </button>
                             <div className="flex-1 min-w-0">
-                                <h3 className="text-sm font-bold truncate">{activeRoom.buyer_name}</h3>
-                                <p className="text-[11px] text-white/30 truncate">
+                                <h3 className="text-sm font-bold truncate text-gray-900">{activeRoom.buyer_name}</h3>
+                                <p className="text-[11px] text-gray-400 truncate">
                                     {activeRoom.product_name || `Pedido #${activeRoom.order_id}`}
                                     {activeRoom.seller_name && <span className="text-amber-400/50 ml-2">• Vendedor: {activeRoom.seller_name}</span>}
                                 </p>
@@ -255,7 +255,7 @@ export default function AdminChatsPage() {
                                 </span>
                                 <span className={cn(
                                     "px-2 py-0.5 rounded-full text-[9px] font-black uppercase",
-                                    activeRoom.status === 'open' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-white/5 text-white/30'
+                                    activeRoom.status === 'open' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-gray-100 text-gray-400'
                                 )}>{activeRoom.status === 'open' ? 'aberto' : 'fechado'}</span>
                                 <button onClick={toggleStatus} className={cn(
                                     "p-1.5 rounded-lg transition-colors",
@@ -268,7 +268,7 @@ export default function AdminChatsPage() {
 
                         <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3 overscroll-contain">
                             {messages.length === 0 && (
-                                <div className="text-center py-10 text-white/15 text-sm font-bold">
+                                <div className="text-center py-10 text-gray-300 text-sm font-bold">
                                     Nenhuma mensagem ainda.
                                 </div>
                             )}
@@ -280,7 +280,7 @@ export default function AdminChatsPage() {
                                     <React.Fragment key={msg.id}>
                                         {showDateSep && (
                                             <div className="text-center py-2">
-                                                <span className="text-[10px] bg-white/5 text-white/25 px-3 py-1 rounded-full font-bold">{formatDate(msg.created_at)}</span>
+                                                <span className="text-[10px] bg-gray-100 text-gray-400 px-3 py-1 rounded-full font-bold">{formatDate(msg.created_at)}</span>
                                             </div>
                                         )}
                                         <div className={cn("flex", isMe ? "justify-end" : isSeller ? "justify-end" : "justify-start")}>
@@ -290,20 +290,20 @@ export default function AdminChatsPage() {
                                                     ? "bg-amber-500/15 border border-amber-500/20"
                                                     : isSeller
                                                         ? "bg-primary/15 border border-primary/20"
-                                                        : "bg-white/[0.06] border border-white/[0.08]"
+                                                        : "bg-white border border-gray-200"
                                             )}>
                                                 <div className="flex items-center gap-2 mb-0.5">
                                                     <span className={cn(
                                                         "text-[10px] font-black uppercase",
-                                                        isMe ? 'text-amber-400' : isSeller ? 'text-primary' : 'text-white/40'
+                                                        isMe ? 'text-amber-400' : isSeller ? 'text-primary' : 'text-gray-400'
                                                     )}>
                                                         {isMe && <Crown size={8} className="inline mr-1" />}
                                                         {msg.sender_name}
                                                     </span>
                                                 </div>
-                                                <p className="text-[13px] text-white/90 leading-relaxed whitespace-pre-wrap break-words">{msg.message}</p>
+                                                <p className="text-[13px] text-gray-800 leading-relaxed whitespace-pre-wrap break-words">{msg.message}</p>
                                                 <div className={cn("flex items-center gap-1 mt-1", (isMe || isSeller) ? "justify-end" : "justify-start")}>
-                                                    <span className="text-[9px] text-white/20">{formatTime(msg.created_at)}</span>
+                                                    <span className="text-[9px] text-gray-400">{formatTime(msg.created_at)}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -314,7 +314,7 @@ export default function AdminChatsPage() {
                         </div>
 
                         {activeRoom.status === 'open' ? (
-                            <div className="p-3 md:p-4 border-t border-white/5 bg-[#0a0a0c]">
+                            <div className="p-3 md:p-4 border-t border-gray-100 bg-white">
                                 <div className="flex items-center gap-2 mb-2">
                                     <Crown size={10} className="text-amber-400" />
                                     <span className="text-[10px] text-amber-400/70 font-bold">Respondendo como Dono da Plataforma</span>
@@ -325,7 +325,7 @@ export default function AdminChatsPage() {
                                         onChange={e => setMsgInput(e.target.value)}
                                         placeholder="Responder como Dono da Plataforma..."
                                         maxLength={2000}
-                                        className="flex-1 bg-white/5 border border-amber-500/20 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-amber-500/40 transition-colors"
+                                        className="flex-1 bg-amber-50 border border-amber-200 rounded-xl py-3 px-4 text-sm text-gray-900 placeholder:text-amber-300 focus:outline-none focus:border-amber-400/40 transition-colors"
                                     />
                                     <button
                                         type="submit"
@@ -337,7 +337,7 @@ export default function AdminChatsPage() {
                                 </form>
                             </div>
                         ) : (
-                            <div className="p-4 border-t border-white/5 text-center text-white/20 text-xs font-bold bg-[#0a0a0c]">
+                            <div className="p-4 border-t border-gray-100 text-center text-gray-400 text-xs font-bold bg-white">
                                 Chat encerrado.
                                 <button onClick={toggleStatus} className="text-primary ml-2 hover:underline">Reabrir</button>
                             </div>
@@ -346,9 +346,9 @@ export default function AdminChatsPage() {
                 ) : (
                     <div className="flex-1 flex items-center justify-center">
                         <div className="text-center">
-                            <ShieldCheck size={48} className="text-white/5 mx-auto mb-4" />
-                            <p className="text-white/20 font-bold">Admin — Todos os Chats</p>
-                            <p className="text-white/10 text-sm mt-1">Selecione para ver e responder como Dono da Plataforma</p>
+                            <ShieldCheck size={48} className="text-gray-200 mx-auto mb-4" />
+                            <p className="text-gray-400 font-bold">Admin — Todos os Chats</p>
+                            <p className="text-gray-300 text-sm mt-1">Selecione para ver e responder como Dono da Plataforma</p>
                         </div>
                     </div>
                 )}

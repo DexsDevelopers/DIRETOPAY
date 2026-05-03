@@ -28,7 +28,7 @@ const STATUS_TABS = [
 const badgeStyles = {
     approved: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     pending: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    expired: 'bg-white/5 text-white/30 border-white/10',
+    expired: 'bg-gray-100 text-gray-400 border-gray-200',
     failed: 'bg-red-500/10 text-red-400 border-red-500/20',
 };
 
@@ -116,12 +116,12 @@ export default function AdminTransactionsPage() {
                         <Receipt className="text-primary" size={32} />
                         Todas as <span className="text-primary">Vendas</span>
                     </h1>
-                    <p className="text-white/40 font-medium mt-1">Visão global de todas as transações da plataforma.</p>
+                    <p className="text-gray-500 font-medium mt-1">Visão global de todas as transações da plataforma.</p>
                 </div>
                 <button
                     onClick={fetchData}
                     disabled={loading}
-                    className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm font-bold hover:bg-white/10 transition-all disabled:opacity-50"
+                    className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-sm font-bold hover:bg-gray-100 text-gray-700 transition-all disabled:opacity-50"
                 >
                     <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
                     Atualizar
@@ -130,53 +130,53 @@ export default function AdminTransactionsPage() {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="glass rounded-3xl p-5 border-white/5">
+                <div className="bg-white border border-gray-100 shadow-sm rounded-3xl p-5">
                     <div className="flex items-center gap-3 mb-3">
                         <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
                             <TrendingUp size={18} className="text-primary" />
                         </div>
-                        <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Volume Hoje</p>
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Volume Hoje</p>
                     </div>
-                    <p className="text-2xl font-black">R$ {stats?.today_volume || '0,00'}</p>
-                    <p className="text-xs text-white/30 mt-1">{stats?.today_count || 0} vendas</p>
+                    <p className="text-2xl font-black text-gray-900">R$ {stats?.today_volume || '0,00'}</p>
+                    <p className="text-xs text-gray-400 mt-1">{stats?.today_count || 0} vendas</p>
                 </div>
 
-                <div className="glass rounded-3xl p-5 border-white/5">
+                <div className="bg-white border border-gray-100 shadow-sm rounded-3xl p-5">
                     <div className="flex items-center gap-3 mb-3">
                         <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center">
                             <CheckCircle size={18} className="text-emerald-400" />
                         </div>
-                        <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Total Pagas</p>
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Pagas</p>
                     </div>
                     <p className="text-2xl font-black text-emerald-400">R$ {stats?.total_paid_volume || '0,00'}</p>
-                    <p className="text-xs text-white/30 mt-1">{stats?.paid_count || 0} transações</p>
+                    <p className="text-xs text-gray-400 mt-1">{stats?.paid_count || 0} transações</p>
                 </div>
 
-                <div className="glass rounded-3xl p-5 border-white/5">
+                <div className="bg-white border border-gray-100 shadow-sm rounded-3xl p-5">
                     <div className="flex items-center gap-3 mb-3">
                         <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center">
                             <Clock size={18} className="text-amber-400" />
                         </div>
-                        <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Pendentes</p>
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Pendentes</p>
                     </div>
                     <p className="text-2xl font-black text-amber-400">{stats?.pending_count || 0}</p>
-                    <p className="text-xs text-white/30 mt-1">aguardando pagamento</p>
+                    <p className="text-xs text-gray-400 mt-1">aguardando pagamento</p>
                 </div>
 
-                <div className="glass rounded-3xl p-5 border-white/5">
+                <div className="bg-white border border-gray-100 shadow-sm rounded-3xl p-5">
                     <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
-                            <DollarSign size={18} className="text-white/40" />
+                        <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center">
+                            <DollarSign size={18} className="text-gray-400" />
                         </div>
-                        <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Líquido Total</p>
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Líquido Total</p>
                     </div>
-                    <p className="text-2xl font-black">R$ {stats?.total_net_volume || '0,00'}</p>
-                    <p className="text-xs text-white/30 mt-1">creditado aos lojistas</p>
+                    <p className="text-2xl font-black text-gray-900">R$ {stats?.total_net_volume || '0,00'}</p>
+                    <p className="text-xs text-gray-400 mt-1">creditado aos lojistas</p>
                 </div>
             </div>
 
             {/* Filters */}
-            <div className="glass rounded-3xl border-white/5 p-4 flex flex-col lg:flex-row items-center gap-4">
+            <div className="bg-white border border-gray-100 shadow-sm rounded-3xl p-4 flex flex-col lg:flex-row items-center gap-4">
                 {/* Status Tabs */}
                 <div className="flex gap-2 overflow-x-auto no-scrollbar w-full lg:w-auto">
                     {STATUS_TABS.map(tab => (
@@ -186,8 +186,8 @@ export default function AdminTransactionsPage() {
                             className={cn(
                                 "flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border",
                                 statusFilter === tab.key
-                                    ? 'bg-primary text-black border-primary shadow-lg shadow-primary/20'
-                                    : 'bg-white/5 text-white/50 border-white/5 hover:bg-white/10 hover:text-white'
+                                    ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
+                                    : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100 hover:text-gray-900'
                             )}
                         >
                             {tab.icon}
@@ -204,40 +204,40 @@ export default function AdminTransactionsPage() {
 
                 {/* Search */}
                 <div className="relative flex-1 w-full lg:max-w-xs ml-auto">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={16} />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
                     <input
                         type="text"
                         placeholder="Buscar nome, email, pix ID..."
                         value={search}
                         onChange={e => setSearch(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:border-primary/30 transition-all font-medium"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 pl-11 pr-4 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/30 transition-all font-medium"
                     />
                 </div>
             </div>
 
             {/* Transactions Table */}
-            <div className="glass rounded-[32px] border-white/5 overflow-hidden">
+            <div className="bg-white border border-gray-100 shadow-sm rounded-[32px] overflow-hidden">
                 {/* Mobile Cards */}
                 <div className="md:hidden">
                     {loading && !data ? (
                         <div className="p-12 text-center">
                             <RefreshCw className="animate-spin text-primary mx-auto mb-3" size={28} />
-                            <p className="text-white/30 text-sm font-medium">Carregando transações...</p>
+                            <p className="text-gray-400 text-sm font-medium">Carregando transações...</p>
                         </div>
                     ) : data?.transactions?.length === 0 ? (
                         <div className="p-12 text-center">
-                            <Receipt className="text-white/10 mx-auto mb-3" size={40} />
-                            <p className="text-white/30 text-sm font-medium">Nenhuma transação encontrada.</p>
+                            <Receipt className="text-gray-200 mx-auto mb-3" size={40} />
+                            <p className="text-gray-400 text-sm font-medium">Nenhuma transação encontrada.</p>
                         </div>
                     ) : (
                         <div className="space-y-2 p-3">
                             {data?.transactions?.map(tx => (
-                                <div key={tx.id} className="bg-white/[0.03] rounded-2xl border border-white/[0.06] p-4 space-y-3">
+                                <div key={tx.id} className="bg-gray-50 rounded-2xl border border-gray-100 p-4 space-y-3">
                                     {/* Row 1: Seller + Status */}
                                     <div className="flex items-start justify-between gap-3">
                                         <div className="flex-1 min-w-0">
-                                            <h4 className="text-[15px] font-bold text-white truncate">{tx.user_name}</h4>
-                                            <p className="text-[11px] text-white/25 font-medium truncate">{tx.user_email}</p>
+                                            <h4 className="text-[15px] font-bold text-gray-900 truncate">{tx.user_name}</h4>
+                                            <p className="text-[11px] text-gray-400 font-medium truncate">{tx.user_email}</p>
                                         </div>
                                         <span className={cn(
                                             "px-2.5 py-1 rounded-lg text-[9px] font-black uppercase shrink-0 tracking-wide",
@@ -254,21 +254,21 @@ export default function AdminTransactionsPage() {
 
                                     {/* Row 2: Values */}
                                     <div className="flex items-center gap-3">
-                                        <div className="bg-black/30 rounded-xl px-3 py-2 flex-1 text-center">
-                                            <span className="text-[9px] text-white/25 font-bold uppercase block mb-0.5">Bruto</span>
-                                            <span className="text-sm font-black text-white">R$ {tx.amount_brl}</span>
+                                        <div className="bg-white rounded-xl px-3 py-2 flex-1 text-center border border-gray-100">
+                                            <span className="text-[9px] text-gray-400 font-bold uppercase block mb-0.5">Bruto</span>
+                                            <span className="text-sm font-black text-gray-900">R$ {tx.amount_brl}</span>
                                         </div>
-                                        <div className="bg-black/30 rounded-xl px-3 py-2 flex-1 text-center">
-                                            <span className="text-[9px] text-white/25 font-bold uppercase block mb-0.5">Líquido</span>
-                                            <span className="text-sm font-black text-white/50">R$ {tx.amount_net_brl}</span>
+                                        <div className="bg-white rounded-xl px-3 py-2 flex-1 text-center border border-gray-100">
+                                            <span className="text-[9px] text-gray-400 font-bold uppercase block mb-0.5">Líquido</span>
+                                            <span className="text-sm font-black text-gray-500">R$ {tx.amount_net_brl}</span>
                                         </div>
                                     </div>
 
                                     {/* Row 3: Meta info + MED button */}
-                                    <div className="flex items-center justify-between text-[11px] text-white/30">
+                                    <div className="flex items-center justify-between text-[11px] text-gray-400">
                                         <span>#{tx.id} • {tx.date}</span>
                                         <div className="flex items-center gap-2">
-                                            {tx.customer_name && <span className="text-white/40 font-medium truncate">{tx.customer_name}</span>}
+                                            {tx.customer_name && <span className="text-gray-500 font-medium truncate">{tx.customer_name}</span>}
                                             <button
                                                 onClick={() => toggleMed(tx.id)}
                                                 disabled={medLoading === tx.id}
@@ -276,7 +276,7 @@ export default function AdminTransactionsPage() {
                                                     "flex items-center gap-1 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase transition-all border",
                                                     tx.med
                                                         ? 'bg-red-500/15 text-red-400 border-red-500/20 hover:bg-red-500 hover:text-white'
-                                                        : 'bg-white/5 text-white/30 border-white/10 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20'
+                                                        : 'bg-gray-50 text-gray-400 border-gray-200 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20'
                                                 )}
                                             >
                                                 {medLoading === tx.id ? <Loader2 size={10} className="animate-spin" /> : <AlertTriangle size={10} />}
@@ -294,52 +294,52 @@ export default function AdminTransactionsPage() {
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full">
                         <thead>
-                            <tr className="text-left border-b border-white/5">
-                                <th className="p-5 pl-8 text-[10px] font-black text-white/20 uppercase tracking-widest">ID</th>
-                                <th className="p-5 text-[10px] font-black text-white/20 uppercase tracking-widest">Lojista</th>
-                                <th className="p-5 text-[10px] font-black text-white/20 uppercase tracking-widest">Pagador</th>
-                                <th className="p-5 text-[10px] font-black text-white/20 uppercase tracking-widest text-right">Valor Bruto</th>
-                                <th className="p-5 text-[10px] font-black text-white/20 uppercase tracking-widest text-right">Líquido</th>
-                                <th className="p-5 text-[10px] font-black text-white/20 uppercase tracking-widest text-center">Status</th>
-                                <th className="p-5 text-[10px] font-black text-white/20 uppercase tracking-widest text-center">MED</th>
-                                <th className="p-5 text-[10px] font-black text-white/20 uppercase tracking-widest text-center">Ação</th>
-                                <th className="p-5 pr-8 text-[10px] font-black text-white/20 uppercase tracking-widest text-right">Data</th>
+                            <tr className="text-left border-b border-gray-100">
+                                <th className="p-5 pl-8 text-[10px] font-black text-gray-400 uppercase tracking-widest">ID</th>
+                                <th className="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Lojista</th>
+                                <th className="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Pagador</th>
+                                <th className="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Valor Bruto</th>
+                                <th className="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Líquido</th>
+                                <th className="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Status</th>
+                                <th className="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">MED</th>
+                                <th className="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Ação</th>
+                                <th className="p-5 pr-8 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Data</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/[0.03]">
+                        <tbody className="divide-y divide-gray-50">
                             {loading && !data ? (
                                 <tr>
                                     <td colSpan={9} className="p-20 text-center">
                                         <RefreshCw className="animate-spin text-primary mx-auto mb-3" size={28} />
-                                        <p className="text-white/30 text-sm font-medium">Carregando transações...</p>
+                                        <p className="text-gray-400 text-sm font-medium">Carregando transações...</p>
                                     </td>
                                 </tr>
                             ) : data?.transactions?.length === 0 ? (
                                 <tr>
                                     <td colSpan={9} className="p-20 text-center">
-                                        <Receipt className="text-white/10 mx-auto mb-3" size={40} />
-                                        <p className="text-white/30 text-sm font-medium">Nenhuma transação encontrada.</p>
+                                        <Receipt className="text-gray-200 mx-auto mb-3" size={40} />
+                                        <p className="text-gray-400 text-sm font-medium">Nenhuma transação encontrada.</p>
                                     </td>
                                 </tr>
                             ) : data?.transactions?.map(tx => (
-                                <tr key={tx.id} className="hover:bg-white/[0.02] transition-colors group">
+                                <tr key={tx.id} className="hover:bg-gray-50 transition-colors group">
                                     <td className="p-5 pl-8">
-                                        <span className="text-xs font-mono text-white/30">#{tx.id}</span>
+                                        <span className="text-xs font-mono text-gray-400">#{tx.id}</span>
                                     </td>
                                     <td className="p-5">
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-bold text-white truncate max-w-[160px]">{tx.user_name}</span>
-                                            <span className="text-[11px] text-white/30 truncate max-w-[160px]">{tx.user_email}</span>
+                                            <span className="text-sm font-bold text-gray-900 truncate max-w-[160px]">{tx.user_name}</span>
+                                            <span className="text-[11px] text-gray-400 truncate max-w-[160px]">{tx.user_email}</span>
                                         </div>
                                     </td>
                                     <td className="p-5">
-                                        <span className="text-sm text-white/60 font-medium truncate max-w-[140px] block">{tx.customer_name}</span>
+                                        <span className="text-sm text-gray-500 font-medium truncate max-w-[140px] block">{tx.customer_name}</span>
                                     </td>
                                     <td className="p-5 text-right">
-                                        <span className="text-sm font-black text-white">R$ {tx.amount_brl}</span>
+                                        <span className="text-sm font-black text-gray-900">R$ {tx.amount_brl}</span>
                                     </td>
                                     <td className="p-5 text-right">
-                                        <span className="text-sm font-bold text-white/50">R$ {tx.amount_net_brl}</span>
+                                        <span className="text-sm font-bold text-gray-500">R$ {tx.amount_net_brl}</span>
                                     </td>
                                     <td className="p-5">
                                         <div className="flex justify-center">
@@ -366,15 +366,15 @@ export default function AdminTransactionsPage() {
                                                 "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all border",
                                                 tx.med
                                                     ? 'bg-red-500/15 text-red-400 border-red-500/20 hover:bg-red-500 hover:text-white'
-                                                    : 'bg-white/5 text-white/30 border-white/10 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20'
-                                            )}
-                                        >
-                                            {medLoading === tx.id ? <Loader2 size={11} className="animate-spin" /> : <AlertTriangle size={11} />}
+                                                    : 'bg-gray-50 text-gray-400 border-gray-200 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20'
+                                                )}
+                                            >
+                                                {medLoading === tx.id ? <Loader2 size={11} className="animate-spin" /> : <AlertTriangle size={11} />}
                                             {tx.med ? 'Remover MED' : 'Marcar MED'}
                                         </button>
                                     </td>
                                     <td className="p-5 pr-8 text-right">
-                                        <span className="text-xs text-white/40 font-medium">{tx.date}</span>
+                                        <span className="text-xs text-gray-500 font-medium">{tx.date}</span>
                                     </td>
                                 </tr>
                             ))}
@@ -384,22 +384,22 @@ export default function AdminTransactionsPage() {
 
                 {/* Pagination */}
                 {pagination && pagination.pages > 1 && (
-                    <div className="border-t border-white/5 p-5 flex items-center justify-between">
-                        <p className="text-xs text-white/30 font-medium">
+                    <div className="border-t border-gray-100 p-5 flex items-center justify-between">
+                        <p className="text-xs text-gray-400 font-medium">
                             {pagination.total} transações • Página {pagination.page} de {pagination.pages}
                         </p>
                         <div className="flex gap-2">
                             <button
                                 onClick={() => setPage(p => Math.max(1, p - 1))}
                                 disabled={page <= 1}
-                                className="p-2 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-all disabled:opacity-30"
+                                className="p-2 bg-gray-50 rounded-xl border border-gray-200 hover:bg-gray-100 transition-all disabled:opacity-30"
                             >
                                 <ChevronLeft size={16} />
                             </button>
                             <button
                                 onClick={() => setPage(p => Math.min(pagination.pages, p + 1))}
                                 disabled={page >= pagination.pages}
-                                className="p-2 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-all disabled:opacity-30"
+                                className="p-2 bg-gray-50 rounded-xl border border-gray-200 hover:bg-gray-100 transition-all disabled:opacity-30"
                             >
                                 <ChevronRight size={16} />
                             </button>

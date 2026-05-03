@@ -8,12 +8,11 @@
 
 :root {
   font-family: 'Outfit', sans-serif;
-  color-scheme: dark;
 }
 
 body {
-  background-color: #08080a;
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #1E1B4B;
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -25,6 +24,14 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@utility glass-light {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(124, 58, 237, 0.1);
+  box-shadow: 0 20px 60px rgba(124, 58, 237, 0.08);
 }
 
 @utility lp-btn-primary {
@@ -41,8 +48,8 @@ body {
 }
 
 @utility lp-btn-outline {
-  background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  background: #F9F7FF;
+  color: #4C1D95;
   border-radius: 9999px;
   font-weight: 600;
   padding: 0.75rem 1.5rem;
@@ -50,7 +57,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(124, 58, 237, 0.2);
 }
 
 @utility custom-scrollbar {

@@ -93,8 +93,35 @@ try {
                     ->execute([$userId, 'payment', '✅ Pagamento Confirmado', 'R$ ' . number_format($netAmount, 2, ',', '.') . ' creditado na sua conta.']);
             } catch (Throwable $e) {}
 
+            // Busca dados do vendedor
+            $mStmt = $pdo->prepare("SELECT full_name, telegram_chat_id FROM users WHERE id = ?");
+            $mStmt->execute([$userId]);
+            $merchantRow  = $mStmt->fetch();
+            $merchantName = $merchantRow['full_name'] ?? 'N/A';
+
             // Telegram admin
-            try { TelegramService::notifyPaymentConfirmed($txRow['id'], $amount, $netAmount); } catch (Throwable $e) {}
+            try { TelegramService::notifySale($amount, $netAmount, $txRow['customer_name'] ?? 'N/A', $merchantName, (int)$txRow['id'], 'SigiloPay'); } catch (Throwable $e) {}
+
+            // Telegram usuário (bot)
+            try {
+                if (!empty($merchantRow['telegram_chat_id']) && defined('TELEGRAM_USER_BOT_TOKEN') && TELEGRAM_USER_BOT_TOKEN) {
+                    $tgMsg = "💰 <b>Venda Confirmada!</b>\n━━━━━━━━━━━━━━━━━━━━\n\n"
+                           . "💵 Valor: <b>R$ " . number_format($amount, 2, ',', '.') . "</b>\n"
+                           . "💎 Líquido: R$ " . number_format($netAmount, 2, ',', '.') . "\n"
+                           . "👤 Pagador: " . ($txRow['customer_name'] ?? 'N/A') . "\n"
+                           . "🆔 TX: <code>#" . $txRow['id'] . "</code>\n\n"
+                           . "✅ Valor creditado no seu saldo!";
+                    $tgCh = curl_init("https://api.telegram.org/bot" . TELEGRAM_USER_BOT_TOKEN . "/sendMessage");
+                    curl_setopt_array($tgCh, [
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_POST           => true,
+                        CURLOPT_POSTFIELDS     => json_encode(['chat_id' => $merchantRow['telegram_chat_id'], 'text' => $tgMsg, 'parse_mode' => 'HTML']),
+                        CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+                        CURLOPT_TIMEOUT        => 10,
+                    ]);
+                    curl_exec($tgCh); curl_close($tgCh);
+                }
+            } catch (Throwable $e) {}
 
             write_log('info', "SigiloPay Webhook: pagamento processado tx={$txRow['id']} user=$userId net=$netAmount");
         }
@@ -141,7 +168,31 @@ try {
                     ->execute([$userId, 'payment', '✅ Pagamento Confirmado', 'R$ ' . number_format($netAmount, 2, ',', '.') . ' creditado.']);
             } catch (Throwable $e) {}
 
-            try { TelegramService::sendAdminMessage("💰 SigiloPay checkout pago\nCliente: $clientName\nEmail: $clientEmail\nValor: R$ " . number_format($amount, 2, ',', '.')); } catch (Throwable $e) {}
+            // Telegram admin
+            try { TelegramService::notifySale($amount, $netAmount, $clientName, $user['full_name'] ?? 'N/A', 0, 'SigiloPay Checkout'); } catch (Throwable $e) {}
+
+            // Telegram usuário (bot)
+            try {
+                $ubStmt = $pdo->prepare("SELECT telegram_chat_id FROM users WHERE id = ?");
+                $ubStmt->execute([$userId]);
+                $ubRow = $ubStmt->fetch();
+                if (!empty($ubRow['telegram_chat_id']) && defined('TELEGRAM_USER_BOT_TOKEN') && TELEGRAM_USER_BOT_TOKEN) {
+                    $tgMsg2 = "💰 <b>Venda Confirmada!</b>\n━━━━━━━━━━━━━━━━━━━━\n\n"
+                            . "💵 Valor: <b>R$ " . number_format($amount, 2, ',', '.') . "</b>\n"
+                            . "💎 Líquido: R$ " . number_format($netAmount, 2, ',', '.') . "\n"
+                            . "👤 Pagador: $clientName\n\n"
+                            . "✅ Valor creditado no seu saldo!";
+                    $tgCh2 = curl_init("https://api.telegram.org/bot" . TELEGRAM_USER_BOT_TOKEN . "/sendMessage");
+                    curl_setopt_array($tgCh2, [
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_POST           => true,
+                        CURLOPT_POSTFIELDS     => json_encode(['chat_id' => $ubRow['telegram_chat_id'], 'text' => $tgMsg2, 'parse_mode' => 'HTML']),
+                        CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+                        CURLOPT_TIMEOUT        => 10,
+                    ]);
+                    curl_exec($tgCh2); curl_close($tgCh2);
+                }
+            } catch (Throwable $e) {}
         }
     }
 

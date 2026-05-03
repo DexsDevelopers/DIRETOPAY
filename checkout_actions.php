@@ -21,15 +21,17 @@ try {
             $secondary_color = $_POST['secondary_color'] ?? '#111111';
             $active = isset($_POST['active']) && $_POST['active'] == '1' ? 1 : 0;
             $checkout_banner_url = $_POST['checkout_banner_url'] ?? '';
+            $raw_cs = $_POST['custom_settings'] ?? '{}';
+            $custom_settings = (json_decode($raw_cs) !== null) ? $raw_cs : '{}';
 
             if (empty($title) || empty($slug)) throw new Exception("Título e Slug são obrigatórios.");
 
             if ($checkoutId > 0) {
-                $stmt = $pdo->prepare("UPDATE checkouts SET title=?, slug=?, primary_color=?, secondary_color=?, active=?, checkout_banner_url=? WHERE id=? AND user_id=?");
-                $stmt->execute([$title, $slug, $primary_color, $secondary_color, $active, $checkout_banner_url, $checkoutId, $userId]);
+                $stmt = $pdo->prepare("UPDATE checkouts SET title=?, slug=?, primary_color=?, secondary_color=?, active=?, checkout_banner_url=?, custom_settings=? WHERE id=? AND user_id=?");
+                $stmt->execute([$title, $slug, $primary_color, $secondary_color, $active, $checkout_banner_url, $custom_settings, $checkoutId, $userId]);
             } else {
-                $stmt = $pdo->prepare("INSERT INTO checkouts (user_id, title, slug, primary_color, secondary_color, active, checkout_banner_url) VALUES (?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$userId, $title, $slug, $primary_color, $secondary_color, $active, $checkout_banner_url]);
+                $stmt = $pdo->prepare("INSERT INTO checkouts (user_id, title, slug, primary_color, secondary_color, active, checkout_banner_url, custom_settings) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$userId, $title, $slug, $primary_color, $secondary_color, $active, $checkout_banner_url, $custom_settings]);
                 $checkoutId = $pdo->lastInsertId();
             }
 

@@ -32,7 +32,7 @@ import { cn } from '../lib/utils';
 function SidebarSection({ label, children }) {
     return (
         <div className="pt-5">
-            <p className="px-6 pb-2 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{label}</p>
+            <p className="px-6 pb-2 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{label}</p>
             {children}
         </div>
     );
@@ -51,15 +51,15 @@ function SidebarLink({ item, location, onTabChange, onClose }) {
                 "w-full flex items-center justify-between px-6 py-3 rounded-full transition-all duration-300 group mb-1",
                 isActive
                     ? item.accent
-                        ? 'bg-primary text-black font-bold shadow-[0_4px_20px_rgba(74,222,128,0.2)]'
-                        : 'bg-white text-black font-bold shadow-[0_4px_20px_rgba(255,255,255,0.1)]'
-                    : 'text-white/60 hover:bg-white/5 hover:text-white'
+                        ? 'bg-primary/10 text-primary font-bold border border-primary/20'
+                        : 'bg-primary/10 text-primary font-bold border border-primary/20'
+                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
             )}
         >
             <div className="flex items-center gap-3">
                 <span className={cn(
                     "transition-colors",
-                    isActive ? (item.accent ? 'text-black' : 'text-black') : (item.accent ? 'text-primary' : 'text-white/60 group-hover:text-white')
+                    isActive ? 'text-primary' : (item.accent ? 'text-primary' : 'text-gray-400 group-hover:text-gray-900')
                 )}>
                     {item.icon}
                 </span>
@@ -123,17 +123,17 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
         {isOpen && (
             <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onClose} />
         )}
-        <aside className={`fixed z-50 top-0 left-0 h-full w-[280px] bg-[#111111] border-r border-white/5 flex flex-col transform transition-transform duration-300 ease-out will-change-transform ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <aside className={`fixed z-50 top-0 left-0 h-full w-[280px] bg-white border-r border-gray-100 flex flex-col transform transition-transform duration-300 ease-out will-change-transform shadow-[4px_0_24px_rgba(124,58,237,0.06)] ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
 
             {/* Header */}
             <div className="p-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                        <span className="text-white font-bold text-xl">{userInitial}</span>
+                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center border border-primary/20">
+                        <span className="text-primary font-bold text-xl">{userInitial}</span>
                     </div>
-                    <span className="font-bold text-xl tracking-tight">GHOST<span className="text-primary italic">PIX</span></span>
+                    <span className="font-bold text-xl tracking-tight text-gray-900">GHOST<span className="text-primary italic">PIX</span></span>
                 </div>
-                <button onClick={onClose} className="p-2 text-white/40 hover:text-white transition-colors">
+                <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-900 transition-colors">
                     <X size={24} />
                 </button>
             </div>
@@ -165,11 +165,11 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
             </nav>
 
             {/* Ecossistema */}
-            <div className="px-4 pt-4 border-t border-white/5">
-                <p className="px-6 pb-2 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Ecossistema</p>
+            <div className="px-4 pt-4 border-t border-gray-100">
+                <p className="px-6 pb-2 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Ecossistema</p>
                 <a
                     href="/sso_redirect.php"
-                    className="w-full flex items-center justify-between px-6 py-3 rounded-full text-white/60 hover:bg-red-500/10 hover:text-red-400 transition-all duration-300 group mb-1"
+                    className="w-full flex items-center justify-between px-6 py-3 rounded-full text-gray-500 hover:bg-red-50 hover:text-red-500 transition-all duration-300 group mb-1"
                 >
                     <div className="flex items-center gap-3">
                         <GraduationCap size={20} className="text-red-400" />
@@ -180,10 +180,10 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
             </div>
 
             {/* Logout */}
-            <div className="p-4 mt-auto border-t border-white/5 bg-white/[0.01]">
+            <div className="p-4 mt-auto border-t border-gray-100">
                 <button
                     onClick={() => window.location.href = '../auth/logout.php'}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-500/10 transition-all font-semibold"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-all font-semibold"
                 >
                     <LogOut size={20} />
                     Sair da Conta

@@ -63,17 +63,17 @@ export default function GeneratePixCard({ onGenerate, disabled = false }) {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass p-6 rounded-2xl border border-white/5 relative overflow-hidden"
+            className="bg-white border border-purple-100 shadow-[0_4px_24px_rgba(124,58,237,0.1)] p-6 rounded-2xl relative overflow-hidden"
         >
             <div className="flex items-center gap-3 mb-6">
                 <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20">
                     <QrCode size={20} />
                 </div>
-                <h3 className="font-bold text-white">Gerar Cobrança Pix</h3>
+                <h3 className="font-bold text-gray-900">Gerar Cobrança Pix</h3>
             </div>
 
             <div className="relative mb-4">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 font-medium">R$</span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">R$</span>
                 <input
                     type="number"
                     value={amount}
@@ -82,16 +82,16 @@ export default function GeneratePixCard({ onGenerate, disabled = false }) {
                     step="0.01"
                     min="10"
                     disabled={disabled || loading}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white font-bold text-2xl focus:outline-none focus:border-primary/50 transition-all placeholder:text-white/10"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl py-4 pl-12 pr-4 text-gray-900 font-bold text-2xl focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-200"
                 />
             </div>
 
-            <p className="text-white/40 text-xs mb-6 px-1">Valor mínimo sugerido: R$ 10,00</p>
+            <p className="text-gray-400 text-xs mb-6 px-1">Valor mínimo sugerido: R$ 10,00</p>
 
             <button
                 onClick={handleGenerate}
                 disabled={disabled || loading || !amount}
-                className="w-full bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-black font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+                className="w-full bg-gradient-to-r from-purple-500 to-violet-600 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-[0_8px_24px_rgba(124,58,237,0.3)]"
             >
                 {loading ? (
                     <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
@@ -103,12 +103,12 @@ export default function GeneratePixCard({ onGenerate, disabled = false }) {
                 )}
             </button>
 
-            <div className="mt-6 space-y-2 border-t border-white/5 pt-6">
-                <div className="flex items-center gap-2 text-white/30 text-xs justify-center">
+            <div className="mt-6 space-y-2 border-t border-gray-100 pt-6">
+                <div className="flex items-center gap-2 text-gray-400 text-xs justify-center">
                     <CheckCircle size={14} className="text-primary/50" />
                     <span>Confirmado pelo Banco Central</span>
                 </div>
-                <p className="text-white/20 text-[10px] text-center">Crédito imediato após confirmação do pagamento.</p>
+                <p className="text-gray-400 text-[10px] text-center">Crédito imediato após confirmação do pagamento.</p>
             </div>
         </motion.div>
     );

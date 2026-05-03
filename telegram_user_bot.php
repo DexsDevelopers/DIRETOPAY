@@ -251,16 +251,16 @@ function getFreshBalance(int $userId): float {
     return (float)$stmt->fetchColumn();
 }
 
-function getActivePixGoKeyForUser(int $userId): string {
+function getSigiloPayKeys(): array {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT api_key FROM pixgo_apis WHERE user_id = ? AND is_active = 1 LIMIT 1");
-    $stmt->execute([$userId]);
-    $key = $stmt->fetchColumn();
-    if ($key) return $key;
-    $stmt = $pdo->query("SELECT api_key FROM pixgo_apis WHERE (user_id IS NULL OR user_id = 0) AND is_active = 1 LIMIT 1");
-    $key = $stmt->fetchColumn();
-    if ($key) return $key;
-    return defined('PIXGO_API_KEY') ? PIXGO_API_KEY : '';
+    try {
+        $stmt = $pdo->query("SELECT `key`, `value` FROM settings WHERE `key` IN ('sigilopay_public_key','sigilopay_secret_key','sigilopay_enabled')");
+        $rows = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $r) $rows[$r['key']] = $r['value'];
+        return $rows;
+    } catch (Throwable $e) {
+        return [];
+    }
 }
 
 function getUserDailyGoal(int $userId): float {
@@ -852,58 +852,73 @@ function handlePix(string $chatId, array $user, float $amount): void {
     sendTyping($chatId);
     $loadingMsgId = uReply($chatId, "⏳ Gerando cobrança de <b>" . formatBRL($amount) . "</b>...\n\n<i>Aguarde um instante...</i>");
 
-    $currentPixGoKey = getActivePixGoKeyForUser($userId);
     $externalId = 'tguser_' . $userId . '_' . time();
 
-    // Simulation mode
-    if ($currentPixGoKey === 'SUA_API_KEY_AQUI' || empty($currentPixGoKey)) {
-        $pixId = 'sim_' . time();
-        $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=TESTE_' . $amount;
-        $pixCode = '00020126360014br.gov.bcb.pix0114000000000000005204000053039865802BR5913GHOSTPIX6009SAOPAULO62070503***6304ABCD';
-        $pixgoFee = $amount * 0.02 + ($amount < 50 ? 1.00 : 0);
-        $platformFee = $amount * ($user['commission_rate'] / 100);
-        $netAmount = $amount - $pixgoFee - $platformFee;
-        saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, null, 'PIX via Telegram', $externalId, 'pix');
-        $txId = (int)$pdo->lastInsertId();
-        if ($loadingMsgId) uEditMessage($chatId, $loadingMsgId, "✅ <b>PIX gerado!</b> (simulação)" . div() . "\n\n💵 <b>Valor:</b> " . formatBRL($amount) . "\n💎 <b>Líquido:</b> " . formatBRL($netAmount) . "\n🆔 <b>TX:</b> <code>#{$txId}</code>\n\n⚠️ <i>Ambiente de simulação — PIX não é real.</i>\n💡 <i>Código copia e cola enviado abaixo.</i>" . footer(), afterActionKeyboard());
-        uSendPhoto($chatId, $qrImage, "📱 QR Code — " . formatBRL($amount));
-        uReply($chatId, "<code>{$pixCode}</code>");
-        return;
-    }
-
-    // Real PixGo
     try {
-        $data = ['amount' => $amount, 'description' => 'PIX via Telegram', 'webhook_url' => getFullUrl('webhook.php'), 'external_id' => $externalId];
-        $ch = curl_init('https://pixgo.org/api/v1/payment/create');
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true, CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($data),
-            CURLOPT_HTTPHEADER => ['X-API-Key: ' . $currentPixGoKey, 'Content-Type: application/json', 'Accept: application/json'],
-            CURLOPT_TIMEOUT => 15, CURLOPT_CONNECTTIMEOUT => 10, CURLOPT_SSL_VERIFYPEER => true,
-        ]);
-        $response = curl_exec($ch);
-        $curlErr = curl_error($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        // Buscar chaves SigiloPay
+        $sp = getSigiloPayKeys();
+        $spPublic  = $sp['sigilopay_public_key'] ?? '';
+        $spSecret  = $sp['sigilopay_secret_key'] ?? '';
+        $spEnabled = ($sp['sigilopay_enabled'] ?? '0') === '1';
 
-        if ($response === false || $response === '') {
-            $failMsg = "❌ <b>Falha ao gerar PIX</b>" . div() . "\n\n<code>Gateway indisponível" . ($curlErr ? ": {$curlErr}" : '') . "</code>\n\n💡 <i>Tente novamente em alguns instantes.</i>" . footer();
+        if (!$spEnabled || !$spPublic || !$spSecret) {
+            $failMsg = "❌ <b>Gateway não configurado</b>" . div() . "\n\nSigiloPay não está ativo. Fale com o administrador." . footer();
             if ($loadingMsgId) uEditMessage($chatId, $loadingMsgId, $failMsg, afterActionKeyboard());
             else uReply($chatId, $failMsg, afterActionKeyboard());
             return;
         }
 
-        $res = json_decode($response, true) ?: [];
+        $clientData = [
+            'name'     => !empty($user['full_name']) ? $user['full_name'] : 'Cliente',
+            'email'    => $user['email'] ?? '',
+            'phone'    => !empty($user['phone']) ? $user['phone'] : '(11) 9 0000-0000',
+            'document' => (!empty($user['cpf']) && $user['cpf'] !== '000.000.000-00') ? $user['cpf'] : '147.143.016-24',
+        ];
 
-        if (($httpCode === 200 || $httpCode === 201) && !empty($res['success'])) {
-            $pixData = $res['data'] ?? [];
-            $pixId = $pixData['payment_id'] ?? '';
-            $qrImage = $pixData['qr_image_url'] ?? '';
-            $pixCode = $pixData['qr_code'] ?? '';
-            $pixgoFee = $amount * 0.02 + ($amount < 50 ? 1.00 : 0);
+        $spPayload = [
+            'identifier'  => $externalId,
+            'amount'      => (float)$amount,
+            'client'      => $clientData,
+            'callbackUrl' => getFullUrl('sigilopay_webhook.php'),
+        ];
+
+        $ch = curl_init('https://app.sigilopay.com.br/api/v1/gateway/pix/receive');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => json_encode($spPayload),
+            CURLOPT_HTTPHEADER     => [
+                'x-public-key: ' . $spPublic,
+                'x-secret-key: ' . $spSecret,
+                'Content-Type: application/json',
+            ],
+            CURLOPT_TIMEOUT        => 20,
+            CURLOPT_CONNECTTIMEOUT => 10,
+        ]);
+        $spResponse = curl_exec($ch);
+        $spCurlErr  = curl_error($ch);
+        $spHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($spResponse === false) {
+            throw new Exception("Falha na conexão com gateway: $spCurlErr");
+        }
+
+        $spRes = json_decode($spResponse, true);
+
+        if (($spHttpCode === 200 || $spHttpCode === 201) && isset($spRes['pix'])) {
+            $pixData = $spRes['pix'];
+            $pixCode = $pixData['code'] ?? ($pixData['qrCode'] ?? ($pixData['emv'] ?? ($pixData['brCode'] ?? '')));
+            $b64raw  = $pixData['base64'] ?? ($pixData['qrCodeBase64'] ?? '');
+            $qrImage = '';
+            if (!empty($b64raw)) {
+                $qrImage = strpos($b64raw, 'data:') === 0 ? $b64raw : 'data:image/png;base64,' . $b64raw;
+            }
+            $pixId = $spRes['identifier'] ?? $externalId;
+
             $platformFee = $amount * ($user['commission_rate'] / 100);
-            $netAmount = $amount - $pixgoFee - $platformFee;
-            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, null, 'PIX via Telegram', $externalId, 'pix');
+            $netAmount   = $amount - $platformFee;
+            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, '', null, 'PIX via Telegram', $externalId, 'pix');
             $txId = (int)$pdo->lastInsertId();
 
             $successMsg = "✅ <b>PIX GERADO COM SUCESSO!</b>" . div() . "\n\n"
@@ -911,11 +926,10 @@ function handlePix(string $chatId, array $user, float $amount): void {
                 . "💎 <b>Líquido:</b> " . formatBRL($netAmount) . "\n"
                 . "🆔 <b>TX:</b> <code>#{$txId}</code>\n"
                 . "⏱ <b>Expira em:</b> 30 minutos\n\n"
-                . "💡 <i>Código copia e cola enviado abaixo. Toque para copiar.</i>" . footer();
+                . "💡 <i>Toque no código abaixo para copiar.</i>" . footer();
 
             if ($loadingMsgId) uEditMessage($chatId, $loadingMsgId, $successMsg, afterActionKeyboard());
-            if ($qrImage) uSendPhoto($chatId, $qrImage, "📱 QR Code — " . formatBRL($amount));
-            uReply($chatId, "<code>{$pixCode}</code>");
+            if (!empty($pixCode)) uReply($chatId, "<code>{$pixCode}</code>");
 
             try {
                 TelegramService::notifyBotActivity('⚡', 'PIX GERADO VIA BOT',
@@ -926,13 +940,11 @@ function handlePix(string $chatId, array $user, float $amount): void {
                 );
             } catch (Throwable $e) {}
         } else {
-            $errorMsg = $res['message'] ?? ($res['error'] ?? "Erro HTTP {$httpCode}");
-            $failMsg = "❌ <b>Falha ao gerar PIX</b>" . div() . "\n\n<code>" . htmlspecialchars($errorMsg) . "</code>\n\n💡 <i>Tente novamente em alguns instantes.</i>" . footer();
-            if ($loadingMsgId) uEditMessage($chatId, $loadingMsgId, $failMsg, afterActionKeyboard());
-            else uReply($chatId, $failMsg, afterActionKeyboard());
+            $errMsg = $spRes['message'] ?? ($spRes['errorCode'] ?? "Erro HTTP {$spHttpCode}");
+            throw new Exception("Erro gateway: $errMsg");
         }
     } catch (Throwable $ex) {
-        $failMsg = "❌ <b>Erro interno ao gerar PIX</b>" . div() . "\n\n<code>" . htmlspecialchars($ex->getMessage()) . "</code>\n\n💡 <i>Tente novamente.</i>" . footer();
+        $failMsg = "❌ <b>Falha ao gerar PIX</b>" . div() . "\n\n<code>" . htmlspecialchars($ex->getMessage()) . "</code>\n\n💡 <i>Tente novamente em alguns instantes.</i>" . footer();
         if ($loadingMsgId) uEditMessage($chatId, $loadingMsgId, $failMsg, afterActionKeyboard());
         else uReply($chatId, $failMsg, afterActionKeyboard());
     }

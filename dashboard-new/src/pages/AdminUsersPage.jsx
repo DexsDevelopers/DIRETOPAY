@@ -86,11 +86,11 @@ export default function AdminUsersPage() {
                         <Users className="text-primary" size={36} />
                         Gestão de <span className="text-primary">Usuários</span>
                     </h1>
-                    <p className="text-white/40 font-medium">Aprovações, saldos, taxas, permissões e saques.</p>
+                    <p className="text-gray-500 font-medium">Aprovações, saldos, taxas, permissões e saques.</p>
                 </div>
                 <button
                     onClick={fetchAdminData}
-                    className="flex items-center gap-2 bg-white/5 border border-white/10 px-5 py-2.5 rounded-2xl text-sm font-bold hover:bg-white/10 transition-all"
+                    className="flex items-center gap-2 bg-gray-100 border border-gray-200 px-5 py-2.5 rounded-2xl text-sm font-bold hover:bg-gray-200 transition-all text-gray-700"
                 >
                     <RefreshCw size={14} /> Atualizar
                 </button>
@@ -99,49 +99,49 @@ export default function AdminUsersPage() {
             {/* Mini summary */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[
-                    { label: 'Total',      value: fmtN(users.length),  color: 'text-white',        icon: <Users size={16} /> },
+                    { label: 'Total',      value: fmtN(users.length),  color: 'text-gray-900',     icon: <Users size={16} /> },
                     { label: 'Aprovados',  value: fmtN(approved),       color: 'text-green-400',    icon: <UserCheck size={16} /> },
                     { label: 'Pendentes',  value: fmtN(pending),        color: 'text-yellow-400',   icon: <Clock size={16} /> },
                     { label: 'Bloqueados', value: fmtN(blocked),        color: 'text-red-400',      icon: <UserX size={16} /> },
                 ].map(s => (
-                    <div key={s.label} className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 flex items-center gap-4">
+                    <div key={s.label} className="bg-white border border-gray-100 shadow-sm rounded-2xl p-4 flex items-center gap-4">
                         <span className={s.color}>{s.icon}</span>
                         <div>
                             <p className={`text-xl font-black ${s.color}`}>{s.value}</p>
-                            <p className="text-[10px] text-white/30 font-bold uppercase tracking-wider">{s.label}</p>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{s.label}</p>
                         </div>
                     </div>
                 ))}
             </div>
 
             {/* ── User Table ── */}
-            <div className="glass rounded-[40px] border-white/5 overflow-hidden">
-                <div className="p-8 border-b border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="bg-white border border-gray-100 shadow-sm rounded-[40px] overflow-hidden">
+                <div className="p-8 border-b border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-white/40">
+                        <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
                             <Users size={24} />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold">Usuários Cadastrados</h3>
-                            <p className="text-xs text-white/30 font-medium mt-0.5">{users.length} usuário(s) encontrado(s)</p>
+                            <h3 className="text-xl font-bold text-gray-900">Usuários Cadastrados</h3>
+                            <p className="text-xs text-gray-400 font-medium mt-0.5">{users.length} usuário(s) encontrado(s)</p>
                         </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
                         <div className="relative flex-1 md:w-64">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                             <input
                                 type="text"
                                 placeholder="Nome, e-mail ou pix..."
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-6 text-sm focus:outline-none focus:border-primary/30 transition-all font-medium"
+                                className="w-full bg-gray-50 border border-gray-200 rounded-2xl py-3 pl-12 pr-6 text-sm focus:outline-none focus:border-purple-500/30 transition-all font-medium text-gray-900"
                             />
                         </div>
                         <select
                             value={statusFilter}
                             onChange={e => setStatusFilter(e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded-2xl py-3 px-4 text-sm focus:outline-none font-bold"
+                            className="bg-gray-50 border border-gray-200 rounded-2xl py-3 px-4 text-sm focus:outline-none font-bold text-gray-900"
                         >
                             <option value="">Status: Todos</option>
                             <option value="active">Ativos</option>
@@ -155,20 +155,20 @@ export default function AdminUsersPage() {
                 {/* Mobile Cards */}
                 <div className="md:hidden space-y-3 p-3">
                     {users.length === 0 ? (
-                        <div className="text-center py-16 text-white/20">
+                        <div className="text-center py-16 text-gray-400">
                             <Users size={40} className="mx-auto mb-4 opacity-30" />
                             <p className="font-bold">Nenhum usuário encontrado</p>
                         </div>
                     ) : users.map(user => (
-                        <div key={user.id} className="bg-white/[0.03] rounded-2xl border border-white/[0.06] overflow-hidden">
+                        <div key={user.id} className="bg-white border border-gray-100 shadow-sm rounded-2xl overflow-hidden">
                             {/* Header: Name + Status */}
                             <div className="px-4 pt-4 pb-3 flex items-start justify-between gap-3">
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-0.5">
-                                        <h4 className="text-[15px] font-bold text-white truncate">{user.full_name}</h4>
-                                        {user.is_demo === 1 && <span className="text-[7px] bg-primary/15 text-primary px-1.5 py-0.5 rounded font-black shrink-0 tracking-wider">DEMO</span>}
+                                        <h4 className="text-[15px] font-bold text-gray-900 truncate">{user.full_name}</h4>
+                                        {user.is_demo === 1 && <span className="text-[7px] bg-purple-500/15 text-purple-500 px-1.5 py-0.5 rounded font-black shrink-0 tracking-wider">DEMO</span>}
                                     </div>
-                                    <p className="text-[11px] text-white/25 font-medium">#{user.id} • {user.email}</p>
+                                    <p className="text-[11px] text-gray-400 font-medium">#{user.id} • {user.email}</p>
                                 </div>
                                 <span className={cn(
                                     "px-2.5 py-1 rounded-lg text-[9px] font-black uppercase shrink-0 tracking-wide",
@@ -180,35 +180,35 @@ export default function AdminUsersPage() {
 
                             {/* Stats Row */}
                             <div className="px-4 pb-3 grid grid-cols-3 gap-2">
-                                <div className="bg-black/30 rounded-xl px-3 py-2 text-center">
-                                    <span className="text-[9px] text-white/25 font-bold uppercase block mb-0.5">Saldo</span>
+                                <div className="bg-gray-50 rounded-xl px-3 py-2 text-center">
+                                    <span className="text-[9px] text-gray-400 font-bold uppercase block mb-0.5">Saldo</span>
                                     <div className="flex items-center justify-center gap-0.5">
-                                        <span className="text-[9px] text-white/30">R$</span>
+                                        <span className="text-[9px] text-gray-400">R$</span>
                                         <input
                                             type="number" step="0.01" defaultValue={user.balance}
                                             onBlur={e => parseFloat(e.target.value) !== parseFloat(user.balance) && handleAction('update_user_field', { user_id: user.id, field: 'balance', value: e.target.value })}
-                                            className="bg-transparent text-sm font-black text-white w-14 text-center focus:outline-none"
+                                            className="bg-transparent text-sm font-black text-gray-900 w-14 text-center focus:outline-none"
                                         />
                                     </div>
                                 </div>
-                                <div className="bg-black/30 rounded-xl px-3 py-2 text-center">
-                                    <span className="text-[9px] text-white/25 font-bold uppercase block mb-0.5">Taxa</span>
+                                <div className="bg-gray-50 rounded-xl px-3 py-2 text-center">
+                                    <span className="text-[9px] text-gray-400 font-bold uppercase block mb-0.5">Taxa</span>
                                     <div className="flex items-center justify-center gap-0.5">
                                         <input
                                             type="number" step="0.1" defaultValue={user.commission_rate}
                                             onBlur={e => parseFloat(e.target.value) !== parseFloat(user.commission_rate) && handleAction('update_user_field', { user_id: user.id, field: 'commission_rate', value: e.target.value })}
-                                            className="bg-transparent text-sm font-black text-primary w-10 text-center focus:outline-none"
+                                            className="bg-transparent text-sm font-black text-purple-500 w-10 text-center focus:outline-none"
                                         />
-                                        <span className="text-[10px] text-primary/60 font-bold">%</span>
+                                        <span className="text-[10px] text-purple-500/60 font-bold">%</span>
                                     </div>
                                 </div>
-                                <div className="bg-black/30 rounded-xl px-3 py-2 text-center flex flex-col items-center justify-center">
-                                    <span className="text-[9px] text-white/25 font-bold uppercase block mb-0.5">Método</span>
+                                <div className="bg-gray-50 rounded-xl px-3 py-2 text-center flex flex-col items-center justify-center">
+                                    <span className="text-[9px] text-gray-400 font-bold uppercase block mb-0.5">Método</span>
                                     <span className={cn(
                                         "text-[10px] font-black",
                                         user.withdraw_method === 'btc'  ? 'text-orange-400' :
                                         user.withdraw_method === 'usdt' ? 'text-teal-400' :
-                                        'text-primary'
+                                        'text-purple-500'
                                     )}>
                                         {user.withdraw_method === 'btc' ? '₿ BTC' : user.withdraw_method === 'usdt' ? 'USDT' : 'PIX'}
                                     </span>
@@ -218,9 +218,9 @@ export default function AdminUsersPage() {
                             {/* Info Row */}
                             <div className="px-4 pb-3 flex items-center gap-2 flex-wrap">
                                 {(!user.withdraw_method || user.withdraw_method === 'pix') ? (
-                                    user.pix_key && <span className="text-[11px] text-white/30 font-mono bg-white/[0.03] px-2.5 py-1 rounded-lg truncate max-w-[60%]">{user.pix_key}</span>
+                                    user.pix_key && <span className="text-[11px] text-gray-500 font-mono bg-gray-50 px-2.5 py-1 rounded-lg truncate max-w-[60%]">{user.pix_key}</span>
                                 ) : (
-                                    user.crypto_address && <span className="text-[11px] text-white/30 font-mono bg-white/[0.03] px-2.5 py-1 rounded-lg truncate max-w-[60%]">{user.crypto_address}</span>
+                                    user.crypto_address && <span className="text-[11px] text-gray-500 font-mono bg-gray-50 px-2.5 py-1 rounded-lg truncate max-w-[60%]">{user.crypto_address}</span>
                                 )}
                                 {user.whatsapp && (
                                     <a href={`https://wa.me/55${user.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[11px] font-bold text-green-400 bg-green-500/5 px-2.5 py-1 rounded-lg ml-auto shrink-0">
@@ -232,8 +232,8 @@ export default function AdminUsersPage() {
                             {/* Actions */}
                             <div className="px-4 pb-4 flex items-center gap-1.5">
                                 <button onClick={() => { if (confirm(`Resetar senha de ${user.full_name}?`)) handleAction('reset_user_password', { user_id: user.id }); }} className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-amber-500/10 rounded-xl text-amber-400 text-[10px] font-bold active:scale-95 transition-transform" title="Resetar Senha"><KeyRound size={12} /> Senha</button>
-                                <button onClick={() => setShowFakeWithdrawModal({ userId: user.id, name: user.full_name, pix: user.pix_key })} className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-white/5 rounded-xl text-white/40 text-[10px] font-bold active:scale-95 transition-transform" title="Saque Fake"><Zap size={12} /> Saque</button>
-                                <button onClick={() => handleAction('update_user_field', { user_id: user.id, field: 'is_demo', value: user.is_demo ? 0 : 1 })} className={cn('flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-[10px] font-bold active:scale-95 transition-transform', user.is_demo ? 'bg-primary/15 text-primary' : 'bg-white/5 text-white/30')} title={user.is_demo ? 'Desativar Demo' : 'Ativar Demo'}>{user.is_demo ? <Eye size={12} /> : <EyeOff size={12} />} Demo</button>
+                                <button onClick={() => setShowFakeWithdrawModal({ userId: user.id, name: user.full_name, pix: user.pix_key })} className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-gray-100 rounded-xl text-gray-500 text-[10px] font-bold active:scale-95 transition-transform" title="Saque Fake"><Zap size={12} /> Saque</button>
+                                <button onClick={() => handleAction('update_user_field', { user_id: user.id, field: 'is_demo', value: user.is_demo ? 0 : 1 })} className={cn('flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-[10px] font-bold active:scale-95 transition-transform', user.is_demo ? 'bg-primary/15 text-primary' : 'bg-gray-100 text-gray-400')} title={user.is_demo ? 'Desativar Demo' : 'Ativar Demo'}>{user.is_demo ? <Eye size={12} /> : <EyeOff size={12} />} Demo</button>
                                 {user.status !== 'approved' && <button onClick={() => handleAction('update_user_field', { user_id: user.id, field: 'status', value: 'approved' })} className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-emerald-500/10 rounded-xl text-emerald-400 text-[10px] font-bold active:scale-95 transition-transform"><CheckCircle size={12} /></button>}
                                 {user.status !== 'blocked' && <button onClick={() => handleAction('update_user_field', { user_id: user.id, field: 'status', value: 'blocked' })} className="py-2 px-3 bg-red-500/10 rounded-xl text-red-400 text-[10px] font-bold active:scale-95 transition-transform"><XCircle size={12} /></button>}
                             </div>
@@ -245,35 +245,35 @@ export default function AdminUsersPage() {
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full min-w-[900px]">
                         <thead>
-                            <tr className="text-left border-b border-white/5">
-                                <th className="p-6 pl-10 text-[10px] font-black text-white/20 uppercase tracking-widest">ID / Usuário</th>
-                                <th className="p-6 text-[10px] font-black text-white/20 uppercase tracking-widest">E-mail / Pix / WhatsApp</th>
-                                <th className="p-6 text-[10px] font-black text-white/20 uppercase tracking-widest text-center">Saldo</th>
-                                <th className="p-6 text-[10px] font-black text-primary uppercase tracking-widest text-center">Taxa (%)</th>
-                                <th className="p-6 text-[10px] font-black text-white/20 uppercase tracking-widest text-center">Status</th>
-                                <th className="p-6 pr-10 text-[10px] font-black text-white/20 uppercase tracking-widest text-right">Ações</th>
+                            <tr className="text-left border-b border-gray-100">
+                                <th className="p-6 pl-10 text-[10px] font-black text-gray-400 uppercase tracking-widest">ID / Usuário</th>
+                                <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">E-mail / Pix / WhatsApp</th>
+                                <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Saldo</th>
+                                <th className="p-6 text-[10px] font-black text-purple-500 uppercase tracking-widest text-center">Taxa (%)</th>
+                                <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Status</th>
+                                <th className="p-6 pr-10 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Ações</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5">
+                        <tbody className="divide-y divide-gray-50">
                             {users.map(user => (
-                                <tr key={user.id} className="hover:bg-white/[0.02] transition-colors group">
+                                <tr key={user.id} className="hover:bg-gray-50 transition-colors group">
                                     <td className="p-6 pl-10">
                                         <div className="flex flex-col">
-                                            <span className="text-[10px] font-black text-white/20">#{user.id}</span>
-                                            <span className="font-bold">{user.full_name}</span>
+                                            <span className="text-[10px] font-black text-gray-400">#{user.id}</span>
+                                            <span className="font-bold text-gray-900">{user.full_name}</span>
                                             {user.is_demo === 1 && (
-                                                <span className="text-[9px] bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full w-fit mt-1 font-black">DEMO</span>
+                                                <span className="text-[9px] bg-purple-500/10 text-purple-500 border border-purple-500/20 px-2 py-0.5 rounded-full w-fit mt-1 font-black">DEMO</span>
                                             )}
                                         </div>
                                     </td>
                                     <td className="p-6">
                                         <div className="flex flex-col gap-1">
-                                            <span className="text-xs text-white/40">{user.email}</span>
+                                            <span className="text-xs text-gray-400">{user.email}</span>
                                             <span className={cn(
                                                 "text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full w-fit border",
                                                 user.withdraw_method === 'btc'  ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' :
                                                 user.withdraw_method === 'usdt' ? 'bg-teal-500/10 text-teal-400 border-teal-500/20' :
-                                                'bg-primary/10 text-primary border-primary/20'
+                                                'bg-purple-500/10 text-purple-500 border-purple-500/20'
                                             )}>
                                                 {user.withdraw_method === 'btc' ? '₿ Bitcoin' : user.withdraw_method === 'usdt' ? '💲 USDT' : '⚡ PIX'}
                                             </span>
@@ -282,13 +282,13 @@ export default function AdminUsersPage() {
                                                     <input
                                                         defaultValue={user.pix_key}
                                                         onBlur={e => e.target.value !== user.pix_key && handleAction('update_user_field', { user_id: user.id, field: 'pix_key', value: e.target.value })}
-                                                        className="bg-transparent border-none text-[11px] text-white/60 p-0 focus:outline-none focus:text-white transition-colors"
+                                                        className="bg-transparent border-none text-[11px] text-gray-500 p-0 focus:outline-none focus:text-gray-900 transition-colors"
                                                     />
-                                                    <CreditCard size={10} className="text-white/10 group-hover:text-primary transition-colors" />
+                                                    <CreditCard size={10} className="text-gray-200 group-hover:text-purple-500 transition-colors" />
                                                 </div>
                                             ) : (
-                                                <span className="text-[11px] text-white/50 font-mono truncate max-w-[180px]" title={user.crypto_address}>
-                                                    {user.crypto_address || <span className="italic text-white/20">sem endereço</span>}
+                                                <span className="text-[11px] text-gray-500 font-mono truncate max-w-[180px]" title={user.crypto_address}>
+                                                    {user.crypto_address || <span className="italic text-gray-300">sem endereço</span>}
                                                 </span>
                                             )}
                                             {user.whatsapp ? (
@@ -296,18 +296,18 @@ export default function AdminUsersPage() {
                                                     {WA_SVG} {fmtWA(user.whatsapp)}
                                                 </a>
                                             ) : (
-                                                <span className="text-[10px] text-white/15 italic">sem whatsapp</span>
+                                                <span className="text-[10px] text-gray-300 italic">sem whatsapp</span>
                                             )}
                                         </div>
                                     </td>
                                     <td className="p-6">
                                         <div className="flex justify-center">
-                                            <div className="flex items-center gap-1 bg-white/5 rounded-xl px-3 py-2 border border-white/5 focus-within:border-primary/30 transition-all">
-                                                <span className="text-[10px] font-bold text-white/20">R$</span>
+                                            <div className="flex items-center gap-1 bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 focus-within:border-purple-500/30 transition-all">
+                                                <span className="text-[10px] font-bold text-gray-400">R$</span>
                                                 <input
                                                     type="number" step="0.01" defaultValue={user.balance}
                                                     onBlur={e => parseFloat(e.target.value) !== parseFloat(user.balance) && handleAction('update_user_field', { user_id: user.id, field: 'balance', value: e.target.value })}
-                                                    className="bg-transparent border-none text-sm font-black text-white w-20 text-center focus:outline-none"
+                                                    className="bg-transparent border-none text-sm font-black text-gray-900 w-20 text-center focus:outline-none"
                                                 />
                                             </div>
                                         </div>
@@ -317,7 +317,7 @@ export default function AdminUsersPage() {
                                             <input
                                                 type="number" step="0.1" defaultValue={user.commission_rate}
                                                 onBlur={e => parseFloat(e.target.value) !== parseFloat(user.commission_rate) && handleAction('update_user_field', { user_id: user.id, field: 'commission_rate', value: e.target.value })}
-                                                className="bg-primary/5 border border-primary/20 rounded-xl px-2 py-2 text-primary font-black text-center w-16 focus:outline-none focus:bg-primary/10 transition-all"
+                                                className="bg-purple-500/5 border border-purple-500/20 rounded-xl px-2 py-2 text-purple-500 font-black text-center w-16 focus:outline-none focus:bg-purple-500/10 transition-all"
                                             />
                                         </div>
                                     </td>
@@ -336,8 +336,8 @@ export default function AdminUsersPage() {
                                     <td className="p-6 pr-10">
                                         <div className="flex justify-end gap-2">
                                             <button onClick={() => { if (confirm(`Resetar senha de ${user.full_name}?`)) handleAction('reset_user_password', { user_id: user.id }); }} className="p-2.5 bg-amber-500/10 rounded-xl text-amber-500 hover:bg-amber-500 hover:text-white transition-all border border-amber-500/20" title="Resetar Senha"><KeyRound size={16} /></button>
-                                            <button onClick={() => setShowFakeWithdrawModal({ userId: user.id, name: user.full_name, pix: user.pix_key })} className="p-2.5 bg-white/5 rounded-xl text-white/40 hover:bg-primary/10 hover:text-primary transition-all border border-white/5" title="Saque Fake"><Zap size={16} /></button>
-                                            <button onClick={() => handleAction('update_user_field', { user_id: user.id, field: 'is_demo', value: user.is_demo ? 0 : 1 })} className={cn('p-2.5 rounded-xl transition-all border', user.is_demo ? 'bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-black' : 'bg-white/5 text-white/40 border-white/5 hover:bg-white/10 hover:text-white')} title={user.is_demo ? 'Desativar Demo' : 'Ativar Demo'}>{user.is_demo ? <Eye size={16} /> : <EyeOff size={16} />}</button>
+                                            <button onClick={() => setShowFakeWithdrawModal({ userId: user.id, name: user.full_name, pix: user.pix_key })} className="p-2.5 bg-gray-100 rounded-xl text-gray-400 hover:bg-purple-500/10 hover:text-purple-500 transition-all border border-gray-200" title="Saque Fake"><Zap size={16} /></button>
+                                            <button onClick={() => handleAction('update_user_field', { user_id: user.id, field: 'is_demo', value: user.is_demo ? 0 : 1 })} className={cn('p-2.5 rounded-xl transition-all border', user.is_demo ? 'bg-purple-500/10 text-purple-500 border-purple-500/20 hover:bg-purple-500 hover:text-white' : 'bg-gray-100 text-gray-400 border-gray-200 hover:bg-gray-200 hover:text-gray-900')} title={user.is_demo ? 'Desativar Demo' : 'Ativar Demo'}>{user.is_demo ? <Eye size={16} /> : <EyeOff size={16} />}</button>
                                             {user.status !== 'approved' && <button onClick={() => handleAction('update_user_field', { user_id: user.id, field: 'status', value: 'approved' })} className="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all border border-emerald-500/20" title="Aprovar"><CheckCircle size={16} /></button>}
                                             {user.status !== 'blocked' && <button onClick={() => handleAction('update_user_field', { user_id: user.id, field: 'status', value: 'blocked' })} className="p-2.5 bg-red-500/10 rounded-xl text-red-500 hover:bg-red-500 hover:text-white transition-all border border-red-500/20" title="Bloquear"><XCircle size={16} /></button>}
                                         </div>
@@ -348,7 +348,7 @@ export default function AdminUsersPage() {
                     </table>
 
                     {users.length === 0 && (
-                        <div className="text-center py-20 text-white/20">
+                        <div className="text-center py-20 text-gray-300">
                             <Users size={40} className="mx-auto mb-4 opacity-30" />
                             <p className="font-bold">Nenhum usuário encontrado</p>
                         </div>
@@ -358,37 +358,37 @@ export default function AdminUsersPage() {
 
             {/* ── Withdrawal Requests ── */}
             {withdrawals.length > 0 && (
-                <div className="glass rounded-[40px] border-white/5 overflow-hidden animate-in slide-in-from-bottom duration-500">
-                    <div className="p-8 border-b border-white/5 flex items-center gap-4">
+                <div className="bg-white border border-gray-100 shadow-sm rounded-[40px] overflow-hidden animate-in slide-in-from-bottom duration-500">
+                    <div className="p-8 border-b border-gray-100 flex items-center gap-4">
                         <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500">
                             <Wallet size={24} />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold">Solicitações de Saque</h3>
-                            <p className="text-xs text-white/30 font-medium mt-0.5">{withdrawals.length} pendente(s) de processamento</p>
+                            <h3 className="text-xl font-bold text-gray-900">Solicitações de Saque</h3>
+                            <p className="text-xs text-gray-400 font-medium mt-0.5">{withdrawals.length} pendente(s) de processamento</p>
                         </div>
                     </div>
 
                     {/* Mobile Cards */}
-                    <div className="md:hidden divide-y divide-white/5">
+                    <div className="md:hidden divide-y divide-gray-100">
                         {withdrawals.map(w => (
                             <div key={w.id} className="p-4 space-y-3">
                                 <div className="flex items-center justify-between gap-3">
                                     <div className="flex-1 min-w-0">
-                                        <span className="text-sm font-bold text-white block truncate">{w.full_name}</span>
-                                        <span className="text-[11px] text-white/30">{w.email}</span>
+                                        <span className="text-sm font-bold text-gray-900 block truncate">{w.full_name}</span>
+                                        <span className="text-[11px] text-gray-400">{w.email}</span>
                                     </div>
                                     <span className="text-lg font-black text-emerald-400 shrink-0">
                                         R$ {parseFloat(w.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                     </span>
                                 </div>
-                                <div className="flex items-center gap-2 text-[11px] text-white/40">
-                                    <code className="bg-white/5 px-2 py-1 rounded-lg text-primary text-[11px] font-mono border border-white/5 truncate">{w.pix_key}</code>
-                                    <button onClick={() => navigator.clipboard.writeText(w.pix_key)} className="p-1.5 bg-white/5 rounded-lg text-white/20 shrink-0"><Save size={10} /></button>
+                                <div className="flex items-center gap-2 text-[11px] text-gray-400">
+                                    <code className="bg-gray-50 px-2 py-1 rounded-lg text-purple-500 text-[11px] font-mono border border-gray-100 truncate">{w.pix_key}</code>
+                                    <button onClick={() => navigator.clipboard.writeText(w.pix_key)} className="p-1.5 bg-gray-100 rounded-lg text-gray-400 shrink-0"><Save size={10} /></button>
                                     <span className="ml-auto shrink-0">{new Date(w.created_at).toLocaleDateString('pt-BR')} {new Date(w.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <input id={`tx-m-${w.id}`} placeholder="Hash" className="flex-1 bg-white/5 border border-white/5 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/30 font-mono" />
+                                    <input id={`tx-m-${w.id}`} placeholder="Hash" className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/30 font-mono text-gray-900" />
                                     <button onClick={() => handleAction('complete_withdraw', { withdraw_id: w.id, tx_hash: document.getElementById(`tx-m-${w.id}`).value })} className="bg-emerald-500 text-black px-3 py-2 rounded-lg font-bold text-xs shrink-0">PAGO</button>
                                     <button onClick={() => handleAction('reject_withdraw', { withdraw_id: w.id })} className="bg-red-500/10 text-red-500 px-3 py-2 rounded-lg font-bold text-xs border border-red-500/20 shrink-0">NEGAR</button>
                                 </div>
@@ -400,7 +400,7 @@ export default function AdminUsersPage() {
                     <div className="hidden md:block overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                                <tr className="text-left border-b border-white/5 text-white/20 text-[10px] font-black uppercase tracking-widest">
+                                <tr className="text-left border-b border-gray-100 text-gray-400 text-[10px] font-black uppercase tracking-widest">
                                     <th className="p-6 pl-10">Usuário</th>
                                     <th className="p-6 text-center">Valor</th>
                                     <th className="p-6">Chave PIX</th>
@@ -408,13 +408,13 @@ export default function AdminUsersPage() {
                                     <th className="p-6 pr-10 text-right">Processar</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-white/5">
+                            <tbody className="divide-y divide-gray-50">
                                 {withdrawals.map(w => (
-                                    <tr key={w.id} className="hover:bg-amber-500/[0.01] transition-colors">
+                                    <tr key={w.id} className="hover:bg-amber-50 transition-colors">
                                         <td className="p-6 pl-10">
                                             <div className="flex flex-col">
-                                                <span className="font-bold">{w.full_name}</span>
-                                                <span className="text-xs text-white/30">{w.email}</span>
+                                                <span className="font-bold text-gray-900">{w.full_name}</span>
+                                                <span className="text-xs text-gray-400">{w.email}</span>
                                             </div>
                                         </td>
                                         <td className="p-6 text-center font-black text-lg text-emerald-400">
@@ -422,12 +422,12 @@ export default function AdminUsersPage() {
                                         </td>
                                         <td className="p-6">
                                             <div className="flex items-center gap-3">
-                                                <code className="bg-white/5 px-4 py-2 rounded-xl text-primary text-xs font-mono border border-white/5">
+                                                <code className="bg-gray-50 px-4 py-2 rounded-xl text-purple-500 text-xs font-mono border border-gray-100">
                                                     {w.pix_key}
                                                 </code>
                                                 <button
                                                     onClick={() => navigator.clipboard.writeText(w.pix_key)}
-                                                    className="p-2 bg-white/5 rounded-lg text-white/20 hover:text-white transition-all"
+                                                    className="p-2 bg-gray-100 rounded-lg text-gray-400 hover:text-gray-900 transition-all"
                                                     title="Copiar"
                                                 >
                                                     <Save size={12} />
@@ -435,7 +435,7 @@ export default function AdminUsersPage() {
                                             </div>
                                         </td>
                                         <td className="p-6">
-                                            <span className="text-xs text-white/40 font-medium">
+                                            <span className="text-xs text-gray-400 font-medium">
                                                 {new Date(w.created_at).toLocaleDateString('pt-BR')}{' '}
                                                 {new Date(w.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                                             </span>
@@ -445,7 +445,7 @@ export default function AdminUsersPage() {
                                                 <input
                                                     id={`tx-${w.id}`}
                                                     placeholder="Hash da Transação"
-                                                    className="bg-white/5 border border-white/5 rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-emerald-500/30 transition-all font-mono"
+                                                    className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-emerald-500/30 transition-all font-mono text-gray-900"
                                                 />
                                                 <button
                                                     onClick={() => handleAction('complete_withdraw', { withdraw_id: w.id, tx_hash: document.getElementById(`tx-${w.id}`).value })}
@@ -474,11 +474,11 @@ export default function AdminUsersPage() {
                 {showFakeWithdrawModal && (
                     <div className="fixed inset-0 z-[60] flex items-center justify-center p-6">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowFakeWithdrawModal(null)} className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-md glass p-10 rounded-[40px] border-white/10 text-center">
+                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-md bg-white border border-gray-200 shadow-2xl p-10 rounded-[40px] text-center">
                             <AlertTriangle className="mx-auto text-amber-500 mb-6" size={48} />
-                            <h2 className="text-2xl font-black mb-2">Lançar Saque Fake</h2>
-                            <p className="text-white/40 text-sm mb-8 italic">
-                                Aparecerá como <span className="text-white font-bold">PAGO</span> no histórico de <span className="text-white">{showFakeWithdrawModal.name}</span>.
+                            <h2 className="text-2xl font-black mb-2 text-gray-900">Lançar Saque Fake</h2>
+                            <p className="text-gray-400 text-sm mb-8 italic">
+                                Aparecerá como <span className="text-gray-900 font-bold">PAGO</span> no histórico de <span className="text-gray-700">{showFakeWithdrawModal.name}</span>.
                             </p>
                             <form onSubmit={e => {
                                 e.preventDefault();
@@ -486,9 +486,9 @@ export default function AdminUsersPage() {
                             }} className="space-y-6">
                                 <input
                                     name="amount" type="number" step="0.01" required placeholder="0,00" autoFocus
-                                    className="w-full bg-black/40 border border-white/10 rounded-3xl py-6 px-4 text-3xl font-black text-center text-red-400 focus:outline-none focus:border-red-500/30"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-3xl py-6 px-4 text-3xl font-black text-center text-red-400 focus:outline-none focus:border-red-500/30"
                                 />
-                                <button type="submit" className="w-full py-5 bg-white text-black rounded-full font-black text-lg hover:bg-primary transition-all">
+                                <button type="submit" className="w-full py-5 bg-primary text-white rounded-full font-black text-lg hover:bg-primary/90 transition-all">
                                     LANÇAR NO HISTÓRICO
                                 </button>
                             </form>

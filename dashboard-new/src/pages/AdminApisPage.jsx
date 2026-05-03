@@ -21,12 +21,12 @@ function ApiTableRows({ apis, actionLoading, onToggle, onDelete, onSwitchType, e
     if (apis.length === 0) {
         return (
             <tr>
-                <td colSpan="4" className="p-16 text-center text-white/20 font-bold italic">{emptyLabel}</td>
+                <td colSpan="4" className="p-16 text-center text-gray-300 font-bold italic">{emptyLabel}</td>
             </tr>
         );
     }
     return apis.map((api) => (
-        <tr key={api.id} className="hover:bg-white/[0.02] transition-colors group">
+        <tr key={api.id} className="hover:bg-gray-50 transition-colors group">
             <td className="p-5 pl-8">
                 <div className="flex flex-col">
                     <span className="font-bold">{api.name}</span>
@@ -38,8 +38,8 @@ function ApiTableRows({ apis, actionLoading, onToggle, onDelete, onSwitchType, e
                     <span className={cn(
                         "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border",
                         api.status === 'active'
-                            ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
-                            : 'bg-white/5 text-white/30 border-white/5'
+                            ? 'bg-purple-500/10 text-purple-500 border-purple-500/20'
+                            : 'bg-gray-100 text-gray-400 border-gray-200'
                     )}>
                         {api.status === 'active' ? 'Ativo' : 'Inativo'}
                     </span>
@@ -50,7 +50,7 @@ function ApiTableRows({ apis, actionLoading, onToggle, onDelete, onSwitchType, e
                     title={api.is_admin_only == 1 ? 'Mover para APIs de Usuários' : 'Mover para APIs de Admin'}
                     onClick={() => onSwitchType(api)}
                     disabled={actionLoading === `set_api_type-${api.id}`}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-white/10 transition-all text-[10px] font-bold disabled:opacity-30"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all text-[10px] font-bold disabled:opacity-30"
                 >
                     <ArrowLeftRight size={11} />
                     {api.is_admin_only == 1 ? 'Mover p/ Usuários' : 'Mover p/ Admin'}
@@ -61,7 +61,7 @@ function ApiTableRows({ apis, actionLoading, onToggle, onDelete, onSwitchType, e
                     <button
                         onClick={() => onToggle(api.id)}
                         disabled={actionLoading === `toggle_api_status-${api.id}`}
-                        className={cn("p-1.5 rounded-xl transition-all", api.status === 'active' ? 'text-primary' : 'text-white/20')}
+                        className={cn("p-1.5 rounded-xl transition-all", api.status === 'active' ? 'text-primary' : 'text-gray-300')}
                     >
                         {api.status === 'active' ? <ToggleRight size={28} /> : <ToggleLeft size={28} />}
                     </button>
@@ -80,23 +80,23 @@ function ApiTableRows({ apis, actionLoading, onToggle, onDelete, onSwitchType, e
 
 function ApiCardsMobile({ apis, actionLoading, onToggle, onDelete, onSwitchType, emptyLabel }) {
     if (apis.length === 0) {
-        return <div className="p-10 text-center text-white/20 font-bold italic text-sm">{emptyLabel}</div>;
+        return <div className="p-10 text-center text-gray-300 font-bold italic text-sm">{emptyLabel}</div>;
     }
     return (
         <div className="space-y-2 p-3">
             {apis.map((api) => (
-                <div key={api.id} className="bg-white/[0.03] rounded-2xl border border-white/[0.06] p-4 space-y-3">
+                <div key={api.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
                     {/* Row 1: Name + Status */}
                     <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
-                            <h4 className="text-[14px] font-bold text-white truncate">{api.name}</h4>
-                            <code className="text-[10px] text-emerald-400/50">pk_...{api.api_key.slice(-6)}</code>
+                            <h4 className="text-[14px] font-bold text-gray-900 truncate">{api.name}</h4>
+                            <code className="text-[10px] text-purple-400/50">pk_...{api.api_key.slice(-6)}</code>
                         </div>
                         <span className={cn(
                             "px-2.5 py-1 rounded-lg text-[9px] font-black uppercase shrink-0 tracking-wide",
                             api.status === 'active'
-                                ? 'bg-emerald-500/15 text-emerald-400'
-                                : 'bg-white/5 text-white/30'
+                                ? 'bg-purple-500/15 text-purple-400'
+                                : 'bg-gray-100 text-gray-400'
                         )}>
                             {api.status === 'active' ? 'Ativo' : 'Inativo'}
                         </span>
@@ -106,7 +106,7 @@ function ApiCardsMobile({ apis, actionLoading, onToggle, onDelete, onSwitchType,
                         <button
                             onClick={() => onToggle(api.id)}
                             disabled={actionLoading === `toggle_api_status-${api.id}`}
-                            className={cn("flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-[10px] font-bold active:scale-95 transition-transform", api.status === 'active' ? 'bg-primary/15 text-primary' : 'bg-white/5 text-white/30')}
+                            className={cn("flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-[10px] font-bold active:scale-95 transition-transform", api.status === 'active' ? 'bg-primary/15 text-primary' : 'bg-gray-50 text-gray-400 border border-gray-100')}
                         >
                             {api.status === 'active' ? <ToggleRight size={14} /> : <ToggleLeft size={14} />}
                             {api.status === 'active' ? 'Desativar' : 'Ativar'}
@@ -114,7 +114,7 @@ function ApiCardsMobile({ apis, actionLoading, onToggle, onDelete, onSwitchType,
                         <button
                             onClick={() => onSwitchType(api)}
                             disabled={actionLoading === `set_api_type-${api.id}`}
-                            className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-white/5 rounded-xl text-white/40 text-[10px] font-bold active:scale-95 transition-transform disabled:opacity-30"
+                            className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-gray-50 border border-gray-100 rounded-xl text-gray-500 text-[10px] font-bold active:scale-95 transition-transform disabled:opacity-30"
                         >
                             <ArrowLeftRight size={12} />
                             {api.is_admin_only == 1 ? 'p/ Usuários' : 'p/ Admin'}
@@ -174,12 +174,12 @@ export default function AdminApisPage() {
     const adminApis = apis.filter(a => a.is_admin_only == 1);
 
     if (loading && apis.length === 0) {
-        return <div className="flex items-center justify-center h-full"><RefreshCw className="animate-spin text-primary" size={32} /></div>;
+        return <div className="flex items-center justify-center h-full"><RefreshCw className="animate-spin text-purple-500" size={32} /></div>;
     }
 
     const tableHead = (
         <thead>
-            <tr className="text-left border-b border-white/5 text-white/20 text-[10px] font-black uppercase tracking-widest">
+            <tr className="text-left border-b border-gray-100 text-gray-400 text-[10px] font-black uppercase tracking-widest">
                 <th className="p-5 pl-8">Gateway / Nome</th>
                 <th className="p-5 text-center">Status</th>
                 <th className="p-5 text-center">Mover</th>
@@ -192,48 +192,48 @@ export default function AdminApisPage() {
         <div className="space-y-6 md:space-y-8 p-4 md:p-6 lg:p-10 max-w-[1300px] mx-auto animate-in fade-in duration-700">
             {/* Header */}
             <div>
-                <Link to="/admin" className="flex items-center gap-2 text-white/40 hover:text-white transition-colors mb-3 md:mb-4 text-xs font-black uppercase tracking-widest">
+                <Link to="/admin" className="flex items-center gap-2 text-gray-400 hover:text-gray-900 transition-colors mb-3 md:mb-4 text-xs font-black uppercase tracking-widest">
                     <ArrowLeft size={14} /> Voltar ao Admin
                 </Link>
                 <h1 className="text-2xl md:text-4xl font-black tracking-tight mb-1 flex items-center gap-3 md:gap-4 text-primary">
                     <Cpu size={24} className="md:hidden" /><Cpu size={36} className="hidden md:block" /> Gestão de APIs
                 </h1>
-                <p className="text-white/40 font-medium text-sm md:text-base">Configure pools de chaves PixGo para usuários e admin.</p>
+                <p className="text-gray-500 font-medium text-sm md:text-base">Configure pools de chaves PixGo para usuários e admin.</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8 items-start">
                 {/* Form */}
                 <div className="lg:col-span-1">
-                    <div className="glass p-5 md:p-8 rounded-[24px] md:rounded-[40px] border-white/5 sticky top-8">
+                    <div className="bg-white border border-gray-100 shadow-sm p-5 md:p-8 rounded-[24px] md:rounded-[40px] sticky top-8">
                         <h3 className="text-lg font-black mb-6 flex items-center gap-3">
                             <Plus size={20} className="text-primary" /> Nova Chave
                         </h3>
 
                         <form onSubmit={(e) => { e.preventDefault(); handleAction('add_api', form); }} className="space-y-5">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-1">Identificador</label>
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Identificador</label>
                                 <input
                                     value={form.name}
                                     onChange={e => setForm({ ...form, name: e.target.value })}
                                     placeholder="Ex: Conta Principal"
                                     required
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-5 font-bold focus:outline-none focus:border-primary/50 text-sm transition-all"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl py-4 px-5 font-bold text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/50 text-sm transition-all"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-1">Chave Pública (PixGo)</label>
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Chave Pública (PixGo)</label>
                                 <input
                                     value={form.api_key}
                                     onChange={e => setForm({ ...form, api_key: e.target.value })}
                                     placeholder="pk_..."
                                     required
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-5 font-mono text-xs focus:outline-none focus:border-primary/50 transition-all text-emerald-400"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl py-4 px-5 font-mono text-xs focus:outline-none focus:border-primary/50 transition-all text-emerald-600"
                                 />
                             </div>
 
                             {/* Type toggle */}
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-1">Tipo da API</label>
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Tipo da API</label>
                                 <div className="grid grid-cols-2 gap-2">
                                     <button
                                         type="button"
@@ -242,7 +242,7 @@ export default function AdminApisPage() {
                                             "flex flex-col items-center gap-2 py-4 px-3 rounded-2xl border font-black text-xs transition-all",
                                             form.is_admin_only === '0'
                                                 ? 'bg-primary/10 border-primary/30 text-primary'
-                                                : 'bg-white/5 border-white/10 text-white/30 hover:text-white'
+                                                : 'bg-gray-50 border-gray-200 text-gray-400 hover:text-gray-900'
                                         )}
                                     >
                                         <Users size={18} />
@@ -255,14 +255,14 @@ export default function AdminApisPage() {
                                             "flex flex-col items-center gap-2 py-4 px-3 rounded-2xl border font-black text-xs transition-all",
                                             form.is_admin_only === '1'
                                                 ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
-                                                : 'bg-white/5 border-white/10 text-white/30 hover:text-white'
+                                                : 'bg-gray-50 border-gray-200 text-gray-400 hover:text-gray-900'
                                         )}
                                     >
                                         <Crown size={18} />
                                         Só Admin
                                     </button>
                                 </div>
-                                <p className="text-[10px] text-white/25 ml-1 leading-relaxed">
+                                <p className="text-[10px] text-gray-400 ml-1 leading-relaxed">
                                     {form.is_admin_only === '1'
                                         ? 'Usada apenas para cobranças geradas pelo próprio admin. Usuários não usarão esta API.'
                                         : 'Distribuída entre todos os usuários da plataforma para gerar cobranças PIX.'}
@@ -272,7 +272,7 @@ export default function AdminApisPage() {
                             <button
                                 type="submit"
                                 disabled={actionLoading === 'add_api-new'}
-                                className="w-full py-4 bg-primary text-black rounded-2xl font-black text-sm flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all"
+                                className="w-full py-4 bg-primary text-white rounded-2xl font-black text-sm flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all"
                             >
                                 {actionLoading === 'add_api-new' ? <RefreshCw className="animate-spin" size={18} /> : <Save size={18} />}
                                 ADICIONAR API
@@ -285,15 +285,15 @@ export default function AdminApisPage() {
                 <div className="lg:col-span-2 space-y-6">
 
                     {/* APIs de Usuários */}
-                    <div className="glass rounded-[24px] md:rounded-[32px] border-white/5 overflow-hidden">
-                        <div className="p-4 md:p-6 border-b border-white/5 flex items-center gap-3">
+                    <div className="bg-white border border-gray-100 shadow-sm rounded-[24px] md:rounded-[32px] overflow-hidden">
+                        <div className="p-4 md:p-6 border-b border-gray-100 flex items-center gap-3">
                             <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                                 <Users size={14} className="text-primary md:hidden" />
                                 <Users size={16} className="text-primary hidden md:block" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <h3 className="font-black text-sm md:text-base">APIs para Usuários</h3>
-                                <p className="text-[10px] md:text-xs text-white/30 mt-0.5 truncate">Rotacionadas entre todos os usuários</p>
+                                <p className="text-[10px] md:text-xs text-gray-400 mt-0.5 truncate">Rotacionadas entre todos os usuários</p>
                             </div>
                             <span className="text-[10px] md:text-xs font-black bg-primary/10 text-primary px-2 md:px-3 py-1 rounded-full border border-primary/20 shrink-0">
                                 {userApis.length}
@@ -314,7 +314,7 @@ export default function AdminApisPage() {
                         <div className="hidden md:block overflow-x-auto">
                             <table className="w-full">
                                 {tableHead}
-                                <tbody className="divide-y divide-white/5">
+                                <tbody className="divide-y divide-gray-50">
                                     <ApiTableRows
                                         apis={userApis}
                                         actionLoading={actionLoading}
@@ -329,15 +329,15 @@ export default function AdminApisPage() {
                     </div>
 
                     {/* APIs de Admin */}
-                    <div className="glass rounded-[24px] md:rounded-[32px] border-amber-500/10 overflow-hidden">
-                        <div className="p-4 md:p-6 border-b border-amber-500/10 flex items-center gap-3">
+                    <div className="bg-white border border-amber-200 shadow-sm rounded-[24px] md:rounded-[32px] overflow-hidden">
+                        <div className="p-4 md:p-6 border-b border-amber-100 flex items-center gap-3">
                             <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-amber-500/10 flex items-center justify-center shrink-0">
                                 <Crown size={14} className="text-amber-400 md:hidden" />
                                 <Crown size={16} className="text-amber-400 hidden md:block" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <h3 className="font-black text-sm md:text-base">APIs do Admin</h3>
-                                <p className="text-[10px] md:text-xs text-white/30 mt-0.5 truncate">Apenas cobranças do admin</p>
+                                <p className="text-[10px] md:text-xs text-gray-400 mt-0.5 truncate">Apenas cobranças do admin</p>
                             </div>
                             <span className="text-[10px] md:text-xs font-black bg-amber-500/10 text-amber-400 px-2 md:px-3 py-1 rounded-full border border-amber-500/20 shrink-0">
                                 {adminApis.length}
@@ -358,7 +358,7 @@ export default function AdminApisPage() {
                         <div className="hidden md:block overflow-x-auto">
                             <table className="w-full">
                                 {tableHead}
-                                <tbody className="divide-y divide-white/5">
+                                <tbody className="divide-y divide-gray-50">
                                     <ApiTableRows
                                         apis={adminApis}
                                         actionLoading={actionLoading}

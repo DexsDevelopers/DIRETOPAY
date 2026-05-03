@@ -144,29 +144,29 @@ export default function ChatPage() {
     const showChat = !!activeRoom;
 
     return (
-        <div className="-m-4 lg:-m-8 h-[calc(100%+2rem)] lg:h-[calc(100%+4rem)] flex flex-col md:flex-row gap-0 overflow-hidden animate-in fade-in duration-500 bg-[#08080a]">
+        <div className="-m-4 lg:-m-8 h-[calc(100%+2rem)] lg:h-[calc(100%+4rem)] flex flex-col md:flex-row gap-0 overflow-hidden animate-in fade-in duration-500 bg-gray-50">
             {/* ── Room List ── */}
             <div className={cn(
-                "w-full md:w-[340px] lg:w-[380px] flex-shrink-0 border-r border-white/5 flex flex-col bg-[#0a0a0c]",
+                "w-full md:w-[340px] lg:w-[380px] flex-shrink-0 border-r border-gray-100 flex flex-col bg-white",
                 showChat ? "hidden md:flex" : "flex"
             )}>
                 {/* Header */}
-                <div className="p-4 md:p-5 border-b border-white/5">
+                <div className="p-4 md:p-5 border-b border-gray-100">
                     <div className="flex items-center justify-between mb-3">
                         <h2 className="text-lg font-black flex items-center gap-2">
                             <MessageCircle size={20} className="text-primary" /> Chats
                         </h2>
-                        <button onClick={fetchRooms} className="p-1.5 text-white/30 hover:text-white transition-colors">
+                        <button onClick={fetchRooms} className="p-1.5 text-gray-400 hover:text-gray-900 transition-colors">
                             <RefreshCw size={14} />
                         </button>
                     </div>
                     <div className="relative">
-                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20" />
+                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" />
                         <input
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             placeholder="Buscar por cliente ou produto..."
-                            className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-9 pr-3 text-xs focus:outline-none focus:border-primary/40 transition-colors"
+                            className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2 pl-9 pr-3 text-xs text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/40 transition-colors"
                         />
                     </div>
                     <div className="flex gap-1.5 mt-3">
@@ -176,7 +176,7 @@ export default function ChatPage() {
                                 onClick={() => setFilter(key)}
                                 className={cn(
                                     "px-3 py-1 rounded-lg text-[10px] font-bold transition-all",
-                                    filter === key ? "bg-primary/15 text-primary" : "bg-white/5 text-white/30 hover:text-white"
+                                    filter === key ? "bg-primary/15 text-primary" : "bg-gray-50 text-gray-400 hover:text-gray-900 border border-gray-100"
                                 )}
                             >{label}</button>
                         ))}
@@ -188,39 +188,39 @@ export default function ChatPage() {
                     {loading ? (
                         <div className="p-10 flex justify-center"><RefreshCw className="animate-spin text-primary" size={24} /></div>
                     ) : filtered.length === 0 ? (
-                        <div className="p-10 text-center text-white/20 text-sm font-bold">Nenhum chat encontrado</div>
+                        <div className="p-10 text-center text-gray-300 text-sm font-bold">Nenhum chat encontrado</div>
                     ) : filtered.map(room => (
                         <button
                             key={room.id}
                             onClick={() => openRoom(room)}
                             className={cn(
-                                "w-full text-left p-4 border-b border-white/5 hover:bg-white/[0.03] transition-colors",
-                                activeRoom?.id === room.id && "bg-white/[0.05]"
+                                "w-full text-left p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors",
+                                activeRoom?.id === room.id && "bg-purple-50"
                             )}
                         >
                             <div className="flex items-start justify-between gap-2 mb-1">
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2">
-                                        <span className="text-sm font-bold truncate">{room.buyer_name}</span>
+                                        <span className="text-sm font-bold truncate text-gray-900">{room.buyer_name}</span>
                                         {room.unread > 0 && (
                                             <span className="bg-primary text-black text-[9px] font-black px-1.5 py-0.5 rounded-full">{room.unread}</span>
                                         )}
                                     </div>
-                                    <p className="text-[11px] text-white/30 truncate mt-0.5">
+                                    <p className="text-[11px] text-gray-400 truncate mt-0.5">
                                         <Package size={10} className="inline mr-1" />
                                         {room.product_name || `Pedido #${room.order_id}`}
                                     </p>
                                 </div>
                                 <div className="text-right shrink-0">
-                                    <span className="text-[10px] text-white/20">{room.last_message_at ? timeAgo(room.last_message_at) : ''}</span>
+                                    <span className="text-[10px] text-gray-400">{room.last_message_at ? timeAgo(room.last_message_at) : ''}</span>
                                     <div className={cn(
                                         "text-[8px] font-black uppercase mt-1",
-                                        room.status === 'open' ? 'text-emerald-500' : 'text-white/15'
+                                        room.status === 'open' ? 'text-purple-500' : 'text-gray-300'
                                     )}>{room.status === 'open' ? 'aberto' : 'fechado'}</div>
                                 </div>
                             </div>
                             {room.seller_name && (
-                                <p className="text-[10px] text-white/15 mt-1">Vendedor: {room.seller_name}</p>
+                                <p className="text-[10px] text-gray-300 mt-1">Vendedor: {room.seller_name}</p>
                             )}
                         </button>
                     ))}
@@ -229,27 +229,27 @@ export default function ChatPage() {
 
             {/* ── Chat Area ── */}
             <div className={cn(
-                "flex-1 flex flex-col min-h-0 bg-black/50",
+                "flex-1 flex flex-col min-h-0 bg-white",
                 showChat ? "flex" : "hidden md:flex"
             )}>
                 {activeRoom ? (
                     <>
                         {/* Chat Header */}
-                        <div className="p-4 border-b border-white/5 flex items-center gap-3 bg-[#0a0a0c]">
+                        <div className="p-4 border-b border-gray-100 flex items-center gap-3 bg-white">
                             <button
                                 onClick={() => { setActiveRoom(null); if (pollRef.current) clearInterval(pollRef.current); }}
-                                className="md:hidden p-1.5 text-white/40 hover:text-white"
+                                className="md:hidden p-1.5 text-gray-400 hover:text-gray-900"
                             >
                                 <ArrowLeft size={18} />
                             </button>
                             <div className="flex-1 min-w-0">
-                                <h3 className="text-sm font-bold truncate">{activeRoom.buyer_name}</h3>
-                                <p className="text-[11px] text-white/30 truncate">{activeRoom.product_name || `Pedido #${activeRoom.order_id}`}</p>
+                                <h3 className="text-sm font-bold truncate text-gray-900">{activeRoom.buyer_name}</h3>
+                                <p className="text-[11px] text-gray-400 truncate">{activeRoom.product_name || `Pedido #${activeRoom.order_id}`}</p>
                             </div>
                             <div className="flex items-center gap-2">
                                 <span className={cn(
                                     "px-2 py-0.5 rounded-full text-[9px] font-black uppercase",
-                                    activeRoom.status === 'open' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-white/5 text-white/30'
+                                    activeRoom.status === 'open' ? 'bg-purple-500/15 text-purple-400' : 'bg-gray-100 text-gray-400'
                                 )}>{activeRoom.status === 'open' ? 'aberto' : 'fechado'}</span>
                                 <button
                                     onClick={toggleStatus}
@@ -257,7 +257,7 @@ export default function ChatPage() {
                                         "p-1.5 rounded-lg transition-colors text-xs",
                                         activeRoom.status === 'open'
                                             ? "text-red-400 hover:bg-red-500/10"
-                                            : "text-emerald-400 hover:bg-emerald-500/10"
+                                            : "text-purple-400 hover:bg-purple-500/10"
                                     )}
                                     title={activeRoom.status === 'open' ? 'Fechar chat' : 'Reabrir chat'}
                                 >
@@ -269,7 +269,7 @@ export default function ChatPage() {
                         {/* Messages */}
                         <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3 overscroll-contain">
                             {messages.length === 0 && (
-                                <div className="text-center py-10 text-white/15 text-sm font-bold">
+                                <div className="text-center py-10 text-gray-300 text-sm font-bold">
                                     Nenhuma mensagem ainda. O cliente pode iniciar a conversa.
                                 </div>
                             )}
@@ -280,7 +280,7 @@ export default function ChatPage() {
                                     <React.Fragment key={msg.id}>
                                         {showDate && (
                                             <div className="text-center py-2">
-                                                <span className="text-[10px] bg-white/5 text-white/25 px-3 py-1 rounded-full font-bold">{formatDate(msg.created_at)}</span>
+                                                <span className="text-[10px] bg-gray-100 text-gray-400 px-3 py-1 rounded-full font-bold">{formatDate(msg.created_at)}</span>
                                             </div>
                                         )}
                                         <div className={cn("flex", isMe ? "justify-end" : "justify-start")}>
@@ -289,21 +289,21 @@ export default function ChatPage() {
                                                 isMe
                                                     ? msg.sender_type === 'admin'
                                                         ? "bg-amber-500/15 border border-amber-500/20"
-                                                        : "bg-primary/15 border border-primary/20"
-                                                    : "bg-white/[0.06] border border-white/[0.08]"
+                                                        : "bg-purple-500/15 border border-purple-500/20"
+                                                    : "bg-white border border-gray-200"
                                             )}>
                                                 <div className="flex items-center gap-2 mb-0.5">
                                                     <span className={cn(
                                                         "text-[10px] font-black uppercase",
                                                         isMe
-                                                            ? msg.sender_type === 'admin' ? 'text-amber-400' : 'text-primary'
-                                                            : 'text-white/40'
+                                                            ? msg.sender_type === 'admin' ? 'text-amber-400' : 'text-purple-500'
+                                                            : 'text-gray-400'
                                                     )}>{msg.sender_name}</span>
                                                 </div>
-                                                <p className="text-[13px] text-white/90 leading-relaxed whitespace-pre-wrap break-words">{msg.message}</p>
+                                                <p className="text-[13px] text-gray-800 leading-relaxed whitespace-pre-wrap break-words">{msg.message}</p>
                                                 <div className={cn("flex items-center gap-1 mt-1", isMe ? "justify-end" : "justify-start")}>
-                                                    <span className="text-[9px] text-white/20">{formatTime(msg.created_at)}</span>
-                                                    {isMe && <CheckCheck size={10} className={msg.read_at ? "text-primary" : "text-white/15"} />}
+                                                    <span className="text-[9px] text-gray-400">{formatTime(msg.created_at)}</span>
+                                                    {isMe && <CheckCheck size={10} className={msg.read_at ? "text-purple-500" : "text-gray-300"} />}
                                                 </div>
                                             </div>
                                         </div>
@@ -315,26 +315,26 @@ export default function ChatPage() {
 
                         {/* Input */}
                         {activeRoom.status === 'open' ? (
-                            <div className="p-3 md:p-4 border-t border-white/5 bg-[#0a0a0c]">
+                            <div className="p-3 md:p-4 border-t border-gray-100 bg-white">
                                 <form onSubmit={e => { e.preventDefault(); sendMessage(); }} className="flex gap-2">
                                     <input
                                         value={msgInput}
                                         onChange={e => setMsgInput(e.target.value)}
                                         placeholder="Digite sua mensagem..."
                                         maxLength={2000}
-                                        className="flex-1 bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-primary/40 transition-colors"
+                                        className="flex-1 bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/40 transition-colors"
                                     />
                                     <button
                                         type="submit"
                                         disabled={sending || !msgInput.trim()}
-                                        className="px-4 bg-primary text-black rounded-xl font-black text-sm flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-30"
+                                        className="px-4 bg-primary text-white rounded-xl font-black text-sm flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-30"
                                     >
                                         <Send size={16} />
                                     </button>
                                 </form>
                             </div>
                         ) : (
-                            <div className="p-4 border-t border-white/5 text-center text-white/20 text-xs font-bold bg-[#0a0a0c]">
+                            <div className="p-4 border-t border-gray-100 text-center text-gray-400 text-xs font-bold bg-white">
                                 Este chat foi encerrado.
                                 <button onClick={toggleStatus} className="text-primary ml-2 hover:underline">Reabrir</button>
                             </div>
@@ -343,9 +343,9 @@ export default function ChatPage() {
                 ) : (
                     <div className="flex-1 flex items-center justify-center">
                         <div className="text-center">
-                            <MessageCircle size={48} className="text-white/5 mx-auto mb-4" />
-                            <p className="text-white/20 font-bold">Selecione um chat para conversar</p>
-                            <p className="text-white/10 text-sm mt-1">Chats são criados automaticamente quando um cliente compra um produto</p>
+                            <MessageCircle size={48} className="text-gray-200 mx-auto mb-4" />
+                            <p className="text-gray-400 font-bold">Selecione um chat para conversar</p>
+                            <p className="text-gray-300 text-sm mt-1">Chats são criados automaticamente quando um cliente compra um produto</p>
                         </div>
                     </div>
                 )}

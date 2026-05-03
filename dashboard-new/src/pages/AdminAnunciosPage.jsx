@@ -112,19 +112,19 @@ const AdminAnunciosPage = () => {
     setPreview(url);
   };
 
-  const inputClass = "w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-purple-500/50 focus:outline-none focus:ring-1 focus:ring-purple-500/30 transition";
-  const labelClass = "block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5";
+  const inputClass = "w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder:text-gray-300 focus:border-purple-500/50 focus:outline-none focus:ring-1 focus:ring-purple-500/30 transition";
+  const labelClass = "block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5";
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 animate-in fade-in duration-500">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2.5">
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2.5">
             <Megaphone size={22} className="text-purple-400" />
             Anúncios
           </h1>
-          <p className="text-sm text-white/40 mt-1">Gerencie anúncios exibidos aos usuários ao entrar na plataforma</p>
+          <p className="text-sm text-gray-500 mt-1">Gerencie anúncios exibidos aos usuários ao entrar na plataforma</p>
         </div>
         <button
           onClick={openNew}
@@ -151,11 +151,11 @@ const AdminAnunciosPage = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.92, opacity: 0 }}
               onSubmit={handleSubmit}
-              className="w-full max-w-xl bg-[#141420] rounded-2xl border border-white/[0.06] overflow-hidden max-h-[90vh] overflow-y-auto"
+              className="w-full max-w-xl bg-white rounded-2xl border border-gray-200 overflow-hidden max-h-[90vh] overflow-y-auto"
             >
-              <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
-                <h3 className="font-bold text-white">{editing ? 'Editar Anúncio' : 'Novo Anúncio'}</h3>
-                <button type="button" onClick={() => setShowForm(false)} className="p-1.5 rounded-full hover:bg-white/5 text-white/40"><X size={18} /></button>
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                <h3 className="font-bold text-gray-900">{editing ? 'Editar Anúncio' : 'Novo Anúncio'}</h3>
+                <button type="button" onClick={() => setShowForm(false)} className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400"><X size={18} /></button>
               </div>
 
               <div className="p-6 space-y-4">
@@ -174,7 +174,7 @@ const AdminAnunciosPage = () => {
                   <label className={labelClass}>Imagem ou Vídeo</label>
                   <div
                     onClick={() => fileRef.current?.click()}
-                    className="relative w-full border-2 border-dashed border-white/10 rounded-xl cursor-pointer hover:border-purple-500/30 transition group overflow-hidden"
+                    className="relative w-full border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:border-purple-500/30 transition group overflow-hidden"
                   >
                     {preview && !form.remove_media ? (
                       <div className="relative">
@@ -192,10 +192,10 @@ const AdminAnunciosPage = () => {
                         </button>
                       </div>
                     ) : (
-                      <div className="flex flex-col items-center justify-center py-8 text-white/20 group-hover:text-white/40 transition">
+                      <div className="flex flex-col items-center justify-center py-8 text-gray-300 group-hover:text-gray-400 transition">
                         <Upload size={28} />
-                        <span className="text-xs mt-2">Clique para upload (jpg, png, gif, mp4, webm)</span>
-                        <span className="text-[10px] text-white/15 mt-0.5">Máx 50MB</span>
+                        <span className="text-xs mt-2 text-gray-400">Clique para upload (jpg, png, gif, mp4, webm)</span>
+                        <span className="text-[10px] text-gray-300 mt-0.5">Máx 50MB</span>
                       </div>
                     )}
                   </div>
@@ -230,12 +230,12 @@ const AdminAnunciosPage = () => {
                 <div>
                   <label className={labelClass}><ArrowUpDown size={11} className="inline mr-1" />Prioridade</label>
                   <input type="number" value={form.priority} onChange={e => setForm(p => ({ ...p, priority: parseInt(e.target.value) || 0 }))} placeholder="0" className={inputClass + ' max-w-[120px]'} />
-                  <span className="text-[10px] text-white/25 ml-2">Maior número = aparece primeiro</span>
+                  <span className="text-[10px] text-gray-400 ml-2">Maior número = aparece primeiro</span>
                 </div>
               </div>
 
-              <div className="flex gap-3 px-6 py-4 border-t border-white/[0.06]">
-                <button type="button" onClick={() => setShowForm(false)} className="flex-1 py-3 rounded-xl text-sm font-medium text-white/40 hover:bg-white/5 transition">Cancelar</button>
+              <div className="flex gap-3 px-6 py-4 border-t border-gray-100">
+                <button type="button" onClick={() => setShowForm(false)} className="flex-1 py-3 rounded-xl text-sm font-medium text-gray-400 hover:bg-gray-50 transition">Cancelar</button>
                 <button
                   type="submit"
                   disabled={saving}
@@ -252,11 +252,11 @@ const AdminAnunciosPage = () => {
 
       {/* List */}
       {loading ? (
-        <div className="text-center py-20 text-white/30">Carregando...</div>
+        <div className="text-center py-20 text-gray-400">Carregando...</div>
       ) : announcements.length === 0 ? (
         <div className="text-center py-20">
-          <Megaphone size={48} className="mx-auto text-white/10 mb-4" />
-          <p className="text-white/30 text-sm">Nenhum anúncio criado ainda</p>
+          <Megaphone size={48} className="mx-auto text-gray-200 mb-4" />
+          <p className="text-gray-400 text-sm">Nenhum anúncio criado ainda</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -264,7 +264,7 @@ const AdminAnunciosPage = () => {
             <motion.div
               key={ann.id}
               layout
-              className="bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden hover:border-white/[0.1] transition"
+              className="bg-white border border-gray-100 shadow-sm rounded-xl overflow-hidden hover:border-purple-200 transition"
             >
               <div className="flex flex-col sm:flex-row">
                 {/* Thumbnail */}
@@ -283,18 +283,18 @@ const AdminAnunciosPage = () => {
                   <div>
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-center gap-2 min-w-0">
-                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${ann.is_active == 1 ? 'bg-green-500' : 'bg-white/20'}`} />
-                        <h3 className="font-bold text-white text-sm truncate">{ann.title}</h3>
+                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${ann.is_active == 1 ? 'bg-green-500' : 'bg-gray-300'}`} />
+                        <h3 className="font-bold text-gray-900 text-sm truncate">{ann.title}</h3>
                       </div>
                       <div className="flex items-center gap-1 flex-shrink-0">
-                        <button onClick={() => handleToggle(ann.id)} className="p-1.5 rounded-lg hover:bg-white/5 text-white/30 hover:text-white/70 transition" title={ann.is_active == 1 ? 'Desativar' : 'Ativar'}>
+                        <button onClick={() => handleToggle(ann.id)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition" title={ann.is_active == 1 ? 'Desativar' : 'Ativar'}>
                           {ann.is_active == 1 ? <Eye size={14} /> : <EyeOff size={14} />}
                         </button>
-                        <button onClick={() => openEdit(ann)} className="p-1.5 rounded-lg hover:bg-white/5 text-white/30 hover:text-white/70 transition"><Edit3 size={14} /></button>
-                        <button onClick={() => handleDelete(ann.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-white/30 hover:text-red-400 transition"><Trash2 size={14} /></button>
+                        <button onClick={() => openEdit(ann)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition"><Edit3 size={14} /></button>
+                        <button onClick={() => handleDelete(ann.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-gray-400 hover:text-red-400 transition"><Trash2 size={14} /></button>
                       </div>
                     </div>
-                    {ann.message && <p className="text-xs text-white/30 mt-1 line-clamp-2">{ann.message}</p>}
+                    {ann.message && <p className="text-xs text-gray-400 mt-1 line-clamp-2">{ann.message}</p>}
                   </div>
                   <div className="flex flex-wrap items-center gap-2 mt-3">
                     {ann.media_type !== 'none' && (
@@ -307,7 +307,7 @@ const AdminAnunciosPage = () => {
                         <Link size={9} className="inline mr-0.5" /> {ann.link_label || 'Link'}
                       </span>
                     )}
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-white/30 border border-white/[0.06]">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-50 text-gray-400 border border-gray-200">
                       <Users size={9} className="inline mr-0.5" /> {ann.dismiss_count || 0} dispensaram
                     </span>
                     {ann.expires_at && (

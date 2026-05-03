@@ -15,7 +15,7 @@ function Toggle({ enabled, onChange, disabled }) {
             onClick={() => !disabled && onChange(!enabled)}
             disabled={disabled}
             className={`relative w-12 h-6 rounded-full transition-all duration-300 focus:outline-none disabled:opacity-40 ${
-                enabled ? 'bg-primary' : 'bg-white/10'
+                enabled ? 'bg-primary' : 'bg-gray-200'
             }`}
         >
             <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 ${
@@ -33,7 +33,7 @@ function CopyBtn({ text }) {
         setTimeout(() => setCopied(false), 2000);
     };
     return (
-        <button onClick={copy} className="p-1.5 rounded-lg text-white/30 hover:text-white hover:bg-white/5 transition-all">
+        <button onClick={copy} className="p-1.5 rounded-lg text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-all">
             {copied ? <Check size={13} className="text-green-400" /> : <Copy size={13} />}
         </button>
     );
@@ -90,15 +90,15 @@ function GatewayCard({ gateway }) {
             className={`rounded-3xl border transition-all duration-300 overflow-hidden ${
                 enabled
                     ? `border-${gateway.color}-500/20 bg-${gateway.color}-500/[0.03]`
-                    : 'border-white/8 bg-white/[0.02]'
+                    : 'border-gray-100 bg-white shadow-sm'
             }`}
         >
             {/* Header */}
             <div className="p-5 flex items-center gap-4">
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
-                    enabled ? `bg-${gateway.color}-500/15` : 'bg-white/5'
+                    enabled ? `bg-${gateway.color}-500/15` : 'bg-gray-50'
                 }`}>
-                    <gateway.Icon size={22} className={enabled ? `text-${gateway.color}-400` : 'text-white/25'} />
+                    <gateway.Icon size={22} className={enabled ? `text-${gateway.color}-400` : 'text-gray-300'} />
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -107,12 +107,12 @@ function GatewayCard({ gateway }) {
                         <span className={`text-[10px] font-black rounded-full px-2.5 py-0.5 border ${
                             enabled
                                 ? `bg-${gateway.color}-500/10 text-${gateway.color}-400 border-${gateway.color}-500/20`
-                                : 'bg-white/5 text-white/30 border-white/8'
+                                : 'bg-gray-100 text-gray-400 border-gray-200'
                         }`}>
                             {enabled ? '● ATIVO' : '○ INATIVO'}
                         </span>
                     </div>
-                    <p className="text-[11px] text-white/35 font-medium mt-0.5">{gateway.description}</p>
+                    <p className="text-[11px] text-gray-500 font-medium mt-0.5">{gateway.description}</p>
                 </div>
 
                 <div className="flex items-center gap-3 flex-shrink-0">
@@ -120,7 +120,7 @@ function GatewayCard({ gateway }) {
                     {gateway.hasForm && (
                         <button
                             onClick={() => setOpen(o => !o)}
-                            className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all text-white/40"
+                            className="w-8 h-8 rounded-xl bg-gray-50 hover:bg-gray-100 flex items-center justify-center transition-all text-gray-400"
                         >
                             {open ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
                         </button>
@@ -131,9 +131,9 @@ function GatewayCard({ gateway }) {
             {/* Webhook URL pill */}
             {gateway.webhookUrl && (
                 <div className="px-5 pb-4">
-                    <div className="flex items-center gap-2 bg-white/[0.04] rounded-2xl px-3 py-2 w-fit">
-                        <Link2 size={11} className="text-white/30 flex-shrink-0" />
-                        <span className="text-[11px] text-white/40 font-mono">{gateway.webhookUrl}</span>
+                    <div className="flex items-center gap-2 bg-gray-50 border border-gray-100 rounded-2xl px-3 py-2 w-fit">
+                        <Link2 size={11} className="text-gray-400 flex-shrink-0" />
+                        <span className="text-[11px] text-gray-500 font-mono">{gateway.webhookUrl}</span>
                         <CopyBtn text={gateway.webhookUrl} />
                     </div>
                 </div>
@@ -149,12 +149,12 @@ function GatewayCard({ gateway }) {
                         transition={{ duration: 0.2 }}
                         className="overflow-hidden"
                     >
-                        <div className={`mx-5 mb-5 rounded-2xl border border-white/6 bg-white/[0.02] p-4`}>
-                            <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-3">Credenciais</p>
+                        <div className={`mx-5 mb-5 rounded-2xl border border-gray-100 bg-gray-50 p-4`}>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Credenciais</p>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                                 {gateway.fields.map(field => (
                                     <div key={field.key} className="relative">
-                                        <label className="text-[10px] font-black text-white/30 uppercase tracking-widest block mb-1.5">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1.5">
                                             {field.label}
                                         </label>
                                         <div className="relative">
@@ -163,12 +163,12 @@ function GatewayCard({ gateway }) {
                                                 value={form[field.key] || ''}
                                                 onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
                                                 placeholder={field.placeholder}
-                                                className={`w-full bg-white/5 border border-white/8 rounded-xl px-3 py-2.5 text-sm font-mono focus:outline-none focus:border-${gateway.color}-500/40 transition-all ${field.secret ? 'pr-10' : ''}`}
+                                                className={`w-full bg-white border border-gray-200 rounded-xl px-3 py-2.5 text-sm font-mono text-gray-900 focus:outline-none focus:border-${gateway.color}-500/40 transition-all ${field.secret ? 'pr-10' : ''}`}
                                             />
                                             {field.secret && (
                                                 <button
                                                     onClick={() => setShowSecrets(s => ({ ...s, [field.key]: !s[field.key] }))}
-                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white"
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900"
                                                 >
                                                     {showSecrets[field.key] ? <EyeOff size={14} /> : <Eye size={14} />}
                                                 </button>
@@ -210,7 +210,7 @@ export default function AdminGatewaysPage() {
 
     if (loading) return (
         <div className="flex items-center justify-center h-64">
-            <RefreshCw size={24} className="animate-spin text-white/30" />
+            <RefreshCw size={24} className="animate-spin text-gray-300" />
         </div>
     );
 
@@ -283,14 +283,14 @@ export default function AdminGatewaysPage() {
             {/* Header */}
             <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>
-                    <h1 className="text-2xl font-black tracking-tight">Gateways de Pagamento</h1>
-                    <p className="text-sm text-white/40 font-medium mt-1">Configure e ative os gateways da plataforma</p>
+                    <h1 className="text-2xl font-black tracking-tight text-gray-900">Gateways de Pagamento</h1>
+                    <p className="text-sm text-gray-500 font-medium mt-1">Configure e ative os gateways da plataforma</p>
                 </div>
-                <div className="flex items-center gap-2 bg-white/[0.04] border border-white/8 rounded-2xl px-4 py-2.5">
-                    <Wifi size={15} className={activeCount > 0 ? 'text-green-400' : 'text-white/20'} />
+                <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2.5">
+                    <Wifi size={15} className={activeCount > 0 ? 'text-green-500' : 'text-gray-300'} />
                     <span className="text-sm font-black">
-                        <span className={activeCount > 0 ? 'text-green-400' : 'text-white/30'}>{activeCount}</span>
-                        <span className="text-white/30"> / {gatewayDefs.length} ativos</span>
+                        <span className={activeCount > 0 ? 'text-green-500' : 'text-gray-400'}>{activeCount}</span>
+                        <span className="text-gray-400"> / {gatewayDefs.length} ativos</span>
                     </span>
                 </div>
             </div>

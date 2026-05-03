@@ -83,7 +83,7 @@ export default function PixModal({ pixData, onClose, statusEndpoint }) {
                     initial={{ scale: 0.9, opacity: 0, y: 20 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                    className="glass w-full max-w-md rounded-[32px] overflow-hidden border border-white/10 my-4"
+                    className="bg-white w-full max-w-md rounded-[32px] overflow-hidden border border-gray-100 shadow-xl my-4"
                     onClick={e => e.stopPropagation()}
                 >
                 <div className="p-8">
@@ -92,16 +92,16 @@ export default function PixModal({ pixData, onClose, statusEndpoint }) {
                             <div className="bg-primary/20 p-2 rounded-lg">
                                 <img src="https://logopng.com.br/logos/pix-106.png" className="w-8 h-8 object-contain" alt="Pix" />
                             </div>
-                            <h3 className="text-xl font-bold text-white">Pagamento Pix</h3>
+                            <h3 className="text-xl font-bold text-gray-900">Pagamento Pix</h3>
                         </div>
-                        <button onClick={onClose} className="text-white/40 hover:text-white transition-colors">
+                        <button onClick={onClose} className="text-gray-400 hover:text-gray-900 transition-colors">
                             <X size={24} />
                         </button>
                     </div>
 
                     <div className="text-center mb-8">
-                        <div className="text-white/40 text-sm mb-1 uppercase tracking-wider font-medium">Valor a Pagar</div>
-                        <div className="text-4xl font-black text-white">R$ {parseFloat(pixData.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
+                        <div className="text-gray-400 text-sm mb-1 uppercase tracking-wider font-medium">Valor a Pagar</div>
+                        <div className="text-4xl font-black text-gray-900">R$ {parseFloat(pixData.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
                     </div>
 
                     {paymentStatus === 'paid' ? (
@@ -113,16 +113,16 @@ export default function PixModal({ pixData, onClose, statusEndpoint }) {
                             <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center text-primary mb-4">
                                 <Check size={40} strokeWidth={3} />
                             </div>
-                            <h2 className="text-2xl font-bold text-white mb-2">Pago com Sucesso!</h2>
-                            <p className="text-white/50">Seu saldo será atualizado em instantes...</p>
+                            <h2 className="text-2xl font-bold text-gray-900 mb-2">Pago com Sucesso!</h2>
+                            <p className="text-gray-500">Seu saldo será atualizado em instantes...</p>
                         </motion.div>
                     ) : paymentStatus === 'expired' ? (
                         <div className="py-12 flex flex-col items-center justify-center text-center">
                             <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center text-red-500 mb-4">
                                 <X size={40} strokeWidth={3} />
                             </div>
-                            <h2 className="text-2xl font-bold text-white mb-2">QR Code Expirado</h2>
-                            <p className="text-white/50">Gere uma nova cobrança para continuar.</p>
+                            <h2 className="text-2xl font-bold text-gray-900 mb-2">QR Code Expirado</h2>
+                            <p className="text-gray-500">Gere uma nova cobrança para continuar.</p>
                             <button
                                 onClick={onClose}
                                 className="mt-6 text-primary font-bold hover:underline"
@@ -133,9 +133,9 @@ export default function PixModal({ pixData, onClose, statusEndpoint }) {
                     ) : (
                         <>
                             <div className="flex flex-col items-center gap-4 mb-8">
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/60 text-xs font-bold">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-50 border border-gray-200 text-gray-500 text-xs font-bold">
                                     <Clock size={12} className="text-primary" />
-                                    EXPIRA EM: <span className={timeLeft < 60 ? 'text-red-500' : 'text-white'}>{formatTime(timeLeft)}</span>
+                                    EXPIRA EM: <span className={timeLeft < 60 ? 'text-red-500' : 'text-gray-900'}>{formatTime(timeLeft)}</span>
                                 </div>
 
                                 <div className="w-full aspect-square max-w-[240px] bg-white rounded-2xl p-4 shadow-2xl flex items-center justify-center overflow-hidden">
@@ -149,12 +149,12 @@ export default function PixModal({ pixData, onClose, statusEndpoint }) {
 
                             <div className="space-y-4 mb-8">
                                 <div className="flex flex-col gap-2">
-                                    <label className="text-xs font-bold text-white/40 uppercase tracking-widest pl-1">Código Copia e Cola</label>
+                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Código Copia e Cola</label>
                                     <div className="flex gap-2">
                                         <input
                                             readOnly
                                             value={pixData.code}
-                                            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-primary/30"
+                                            className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-700 text-sm focus:outline-none focus:border-primary/30"
                                         />
                                         <button
                                             onClick={handleCopy}
@@ -166,12 +166,12 @@ export default function PixModal({ pixData, onClose, statusEndpoint }) {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4 py-4 border-t border-white/5">
-                                <div className="flex items-center gap-2 text-[11px] text-white/30">
+                            <div className="grid grid-cols-2 gap-4 py-4 border-t border-gray-100">
+                                <div className="flex items-center gap-2 text-[11px] text-gray-400">
                                     <ShieldCheck size={14} className="text-primary/50" />
                                     Pagamento Seguro
                                 </div>
-                                <div className="flex items-center gap-2 text-[11px] text-white/30 justify-end">
+                                <div className="flex items-center gap-2 text-[11px] text-gray-400 justify-end">
                                     <Zap size={14} className="text-primary/50" />
                                     Saldo na Hora
                                 </div>

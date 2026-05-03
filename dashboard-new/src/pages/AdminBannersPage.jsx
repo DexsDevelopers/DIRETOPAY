@@ -36,20 +36,20 @@ function ImageField({ label, hint, fieldName, value, onChange, required = false 
         <div className="space-y-2">
             {/* Label + mode toggle */}
             <div className="flex items-center justify-between">
-                <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest flex items-center gap-1.5">
+                <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
                     {fieldName === 'image_url'
-                        ? <Monitor size={11} className="text-white/30" />
-                        : <Smartphone size={11} className="text-white/30" />}
+                        ? <Monitor size={11} className="text-gray-400" />
+                        : <Smartphone size={11} className="text-gray-400" />}
                     {label}
-                    {!required && <span className="text-[9px] text-white/20 font-normal normal-case tracking-normal">(opcional)</span>}
+                    {!required && <span className="text-[9px] text-gray-300 font-normal normal-case tracking-normal">(opcional)</span>}
                 </label>
-                <div className="flex rounded-lg overflow-hidden border border-white/10 text-[10px] font-black">
+                <div className="flex rounded-lg overflow-hidden border border-gray-200 text-[10px] font-black">
                     <button type="button" onClick={() => setMode('url')}
-                        className={`px-3 py-1 flex items-center gap-1 transition-colors ${mode === 'url' ? 'bg-primary/20 text-primary' : 'bg-white/[0.03] text-white/30 hover:text-white/60'}`}>
+                        className={`px-3 py-1 flex items-center gap-1 transition-colors ${mode === 'url' ? 'bg-primary/20 text-primary' : 'bg-gray-50 text-gray-400 hover:text-gray-700'}`}>
                         <LinkIcon size={9} /> URL
                     </button>
                     <button type="button" onClick={() => setMode('upload')}
-                        className={`px-3 py-1 flex items-center gap-1 transition-colors ${mode === 'upload' ? 'bg-primary/20 text-primary' : 'bg-white/[0.03] text-white/30 hover:text-white/60'}`}>
+                        className={`px-3 py-1 flex items-center gap-1 transition-colors ${mode === 'upload' ? 'bg-primary/20 text-primary' : 'bg-gray-50 text-gray-400 hover:text-gray-700'}`}>
                         <Upload size={9} /> Arquivo
                     </button>
                 </div>
@@ -57,7 +57,7 @@ function ImageField({ label, hint, fieldName, value, onChange, required = false 
 
             {/* Preview thumbnail */}
             {value && (
-                <div className="relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.02]"
+                <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-gray-50"
                     style={{ aspectRatio: fieldName === 'image_url' ? '3/1' : '16/7' }}>
                     <img src={value} alt="preview" className="w-full h-full object-cover"
                         onError={e => { e.target.style.display = 'none'; }} />
@@ -73,7 +73,7 @@ function ImageField({ label, hint, fieldName, value, onChange, required = false 
             {mode === 'url' && (
                 <input value={value} onChange={e => onChange(e.target.value)}
                     placeholder={fieldName === 'image_url' ? 'https://exemplo.com/banner-desktop.jpg' : 'https://exemplo.com/banner-mobile.jpg'}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/40 font-mono text-xs" />
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/40 font-mono" />
             )}
 
             {/* Upload mode */}
@@ -84,28 +84,28 @@ function ImageField({ label, hint, fieldName, value, onChange, required = false 
                     onDrop={e => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]); }}
                     onClick={() => !uploading && inputRef.current?.click()}
                     className={`relative cursor-pointer rounded-xl border-2 border-dashed transition-all p-6 text-center
-                        ${dragOver ? 'border-primary bg-primary/10' : 'border-white/15 hover:border-primary/40 hover:bg-white/[0.02]'}`}>
+                        ${dragOver ? 'border-primary bg-primary/10' : 'border-gray-200 hover:border-primary/40 hover:bg-gray-50'}`}>
                     <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif"
                         className="hidden" onChange={e => handleFile(e.target.files[0])} />
                     {uploading ? (
                         <div className="flex flex-col items-center gap-2">
                             <RefreshCw size={22} className="animate-spin text-primary" />
-                            <p className="text-xs font-bold text-white/40">Enviando...</p>
+                            <p className="text-xs font-bold text-gray-400">Enviando...</p>
                         </div>
                     ) : (
                         <div className="flex flex-col items-center gap-2 pointer-events-none">
-                            <Upload size={22} className="text-white/20" />
-                            <p className="text-xs font-bold text-white/50">
+                            <Upload size={22} className="text-gray-300" />
+                            <p className="text-xs font-bold text-gray-500">
                                 <span className="text-primary">Clique para escolher</span> ou arraste aqui
                             </p>
-                            <p className="text-[10px] text-white/20">JPG, PNG, WEBP, GIF · máx. 5 MB</p>
+                            <p className="text-[10px] text-gray-300">JPG, PNG, WEBP, GIF · máx. 5 MB</p>
                         </div>
                     )}
                 </div>
             )}
 
             {uploadErr && <p className="text-[11px] text-red-400 font-semibold">⚠ {uploadErr}</p>}
-            <p className="text-[10px] text-white/15">{hint}</p>
+            <p className="text-[10px] text-gray-300">{hint}</p>
         </div>
     );
 }
@@ -119,7 +119,7 @@ function BannerForm({ initial, onSave, onCancel, loading }) {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="bg-white/[0.03] border border-primary/20 rounded-2xl p-6 space-y-5"
+            className="bg-white border border-primary/20 shadow-sm rounded-2xl p-6 space-y-5"
         >
             <h3 className="font-black text-sm flex items-center gap-2">
                 <LayoutTemplate size={16} className="text-primary" />
@@ -129,15 +129,15 @@ function BannerForm({ initial, onSave, onCancel, loading }) {
             {/* Título + Ordem */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                    <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest">Título (interno)</label>
+                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Título (interno)</label>
                     <input value={form.title} onChange={e => set('title', e.target.value)}
                         placeholder="Ex: Promoção de Verão"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/40" />
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/40" />
                 </div>
                 <div className="space-y-1">
-                    <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest">Ordem <span className="text-white/20">(menor = primeiro)</span></label>
+                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Ordem <span className="text-gray-300">(menor = primeiro)</span></label>
                     <input type="number" value={form.sort_order} onChange={e => set('sort_order', parseInt(e.target.value) || 0)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary/40" />
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-primary/40" />
                 </div>
             </div>
 
@@ -161,17 +161,17 @@ function BannerForm({ initial, onSave, onCancel, loading }) {
             {/* Link */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="md:col-span-2 space-y-1">
-                    <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest">Link ao Clicar</label>
+                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Link ao Clicar</label>
                     <input value={form.link_url} onChange={e => set('link_url', e.target.value)}
                         placeholder="https://pixghost.site/loja (opcional)"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/40 font-mono text-xs" />
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/40 font-mono text-xs" />
                 </div>
                 <div className="space-y-1">
-                    <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest">Abrir em</label>
+                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Abrir em</label>
                     <select value={form.link_target} onChange={e => set('link_target', e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary/40">
-                        <option value="_blank" className="bg-[#111]">Nova aba</option>
-                        <option value="_self" className="bg-[#111]">Mesma aba</option>
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-primary/40">
+                        <option value="_blank">Nova aba</option>
+                        <option value="_self">Mesma aba</option>
                     </select>
                 </div>
             </div>
@@ -179,11 +179,11 @@ function BannerForm({ initial, onSave, onCancel, loading }) {
             {/* Actions */}
             <div className="flex items-center gap-3 pt-1">
                 <button onClick={() => onSave(form)} disabled={loading || !form.image_url}
-                    className="flex-1 py-3 bg-primary text-black font-black text-sm rounded-xl hover:bg-primary/90 transition-all disabled:opacity-40 flex items-center justify-center gap-2">
+                    className="flex-1 py-3 bg-primary text-white font-black text-sm rounded-xl hover:bg-primary/90 transition-all disabled:opacity-40 flex items-center justify-center gap-2">
                     {loading ? <RefreshCw size={15} className="animate-spin" /> : <Save size={15} />}
                     {initial.id ? 'Salvar Alterações' : 'Criar Banner'}
                 </button>
-                <button onClick={onCancel} className="px-6 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-bold text-white/50 hover:bg-white/10 transition-all">
+                <button onClick={onCancel} className="px-6 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-100 transition-all">
                     <X size={15} />
                 </button>
             </div>
@@ -273,14 +273,14 @@ export default function AdminBannersPage() {
                         </div>
                         Banners da Loja
                     </h1>
-                    <p className="text-white/30 text-sm mt-1">Gerencie os banners exibidos na loja pública <a href="/loja" target="_blank" className="text-primary hover:underline">/loja</a></p>
+                    <p className="text-gray-500 text-sm mt-1">Gerencie os banners exibidos na loja pública <a href="/loja" target="_blank" className="text-primary hover:underline">/loja</a></p>
                 </div>
                 <div className="flex items-center gap-3">
                     <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary">
                         {activeBanners.length} ativo{activeBanners.length !== 1 ? 's' : ''}
                     </span>
                     <button onClick={() => { setEditing(null); setShowForm(s => !s); }}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-primary text-black font-black text-sm rounded-xl hover:bg-primary/90 transition-all">
+                        className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-black text-sm rounded-xl hover:bg-primary/90 transition-all">
                         {showForm ? <X size={15} /> : <Plus size={15} />}
                         {showForm ? 'Cancelar' : 'Novo Banner'}
                     </button>
@@ -311,14 +311,14 @@ export default function AdminBannersPage() {
             </AnimatePresence>
 
             {/* Info */}
-            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-5">
+            <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5">
                 <div className="flex items-start gap-3">
                     <LayoutTemplate size={16} className="text-primary mt-0.5 shrink-0" />
                     <div>
                         <p className="text-sm font-bold mb-1">Como funcionam os banners</p>
-                        <p className="text-xs text-white/30 leading-relaxed">
+                        <p className="text-xs text-gray-500 leading-relaxed">
                             Os banners aparecem no topo da <a href="/loja" target="_blank" className="text-primary">loja pública</a> como um carrossel automático.
-                            Use imagens de <strong className="text-white/60">1200×400px</strong> para melhor qualidade. Banners inativos não aparecem para os visitantes.
+                            Use imagens de <strong className="text-gray-700">1200×400px</strong> para melhor qualidade. Banners inativos não aparecem para os visitantes.
                         </p>
                     </div>
                 </div>
@@ -329,19 +329,19 @@ export default function AdminBannersPage() {
                 <div className="flex justify-center py-20"><RefreshCw className="animate-spin text-primary" size={28} /></div>
             ) : banners.length === 0 ? (
                 <div className="flex flex-col items-center py-24 gap-4 text-center">
-                    <div className="w-16 h-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center">
-                        <Image size={28} className="text-white/20" />
+                    <div className="w-16 h-16 bg-gray-50 border border-gray-200 rounded-2xl flex items-center justify-center">
+                        <Image size={28} className="text-gray-300" />
                     </div>
                     <div>
-                        <p className="font-bold text-white/40">Nenhum banner ainda</p>
-                        <p className="text-sm text-white/20 mt-1">Crie seu primeiro banner para a loja</p>
+                        <p className="font-bold text-gray-500">Nenhum banner ainda</p>
+                        <p className="text-sm text-gray-400 mt-1">Crie seu primeiro banner para a loja</p>
                     </div>
                 </div>
             ) : (
                 <div className="space-y-3">
                     {banners.map((banner, idx) => (
                         <motion.div key={banner.id} layout
-                            className={`bg-white/[0.03] border rounded-2xl overflow-hidden transition-colors ${parseInt(banner.active) ? 'border-white/8' : 'border-white/[0.04] opacity-60'}`}>
+                            className={`bg-white border shadow-sm rounded-2xl overflow-hidden transition-colors ${parseInt(banner.active) ? 'border-gray-100' : 'border-gray-100 opacity-60'}`}>
                             {editing === banner.id ? (
                                 <div className="p-5">
                                     <BannerForm
@@ -354,12 +354,12 @@ export default function AdminBannersPage() {
                             ) : (
                                 <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4">
                                     {/* Thumbnail */}
-                                    <div className="w-full sm:w-36 h-20 rounded-xl overflow-hidden bg-white/[0.03] border border-white/10 flex-shrink-0">
+                                    <div className="w-full sm:w-36 h-20 rounded-xl overflow-hidden bg-gray-50 border border-gray-200 flex-shrink-0">
                                         {banner.image_url ? (
                                             <img src={banner.image_url} alt={banner.title} className="w-full h-full object-cover" onError={e => { e.target.style.display='none'; }} />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center">
-                                                <Image size={20} className="text-white/15" />
+                                                <Image size={20} className="text-gray-300" />
                                             </div>
                                         )}
                                     </div>
@@ -367,12 +367,12 @@ export default function AdminBannersPage() {
                                     {/* Info */}
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-1">
-                                            <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${parseInt(banner.active) ? 'bg-green-500/15 text-green-400 border border-green-500/20' : 'bg-white/5 text-white/30 border border-white/10'}`}>
+                                            <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${parseInt(banner.active) ? 'bg-green-500/15 text-green-400 border border-green-500/20' : 'bg-gray-100 text-gray-400 border border-gray-200'}`}>
                                                 {parseInt(banner.active) ? 'Ativo' : 'Inativo'}
                                             </span>
-                                            <span className="text-[10px] text-white/20 font-mono">#{banner.sort_order} ordem</span>
+                                            <span className="text-[10px] text-gray-400 font-mono">#{banner.sort_order} ordem</span>
                                         </div>
-                                        <p className="font-bold text-sm truncate">{banner.title || <span className="text-white/30 italic">Sem título</span>}</p>
+                                        <p className="font-bold text-sm text-gray-900 truncate">{banner.title || <span className="text-gray-400 italic">Sem título</span>}</p>
                                         {banner.link_url && (
                                             <a href={banner.link_url} target="_blank" rel="noopener noreferrer"
                                                 className="text-[11px] text-primary/60 hover:text-primary flex items-center gap-1 truncate mt-0.5 transition-colors">
@@ -384,15 +384,15 @@ export default function AdminBannersPage() {
                                     {/* Actions */}
                                     <div className="flex items-center gap-2 sm:shrink-0">
                                         <button onClick={() => handleToggle(banner.id)} title={parseInt(banner.active) ? 'Desativar' : 'Ativar'}
-                                            className={`p-2 rounded-xl transition-all ${parseInt(banner.active) ? 'text-green-400 hover:bg-green-500/10' : 'text-white/30 hover:bg-white/5 hover:text-white'}`}>
+                                            className={`p-2 rounded-xl transition-all ${parseInt(banner.active) ? 'text-green-400 hover:bg-green-500/10' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-900'}`}>
                                             {parseInt(banner.active) ? <Eye size={15} /> : <EyeOff size={15} />}
                                         </button>
                                         <button onClick={() => { setEditing(banner.id); setShowForm(false); }} title="Editar"
-                                            className="p-2 rounded-xl text-white/40 hover:text-primary hover:bg-primary/10 transition-all">
+                                            className="p-2 rounded-xl text-gray-400 hover:text-primary hover:bg-primary/10 transition-all">
                                             <Edit3 size={15} />
                                         </button>
                                         <button onClick={() => handleDelete(banner.id)} title="Excluir"
-                                            className="p-2 rounded-xl text-white/30 hover:text-red-400 hover:bg-red-500/10 transition-all">
+                                            className="p-2 rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all">
                                             <Trash2 size={15} />
                                         </button>
                                     </div>
@@ -404,7 +404,7 @@ export default function AdminBannersPage() {
             )}
 
             {banners.length > 0 && (
-                <p className="text-center text-xs text-white/15 pb-4">
+                <p className="text-center text-xs text-gray-400 pb-4">
                     Altere o campo "Ordem" de cada banner para reordenar. Menor número = aparece primeiro.
                 </p>
             )}

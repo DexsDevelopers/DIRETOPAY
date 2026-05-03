@@ -79,48 +79,48 @@ export default function BuyerChatPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#08080a] flex items-center justify-center">
-                <RefreshCw className="animate-spin text-emerald-400" size={32} />
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <RefreshCw className="animate-spin text-primary" size={32} />
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="min-h-screen bg-[#08080a] flex items-center justify-center text-white font-['Outfit']">
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center font-['Outfit']">
                 <div className="text-center p-6">
-                    <Lock size={48} className="text-white/10 mx-auto mb-4" />
-                    <h2 className="text-xl font-black mb-2">Chat Indisponível</h2>
-                    <p className="text-white/40 text-sm">{error}</p>
+                    <Lock size={48} className="text-gray-200 mx-auto mb-4" />
+                    <h2 className="text-xl font-black mb-2 text-gray-900">Chat Indisponível</h2>
+                    <p className="text-gray-500 text-sm">{error}</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="h-[100dvh] bg-[#08080a] flex flex-col text-white font-['Outfit'] overflow-hidden">
+        <div className="h-[100dvh] bg-white flex flex-col font-['Outfit'] overflow-hidden">
             {/* Header */}
-            <div className="bg-[#111] border-b border-white/5 p-4 flex items-center gap-3">
-                <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center shrink-0">
-                    <Store size={18} className="text-emerald-400" />
+            <div className="bg-white border-b border-gray-100 p-4 flex items-center gap-3">
+                <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
+                    <Store size={18} className="text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
-                    <h1 className="text-sm font-bold truncate">{room?.store_name || room?.seller_name}</h1>
-                    <p className="text-[11px] text-white/30 truncate flex items-center gap-1">
+                    <h1 className="text-sm font-bold truncate text-gray-900">{room?.store_name || room?.seller_name}</h1>
+                    <p className="text-[11px] text-gray-400 truncate flex items-center gap-1">
                         <Package size={10} />
                         {room?.product_name || 'Pedido'}
                     </p>
                 </div>
                 <span className={cn(
                     "px-2.5 py-1 rounded-lg text-[9px] font-black uppercase shrink-0",
-                    room?.status === 'open' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-white/5 text-white/30'
+                    room?.status === 'open' ? 'bg-purple-500/15 text-purple-500' : 'bg-gray-100 text-gray-400'
                 )}>{room?.status === 'open' ? 'Online' : 'Encerrado'}</span>
             </div>
 
             {/* Buyer info badge */}
-            <div className="px-4 py-2 bg-white/[0.02] border-b border-white/5">
-                <div className="flex items-center gap-2 text-[11px] text-white/30">
-                    <span className="text-white/50 font-bold">Você: {room?.buyer_name}</span>
+            <div className="px-4 py-2 bg-gray-50 border-b border-gray-100">
+                <div className="flex items-center gap-2 text-[11px] text-gray-400">
+                    <span className="text-gray-600 font-bold">Você: {room?.buyer_name}</span>
                     <span>•</span>
                     <Clock size={10} />
                     <span>{room?.created_at && formatDate(room.created_at)}</span>
@@ -131,9 +131,9 @@ export default function BuyerChatPage() {
             <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3 overscroll-contain">
                 {messages.length === 0 && (
                     <div className="text-center py-16">
-                        <MessageCircle size={40} className="text-white/5 mx-auto mb-3" />
-                        <p className="text-white/20 font-bold text-sm">Nenhuma mensagem ainda</p>
-                        <p className="text-white/10 text-xs mt-1">Envie uma mensagem para o vendedor</p>
+                        <MessageCircle size={40} className="text-gray-200 mx-auto mb-3" />
+                        <p className="text-gray-400 font-bold text-sm">Nenhuma mensagem ainda</p>
+                        <p className="text-gray-300 text-xs mt-1">Envie uma mensagem para o vendedor</p>
                     </div>
                 )}
                 {messages.map((msg, i) => {
@@ -144,7 +144,7 @@ export default function BuyerChatPage() {
                         <React.Fragment key={msg.id}>
                             {showDateSep && (
                                 <div className="text-center py-2">
-                                    <span className="text-[10px] bg-white/5 text-white/25 px-3 py-1 rounded-full font-bold">{formatDate(msg.created_at)}</span>
+                                    <span className="text-[10px] bg-gray-100 text-gray-400 px-3 py-1 rounded-full font-bold">{formatDate(msg.created_at)}</span>
                                 </div>
                             )}
                             <div className={cn("flex", isBuyer ? "justify-end" : "justify-start")}>
@@ -154,19 +154,19 @@ export default function BuyerChatPage() {
                                         ? "bg-emerald-500/15 border border-emerald-500/20"
                                         : isAdmin
                                             ? "bg-amber-500/15 border border-amber-500/20"
-                                            : "bg-white/[0.06] border border-white/[0.08]"
+                                            : "bg-gray-50 border border-gray-200"
                                 )}>
                                     <div className="flex items-center gap-1.5 mb-0.5">
                                         {isAdmin && <Crown size={9} className="text-amber-400" />}
                                         <span className={cn(
                                             "text-[10px] font-black uppercase",
-                                            isBuyer ? 'text-emerald-400' : isAdmin ? 'text-amber-400' : 'text-primary'
+                                            isBuyer ? 'text-purple-500' : isAdmin ? 'text-amber-500' : 'text-primary'
                                         )}>{msg.sender_name}</span>
                                     </div>
-                                    <p className="text-[13px] text-white/90 leading-relaxed whitespace-pre-wrap break-words">{msg.message}</p>
+                                    <p className="text-[13px] text-gray-800 leading-relaxed whitespace-pre-wrap break-words">{msg.message}</p>
                                     <div className={cn("flex items-center gap-1 mt-1", isBuyer ? "justify-end" : "justify-start")}>
-                                        <span className="text-[9px] text-white/20">{formatTime(msg.created_at)}</span>
-                                        {isBuyer && <CheckCheck size={10} className={msg.read_at ? "text-emerald-400" : "text-white/15"} />}
+                                        <span className="text-[9px] text-gray-400">{formatTime(msg.created_at)}</span>
+                                        {isBuyer && <CheckCheck size={10} className={msg.read_at ? "text-purple-500" : "text-gray-300"} />}
                                     </div>
                                 </div>
                             </div>
@@ -178,27 +178,27 @@ export default function BuyerChatPage() {
 
             {/* Input */}
             {room?.status === 'open' ? (
-                <div className="p-3 border-t border-white/5 bg-[#111]">
+                <div className="p-3 border-t border-gray-100 bg-white">
                     <form onSubmit={e => { e.preventDefault(); sendMessage(); }} className="flex gap-2">
                         <input
                             value={msgInput}
                             onChange={e => setMsgInput(e.target.value)}
                             placeholder="Escreva sua mensagem..."
                             maxLength={2000}
-                            className="flex-1 bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-emerald-500/40 transition-colors"
+                            className="flex-1 bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/40 transition-colors"
                         />
                         <button
                             type="submit"
                             disabled={sending || !msgInput.trim()}
-                            className="px-4 bg-emerald-500 text-black rounded-xl font-black text-sm flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-30"
+                            className="px-4 bg-primary text-white rounded-xl font-black text-sm flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-30"
                         >
                             <Send size={16} />
                         </button>
                     </form>
                 </div>
             ) : (
-                <div className="p-4 border-t border-white/5 text-center bg-[#111]">
-                    <p className="text-white/25 text-xs font-bold">Este chat foi encerrado pelo vendedor.</p>
+                <div className="p-4 border-t border-gray-100 text-center bg-white">
+                    <p className="text-gray-400 text-xs font-bold">Este chat foi encerrado pelo vendedor.</p>
                 </div>
             )}
         </div>

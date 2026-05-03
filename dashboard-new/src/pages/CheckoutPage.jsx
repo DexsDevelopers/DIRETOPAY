@@ -9,6 +9,17 @@ import {
 import { cn } from '../lib/utils';
 import PixModal from '../components/PixModal';
 
+/* ── Default custom settings ─────────────────────────────── */
+const DEFAULT_CS = {
+    bg_type: 'solid', gradient_from: '#0a0a0f', gradient_to: '#1a0a2e', gradient_dir: '135deg',
+    logo_url: '', font_family: 'Outfit', btn_radius: 'rounded', layout: '2col',
+    show_countdown: true, show_viewers: true, show_guarantee: true,
+    guarantee_text: 'Garantia de 7 Dias',
+    guarantee_sub: 'Não ficou satisfeito? Devolvemos 100% do seu dinheiro, sem perguntas.',
+    show_social: true, social_count: '2.400', show_trust_seals: true, cta_text: '',
+    show_sticky_mobile: true,
+};
+
 /* ── helpers ─────────────────────────────────────────────── */
 const fmtBRL = (v) =>
     parseFloat(v).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
@@ -80,6 +91,21 @@ export default function CheckoutPage() {
 
     useEffect(() => { fetchCheckout(); }, [slug]);
 
+    // Inject Google Font when data loads
+    useEffect(() => {
+        if (!data) return;
+        const font = data.checkout.custom_settings?.font_family || 'Outfit';
+        if (font === 'Outfit') return;
+        const id = 'ck-font';
+        document.getElementById(id)?.remove();
+        const link = Object.assign(document.createElement('link'), {
+            id, rel: 'stylesheet',
+            href: `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font)}:wght@400;600;700;800;900&display=swap`
+        });
+        document.head.appendChild(link);
+        return () => document.getElementById('ck-font')?.remove();
+    }, [data]);
+
     const fetchCheckout = async () => {
         try {
             const res  = await fetch(`/get_checkout_data.php?slug=${slug}`);
@@ -128,7 +154,7 @@ export default function CheckoutPage() {
                     alert(d.message || 'Erro ao gerar PIX');
                 }
             }
-        } catch { alert('Erro de conexão'); }
+        } catch (err) { alert('Erro: ' + (err?.message || 'Falha de conexão')); }
         finally  { setIsProcessing(false); }
     };
 
@@ -153,12 +179,18 @@ export default function CheckoutPage() {
     const primary   = data.checkout.primary_color   || '#4ade80';
     const secondary = data.checkout.secondary_color || '#000000';
     const isUrgent  = !expired;
+    const cs = { ...DEFAULT_CS, ...(data.checkout.custom_settings || {}) };
+    const bgCss = cs.bg_type === 'gradient'
+        ? `linear-gradient(${cs.gradient_dir}, ${cs.gradient_from}, ${cs.gradient_to})`
+        : (secondary === '#000000' ? '#08080a' : secondary);
+    const btnR = cs.btn_radius === 'pill' ? '9999px' : cs.btn_radius === 'sharp' ? '6px' : '16px';
+    const fontFam = `'${cs.font_family || 'Outfit'}', sans-serif`;
 
     /* ── RENDER ── */
     return (
         <div
-            className="min-h-screen text-white font-['Outfit'] relative overflow-x-hidden"
-            style={{ background: secondary === '#000000' ? '#08080a' : secondary }}
+            className="min-h-screen text-white relative overflow-x-hidden"
+            style={{ background: bgCss, fontFamily: fontFam }}
         >
             {/* Ambient glow */}
             <div
@@ -167,6 +199,7 @@ export default function CheckoutPage() {
             />
 
             {/* ── TOP URGENCY BAR ── */}
+            {cs.show_countdown && (
             <AnimatePresence>
                 {isUrgent && (
                     <motion.div
@@ -184,6 +217,7 @@ export default function CheckoutPage() {
                     </motion.div>
                 )}
             </AnimatePresence>
+            )}
 
             {/* ── BANNER ── */}
             {data.checkout.banner_url && (
@@ -192,7 +226,15 @@ export default function CheckoutPage() {
                 </div>
             )}
 
+            {/* ── LOGO ── */}
+            {cs.logo_url && (
+                <div className="flex justify-center pt-6">
+                    <img src={cs.logo_url} alt="Logo" className="h-14 object-contain" />
+                </div>
+            )}
+
             {/* ── LIVE VIEWERS BADGE ── */}
+            {cs.show_viewers && (
             <div className="flex justify-center mt-6">
                 <motion.div
                     animate={{ scale: [1, 1.03, 1] }}
@@ -209,6 +251,7 @@ export default function CheckoutPage() {
                     <Eye size={12} className="text-white/30" />
                 </motion.div>
             </div>
+            )}
 
             {/* ── MAIN CONTENT ── */}
             <div className="max-w-4xl mx-auto px-4 py-6 pb-36 md:pb-10">
@@ -218,7 +261,7 @@ export default function CheckoutPage() {
                     {data.checkout.title}
                 </h1>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className={cs.layout === '1col' ? 'max-w-xl mx-auto space-y-4' : 'grid grid-cols-1 md:grid-cols-2 gap-5'}>
 
                     {/* ── LEFT: ORDER SUMMARY ── */}
                     <div className="space-y-4">
@@ -263,19 +306,20 @@ export default function CheckoutPage() {
                         </div>
 
                         {/* Guarantee */}
+                        {cs.show_guarantee && (
                         <div className="bg-white/[0.02] border border-white/6 rounded-[24px] p-5 flex items-start gap-4">
                             <div className="w-12 h-12 rounded-2xl flex-shrink-0 flex items-center justify-center bg-green-500/10">
                                 <BadgeCheck size={22} className="text-green-400" />
                             </div>
                             <div>
-                                <p className="font-black text-sm text-white">Garantia de 7 Dias</p>
-                                <p className="text-xs text-white/40 mt-0.5 leading-relaxed">
-                                    Não ficou satisfeito? Devolvemos 100% do seu dinheiro, sem perguntas.
-                                </p>
+                                <p className="font-black text-sm text-white">{cs.guarantee_text}</p>
+                                <p className="text-xs text-white/40 mt-0.5 leading-relaxed">{cs.guarantee_sub}</p>
                             </div>
                         </div>
+                        )}
 
                         {/* Social proof */}
+                        {cs.show_social && (
                         <div className="bg-white/[0.02] border border-white/6 rounded-[24px] p-5 flex items-center gap-4">
                             <div className="flex -space-x-2">
                                 {['A','B','C','D'].map(l => (
@@ -285,13 +329,14 @@ export default function CheckoutPage() {
                                 ))}
                             </div>
                             <div>
-                                <p className="text-xs font-black text-white">+2.400 clientes satisfeitos</p>
+                                <p className="text-xs font-black text-white">+{cs.social_count} clientes satisfeitos</p>
                                 <div className="flex items-center gap-1 mt-0.5">
-                                    {[1,2,3,4,5].map(s => <Star key={s} size={10} fill={primary} style={{ color: primary }} />)}
+                                    {[1,2,3,4,5].map(sv => <Star key={sv} size={10} fill={primary} style={{ color: primary }} />)}
                                     <span className="text-[10px] text-white/30">4.9 de avaliação</span>
                                 </div>
                             </div>
                         </div>
+                        )}
                     </div>
 
                     {/* ── RIGHT: PAYMENT FORM ── */}
@@ -366,19 +411,21 @@ export default function CheckoutPage() {
                             </div>
 
                             {/* Trust seals */}
+                            {cs.show_trust_seals && (
                             <div className="grid grid-cols-3 gap-3 py-2">
                                 <TrustBadge icon={<Lock size={16} />}       label="Criptografado" sub="SSL 256-bit"    color={primary} />
                                 <TrustBadge icon={<ShieldCheck size={16} />} label="Anti-fraude"   sub="Protegido"     color={primary} />
                                 <TrustBadge icon={<CheckCircle size={16} />} label="Aprovação"     sub="Instantânea"   color={primary} />
                             </div>
+                            )}
 
                             {/* CTA Button */}
                             <motion.button
                                 whileTap={{ scale: 0.97 }}
                                 type="submit"
                                 disabled={isProcessing}
-                                style={paymentMethod === 'pix' ? { background: primary } : {}}
-                                className={`w-full py-5 rounded-2xl font-black text-base flex items-center justify-center gap-3 shadow-xl disabled:opacity-50 transition-all mt-auto ${
+                                style={paymentMethod === 'pix' ? { background: primary, borderRadius: btnR } : { borderRadius: btnR }}
+                                className={`w-full py-5 font-black text-base flex items-center justify-center gap-3 shadow-xl disabled:opacity-50 transition-all mt-auto ${
                                     paymentMethod === 'card'
                                         ? 'bg-blue-500 hover:bg-blue-600 text-white'
                                         : 'text-black'
@@ -387,9 +434,9 @@ export default function CheckoutPage() {
                                 {isProcessing ? (
                                     <><Loader2 className="animate-spin" size={20} /> {paymentMethod === 'card' ? 'Gerando link...' : 'Gerando PIX...'}</>
                                 ) : paymentMethod === 'card' ? (
-                                    <><CreditCard size={20} />Pagar R$ {fmtBRL(data.total)} com Cartão<ArrowRight size={18} /></>
+                                    <><CreditCard size={20} />{cs.cta_text || `Pagar R$ ${fmtBRL(data.total)} com Cartão`}<ArrowRight size={18} /></>
                                 ) : (
-                                    <><Zap size={20} />Pagar R$ {fmtBRL(data.total)} com PIX<ArrowRight size={18} /></>
+                                    <><Zap size={20} />{cs.cta_text || `Pagar R$ ${fmtBRL(data.total)} com PIX`}<ArrowRight size={18} /></>
                                 )}
                             </motion.button>
 
@@ -401,18 +448,21 @@ export default function CheckoutPage() {
                 </div>
 
                 {/* Footer trust */}
+                {cs.show_trust_seals && (
                 <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-[10px] font-black text-white/15 uppercase tracking-widest">
                     <span className="flex items-center gap-1.5"><ShieldCheck size={12} /> Compra Segura</span>
                     <span className="flex items-center gap-1.5"><BadgeCheck size={12} /> Dados Protegidos</span>
-                    <span className="flex items-center gap-1.5"><Users size={12} /> +2.400 Clientes</span>
+                    <span className="flex items-center gap-1.5"><Users size={12} /> +{cs.social_count} Clientes</span>
                     <span className="flex items-center gap-1.5"><Zap size={12} /> PIX Instantâneo</span>
                 </div>
+                )}
                 <p className="text-center text-[10px] text-white/8 font-black uppercase tracking-[0.4em] mt-4">
                     Powered by Ghost Pix Technology
                 </p>
             </div>
 
             {/* ── STICKY CTA (mobile only) ── */}
+            {cs.show_sticky_mobile && (
             <AnimatePresence>
                 {!activePix && (
                     <motion.div
@@ -420,20 +470,20 @@ export default function CheckoutPage() {
                         animate={{ y: 0 }}
                         exit={{ y: 100 }}
                         className="fixed bottom-0 left-0 right-0 md:hidden z-50 p-4"
-                        style={{ background: 'linear-gradient(to top, #08080a 70%, transparent)' }}
+                        style={{ background: `linear-gradient(to top, ${bgCss.startsWith('linear') ? '#000' : bgCss} 70%, transparent)` }}
                     >
                         <button
                             onClick={() => formRef.current?.requestSubmit()}
                             disabled={isProcessing || !customerName.trim()}
-                            style={paymentMethod === 'pix' ? { background: primary } : {}}
-                            className={`w-full py-4 rounded-2xl font-black text-base flex items-center justify-center gap-2 shadow-2xl disabled:opacity-40 transition-all ${
+                            style={paymentMethod === 'pix' ? { background: primary, borderRadius: btnR } : { borderRadius: btnR }}
+                            className={`w-full py-4 font-black text-base flex items-center justify-center gap-2 shadow-2xl disabled:opacity-40 transition-all ${
                                 paymentMethod === 'card' ? 'bg-blue-500 text-white' : 'text-black'
                             }`}
                         >
                             {isProcessing ? <Loader2 className="animate-spin" size={20} /> : paymentMethod === 'card' ? (
-                                <><CreditCard size={18} /> Pagar R$ {fmtBRL(data.total)} com Cartão</>
+                                <><CreditCard size={18} /> {cs.cta_text || `Pagar R$ ${fmtBRL(data.total)} com Cartão`}</>
                             ) : (
-                                <><Zap size={18} /> Pagar R$ {fmtBRL(data.total)} com PIX</>
+                                <><Zap size={18} /> {cs.cta_text || `Pagar R$ ${fmtBRL(data.total)} com PIX`}</>
                             )}
                         </button>
                         <p className="text-center text-[10px] text-white/20 font-bold mt-2">
@@ -442,6 +492,7 @@ export default function CheckoutPage() {
                     </motion.div>
                 )}
             </AnimatePresence>
+            )}
 
             {/* ── PIX MODAL ── */}
             {activePix && (

@@ -76,8 +76,9 @@ export default function WhatsAppPopup({ onClose }) {
             <div
                 className="relative w-full max-w-md rounded-[32px] overflow-hidden shadow-2xl"
                 style={{
-                    background: 'linear-gradient(145deg,#0f0f11,#131316)',
-                    border: '1px solid rgba(255,255,255,0.07)',
+                    background: '#ffffff',
+                    border: '1px solid #E5E7EB',
+                    boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
                     transition: 'transform 0.28s cubic-bezier(.34,1.56,.64,1), opacity 0.28s',
                     transform: visible ? 'translateY(0) scale(1)' : 'translateY(40px) scale(0.97)',
                     opacity: visible ? 1 : 0,
@@ -94,13 +95,13 @@ export default function WhatsAppPopup({ onClose }) {
                                 <WA_ICON />
                             </div>
                             <div>
-                                <h2 className="text-xl font-black text-white leading-tight">Conecte seu WhatsApp</h2>
+                                <h2 className="text-xl font-black text-gray-900 leading-tight">Conecte seu WhatsApp</h2>
                                 <p className="text-xs font-semibold mt-0.5" style={{ color: '#25D366' }}>Notificações em tempo real</p>
                             </div>
                         </div>
                         <button
                             onClick={handleClose}
-                            className="p-2 rounded-full transition-all hover:bg-white/10 text-white/30 hover:text-white"
+                            className="p-2 rounded-full transition-all hover:bg-gray-100 text-gray-400 hover:text-gray-700"
                         >
                             <X size={18} />
                         </button>
@@ -117,7 +118,7 @@ export default function WhatsAppPopup({ onClose }) {
                                 <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(37,211,102,0.15)' }}>
                                     <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#25D366' }} />
                                 </div>
-                                <span className="text-sm text-white/60">{item}</span>
+                                <span className="text-sm text-gray-600">{item}</span>
                             </div>
                         ))}
                     </div>
@@ -125,15 +126,15 @@ export default function WhatsAppPopup({ onClose }) {
                     {success ? (
                         <div className="flex flex-col items-center gap-3 py-6">
                             <CheckCircle size={44} style={{ color: '#25D366' }} />
-                            <p className="text-white font-black text-lg">WhatsApp conectado!</p>
-                            <p className="text-white/40 text-sm text-center">Você receberá notificações importantes por aqui.</p>
+                            <p className="text-gray-900 font-black text-lg">WhatsApp conectado!</p>
+                            <p className="text-gray-500 text-sm text-center">Você receberá notificações importantes por aqui.</p>
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="space-y-2">
-                                <label className="text-xs font-black text-white/50 uppercase tracking-widest ml-1">Seu número do WhatsApp</label>
+                                <label className="text-xs font-black text-gray-500 uppercase tracking-widest ml-1">Seu número do WhatsApp</label>
                                 <div className="relative">
-                                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-sm font-black text-white/40 select-none">🇧🇷 +55</span>
+                                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-sm font-black text-gray-500 select-none">🇧🇷 +55</span>
                                     <input
                                         type="tel"
                                         value={phone}
@@ -142,12 +143,12 @@ export default function WhatsAppPopup({ onClose }) {
                                         autoFocus
                                         className="w-full rounded-[16px] py-4 pl-20 pr-5 text-base font-bold transition-all focus:outline-none"
                                         style={{
-                                            background: 'rgba(255,255,255,0.04)',
-                                            border: error ? '1.5px solid rgba(239,68,68,0.5)' : '1.5px solid rgba(255,255,255,0.08)',
-                                            color: 'white',
+                                            background: '#F9FAFB',
+                                            border: error ? '1.5px solid rgba(239,68,68,0.5)' : '1.5px solid #E5E7EB',
+                                            color: '#111827',
                                         }}
                                         onFocus={e => { if (!error) e.target.style.border = '1.5px solid rgba(37,211,102,0.5)'; }}
-                                        onBlur={e => { if (!error) e.target.style.border = '1.5px solid rgba(255,255,255,0.08)'; }}
+                                        onBlur={e => { if (!error) e.target.style.border = '1.5px solid #E5E7EB'; }}
                                     />
                                 </div>
                                 {error && (
@@ -169,7 +170,7 @@ export default function WhatsAppPopup({ onClose }) {
                             <button
                                 type="button"
                                 onClick={handleClose}
-                                className="w-full py-2 text-xs font-bold text-white/25 hover:text-white/50 transition-colors"
+                                className="w-full py-2 text-xs font-bold text-gray-400 hover:text-gray-600 transition-colors"
                             >
                                 Agora não
                             </button>
@@ -181,7 +182,7 @@ export default function WhatsAppPopup({ onClose }) {
                 {!success && (
                     <div className="px-8 pb-5 flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: '#25D366' }} />
-                        <p className="text-[10px] text-white/20 font-semibold">Seus dados estão seguros e não serão compartilhados.</p>
+                        <p className="text-[10px] text-gray-400 font-semibold">Seus dados estão seguros e não serão compartilhados.</p>
                     </div>
                 )}
             </div>
