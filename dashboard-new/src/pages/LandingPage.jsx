@@ -106,17 +106,32 @@ export default function LandingPage() {
         <div className={`min-h-screen font-['Outfit'] overflow-x-hidden selection:bg-primary selection:text-white ${isDark ? 'bg-[#0a0a0f] text-gray-100' : 'bg-white text-gray-900'}`}>
 
             {/* Announcement Bar */}
-            <div className="sticky top-0 bg-white/95 backdrop-blur-2xl border-b border-purple-100 py-3 px-6 text-center z-[60]">
-                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
-                    <div className="flex items-center gap-2 group cursor-pointer">
-                        <div className="flex -space-x-2">
-                            {[1, 2, 3].map(i => <div key={i} className="w-5 h-5 rounded-full border border-purple-200 bg-purple-100 text-[8px] flex items-center justify-center">👤</div>)}
-                        </div>
-                        <span className="text-[11px] font-black uppercase tracking-widest text-primary">+{onlineUsers.toLocaleString('pt-BR')} operando agora</span>
+            <div className={`sticky top-0 z-[60] backdrop-blur-2xl border-b py-2 px-4 sm:px-6 ${isDark ? 'bg-[#0f0f16]/95 border-white/5' : 'bg-white/97 border-purple-100/80'}`}>
+                <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
+
+                    {/* Live counter */}
+                    <div className="flex items-center gap-2 shrink-0">
+                        <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                        </span>
+                        <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-primary">+{onlineUsers.toLocaleString('pt-BR')} <span className="hidden sm:inline">ao vivo</span></span>
                     </div>
-                    <div className="h-4 w-px bg-purple-200 hidden sm:block" />
-                    <p className="text-[11px] font-bold text-gray-400">Novidade: Nosso Canal Oficial no WhatsApp já está ativo!</p>
-                    <a href="https://whatsapp.com/channel/0029VbC56v0GZNComh5KQ73J" rel="noopener noreferrer" target="_blank" className="text-[11px] font-black uppercase tracking-widest text-gray-700 hover:text-primary transition-colors flex items-center gap-2">Explorar <ArrowRight size={12} /></a>
+
+                    {/* Center text */}
+                    <p className={`text-[10px] sm:text-[11px] font-semibold truncate text-center flex-1 mx-2 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <span className="hidden sm:inline">🚀 </span>Canal Oficial no WhatsApp já está ativo!
+                    </p>
+
+                    {/* CTA */}
+                    <a
+                        href="https://whatsapp.com/channel/0029VbC56v0GZNComh5KQ73J"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                        className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#25D366]/10 border border-[#25D366]/25 text-[#25D366] text-[9px] sm:text-[10px] font-black uppercase tracking-widest hover:bg-[#25D366]/20 transition-all whitespace-nowrap"
+                    >
+                        Explorar <ArrowRight size={10} />
+                    </a>
                 </div>
             </div>
 
