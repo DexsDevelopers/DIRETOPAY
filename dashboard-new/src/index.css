@@ -146,10 +146,10 @@ html.dark .divide-gray-100 > * + * { border-color: #242432 !important; }
 html.dark .text-gray-900 { color: #f0f0f8 !important; }
 html.dark .text-gray-800 { color: #d8d8ea !important; }
 html.dark .text-gray-700 { color: #c0c0d6 !important; }
-html.dark .text-gray-600 { color: #a0a0bc !important; }
-html.dark .text-gray-500 { color: #8888a8 !important; }
-html.dark .text-gray-400 { color: #686884 !important; }
-html.dark .text-gray-300 { color: #484860 !important; }
+html.dark .text-gray-600 { color: #ababc8 !important; }
+html.dark .text-gray-500 { color: #9898b8 !important; }
+html.dark .text-gray-400 { color: #8080a8 !important; }
+html.dark .text-gray-300 { color: #505070 !important; }
 
 /* ── Shadows ── */
 html.dark .shadow-sm  { box-shadow: 0 1px 6px rgba(0,0,0,0.55) !important; }
