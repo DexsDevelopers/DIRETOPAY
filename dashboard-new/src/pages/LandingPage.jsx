@@ -90,6 +90,7 @@ function ThemeToggle() {
 export default function LandingPage() {
     const [onlineUsers, setOnlineUsers] = useState(2348);
     const [scrolled, setScrolled] = useState(false);
+    const { isDark } = useTheme();
 
     useEffect(() => {
         console.log("LANDING PAGE COMPONENT MOUNTED");
@@ -152,16 +153,16 @@ export default function LandingPage() {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.6 }}
-                        className="inline-flex flex-col sm:flex-row items-center gap-3 sm:gap-4 px-6 sm:px-8 py-4 rounded-[20px] bg-primary/5 border border-primary/15 shadow-sm"
+                        className={`inline-flex flex-col sm:flex-row items-center gap-3 sm:gap-4 px-6 sm:px-8 py-4 rounded-[20px] border shadow-sm ${isDark ? 'bg-purple-950/40 border-purple-500/40' : 'bg-primary/5 border-primary/15'}`}
                     >
                         <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center border border-primary/20">
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center border ${isDark ? 'bg-purple-500/20 border-purple-400/40' : 'bg-primary/10 border-primary/20'}`}>
                                 <ShieldCheck size={16} className="text-primary" />
                             </div>
-                            <span className="text-sm sm:text-base font-black text-primary tracking-tight">Sem documentos. Sem taxas. Sem burocracia.</span>
+                            <span className={`text-sm sm:text-base font-black tracking-tight ${isDark ? 'text-purple-300' : 'text-primary'}`}>Sem documentos. Sem taxas. Sem burocracia.</span>
                         </div>
                         <div className="h-4 w-px bg-primary/20 hidden sm:block" />
-                        <span className="text-xs sm:text-sm font-bold text-primary/60">Crie sua conta em segundos e receba 100% das suas vendas.</span>
+                        <span className={`text-xs sm:text-sm font-bold ${isDark ? 'text-purple-400' : 'text-primary/60'}`}>Crie sua conta em segundos e receba 100% das suas vendas.</span>
                     </motion.div>
 
                     <motion.div
