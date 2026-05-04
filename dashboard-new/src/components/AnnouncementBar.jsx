@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 const WhatsAppIcon = ({ className }) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor">
@@ -12,6 +13,7 @@ const WhatsAppIcon = ({ className }) => (
 const AnnouncementBar = ({ onClose }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
+  const { isDark } = useTheme();
 
   if (!isVisible) return null;
 
@@ -23,7 +25,10 @@ const AnnouncementBar = ({ onClose }) => {
           animate={{ height: 'auto', opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           className="relative overflow-hidden shrink-0 z-20 border-b border-[#25D366]/10"
-          style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #f8fafc 40%, #f8fafc 60%, #f0fdf4 100%)' }}
+          style={{ background: isDark
+            ? 'linear-gradient(135deg, rgba(37,211,102,0.04) 0%, rgba(23,23,31,0.98) 40%, rgba(23,23,31,0.98) 60%, rgba(37,211,102,0.04) 100%)'
+            : 'linear-gradient(135deg, #f0fdf4 0%, #f8fafc 40%, #f8fafc 60%, #f0fdf4 100%)'
+          }}
         >
           {/* Shimmer sweep */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -54,7 +59,7 @@ const AnnouncementBar = ({ onClose }) => {
               
               <div className="hidden sm:flex flex-col">
                 <span className="text-[10px] font-black uppercase tracking-[0.15em] text-[#25D366]/80">Canal Oficial</span>
-                <span className="text-[11px] font-medium text-gray-500 -mt-0.5">Novidades, dicas e suporte em tempo real</span>
+                <span className={`text-[11px] font-medium -mt-0.5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Novidades, dicas e suporte em tempo real</span>
               </div>
               <span className="sm:hidden text-[11px] font-bold text-gray-500">Canal WhatsApp</span>
             </div>
@@ -85,7 +90,7 @@ const AnnouncementBar = ({ onClose }) => {
             {/* Close */}
             <button
               onClick={() => setIsVisible(false)}
-              className="absolute right-3 sm:right-4 p-1.5 rounded-full hover:bg-gray-100 transition-all text-gray-300 hover:text-gray-600"
+              className={`absolute right-3 sm:right-4 p-1.5 rounded-full transition-all ${isDark ? 'text-gray-600 hover:text-gray-300 hover:bg-white/5' : 'text-gray-300 hover:text-gray-600 hover:bg-gray-100'}`}
             >
               <X size={12} />
             </button>
