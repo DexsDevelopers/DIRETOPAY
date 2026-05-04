@@ -4,7 +4,9 @@ import {
     RefreshCw, Image as ImageIcon, Upload, Loader2, ExternalLink,
     ChevronDown, Type, MousePointer2, Layers, ToggleLeft, ToggleRight,
     Sliders, Eye, Shield, Star, Clock, Users, Zap, Info,
-    Smartphone, MessageCircle, BarChart2, UserCheck, Link2, AlignLeft
+    Smartphone, MessageCircle, BarChart2, UserCheck, Link2, AlignLeft,
+    Gift, MessageSquare, Tag, LogOut, ListChecks, CreditCard, Mail, X,
+    Hash, Sparkles, Percent, Bold, Italic, Underline, AlignCenter, AlignRight
 } from 'lucide-react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -74,6 +76,53 @@ const DEFAULT_CS = {
     redirect_url: '',
     support_whatsapp: '',
     thank_you_msg: '',
+    // Order Bump
+    show_order_bump: false,
+    order_bump_title: '',
+    order_bump_desc: '',
+    order_bump_price: '',
+    order_bump_cta: 'Sim! Quero adicionar ao meu pedido',
+    // Benefícios
+    show_benefits: false,
+    benefits: ['Entrega imediata após o pagamento', 'Suporte 24h no WhatsApp', 'Garantia total de satisfação'],
+    // Depoimentos
+    show_testimonials: false,
+    testimonials: [
+        { name: 'Maria Silva', text: 'Produto incrível, superou todas as expectativas! Recomendo demais.', stars: 5 },
+        { name: 'João Santos', text: 'Entrega rápida e suporte excelente. Já comprei 3 vezes!', stars: 5 },
+    ],
+    // Cupom de desconto
+    show_coupon: false,
+    // Pop-up de saída
+    show_exit_popup: false,
+    exit_popup_title: 'Espere! Temos uma oferta especial para você',
+    exit_popup_msg: 'Não perca esta oportunidade única. Garanta agora com desconto exclusivo!',
+    exit_popup_cta: 'Quero aproveitar a oferta!',
+    // Fundo avançado
+    bg_image_url: '',
+    bg_image_opacity: 70,
+    // Formulário extra
+    require_email: true,
+    show_notes_field: false,
+    allow_qty: false,
+    max_qty: 5,
+    // Métodos de pagamento
+    show_pix_option: true,
+    show_card_option: true,
+    // WhatsApp flutuante
+    show_whatsapp_float: false,
+    whatsapp_float_msg: 'Olá! Tenho uma dúvida sobre o produto.',
+    // Botão customizado
+    btn_color_override: '',
+    btn_pulse: false,
+    // Aviso de escassez
+    show_scarcity: false,
+    scarcity_text: 'Apenas 7 vagas restantes!',
+    scarcity_stock: '',
+    // SEO
+    seo_title: '',
+    seo_description: '',
+    seo_favicon: '',
 };
 
 // ── Reusable sub-components ─────────────────────────────────────────────────
@@ -217,6 +266,7 @@ export default function CheckoutBuilderPage() {
     const previewBg = cs.bg_type === 'gradient'
         ? `linear-gradient(${cs.gradient_dir}, ${cs.gradient_from}, ${cs.gradient_to})`
         : form.secondary_color;
+    const previewBtnColor = cs.btn_color_override || form.primary_color;
 
     return (
         <div className="p-4 md:p-8 max-w-[1400px] mx-auto space-y-6">
@@ -374,12 +424,12 @@ export default function CheckoutBuilderPage() {
                                 <p className="text-xs font-black" style={{ color: form.primary_color, fontFamily: cs.font_family }}>
                                     {form.title || 'Seu Checkout'}
                                 </p>
-                                <div className="mt-3 mx-auto px-6 py-2 text-[10px] font-black text-black inline-block"
+                                <div className={`mt-3 mx-auto px-6 py-2 text-[10px] font-black text-black inline-block ${cs.btn_pulse ? 'animate-pulse' : ''}`}
                                     style={{
-                                        background: form.primary_color,
+                                        background: previewBtnColor,
                                         borderRadius: cs.btn_radius === 'pill' ? '9999px' : cs.btn_radius === 'sharp' ? '4px' : '10px',
                                     }}>
-                                    Pagar com PIX
+                                    {cs.cta_text || 'Pagar com PIX'}
                                 </div>
                             </div>
                             {cs.show_countdown && (
@@ -389,12 +439,37 @@ export default function CheckoutBuilderPage() {
                                 </div>
                             )}
                         </div>
+                        {/* Active features chips */}
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                            {[/* eslint-disable indent */
+                                { active: cs.show_countdown,    label: '⏱ Timer'       },
+                                { active: cs.show_viewers,      label: '👥 Visitantes'  },
+                                { active: cs.show_guarantee,    label: '🛡 Garantia'    },
+                                { active: cs.show_social,       label: '⭐ Prova social' },
+                                { active: cs.show_order_bump,   label: '🎁 Order Bump'  },
+                                { active: cs.show_benefits,     label: '✅ Benefícios'  },
+                                { active: cs.show_testimonials, label: '💬 Depoimentos' },
+                                { active: cs.show_coupon,       label: '🔖 Cupom'       },
+                                { active: cs.show_scarcity,     label: '⚠️ Escassez'   },
+                                { active: cs.show_exit_popup,   label: '🚪 Saída popup' },
+                                { active: cs.bg_image_url,      label: '🖼 Bg imagem'   },
+                                { active: cs.show_whatsapp_float, label: '💬 WhatsApp'  },
+                                { active: cs.btn_pulse,         label: '✨ Pulsar'      },
+                            ].filter(f => f.active).map(f => (
+                                <span key={f.label} className="bg-primary/10 text-primary text-[9px] font-black px-2 py-0.5 rounded-full">
+                                    {f.label}
+                                </span>
+                            ))}
+                            {![cs.show_countdown,cs.show_viewers,cs.show_guarantee,cs.show_order_bump,cs.show_benefits,cs.show_testimonials].some(Boolean) && (
+                                <span className="text-[10px] text-gray-300 font-medium">Ative recursos no sidebar →</span>
+                            )}
+                        </div>
                     </div>
+
                 </div>
 
                 {/* ── RIGHT SIDEBAR ────────────────────────────────────────── */}
                 <div className="space-y-3 xl:sticky xl:top-6 xl:self-start xl:max-h-[calc(100vh-5rem)] xl:overflow-y-auto pr-1">
-
                     {/* 🎨 Aparência */}
                     <SideSection title="Aparência" icon={<Palette size={14} className="text-primary" />}>
                         {/* Presets */}
@@ -675,6 +750,308 @@ export default function CheckoutBuilderPage() {
                                     rows={2} placeholder="Descrição..." className={cn(inputCls, 'resize-none')} />
                             </div>
                         </>}
+                    </SideSection>
+
+                    {/* 🎁 Order Bump */}
+                    <SideSection title="Order Bump" icon={<Gift size={14} className="text-primary" />} defaultOpen={false}>
+                        <ToggleRow icon={<Gift size={13} />} label="Ativar Order Bump" sub="Oferta extra dentro do checkout" value={cs.show_order_bump} onChange={v => setCSF('show_order_bump', v)} />
+                        {cs.show_order_bump && (
+                            <div className="space-y-3">
+                                <div className="bg-violet-50 border border-violet-100 rounded-xl p-3">
+                                    <p className="text-[10px] text-violet-600 font-bold">💡 Order Bumps aumentam o ticket médio em até 30%</p>
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Título da Oferta</label>
+                                    <input value={cs.order_bump_title} onChange={e => setCSF('order_bump_title', e.target.value)}
+                                        placeholder="🔥 Adicione ao seu pedido!" className={inputCls} />
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Descrição</label>
+                                    <textarea value={cs.order_bump_desc} onChange={e => setCSF('order_bump_desc', e.target.value)}
+                                        rows={2} placeholder="Ex: Mentoria bônus 1h + materiais exclusivos"
+                                        className={cn(inputCls, 'resize-none')} />
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Preço do Bump (R$)</label>
+                                    <input type="number" step="0.01" value={cs.order_bump_price}
+                                        onChange={e => setCSF('order_bump_price', e.target.value)}
+                                        placeholder="27,00" className={inputCls} />
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Texto do Checkbox</label>
+                                    <input value={cs.order_bump_cta} onChange={e => setCSF('order_bump_cta', e.target.value)}
+                                        placeholder="Sim! Quero adicionar ao meu pedido" className={inputCls} />
+                                </div>
+                            </div>
+                        )}
+                    </SideSection>
+
+                    {/* ✅ Benefícios */}
+                    <SideSection title="Lista de Benefícios" icon={<ListChecks size={14} className="text-primary" />} defaultOpen={false}>
+                        <ToggleRow icon={<ListChecks size={13} />} label="Exibir benefícios" sub="Diferenciais listados no checkout" value={cs.show_benefits} onChange={v => setCSF('show_benefits', v)} />
+                        {cs.show_benefits && (
+                            <div className="space-y-2">
+                                {(cs.benefits || []).map((b, i) => (
+                                    <div key={i} className="flex gap-1.5 items-center">
+                                        <input value={b} onChange={e => {
+                                            const arr = [...cs.benefits]; arr[i] = e.target.value;
+                                            setCSF('benefits', arr);
+                                        }} placeholder={`Benefício ${i + 1}`}
+                                            className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-medium text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/40 transition-all" />
+                                        <button type="button" onClick={() => setCSF('benefits', cs.benefits.filter((_, j) => j !== i))}
+                                            className="p-1.5 hover:bg-red-50 hover:text-red-400 rounded-lg text-gray-300 transition-all shrink-0">
+                                            <X size={12} />
+                                        </button>
+                                    </div>
+                                ))}
+                                {(cs.benefits || []).length < 8 && (
+                                    <button type="button" onClick={() => setCSF('benefits', [...(cs.benefits || []), ''])}
+                                        className="w-full py-2 border-2 border-dashed border-gray-200 rounded-xl text-xs font-black text-gray-400 hover:border-primary/30 hover:text-primary transition-all flex items-center justify-center gap-1">
+                                        <Plus size={12} /> Adicionar benefício
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </SideSection>
+
+                    {/* 💬 Depoimentos */}
+                    <SideSection title="Depoimentos" icon={<MessageSquare size={14} className="text-primary" />} defaultOpen={false}>
+                        <ToggleRow icon={<Star size={13} />} label="Exibir depoimentos" sub="Prova social no checkout" value={cs.show_testimonials} onChange={v => setCSF('show_testimonials', v)} />
+                        {cs.show_testimonials && (
+                            <div className="space-y-3">
+                                {(cs.testimonials || []).map((t, i) => (
+                                    <div key={i} className="bg-gray-50 rounded-xl p-3 space-y-2 relative">
+                                        <button type="button" onClick={() => setCSF('testimonials', cs.testimonials.filter((_, j) => j !== i))}
+                                            className="absolute top-2 right-2 p-1 hover:bg-red-50 hover:text-red-400 rounded-md text-gray-300 transition-all">
+                                            <X size={10} />
+                                        </button>
+                                        <input value={t.name} onChange={e => {
+                                            const arr = [...cs.testimonials]; arr[i] = { ...arr[i], name: e.target.value };
+                                            setCSF('testimonials', arr);
+                                        }} placeholder="Nome do cliente"
+                                            className="w-full bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-xs font-bold text-gray-900 placeholder:text-gray-300 focus:outline-none transition-all pr-8" />
+                                        <textarea value={t.text} onChange={e => {
+                                            const arr = [...cs.testimonials]; arr[i] = { ...arr[i], text: e.target.value };
+                                            setCSF('testimonials', arr);
+                                        }} rows={2} placeholder="Escreva o depoimento..."
+                                            className="w-full bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-gray-900 placeholder:text-gray-300 focus:outline-none resize-none transition-all" />
+                                        <div className="flex gap-1 items-center">
+                                            <span className="text-[9px] text-gray-400 font-bold mr-1">Nota:</span>
+                                            {[1,2,3,4,5].map(s => (
+                                                <button key={s} type="button" onClick={() => {
+                                                    const arr = [...cs.testimonials]; arr[i] = { ...arr[i], stars: s };
+                                                    setCSF('testimonials', arr);
+                                                }} className={`text-base leading-none transition-colors ${s <= t.stars ? 'text-yellow-400' : 'text-gray-200'}`}>★</button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                                {(cs.testimonials || []).length < 5 && (
+                                    <button type="button" onClick={() => setCSF('testimonials', [...(cs.testimonials || []), { name: '', text: '', stars: 5 }])}
+                                        className="w-full py-2 border-2 border-dashed border-gray-200 rounded-xl text-xs font-black text-gray-400 hover:border-primary/30 hover:text-primary transition-all flex items-center justify-center gap-1">
+                                        <Plus size={12} /> Adicionar depoimento
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </SideSection>
+
+                    {/* 🔖 Cupom de Desconto */}
+                    <SideSection title="Cupom de Desconto" icon={<Tag size={14} className="text-primary" />} defaultOpen={false}>
+                        <ToggleRow icon={<Tag size={13} />} label="Campo de cupom" sub="Permite inserir código promocional" value={cs.show_coupon} onChange={v => setCSF('show_coupon', v)} />
+                        {cs.show_coupon && (
+                            <div className="bg-blue-50 p-3 rounded-xl border border-blue-100">
+                                <p className="text-[10px] text-blue-600 font-medium leading-relaxed">
+                                    O campo de cupom aparecerá no formulário. Gerencie os cupons em Configurações → Cupons.
+                                </p>
+                            </div>
+                        )}
+                    </SideSection>
+
+                    {/* ⚠️ Escassez */}
+                    <SideSection title="Aviso de Escassez" icon={<Zap size={14} className="text-primary" />} defaultOpen={false}>
+                        <ToggleRow icon={<Zap size={13} />} label="Mostrar aviso de escassez" sub="Urgência por estoque limitado" value={cs.show_scarcity} onChange={v => setCSF('show_scarcity', v)} />
+                        {cs.show_scarcity && (
+                            <div className="space-y-3">
+                                <div>
+                                    <label className={labelCls}>Texto de Escassez</label>
+                                    <input value={cs.scarcity_text} onChange={e => setCSF('scarcity_text', e.target.value)}
+                                        placeholder="Apenas 7 vagas restantes!" className={inputCls} />
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Estoque atual (opcional)</label>
+                                    <input type="number" value={cs.scarcity_stock} onChange={e => setCSF('scarcity_stock', e.target.value)}
+                                        placeholder="Ex: 7 (exibe número real)" className={inputCls} />
+                                    <p className="text-[10px] text-gray-400 mt-1">Deixe vazio para usar o texto personalizado</p>
+                                </div>
+                            </div>
+                        )}
+                    </SideSection>
+
+                    {/* 🚪 Pop-up de Saída */}
+                    <SideSection title="Pop-up de Saída" icon={<LogOut size={14} className="text-primary" />} defaultOpen={false}>
+                        <ToggleRow icon={<LogOut size={13} />} label="Ativar pop-up" sub="Aparece ao tentar sair sem comprar" value={cs.show_exit_popup} onChange={v => setCSF('show_exit_popup', v)} />
+                        {cs.show_exit_popup && (
+                            <div className="space-y-3">
+                                <div className="bg-amber-50 p-2.5 rounded-xl border border-amber-100">
+                                    <p className="text-[10px] text-amber-600 font-bold">💡 Pop-ups de saída recuperam até 15% dos visitantes</p>
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Título</label>
+                                    <input value={cs.exit_popup_title} onChange={e => setCSF('exit_popup_title', e.target.value)}
+                                        placeholder="Espere! Temos uma oferta especial" className={inputCls} />
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Mensagem</label>
+                                    <textarea value={cs.exit_popup_msg} onChange={e => setCSF('exit_popup_msg', e.target.value)}
+                                        rows={2} placeholder="Não perca esta oportunidade única!"
+                                        className={cn(inputCls, 'resize-none')} />
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Botão CTA</label>
+                                    <input value={cs.exit_popup_cta} onChange={e => setCSF('exit_popup_cta', e.target.value)}
+                                        placeholder="Quero aproveitar!" className={inputCls} />
+                                </div>
+                            </div>
+                        )}
+                    </SideSection>
+
+                    {/* 🖼 Fundo Avançado */}
+                    <SideSection title="Fundo Avançado" icon={<ImageIcon size={14} className="text-primary" />} defaultOpen={false}>
+                        <div>
+                            <label className={labelCls}>Imagem de Fundo (URL)</label>
+                            <input value={cs.bg_image_url} onChange={e => setCSF('bg_image_url', e.target.value)}
+                                placeholder="https://exemplo.com/bg.jpg" className={inputCls} />
+                            <p className="text-[10px] text-gray-400 mt-1">Sobrepõe à cor de fundo. Deixe vazio para desativar.</p>
+                        </div>
+                        {cs.bg_image_url && (
+                            <>
+                                <div className="rounded-xl overflow-hidden h-16 border border-gray-100">
+                                    <img src={cs.bg_image_url} alt="" className="w-full h-full object-cover" onError={e => e.target.style.display = 'none'} />
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Escurecimento da sobreposição: {cs.bg_image_opacity ?? 70}%</label>
+                                    <input type="range" min="0" max="95" value={cs.bg_image_opacity ?? 70}
+                                        onChange={e => setCSF('bg_image_opacity', parseInt(e.target.value))}
+                                        className="w-full accent-primary h-2 cursor-pointer rounded-full" />
+                                    <div className="flex justify-between text-[9px] text-gray-400 font-bold mt-1">
+                                        <span>0% (transparente)</span><span>95% (escuro)</span>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                    </SideSection>
+
+                    {/* 📋 Formulário Extra */}
+                    <SideSection title="Formulário" icon={<Mail size={14} className="text-primary" />} defaultOpen={false}>
+                        <ToggleRow icon={<Mail size={13} />} label="Campo de e-mail" sub="Solicitar e-mail do comprador" value={cs.require_email !== false} onChange={v => setCSF('require_email', v)} />
+                        <ToggleRow icon={<MessageSquare size={13} />} label="Campo de observações" sub="Texto livre para o comprador" value={cs.show_notes_field} onChange={v => setCSF('show_notes_field', v)} />
+                        <ToggleRow icon={<Hash size={13} />} label="Seletor de quantidade" sub="Comprar múltiplas unidades" value={cs.allow_qty} onChange={v => setCSF('allow_qty', v)} />
+                        {cs.allow_qty && (
+                            <div className="pl-6">
+                                <label className={labelCls}>Quantidade máxima por pedido</label>
+                                <input type="number" min="2" max="99" value={cs.max_qty || 5}
+                                    onChange={e => setCSF('max_qty', parseInt(e.target.value) || 5)}
+                                    className={inputCls} />
+                            </div>
+                        )}
+                    </SideSection>
+
+                    {/* 💳 Métodos de Pagamento */}
+                    <SideSection title="Métodos de Pagamento" icon={<CreditCard size={14} className="text-primary" />} defaultOpen={false}>
+                        <ToggleRow icon={<Zap size={13} />} label="PIX" sub="Pagamento instantâneo aprovado" value={cs.show_pix_option !== false} onChange={v => setCSF('show_pix_option', v)} />
+                        <ToggleRow icon={<CreditCard size={13} />} label="Cartão de Crédito" sub="Parcelamento até 12x" value={cs.show_card_option !== false} onChange={v => setCSF('show_card_option', v)} />
+                        <p className="text-[10px] text-gray-400 font-medium leading-relaxed">
+                            ⚠️ Pelo menos um método deve estar ativo.
+                        </p>
+                    </SideSection>
+
+                    {/* ✨ Botão de Compra */}
+                    <SideSection title="Botão de Compra" icon={<MousePointer2 size={14} className="text-primary" />} defaultOpen={false}>
+                        <div>
+                            <label className={labelCls}>Cor personalizada do botão</label>
+                            <div className="flex items-center gap-2">
+                                <input type="color"
+                                    value={cs.btn_color_override || form.primary_color}
+                                    onChange={e => setCSF('btn_color_override', e.target.value)}
+                                    className="w-10 h-10 rounded-xl cursor-pointer border border-gray-200 p-0.5 shrink-0" />
+                                <input value={cs.btn_color_override}
+                                    onChange={e => setCSF('btn_color_override', e.target.value)}
+                                    placeholder="Usa cor principal (vazio = padrão)"
+                                    className={cn(inputCls, 'flex-1')} />
+                                {cs.btn_color_override && (
+                                    <button type="button" onClick={() => setCSF('btn_color_override', '')}
+                                        className="p-2 text-gray-300 hover:text-red-400 hover:bg-red-50 rounded-lg transition-all shrink-0">
+                                        <X size={13} />
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                        <ToggleRow icon={<Sparkles size={13} />} label="Efeito pulsante" sub="Botão pulsa para chamar atenção" value={cs.btn_pulse} onChange={v => setCSF('btn_pulse', v)} />
+                        <div>
+                            <label className={labelCls}>Ícone do Botão</label>
+                            <div className="grid grid-cols-3 gap-1.5">
+                                {[
+                                    { v: 'zap',   l: '⚡ Zap'    },
+                                    { v: 'lock',  l: '🔒 Seguro' },
+                                    { v: 'pix',   l: '📱 PIX'   },
+                                    { v: 'cart',  l: '🛒 Carrinho' },
+                                    { v: 'arrow', l: '→ Seta'   },
+                                    { v: 'none',  l: '— Nenhum' },
+                                ].map(o => (
+                                    <button key={o.v} type="button" onClick={() => setCSF('btn_icon', o.v)}
+                                        className={cn('py-2 border rounded-xl text-[9px] font-black transition-all',
+                                            cs.btn_icon === o.v ? 'bg-primary text-white border-primary' : 'bg-gray-50 text-gray-500 border-gray-200 hover:border-primary/30')}>
+                                        {o.l}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </SideSection>
+
+                    {/* 📱 WhatsApp Flutuante */}
+                    <SideSection title="WhatsApp Flutuante" icon={<MessageCircle size={14} className="text-primary" />} defaultOpen={false}>
+                        <ToggleRow icon={<MessageCircle size={13} />} label="Botão flutuante" sub="Ícone no canto da página" value={cs.show_whatsapp_float} onChange={v => setCSF('show_whatsapp_float', v)} />
+                        {cs.show_whatsapp_float && (
+                            <div className="space-y-3">
+                                {!cs.support_whatsapp && (
+                                    <div className="bg-amber-50 p-2.5 rounded-xl border border-amber-100">
+                                        <p className="text-[10px] text-amber-600 font-medium">
+                                            ⚠️ Configure o número em Pós-venda → WhatsApp de Suporte.
+                                        </p>
+                                    </div>
+                                )}
+                                <div>
+                                    <label className={labelCls}>Mensagem pré-definida</label>
+                                    <textarea value={cs.whatsapp_float_msg} onChange={e => setCSF('whatsapp_float_msg', e.target.value)}
+                                        rows={2} placeholder="Olá! Tenho uma dúvida sobre o produto."
+                                        className={cn(inputCls, 'resize-none')} />
+                                </div>
+                            </div>
+                        )}
+                    </SideSection>
+
+                    {/* 🔍 SEO / Meta Tags */}
+                    <SideSection title="SEO / Meta Tags" icon={<Globe size={14} className="text-primary" />} defaultOpen={false}>
+                        <div>
+                            <label className={labelCls}>Título da Página (Title Tag)</label>
+                            <input value={cs.seo_title} onChange={e => setCSF('seo_title', e.target.value)}
+                                placeholder={form.title || 'Título do checkout'} className={inputCls} />
+                            <p className="text-[10px] text-gray-400 mt-1">Aparece na aba do navegador e resultados do Google</p>
+                        </div>
+                        <div>
+                            <label className={labelCls}>Meta Descrição</label>
+                            <textarea value={cs.seo_description} onChange={e => setCSF('seo_description', e.target.value)}
+                                rows={2} placeholder="Descrição curta da página para buscadores e redes sociais..."
+                                className={cn(inputCls, 'resize-none')} />
+                            <p className="text-[10px] text-gray-400 mt-1">Ideal: 120–160 caracteres</p>
+                        </div>
+                        <div>
+                            <label className={labelCls}>Favicon (URL)</label>
+                            <input value={cs.seo_favicon} onChange={e => setCSF('seo_favicon', e.target.value)}
+                                placeholder="https://..." className={inputCls} />
+                            <p className="text-[10px] text-gray-400 mt-1">Ícone exibido na aba do navegador</p>
+                        </div>
                     </SideSection>
 
                     {/* Status + Save */}
