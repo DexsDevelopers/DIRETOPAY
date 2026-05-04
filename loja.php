@@ -8,11 +8,12 @@
 <link rel="icon" href="/logo_premium.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>try{var t=localStorage.getItem('ghost_loja_theme');if(t==='light'||(!t&&matchMedia('(prefers-color-scheme:light)').matches))document.documentElement.classList.add('light')}catch(e){}</script>
 <style>
 /* ── Reset & Base ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{font-family:'Outfit',sans-serif;background:#06060a;color:#fff;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .25s,color .25s}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
 button{cursor:pointer;border:none;outline:none;font-family:inherit}
@@ -31,27 +32,52 @@ input,select{font-family:inherit;outline:none;border:none}
   --border2:rgba(255,255,255,.12);
   --text:#fff;
   --muted:rgba(255,255,255,.45);
-  --dim:rgba(255,255,255,.18);
+  --dim:rgba(255,255,255,.22);
   --success:#22c55e;
   --r:20px;
   --r-sm:12px;
+  --nav-bg:rgba(6,6,10,.92);
+  --input-bg:rgba(255,255,255,.06);
+  --input-color:#fff;
+  --trust-bg:#0e0e16;
+  --filters-bg:rgba(6,6,10,.95);
+  --product-bg:#0e0e16;
+  --footer-bg:#06060a;
+}
+:root.light{
+  --bg:#f6f6fc;
+  --card:#ffffff;
+  --card2:#f0f0f8;
+  --border:rgba(0,0,0,.08);
+  --border2:rgba(0,0,0,.13);
+  --text:#12121e;
+  --muted:rgba(0,0,0,.5);
+  --dim:rgba(0,0,0,.35);
+  --nav-bg:rgba(255,255,255,.94);
+  --input-bg:rgba(0,0,0,.04);
+  --input-color:#12121e;
+  --trust-bg:#ffffff;
+  --filters-bg:rgba(246,246,252,.97);
+  --product-bg:#ffffff;
+  --footer-bg:#f0f0f8;
 }
 
 /* ── Utilities ── */
 .container{max-width:1160px;margin:0 auto;padding:0 16px}
 @media(min-width:640px){.container{padding:0 24px}}
+.theme-lbl{display:none}@media(min-width:480px){.theme-lbl{display:inline}}
 
 /* ─────────────────────────────────────────────
    NAVBAR
 ───────────────────────────────────────────── */
-.navbar{position:sticky;top:0;z-index:200;background:rgba(6,6,10,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.navbar{position:sticky;top:0;z-index:200;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .25s}
 .nav-inner{display:flex;align-items:center;gap:12px;padding:12px 0;min-height:60px}
 .brand{display:flex;align-items:center;gap:8px;font-size:.95rem;font-weight:900;letter-spacing:-.03em;flex-shrink:0}
 .brand img{width:30px;height:30px;border-radius:8px;box-shadow:0 0 14px rgba(168,85,247,.3)}
 .brand em{color:var(--primary);font-style:italic}
 .nav-search{flex:1;position:relative;min-width:0}
 .nav-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--dim);pointer-events:none;flex-shrink:0}
-.nav-search input{width:100%;background:rgba(255,255,255,.06);border:1.5px solid var(--border);border-radius:50px;padding:9px 14px 9px 38px;font-size:.82rem;color:#fff;transition:border-color .2s}
+.nav-search input{width:100%;background:var(--input-bg);border:1.5px solid var(--border);border-radius:50px;padding:9px 14px 9px 38px;font-size:.82rem;color:var(--input-color);transition:border-color .2s,background .25s}
 .nav-search input:focus{border-color:rgba(168,85,247,.45);background:rgba(168,85,247,.04)}
 .nav-search input::placeholder{color:var(--dim)}
 .nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
@@ -112,25 +138,25 @@ input,select{font-family:inherit;outline:none;border:none}
 /* ─────────────────────────────────────────────
    TRUST BAR
 ───────────────────────────────────────────── */
-.trust{background:var(--card);border-bottom:1px solid var(--border)}
+.trust{background:var(--trust-bg);border-bottom:1px solid var(--border);transition:background .25s}
 .trust-inner{display:flex;align-items:center;gap:0;overflow-x:auto;padding:12px 0;scrollbar-width:none}
 .trust-inner::-webkit-scrollbar{display:none}
-.trust-item{display:flex;align-items:center;gap:7px;padding:4px 20px;font-size:.78rem;font-weight:700;color:rgba(255,255,255,.65);white-space:nowrap;flex-shrink:0;border-right:1px solid var(--border)}
+.trust-item{display:flex;align-items:center;gap:7px;padding:4px 20px;font-size:.78rem;font-weight:700;color:var(--muted);white-space:nowrap;flex-shrink:0;border-right:1px solid var(--border)}
 .trust-item:last-child{border-right:none}
 .trust-item svg{color:var(--primary);flex-shrink:0}
 
 /* ─────────────────────────────────────────────
    FILTERS BAR (sticky)
 ───────────────────────────────────────────── */
-.filters-bar{position:sticky;top:60px;z-index:100;background:rgba(6,6,10,.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:10px 0}
+.filters-bar{position:sticky;top:60px;z-index:100;background:var(--filters-bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:10px 0;transition:background .25s}
 .filters-inner{display:flex;align-items:center;gap:10px}
 .cats{display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none;padding-bottom:2px}
 .cats::-webkit-scrollbar{display:none}
-.cat-btn{flex-shrink:0;padding:7px 16px;border-radius:50px;font-size:.72rem;font-weight:800;background:rgba(255,255,255,.05);border:1.5px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap}
-.cat-btn:hover{background:rgba(255,255,255,.08);color:#fff}
-.cat-btn.active{background:#fff;border-color:#fff;color:#000}
-.sort-select{flex-shrink:0;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:50px;padding:7px 14px;font-size:.72rem;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap}
-.sort-select option{background:#111}
+.cat-btn{flex-shrink:0;padding:7px 16px;border-radius:50px;font-size:.72rem;font-weight:800;background:var(--input-bg);border:1.5px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap}
+.cat-btn:hover{background:var(--card2);color:var(--text)}
+.cat-btn.active{background:var(--text);border-color:var(--text);color:var(--bg)}
+.sort-select{flex-shrink:0;background:var(--input-bg);border:1.5px solid var(--border);border-radius:50px;padding:7px 14px;font-size:.72rem;font-weight:700;color:var(--text);cursor:pointer;white-space:nowrap;transition:background .25s,color .25s}
+.sort-select option{background:var(--card)}
 @media(max-width:480px){.sort-select{display:none}}
 
 /* ─────────────────────────────────────────────
@@ -184,7 +210,7 @@ main{padding:20px 0 60px}
 
 /* Footer */
 .pcard-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px;border-top:1px solid var(--border);gap:4px}
-.pcard-price{font-size:1rem;font-weight:900;letter-spacing:-.03em;color:#fff}
+.pcard-price{font-size:1rem;font-weight:900;letter-spacing:-.03em;color:var(--text)}
 @media(min-width:640px){.pcard-price{font-size:1.05rem}}
 .pcard-sold{font-size:.58rem;color:var(--dim);font-weight:700}
 .btn-ver{background:linear-gradient(135deg,var(--primary),var(--pd));border-radius:10px;padding:6px 10px;font-size:.67rem;font-weight:900;color:#fff;white-space:nowrap;transition:all .2s;box-shadow:0 3px 12px rgba(168,85,247,.25)}
@@ -210,8 +236,8 @@ main{padding:20px 0 60px}
    PAGINATION
 ───────────────────────────────────────────── */
 .pagination{display:flex;align-items:center;justify-content:center;gap:6px;padding:28px 0 16px;flex-wrap:wrap}
-.page-btn{min-width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--muted);font-size:.78rem;font-weight:700;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0 10px;cursor:pointer}
-.page-btn:hover:not(:disabled){background:rgba(255,255,255,.1);color:#fff}
+.page-btn{min-width:38px;height:38px;border-radius:11px;background:var(--input-bg);border:1px solid var(--border);color:var(--muted);font-size:.78rem;font-weight:700;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0 10px;cursor:pointer}
+.page-btn:hover:not(:disabled){background:var(--card2);color:var(--text)}
 .page-btn:disabled{opacity:.3;cursor:not-allowed}
 .page-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
 
@@ -257,6 +283,10 @@ footer a{color:var(--primary)}
       <input type="text" id="search-input" placeholder="Buscar produtos, cursos, templates..." autocomplete="off">
     </div>
     <div class="nav-actions">
+      <button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema" style="display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:50px;border:1.5px solid var(--border2);background:var(--card2);color:var(--text);font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .2s;flex-shrink:0" onmouseover="this.style.borderColor='rgba(168,85,247,.5)'" onmouseout="this.style.borderColor='var(--border2)'">
+        <span id="theme-icon" style="display:flex;align-items:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
+        <span id="theme-label" class="theme-lbl">Claro</span>
+      </button>
       <a href="/dashboard" class="btn-seller">Vender aqui</a>
     </div>
   </div>
@@ -370,6 +400,33 @@ footer a{color:var(--primary)}
 /* ═══════════════════════════════════════════
    STATE
 ═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   THEME TOGGLE
+═══════════════════════════════════════════ */
+(function(){
+  const saved = localStorage.getItem('ghost_loja_theme');
+  const preferLight = saved === 'light' || (!saved && window.matchMedia('(prefers-color-scheme: light)').matches);
+  if(preferLight) applyLight(); else applyDark();
+})();
+function applyLight(){
+  document.documentElement.classList.add('light');
+  const icon = document.getElementById('theme-icon');
+  const label = document.getElementById('theme-label');
+  if(icon) icon.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  if(label) label.textContent = 'Escuro';
+}
+function applyDark(){
+  document.documentElement.classList.remove('light');
+  const icon = document.getElementById('theme-icon');
+  const label = document.getElementById('theme-label');
+  if(icon) icon.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+  if(label) label.textContent = 'Claro';
+}
+function toggleTheme(){
+  const isLight = document.documentElement.classList.contains('light');
+  if(isLight){ applyDark(); localStorage.setItem('ghost_loja_theme','dark'); }
+  else { applyLight(); localStorage.setItem('ghost_loja_theme','light'); }
+}
 const CATS = ['Todos','Digital','Físico','Serviço','Curso','Software','Template','E-book','Outro'];
 let state = { search:'', category:'Todos', sort:'popular', page:1, total:0, perPage:12 };
 
