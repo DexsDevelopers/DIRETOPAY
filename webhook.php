@@ -183,7 +183,7 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
             $notifMsg = 'Você recebeu R$ ' . number_format($transaction['amount_brl'], 2, ',', '.') . ' via Pix.';
             if (class_exists('PushService')) {
                 try {
-                    PushService::notifyUser($transaction['user_id'], '💰 Venda Confirmada!', $notifMsg, 'success');
+                    PushService::notifyUser($transaction['user_id'], '💰 Venda Confirmada!', $notifMsg, 'sale_paid');
                 } catch (Throwable $e) {}
                 
                 // Notificar Admin (Push + In-App)

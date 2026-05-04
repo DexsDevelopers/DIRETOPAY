@@ -35,6 +35,7 @@ try {
         'success' => true,
         'checkout' => [
             'id' => $checkout['id'],
+            'user_id' => $checkout['user_id'],
             'title' => $checkout['title'],
             'primary_color' => $checkout['primary_color'],
             'secondary_color' => $checkout['secondary_color'],

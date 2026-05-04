@@ -86,6 +86,7 @@ export default function CheckoutPage() {
     const [paymentMethod, setPaymentMethod] = useState('pix');
     const formRef = useRef(null);
 
+    const hasPaidRef = useRef(false);
     const { m, s, expired } = useCountdown(15 * 60);
     const viewers = useViewers(8);
 
@@ -110,8 +111,24 @@ export default function CheckoutPage() {
         try {
             const res  = await fetch(`/get_checkout_data.php?slug=${slug}`);
             const json = await res.json();
-            if (json.success) setData(json);
-            else setError(json.error);
+            if (json.success) {
+                setData(json);
+                const sellerId = json.checkout?.user_id;
+                if (sellerId) {
+                    fetch('/track_store_event.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ event: 'store_visit', seller_id: sellerId, extra: json.checkout?.title || '' })
+                    }).catch(() => {});
+                    const handleUnload = () => {
+                        if (!hasPaidRef.current) {
+                            navigator.sendBeacon('/track_store_event.php',
+                                JSON.stringify({ event: 'cart_abandoned', seller_id: sellerId, extra: json.checkout?.title || '' }));
+                        }
+                    };
+                    window.addEventListener('beforeunload', handleUnload);
+                }
+            } else setError(json.error);
         } catch { setError('Erro ao conectar com o servidor'); }
         finally  { setLoading(false); }
     };
@@ -149,6 +166,7 @@ export default function CheckoutPage() {
                 });
                 const d = await res.json();
                 if (d.success) {
+                    hasPaidRef.current = true;
                     setActivePix({ id: d.pix_id, amount: d.amount, code: d.pix_code || '', image: d.qr_image || '' });
                 } else {
                     alert(d.message || 'Erro ao gerar PIX');

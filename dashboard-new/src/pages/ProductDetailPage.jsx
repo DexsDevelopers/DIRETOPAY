@@ -342,6 +342,14 @@ export default function ProductDetailPage() {
         setReviews(data.reviews || []);
         setRelated(data.related || []);
         setCanReview(data.can_review);
+        const sellerId = data.product?.user_id;
+        if (sellerId) {
+          fetch('/track_store_event.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ event: 'store_visit', seller_id: sellerId, extra: data.product?.name || '' })
+          }).catch(() => {});
+        }
       }
     } catch (e) { console.error(e); }
     setLoading(false);

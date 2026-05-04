@@ -1,5 +1,5 @@
 // Ghost Pix SPA v2.1 - Build for Auth & Checkout
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -122,6 +122,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [activePix, setActivePix] = useState(null);
   const [showWhatsAppPopup, setShowWhatsAppPopup] = useState(false);
+  const prevUnreadRef = useRef(null);
 
   useEffect(() => {
     console.log("APP MOUNTED. Current path:", location.pathname);
@@ -132,11 +133,37 @@ export default function App() {
     return () => clearInterval(notifInterval);
   }, []);
 
+  const playSaleSound = () => {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const notes = [659.25, 783.99, 1046.50];
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        const t = ctx.currentTime + i * 0.12;
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.25, t + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+        osc.start(t);
+        osc.stop(t + 0.35);
+      });
+    } catch {}
+  };
+
   const fetchNotifications = async () => {
     try {
       const res = await fetch('/get_dashboard_data.php');
       const data = await res.json();
       if (data.success) {
+        const newUnread = (data.notifications || []).filter(n => !n.is_read).length;
+        if (prevUnreadRef.current !== null && newUnread > prevUnreadRef.current) {
+          playSaleSound();
+        }
+        prevUnreadRef.current = newUnread;
         setDashboardData(prev => prev ? { ...prev, notifications: data.notifications } : data);
       }
     } catch (err) {}
