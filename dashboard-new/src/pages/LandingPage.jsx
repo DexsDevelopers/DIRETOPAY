@@ -103,7 +103,7 @@ export default function LandingPage() {
     }, []);
 
     return (
-        <div className="bg-white min-h-screen text-gray-900 font-['Outfit'] overflow-x-hidden selection:bg-primary selection:text-white">
+        <div className={`min-h-screen font-['Outfit'] overflow-x-hidden selection:bg-primary selection:text-white ${isDark ? 'bg-[#0a0a0f] text-gray-100' : 'bg-white text-gray-900'}`}>
 
             {/* Announcement Bar */}
             <div className="sticky top-0 bg-white/95 backdrop-blur-2xl border-b border-purple-100 py-3 px-6 text-center z-[60]">
@@ -143,10 +143,10 @@ export default function LandingPage() {
             </nav>
 
             {/* Hero Section */}
-            <section className="pt-44 sm:pt-64 pb-20 sm:pb-32 px-6 relative overflow-hidden min-h-screen bg-white">
+            <section className={`pt-44 sm:pt-64 pb-20 sm:pb-32 px-6 relative overflow-hidden min-h-screen ${isDark ? 'bg-[#0a0a0f]' : 'bg-white'}`}>
                 {/* Decorative blobs */}
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-purple-100 to-violet-50 rounded-full blur-[100px] opacity-60 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-purple-50 to-transparent rounded-full blur-[80px] opacity-40 pointer-events-none" />
+                <div className={`absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[100px] pointer-events-none ${isDark ? 'bg-gradient-to-bl from-purple-900/20 to-violet-900/10 opacity-40' : 'bg-gradient-to-bl from-purple-100 to-violet-50 opacity-60'}`} />
+                <div className={`absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-[80px] pointer-events-none ${isDark ? 'bg-gradient-to-tr from-purple-900/15 to-transparent opacity-30' : 'bg-gradient-to-tr from-purple-50 to-transparent opacity-40'}`} />
 
                 <div className="max-w-6xl mx-auto text-center space-y-12 relative z-10">
                     <motion.div
