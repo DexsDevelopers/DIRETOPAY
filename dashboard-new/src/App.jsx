@@ -3,7 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, History, Wallet, Settings, Menu, Loader2 } from 'lucide-react';
+import { LayoutDashboard, History, Wallet, Settings, Menu, Loader2, Sun, Moon } from 'lucide-react';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 
 // Components
 import Sidebar from './components/Sidebar';
@@ -253,7 +254,57 @@ export default function App() {
 
   const { userData, balance, notifications } = commonProps;
 
+  function DashboardHome({ userData, fetchDashboard, dashboardData, loading, activePix, setActivePix, handleManualPix, handleDeleteTransaction }) {
+    const { isDark, toggleTheme } = useTheme();
+    return (
+      <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-black tracking-tight text-gray-900">Olá, <span className="text-primary italic">{userData?.name?.split(' ')[0] || 'Ghost'}</span> 👋</h1>
+            <p className="text-gray-500 font-medium">Aqui está o resumo do seu império hoje.</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              title={isDark ? 'Mudar para Claro' : 'Mudar para Escuro'}
+              className={`group flex items-center gap-2 px-4 py-2.5 rounded-full border font-black text-xs uppercase tracking-widest transition-all ${
+                isDark
+                  ? 'bg-amber-400/10 border-amber-400/30 text-amber-400 hover:bg-amber-400/20'
+                  : 'bg-gray-900/5 border-gray-300 text-gray-600 hover:bg-gray-900/10'
+              }`}
+            >
+              {isDark
+                ? <><Sun size={14} className="group-hover:rotate-45 transition-transform" /> Modo Claro</>
+                : <><Moon size={14} className="group-hover:-rotate-12 transition-transform" /> Modo Escuro</>}
+            </button>
+            <button onClick={fetchDashboard} className="lp-btn-primary py-2 px-6 text-sm">ATUALIZAR</button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+          <StatCard label="Total de Vendas" value={`R$ ${dashboardData?.stats?.total_paid || '0,00'}`} icon={<Wallet size={24} />} />
+          <StatCard label="Vendas Hoje" value={`R$ ${dashboardData?.stats?.today_volume || '0,00'}`} icon={<History size={24} />} />
+          <StatCard label="Volume Mensal" value={`R$ ${dashboardData?.stats?.month_volume || '0,00'}`} icon={<LayoutDashboard size={24} />} />
+          <StatCard label="Pendentes" value={dashboardData?.stats?.pending_count || '0'} icon={<History size={24} />} trend="Aguardando" />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="space-y-8 order-first lg:order-last">
+            <GeneratePixCard onGenerate={handleManualPix} />
+          </div>
+          <div className="lg:col-span-2 space-y-6">
+            <h2 className="text-xl font-black flex items-center gap-2 border-b border-gray-100 pb-4 text-gray-900">
+              <History className="text-primary" size={20} /> Minhas Vendas Recentes
+            </h2>
+            <TransactionsTable transactions={dashboardData?.transactions} loading={loading} onViewQr={setActivePix} onDelete={handleDeleteTransaction} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
+    <ThemeProvider>
     <>
       {showWhatsAppPopup && <WhatsAppPopup onClose={() => setShowWhatsAppPopup(false)} />}
       <Routes>
@@ -269,37 +320,11 @@ export default function App() {
         <Route path="/dashboard" element={
           <PrivateRoute>
             <DashboardLayout {...commonProps} activeTab="dashboard">
-              <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                      <h1 className="text-3xl font-black tracking-tight text-gray-900">Olá, <span className="text-primary italic">{userData?.name?.split(' ')[0] || 'Ghost'}</span> 👋</h1>
-                      <p className="text-gray-500 font-medium">Aqui está o resumo do seu império hoje.</p>
-                    </div>
-                    <button onClick={fetchDashboard} className="lp-btn-primary py-2 px-6 text-sm">ATUALIZAR STATUS</button>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-                    <StatCard label="Total de Vendas" value={`R$ ${dashboardData?.stats?.total_paid || '0,00'}`} icon={<Wallet size={24} />} />
-                    <StatCard label="Vendas Hoje" value={`R$ ${dashboardData?.stats?.today_volume || '0,00'}`} icon={<History size={24} />} />
-                    <StatCard label="Volume Mensal" value={`R$ ${dashboardData?.stats?.month_volume || '0,00'}`} icon={<LayoutDashboard size={24} />} />
-                    <StatCard label="Pendentes" value={dashboardData?.stats?.pending_count || '0'} icon={<History size={24} />} trend="Aguardando" />
-                  </div>
-
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="space-y-8 order-first lg:order-last">
-                      <GeneratePixCard onGenerate={handleManualPix} />
-                    </div>
-                    <div className="lg:col-span-2 space-y-6">
-                      <h2 className="text-xl font-black flex items-center gap-2 border-b border-gray-100 pb-4 text-gray-900">
-                        <History className="text-primary" size={20} /> Minhas Vendas Recentes
-                      </h2>
-                      <TransactionsTable transactions={dashboardData?.transactions} loading={loading} onViewQr={setActivePix} onDelete={handleDeleteTransaction} />
-                    </div>
-                  </div>
-                </div>
+              <DashboardHome userData={userData} fetchDashboard={fetchDashboard} dashboardData={dashboardData} loading={loading} activePix={activePix} setActivePix={setActivePix} handleManualPix={handleManualPix} handleDeleteTransaction={handleDeleteTransaction} />
             </DashboardLayout>
           </PrivateRoute>
         } />
+
 
         <Route path="/vendas" element={
           <PrivateRoute>
@@ -543,5 +568,6 @@ export default function App() {
         document.body
       )}
     </>
+    </ThemeProvider>
   );
 }

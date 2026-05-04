@@ -3,8 +3,9 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Menu, Bell, Search, User, X, Info, CheckCircle, AlertTriangle, AlertCircle,
-    Zap, DollarSign, ShoppingCart, Eye, TrendingUp, RefreshCw
+    Zap, DollarSign, ShoppingCart, Eye, TrendingUp, RefreshCw, Sun, Moon
 } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 function reativarNotificacoes() {
     localStorage.removeItem('push_subscribed');
@@ -54,6 +55,8 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
         ? notifications.filter(n => tabCfg.types.includes(n.type))
         : notifications;
 
+    const { isDark, toggleTheme } = useTheme();
+
     return (
         <header className="h-20 border-b border-gray-100 flex items-center justify-between px-6 lg:px-8 shrink-0 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-[0_1px_12px_rgba(124,58,237,0.06)]">
             {/* Left */}
@@ -70,6 +73,21 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
 
             {/* Right */}
             <div className="flex items-center gap-3">
+                {/* Theme Toggle */}
+                <button
+                    onClick={toggleTheme}
+                    title={isDark ? 'Modo Claro' : 'Modo Escuro'}
+                    className={`p-2.5 rounded-xl transition-all ${
+                        isDark
+                            ? 'bg-amber-400/10 text-amber-400 hover:bg-amber-400/20'
+                            : 'hover:bg-gray-100 text-gray-500'
+                    }`}
+                >
+                    {isDark
+                        ? <Sun size={18} />
+                        : <Moon size={18} />}
+                </button>
+
                 {/* Bell */}
                 <div className="relative">
                     <button onClick={() => setShow(s => !s)}

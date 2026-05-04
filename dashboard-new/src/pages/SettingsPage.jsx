@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, User, Lock, Code, Shield, Key, Copy, Check, Save, Camera, Loader2, Eye, EyeOff, RefreshCw, ExternalLink, Terminal, Zap, Globe, AlertTriangle, Webhook, Plus, Trash2, Send, Power, CircleDot, Bell, BellRing, MessageCircle, Unlink, QrCode } from 'lucide-react';
+import { Settings, User, Lock, Code, Shield, Key, Copy, Check, Save, Camera, Loader2, Eye, EyeOff, RefreshCw, ExternalLink, Terminal, Zap, Globe, AlertTriangle, Webhook, Plus, Trash2, Send, Power, CircleDot, Bell, BellRing, MessageCircle, Unlink, QrCode, Sun, Moon, Monitor } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
 
@@ -250,8 +251,11 @@ export default function SettingsPage({ userData, onProfileSaved }) {
         }
     };
 
+    const { isDark, setIsDark } = useTheme();
+
     const tabs = [
         { id: 'perfil', label: 'Meu Perfil', icon: <User size={16} /> },
+        { id: 'aparencia', label: 'Aparência', icon: <Sun size={16} /> },
         { id: 'telegram', label: 'Telegram', icon: <MessageCircle size={16} /> },
         { id: 'notificacoes', label: 'Notificações', icon: <Bell size={16} /> },
         { id: 'seguranca', label: 'Segurança', icon: <Lock size={16} /> },
@@ -764,6 +768,128 @@ export default function SettingsPage({ userData, onProfileSaved }) {
 
                         {activeSubTab === 'webhooks' && (
                             <WebhooksTab />
+                        )}
+
+                        {activeSubTab === 'aparencia' && (
+                            <div className="space-y-10 animate-in slide-in-from-bottom-4 duration-500">
+                                <div>
+                                    <h3 className="text-2xl font-black text-gray-900 mb-1">Aparência</h3>
+                                    <p className="text-gray-500 text-sm">Escolha como o painel será exibido para você.</p>
+                                </div>
+
+                                {/* Preview mini */}
+                                <div className="flex justify-center">
+                                    <div className={`relative w-72 h-44 rounded-[24px] border-2 overflow-hidden transition-all ${
+                                        isDark ? 'border-primary bg-[#0d0d12]' : 'border-gray-200 bg-gray-50'
+                                    }`}>
+                                        <div className={`absolute top-0 inset-x-0 h-10 border-b flex items-center px-4 gap-2 ${
+                                            isDark ? 'bg-[#17171f] border-[#242432]' : 'bg-white border-gray-100'
+                                        }`}>
+                                            <div className="w-2 h-2 rounded-full bg-red-400" />
+                                            <div className="w-2 h-2 rounded-full bg-amber-400" />
+                                            <div className="w-2 h-2 rounded-full bg-green-400" />
+                                            <div className={`ml-2 h-3.5 w-24 rounded-full ${ isDark ? 'bg-[#2c2c3e]' : 'bg-gray-200' }`} />
+                                        </div>
+                                        <div className="absolute top-12 left-4 right-4 space-y-2">
+                                            <div className={`h-3 rounded-full w-3/4 ${ isDark ? 'bg-[#2c2c3e]' : 'bg-gray-200' }`} />
+                                            <div className={`h-3 rounded-full w-1/2 ${ isDark ? 'bg-[#242432]' : 'bg-gray-100' }`} />
+                                            <div className={`mt-3 h-8 rounded-xl ${ isDark ? 'bg-primary/20' : 'bg-primary/10' }`} />
+                                        </div>
+                                        <div className="absolute bottom-3 right-4">
+                                            <span className={`text-[9px] font-black uppercase tracking-widest ${ isDark ? 'text-primary' : 'text-primary/60' }`}>
+                                                {isDark ? 'ESCURO' : 'CLARO'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Theme cards */}
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                    {[
+                                        {
+                                            id: 'light',
+                                            label: 'Claro',
+                                            desc: 'Visual limpo, ideal para ambientes iluminados',
+                                            icon: <Sun size={28} />,
+                                            colors: ['#ffffff','#f9fafb','#a855f7'],
+                                        },
+                                        {
+                                            id: 'dark',
+                                            label: 'Escuro',
+                                            desc: 'Modo noturno, reduz o cansaço visual',
+                                            icon: <Moon size={28} />,
+                                            colors: ['#0d0d12','#17171f','#a855f7'],
+                                        },
+                                        {
+                                            id: 'system',
+                                            label: 'Sistema',
+                                            desc: 'Segue a preferência do seu dispositivo',
+                                            icon: <Monitor size={28} />,
+                                            colors: ['#f9fafb','#0d0d12','#a855f7'],
+                                        },
+                                    ].map(opt => {
+                                        const isActive =
+                                            opt.id === 'system'
+                                                ? false
+                                                : opt.id === 'dark' ? isDark : !isDark;
+                                        return (
+                                            <button
+                                                key={opt.id}
+                                                onClick={() => {
+                                                    if (opt.id === 'system') {
+                                                        setIsDark(window.matchMedia('(prefers-color-scheme: dark)').matches);
+                                                    } else {
+                                                        setIsDark(opt.id === 'dark');
+                                                    }
+                                                }}
+                                                className={`relative p-6 rounded-[28px] border-2 text-left transition-all hover:scale-[1.02] active:scale-[0.98] ${
+                                                    isActive
+                                                        ? 'border-primary bg-primary/5 shadow-lg shadow-primary/10'
+                                                        : 'border-gray-200 bg-white hover:border-primary/30'
+                                                }`}
+                                            >
+                                                {isActive && (
+                                                    <span className="absolute top-4 right-4 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                                                        <Check size={11} className="text-white" strokeWidth={3} />
+                                                    </span>
+                                                )}
+                                                {/* Color dots */}
+                                                <div className="flex gap-1.5 mb-4">
+                                                    {opt.colors.map((c, i) => (
+                                                        <div key={i} className="w-4 h-4 rounded-full border border-gray-200/40" style={{ background: c }} />
+                                                    ))}
+                                                </div>
+                                                <div className={`mb-3 ${ isActive ? 'text-primary' : 'text-gray-400' }`}>
+                                                    {opt.icon}
+                                                </div>
+                                                <p className={`font-black text-sm ${ isActive ? 'text-primary' : 'text-gray-900' }`}>{opt.label}</p>
+                                                <p className="text-[11px] text-gray-500 mt-1 leading-relaxed">{opt.desc}</p>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+
+                                {/* Toggle switch grande */}
+                                <div className={`flex items-center justify-between p-6 rounded-[24px] border ${ isDark ? 'bg-[#17171f] border-[#242432]' : 'bg-gray-50 border-gray-100' }`}>
+                                    <div className="flex items-center gap-4">
+                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${ isDark ? 'bg-amber-400/10' : 'bg-violet-100' }`}>
+                                            {isDark ? <Moon size={22} className="text-amber-400" /> : <Sun size={22} className="text-violet-600" />}
+                                        </div>
+                                        <div>
+                                            <p className="font-black text-gray-900">Tema atual: <span className="text-primary">{isDark ? 'Escuro' : 'Claro'}</span></p>
+                                            <p className="text-xs text-gray-500">Clique para alternar instantaneamente</p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => setIsDark(d => !d)}
+                                        className={`relative w-16 h-8 rounded-full transition-all duration-300 ${ isDark ? 'bg-primary' : 'bg-gray-200' }`}
+                                    >
+                                        <span className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 flex items-center justify-center ${ isDark ? 'left-9' : 'left-1' }`}>
+                                            {isDark ? <Moon size={12} className="text-primary" /> : <Sun size={12} className="text-amber-500" />}
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
                         )}
                     </div>
                 </div>
