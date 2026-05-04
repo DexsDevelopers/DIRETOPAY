@@ -44,8 +44,8 @@ if ($isAuth && $requestPath === '/') {
     <!-- React Build Assets -->
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js">
-    <script type="module" crossorigin src="/assets/dashboard-react/index-CzMUxNfu.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-BdQZClmh.css">
+    <script type="module" crossorigin src="/assets/dashboard-react/index-Bcc4GNf9.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-B5gOfXab.css">
     
     <!-- Preload fonts to avoid layout shift -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">

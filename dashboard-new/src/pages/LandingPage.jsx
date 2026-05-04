@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     ArrowRight, CheckCircle, Zap, Shield, Rocket, MessageCircle,
     Cpu, Lock, ChevronDown, ExternalLink, Users, Code2, Globe,
-    BarChart3, Layers, Sparkles, ShieldCheck, CreditCard, Store
+    BarChart3, Layers, Sparkles, ShieldCheck, CreditCard, Store, Sun, Moon
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
+import { useTheme } from '../contexts/ThemeContext';
 
 function FeatureCard({ icon: Icon, title, desc, delay = 0 }) {
     return (
@@ -68,6 +69,24 @@ function AccordionItem({ title, content }) {
     );
 }
 
+function ThemeToggle() {
+    const { isDark, toggleTheme } = useTheme();
+    return (
+        <button
+            onClick={toggleTheme}
+            title={isDark ? 'Mudar para Claro' : 'Mudar para Escuro'}
+            className="relative flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-purple-100 bg-white/60 backdrop-blur-sm hover:bg-purple-50 hover:border-purple-200 transition-all group"
+        >
+            <span className={`transition-all duration-300 ${isDark ? 'text-amber-500 rotate-0' : 'text-gray-400 -rotate-12'}`}>
+                {isDark ? <Sun size={15} /> : <Moon size={15} />}
+            </span>
+            <span className="hidden sm:block text-[10px] font-black uppercase tracking-widest text-gray-400 group-hover:text-gray-700 transition-colors">
+                {isDark ? 'Claro' : 'Escuro'}
+            </span>
+        </button>
+    );
+}
+
 export default function LandingPage() {
     const [onlineUsers, setOnlineUsers] = useState(2348);
     const [scrolled, setScrolled] = useState(false);
@@ -115,7 +134,8 @@ export default function LandingPage() {
                     <a href="/loja" className="hover:text-primary transition-colors flex items-center gap-1.5"><Store size={13} />Loja</a>
                 </div>
 
-                <div className="flex items-center gap-3 sm:gap-6">
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <ThemeToggle />
                     <Link to="/login" className="text-[9px] sm:text-[11px] font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 hover:text-gray-900 transition-colors px-1 sm:px-2 hidden sm:block">Entrar</Link>
                     <Link to="/register" className="bg-gradient-to-r from-purple-500 to-violet-600 text-white text-[9px] sm:text-[11px] font-black uppercase tracking-[0.1em] sm:tracking-[0.15em] px-4 sm:px-8 py-2 sm:py-3.5 rounded-xl sm:rounded-2xl hover:opacity-90 transition-all active:scale-95 shadow-[0_8px_20px_rgba(124,58,237,0.3)] whitespace-nowrap">Conta</Link>
                 </div>
