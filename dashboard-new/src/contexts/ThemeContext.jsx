@@ -3,11 +3,8 @@ import { useLocation } from 'react-router-dom';
 
 const ThemeContext = createContext({ isDark: false, toggleTheme: () => {}, setIsDark: () => {} });
 
-// Rotas públicas que NUNCA recebem dark mode (têm design próprio)
-const PUBLIC_PATHS = ['/', '/demo', '/docs', '/login', '/register', '/forgot-password'];
+// Rotas que NUNCA recebem dark mode (checkout/entrega têm branding fixo do vendedor)
 const isPublicPath = (pathname) =>
-    PUBLIC_PATHS.includes(pathname) ||
-    pathname.startsWith('/reset-password') ||
     pathname.startsWith('/entrega') ||
     pathname.startsWith('/p/') ||
     (pathname.startsWith('/chat/') && pathname.length > 6);
