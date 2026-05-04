@@ -159,8 +159,19 @@ html.dark nav .text-gray-400,
 html.dark nav a.text-gray-400 { color: #b0b0d0 !important; }
 html.dark nav .text-gray-400:hover,
 html.dark nav a.text-gray-400:hover { color: #f0f0f8 !important; }
-/* Announcement bar text */
-html.dark .text-gray-700 { color: #c0c0d6 !important; }
+
+/* ── Primary color opacity variants (pill texts) ── */
+/* text-primary/60, /50, /40 são ilegíveis em dark — tornar sólidos */
+html.dark .text-primary\/60 { color: #c084fc !important; }
+html.dark .text-primary\/50 { color: #b87af8 !important; }
+html.dark .text-primary\/40 { color: #a855f7 !important; }
+html.dark .text-primary\/30 { color: #9333ea !important; }
+/* Pill container bg */
+html.dark .bg-primary\/5  { background-color: rgba(168,85,247,0.08) !important; }
+html.dark .bg-primary\/8  { background-color: rgba(168,85,247,0.10) !important; }
+html.dark .bg-primary\/10 { background-color: rgba(168,85,247,0.12) !important; }
+html.dark .border-primary\/15 { border-color: rgba(168,85,247,0.25) !important; }
+html.dark .border-primary\/20 { border-color: rgba(168,85,247,0.30) !important; }
 
 /* ── Shadows ── */
 html.dark .shadow-sm  { box-shadow: 0 1px 6px rgba(0,0,0,0.55) !important; }
