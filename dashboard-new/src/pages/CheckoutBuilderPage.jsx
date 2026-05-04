@@ -65,7 +65,7 @@ const DEFAULT_CS = {
     subheadline: '',
     urgency_text: '',
     // Campos do comprador
-    require_phone: true,
+    require_phone: false,
     require_cpf: false,
     require_address: false,
     // Rastreamento

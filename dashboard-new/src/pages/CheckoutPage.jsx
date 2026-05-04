@@ -135,7 +135,6 @@ export default function CheckoutPage() {
 
     const handlePay = async (e) => {
         e.preventDefault();
-        if (!customerName.trim()) return;
         setIsProcessing(true);
         try {
             if (paymentMethod === 'card') {
@@ -402,10 +401,9 @@ export default function CheckoutPage() {
                         <form ref={formRef} onSubmit={handlePay} className="flex flex-col gap-4 flex-1">
                             <div className="space-y-1.5">
                                 <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-1">
-                                    Nome Completo *
+                                    Nome Completo
                                 </label>
                                 <input
-                                    required
                                     type="text"
                                     placeholder="Ex: João Silva"
                                     value={customerName}
@@ -416,7 +414,7 @@ export default function CheckoutPage() {
 
                             <div className="space-y-1.5">
                                 <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-1">
-                                    CPF <span className="normal-case font-medium">(opcional)</span>
+                                    CPF
                                 </label>
                                 <input
                                     type="text"
@@ -492,7 +490,7 @@ export default function CheckoutPage() {
                     >
                         <button
                             onClick={() => formRef.current?.requestSubmit()}
-                            disabled={isProcessing || !customerName.trim()}
+                            disabled={isProcessing}
                             style={paymentMethod === 'pix' ? { background: primary, borderRadius: btnR } : { borderRadius: btnR }}
                             className={`w-full py-4 font-black text-base flex items-center justify-center gap-2 shadow-2xl disabled:opacity-40 transition-all ${
                                 paymentMethod === 'card' ? 'bg-blue-500 text-white' : 'text-black'
