@@ -3,7 +3,8 @@ import {
     Plus, Trash2, Save, Palette, Package, Globe, Layout, ArrowLeft,
     RefreshCw, Image as ImageIcon, Upload, Loader2, ExternalLink,
     ChevronDown, Type, MousePointer2, Layers, ToggleLeft, ToggleRight,
-    Sliders, Eye, Shield, Star, Clock, Users, Zap, Info
+    Sliders, Eye, Shield, Star, Clock, Users, Zap, Info,
+    Smartphone, MessageCircle, BarChart2, UserCheck, Link2, AlignLeft
 } from 'lucide-react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -57,6 +58,22 @@ const DEFAULT_CS = {
     show_trust_seals: true,
     cta_text: '',
     show_sticky_mobile: true,
+    // Textos personalizados
+    headline: '',
+    subheadline: '',
+    urgency_text: '',
+    // Campos do comprador
+    require_phone: true,
+    require_cpf: false,
+    require_address: false,
+    // Rastreamento
+    pixel_fb: '',
+    pixel_gtag: '',
+    pixel_tiktok: '',
+    // Pós-venda
+    redirect_url: '',
+    support_whatsapp: '',
+    thank_you_msg: '',
 };
 
 // ── Reusable sub-components ─────────────────────────────────────────────────
@@ -544,6 +561,75 @@ export default function CheckoutBuilderPage() {
                         )}
                         <ToggleRow icon={<Zap size={13} />} label="Selos de segurança" sub="SSL, anti-fraude, aprovação" value={cs.show_trust_seals} onChange={v => setCSF('show_trust_seals', v)} />
                         <ToggleRow icon={<MousePointer2 size={13} />} label="CTA fixo mobile" sub="Botão flutuante no celular" value={cs.show_sticky_mobile} onChange={v => setCSF('show_sticky_mobile', v)} />
+                    </SideSection>
+
+                    {/* 📝 Textos */}
+                    <SideSection title="Textos da Página" icon={<AlignLeft size={14} className="text-primary" />} defaultOpen={false}>
+                        <div>
+                            <label className={labelCls}>Título Principal (Headline)</label>
+                            <input value={cs.headline} onChange={e => setCSF('headline', e.target.value)}
+                                placeholder="Ex: Garanta sua vaga agora!" className={inputCls} />
+                        </div>
+                        <div>
+                            <label className={labelCls}>Subtítulo</label>
+                            <input value={cs.subheadline} onChange={e => setCSF('subheadline', e.target.value)}
+                                placeholder="Ex: Apenas 10 vagas disponíveis" className={inputCls} />
+                        </div>
+                        <div>
+                            <label className={labelCls}>Texto de Urgência (acima do timer)</label>
+                            <input value={cs.urgency_text} onChange={e => setCSF('urgency_text', e.target.value)}
+                                placeholder="Ex: ⚠️ Oferta encerra em breve!" className={inputCls} />
+                        </div>
+                    </SideSection>
+
+                    {/* 👤 Campos do Comprador */}
+                    <SideSection title="Campos do Comprador" icon={<UserCheck size={14} className="text-primary" />} defaultOpen={false}>
+                        <ToggleRow icon={<Smartphone size={13} />} label="Telefone obrigatório" sub="Solicitar telefone no checkout" value={cs.require_phone} onChange={v => setCSF('require_phone', v)} />
+                        <ToggleRow icon={<UserCheck size={13} />} label="CPF obrigatório" sub="Solicitar CPF do comprador" value={cs.require_cpf} onChange={v => setCSF('require_cpf', v)} />
+                        <ToggleRow icon={<Package size={13} />} label="Endereço de entrega" sub="Para produtos físicos" value={cs.require_address} onChange={v => setCSF('require_address', v)} />
+                    </SideSection>
+
+                    {/* 📊 Rastreamento */}
+                    <SideSection title="Rastreamento / Pixels" icon={<BarChart2 size={14} className="text-primary" />} defaultOpen={false}>
+                        <div>
+                            <label className={labelCls}>Facebook Pixel ID</label>
+                            <input value={cs.pixel_fb} onChange={e => setCSF('pixel_fb', e.target.value)}
+                                placeholder="Ex: 1234567890123456" className={inputCls} />
+                        </div>
+                        <div>
+                            <label className={labelCls}>Google Tag / Analytics ID</label>
+                            <input value={cs.pixel_gtag} onChange={e => setCSF('pixel_gtag', e.target.value)}
+                                placeholder="Ex: G-XXXXXXXXXX ou AW-XXXXXXXXX" className={inputCls} />
+                        </div>
+                        <div>
+                            <label className={labelCls}>TikTok Pixel ID</label>
+                            <input value={cs.pixel_tiktok} onChange={e => setCSF('pixel_tiktok', e.target.value)}
+                                placeholder="Ex: XXXXXXXXXXXXXXXX" className={inputCls} />
+                        </div>
+                    </SideSection>
+
+                    {/* 🎯 Pós-venda */}
+                    <SideSection title="Pós-venda" icon={<Link2 size={14} className="text-primary" />} defaultOpen={false}>
+                        <div>
+                            <label className={labelCls}>Redirecionar após pagamento</label>
+                            <input value={cs.redirect_url} onChange={e => setCSF('redirect_url', e.target.value)}
+                                placeholder="https://seusite.com/obrigado" className={inputCls} />
+                            <p className="text-[10px] text-gray-400 mt-1">Deixe vazio para usar a página padrão de entrega</p>
+                        </div>
+                        <div>
+                            <label className={labelCls}>WhatsApp de Suporte</label>
+                            <div className="relative">
+                                <MessageCircle className="absolute left-3 top-1/2 -translate-y-1/2 text-green-400" size={14} />
+                                <input value={cs.support_whatsapp} onChange={e => setCSF('support_whatsapp', e.target.value)}
+                                    placeholder="5511999999999 (só números)" className={cn(inputCls, 'pl-9')} />
+                            </div>
+                        </div>
+                        <div>
+                            <label className={labelCls}>Mensagem de Agradecimento</label>
+                            <textarea value={cs.thank_you_msg} onChange={e => setCSF('thank_you_msg', e.target.value)}
+                                rows={2} placeholder="Ex: Obrigado pela compra! Entraremos em contato em breve."
+                                className={cn(inputCls, 'resize-none')} />
+                        </div>
                     </SideSection>
 
                     {/* 📝 Conteúdo */}

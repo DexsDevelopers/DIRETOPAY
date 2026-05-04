@@ -44,11 +44,11 @@ if ($isAuth && $requestPath === '/') {
     <!-- React Build Assets -->
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-react-CIFpnPib.js">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-lucide-owoi_Ylx.js">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-lucide-Da-13eKG.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-motion-BKEh_tME.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js">
-    <script type="module" crossorigin src="/assets/dashboard-react/index-BOn8jWox.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-DrOYxgbL.css">
+    <script type="module" crossorigin src="/assets/dashboard-react/index-BbiKnACF.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-BCouwGx-.css">
     
     <!-- Preload fonts to avoid layout shift -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
