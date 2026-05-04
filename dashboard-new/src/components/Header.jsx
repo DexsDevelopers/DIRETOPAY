@@ -3,8 +3,14 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Menu, Bell, Search, User, X, Info, CheckCircle, AlertTriangle, AlertCircle,
-    Zap, DollarSign, ShoppingCart, Eye, TrendingUp
+    Zap, DollarSign, ShoppingCart, Eye, TrendingUp, RefreshCw
 } from 'lucide-react';
+
+function reativarNotificacoes() {
+    localStorage.removeItem('push_subscribed');
+    localStorage.removeItem('push_prompt_dismissed');
+    window.location.reload();
+}
 
 const NOTIF_TYPES = {
     info:           { icon: Info,          color: 'text-blue-500',    bg: 'bg-blue-50',    border: 'border-blue-100',    label: 'Info' },
@@ -186,12 +192,19 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
                                 </div>
 
                                 {/* Footer */}
-                                <div className="px-5 py-3 border-t border-gray-50 shrink-0 flex items-center justify-between">
-                                    <p className="text-[10px] text-gray-300 font-bold">{notifications.length} no total</p>
-                                    <div className="flex items-center gap-1">
-                                        <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                                        <span className="text-[9px] text-gray-300 font-bold">Atualiza a cada 30s</span>
+                                <div className="px-5 py-3 border-t border-gray-50 shrink-0">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <p className="text-[10px] text-gray-300 font-bold">{notifications.length} no total</p>
+                                        <div className="flex items-center gap-1">
+                                            <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                                            <span className="text-[9px] text-gray-300 font-bold">Atualiza a cada 30s</span>
+                                        </div>
                                     </div>
+                                    <button
+                                        onClick={reativarNotificacoes}
+                                        className="w-full py-2 rounded-xl border border-dashed border-gray-200 text-[10px] font-black text-gray-400 hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-all flex items-center justify-center gap-1.5">
+                                        <RefreshCw size={10} /> Reativar Notificações Push
+                                    </button>
                                 </div>
                             </motion.div>
                         </div>,

@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Bell, X, Loader2, CheckCircle } from 'lucide-react';
+import { Bell, X, Loader2, CheckCircle, RefreshCw, Smartphone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isInStandaloneMode = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
 function urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -13,121 +16,137 @@ function urlBase64ToUint8Array(base64String) {
     return outputArray;
 }
 
-async function registerAndSubscribe() {
-    // 1. Registrar Service Worker
-    console.log('[Push] Registrando Service Worker...');
+async function createAndSaveSubscription(sendTest = false) {
     const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
-
-    // 2. Esperar SW ficar ativo
     const registration = await navigator.serviceWorker.ready;
-    console.log('[Push] SW ativo:', registration.active?.state);
 
-    // 3. Pedir permissão EXPLICITAMENTE
-    const permission = await Notification.requestPermission();
-    console.log('[Push] Permissão:', permission);
-    if (permission !== 'granted') {
-        throw new Error('Permissão negada pelo usuário');
-    }
-
-    // 4. Verificar subscription existente
     let subscription = await registration.pushManager.getSubscription();
-    
+
     if (!subscription) {
-        // 5. Buscar chave VAPID do servidor
-        console.log('[Push] Buscando VAPID key...');
         const res = await fetch('/get_vapid_key.php');
         const vapidData = await res.json();
-        console.log('[Push] VAPID response:', vapidData);
-        
         if (!vapidData.success || !vapidData.publicKey) {
             throw new Error('Chave VAPID não disponível no servidor');
         }
-
-        // 6. Criar subscription push
-        console.log('[Push] Subscrevendo push...');
         subscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: urlBase64ToUint8Array(vapidData.publicKey)
         });
     }
 
-    // 7. Enviar subscription pro backend
     const subJson = subscription.toJSON();
-    console.log('[Push] Salvando subscription no backend...');
     const saveRes = await fetch('/save_subscription.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             endpoint: subJson.endpoint,
-            keys: {
-                p256dh: subJson.keys.p256dh,
-                auth: subJson.keys.auth
-            }
+            keys: { p256dh: subJson.keys.p256dh, auth: subJson.keys.auth }
         })
     });
     const saveData = await saveRes.json();
-    console.log('[Push] Save response:', saveData);
+    console.log('[Push] Subscription salva:', saveData);
 
-    // 8. Enviar notificação de teste via backend (push real)
-    console.log('[Push] Enviando push de teste...');
-    await fetch('/send_test_push.php', { method: 'POST' });
+    if (sendTest) {
+        const testRes = await fetch('/send_test_push.php', { method: 'POST' });
+        const testData = await testRes.json();
+        console.log('[Push] Teste enviado:', testData);
+        if (!testData.success) throw new Error(testData.error || 'Falha ao enviar push de teste');
+    }
 
     return true;
+}
+
+async function registerAndSubscribe() {
+    console.log('[Push] Iniciando registro...');
+
+    if (isIOS() && !isInStandaloneMode()) {
+        throw new Error('IOS_NOT_STANDALONE');
+    }
+
+    const permission = await Notification.requestPermission();
+    console.log('[Push] Permissão:', permission);
+    if (permission !== 'granted') {
+        throw new Error('Permissão negada pelo usuário');
+    }
+
+    return createAndSaveSubscription(true);
+}
+
+async function silentResubscribe() {
+    try {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+        if (Notification.permission !== 'granted') return;
+        await createAndSaveSubscription(false);
+        console.log('[Push] Silent resubscribe OK');
+    } catch (e) {
+        console.warn('[Push] Silent resubscribe falhou:', e.message);
+    }
 }
 
 export default function PushManager() {
     const [showPrompt, setShowPrompt] = useState(false);
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
+    const [iosGuide, setIosGuide] = useState(false);
     const [hidden, setHidden] = useState(() => {
-        return localStorage.getItem('push_subscribed') === '1' || 
+        return localStorage.getItem('push_subscribed') === '1' ||
                localStorage.getItem('push_prompt_dismissed') === '1';
     });
 
     useEffect(() => {
-        if (hidden) return;
         if (!('serviceWorker' in navigator)) return;
         if (!('PushManager' in window) && !('Notification' in window)) return;
 
-        // Se já deu permissão e tem subscription, registra SW silenciosamente
         if (Notification.permission === 'granted') {
-            navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {});
-            localStorage.setItem('push_prompt_dismissed', '1');
-            setHidden(true);
+            silentResubscribe();
+            if (!hidden) {
+                localStorage.setItem('push_prompt_dismissed', '1');
+                setHidden(true);
+            }
             return;
         }
+
+        if (hidden) return;
 
         if (Notification.permission === 'denied') {
             setHidden(true);
             return;
         }
 
-        // Mostrar prompt após 3s
         const timer = setTimeout(() => setShowPrompt(true), 3000);
         return () => clearTimeout(timer);
     }, [hidden]);
 
     const handleActivate = async () => {
         setLoading(true);
+        setErrorMsg('');
         try {
             await registerAndSubscribe();
             setSuccess(true);
             localStorage.setItem('push_subscribed', '1');
             localStorage.setItem('push_prompt_dismissed', '1');
-            // Esconder após mostrar sucesso
-            setTimeout(() => {
-                setShowPrompt(false);
-                setHidden(true);
-            }, 2500);
+            setTimeout(() => { setShowPrompt(false); setHidden(true); }, 3000);
         } catch (err) {
             console.error('[Push] Erro:', err);
-            // Esconde de qualquer forma para não irritar
-            localStorage.setItem('push_prompt_dismissed', '1');
-            setShowPrompt(false);
-            setHidden(true);
+            if (err.message === 'IOS_NOT_STANDALONE') {
+                setIosGuide(true);
+            } else {
+                setErrorMsg(err.message || 'Erro desconhecido');
+            }
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleReactivate = () => {
+        localStorage.removeItem('push_subscribed');
+        localStorage.removeItem('push_prompt_dismissed');
+        setHidden(false);
+        setSuccess(false);
+        setErrorMsg('');
+        setIosGuide(false);
+        setShowPrompt(true);
     };
 
     const dismissPrompt = () => {
@@ -154,9 +173,38 @@ export default function PushManager() {
                             </div>
                             <div>
                                 <h3 className="text-sm font-black text-white mb-1">Notificações Ativadas!</h3>
-                                <p className="text-[11px] text-white/40">Você receberá uma notificação de teste agora.</p>
+                                <p className="text-[11px] text-white/40">Uma notificação de teste foi enviada para seu dispositivo.</p>
                             </div>
                         </div>
+                    ) : iosGuide ? (
+                        <>
+                            <div className="flex items-start justify-between">
+                                <div className="w-12 h-12 bg-orange-500/10 rounded-2xl flex items-center justify-center border border-orange-500/20">
+                                    <Smartphone size={22} className="text-orange-400" />
+                                </div>
+                                <button onClick={dismissPrompt} className="p-1 hover:bg-white/5 rounded-lg transition-colors">
+                                    <X size={16} className="text-white/40" />
+                                </button>
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-black text-white mb-2">iPhone: Adicione à Tela Inicial</h3>
+                                <p className="text-[11px] text-white/40 leading-relaxed mb-3">
+                                    No iOS, notificações só funcionam quando o app está na sua Tela Inicial. Siga os passos:
+                                </p>
+                                <ol className="space-y-1.5">
+                                    {['Toque no ícone de compartilhar (□↑) no Safari', 'Selecione "Adicionar à Tela Inicial"', 'Abra o app pela Tela Inicial', 'Clique em Ativar Notificações novamente'].map((s, i) => (
+                                        <li key={i} className="flex items-start gap-2 text-[10px] text-white/60">
+                                            <span className="shrink-0 w-4 h-4 bg-primary/20 text-primary rounded-full flex items-center justify-center font-black text-[8px]">{i + 1}</span>
+                                            {s}
+                                        </li>
+                                    ))}
+                                </ol>
+                            </div>
+                            <button onClick={dismissPrompt}
+                                className="w-full h-9 bg-white/5 border border-white/10 rounded-xl font-black text-xs text-white/60 hover:bg-white/10 transition-all">
+                                Entendi
+                            </button>
+                        </>
                     ) : (
                         <>
                             <div className="flex items-start justify-between">
@@ -171,9 +219,18 @@ export default function PushManager() {
                             <div>
                                 <h3 className="text-sm font-black text-white mb-1">Ativar Notificações</h3>
                                 <p className="text-[11px] text-white/40 leading-relaxed">
-                                    Receba alertas de pagamentos confirmados, saques e avisos importantes em tempo real no seu dispositivo.
+                                    Receba alertas de vendas confirmadas e pagamentos em tempo real no seu dispositivo.
                                 </p>
                             </div>
+
+                            {errorMsg && (
+                                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3">
+                                    <p className="text-[10px] text-red-400 font-medium leading-relaxed">{errorMsg}</p>
+                                    <button onClick={handleReactivate} className="mt-2 text-[10px] text-primary font-black underline">
+                                        Tentar novamente
+                                    </button>
+                                </div>
+                            )}
 
                             <div className="flex gap-2">
                                 <button
