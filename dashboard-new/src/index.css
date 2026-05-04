@@ -146,10 +146,21 @@ html.dark .divide-gray-100 > * + * { border-color: #242432 !important; }
 html.dark .text-gray-900 { color: #f0f0f8 !important; }
 html.dark .text-gray-800 { color: #d8d8ea !important; }
 html.dark .text-gray-700 { color: #c0c0d6 !important; }
-html.dark .text-gray-600 { color: #ababc8 !important; }
-html.dark .text-gray-500 { color: #9898b8 !important; }
-html.dark .text-gray-400 { color: #8080a8 !important; }
-html.dark .text-gray-300 { color: #505070 !important; }
+html.dark .text-gray-600 { color: #b8b8d0 !important; }
+html.dark .text-gray-500 { color: #a8a8c8 !important; }
+html.dark .text-gray-400 { color: #9898c0 !important; }
+html.dark .text-gray-300 { color: #585878 !important; }
+
+/* ── Landing Page Specific Overrides ── */
+/* Hero section bg-white needs to stay dark */
+html.dark .bg-white.min-h-screen { background-color: #0d0d12 !important; }
+/* Nav links on dark navbar need to be clearly visible */
+html.dark nav .text-gray-400,
+html.dark nav a.text-gray-400 { color: #b0b0d0 !important; }
+html.dark nav .text-gray-400:hover,
+html.dark nav a.text-gray-400:hover { color: #f0f0f8 !important; }
+/* Announcement bar text */
+html.dark .text-gray-700 { color: #c0c0d6 !important; }
 
 /* ── Shadows ── */
 html.dark .shadow-sm  { box-shadow: 0 1px 6px rgba(0,0,0,0.55) !important; }
