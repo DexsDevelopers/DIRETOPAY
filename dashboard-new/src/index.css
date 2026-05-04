@@ -101,8 +101,12 @@ html.dark .bg-white          { background-color: #17171f !important; }
 html.dark .bg-gray-100       { background-color: #1e1e28 !important; }
 html.dark .bg-gray-200       { background-color: #252535 !important; }
 
-/* Header backdrop */
+/* Backdrops / opacidade */
+html.dark .bg-white\/95      { background-color: rgba(18,18,26,0.98) !important; }
 html.dark .bg-white\/90      { background-color: rgba(20,20,28,0.97) !important; }
+html.dark .bg-white\/80      { background-color: rgba(22,22,32,0.95) !important; }
+html.dark .bg-white\/70      { background-color: rgba(22,22,32,0.90) !important; }
+html.dark .bg-white\/60      { background-color: rgba(24,24,34,0.85) !important; }
 html.dark .bg-white\/5       { background-color: rgba(255,255,255,0.04) !important; }
 
 /* Table row cells */
