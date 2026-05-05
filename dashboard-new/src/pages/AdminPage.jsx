@@ -68,7 +68,7 @@ export default function AdminPage() {
 
     const [globalSettings, setGlobalSettings] = useState({
         affiliate_rate: 0,
-        default_tax: 0
+        default_tax: 8
     });
 
     const medusaFees = {
@@ -202,7 +202,7 @@ export default function AdminPage() {
                             <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Custos da plataforma</p>
                             <div className="flex justify-between items-center">
                                 <span className="text-gray-500 font-semibold">Gateway PIX (recebimento)</span>
-                                <span className="text-yellow-400 font-black">6,49% + R$0,99</span>
+                                <span className="text-yellow-400 font-black">8,00% + R$0,99</span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-gray-500 font-semibold">Taxa de saque</span>

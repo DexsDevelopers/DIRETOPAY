@@ -808,7 +808,9 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                 </div>
                                             </div>
                                             <div>
-                                                <p className="text-3xl font-black text-primary">8,00%</p>
+                                                <p className="text-3xl font-black text-primary">
+                                                    {userData?.commission_rate ?? '—'}%
+                                                </p>
                                                 <p className="text-xs text-gray-400 mt-1">+ R$ 0,99 / transação</p>
                                             </div>
                                             <p className="text-[11px] text-gray-500 leading-relaxed">

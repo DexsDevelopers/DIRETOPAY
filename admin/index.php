@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Buscar taxa padrão
         $defTaxStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'default_user_tax'");
-        $defaultTax = (float)($defTaxStmt->fetchColumn() ?: '4.0');
+        $defaultTax = (float)($defTaxStmt->fetchColumn() ?: '8.0');
 
         $stmt = $pdo->prepare("INSERT INTO users (email, password, full_name, pix_key, balance, status, referral_token, is_demo, commission_rate) VALUES (?, ?, ?, ?, ?, 'approved', ?, 1, ?)");
         $stmt->execute([$email, $password, $full_name, $pix_key, $balance, $ref_token, $defaultTax]);
@@ -293,7 +293,7 @@ $affRateStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'affiliat
 $currentAffRate = $affRateStmt->fetchColumn() ?: '10';
 
 $defTaxStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'default_user_tax'");
-$currentDefTax = $defTaxStmt->fetchColumn() ?: '4.0';
+$currentDefTax = $defTaxStmt->fetchColumn() ?: '8.0';
 
 // Calcular Lucro Total da Plataforma (Lucro líquido após taxa de 2% do PixGo)
 $stmtProfit = $pdo->query("SELECT SUM((amount_brl - amount_net_brl) - (amount_brl * 0.02)) as total FROM transactions WHERE status = 'paid'");
