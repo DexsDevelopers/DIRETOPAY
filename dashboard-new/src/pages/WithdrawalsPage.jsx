@@ -87,6 +87,19 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
                 <p className="text-gray-500 font-medium">Transfira seus lucros para sua conta bancária de forma segura.</p>
             </div>
 
+            {/* Aviso: chave Pix nova — sem tom de golpe, bom para conversão */}
+            <div className="rounded-3xl border-2 border-amber-200 bg-amber-50 p-5 flex gap-4 items-start">
+                <div className="flex-shrink-0 w-9 h-9 rounded-2xl bg-amber-100 flex items-center justify-center mt-0.5">
+                    <Info size={18} className="text-amber-500" />
+                </div>
+                <div>
+                    <p className="font-black text-amber-800 text-sm mb-0.5">Por que minha taxa está ajustada?</p>
+                    <p className="text-amber-700 text-[13px] leading-relaxed">
+                        Sua conta utiliza uma <strong>chave Pix recém-cadastrada</strong>. O sistema aplica automaticamente taxas ligeiramente superiores durante o período inicial de validação da chave — isso é <strong>completamente normal</strong> e não indica nenhuma pendência. Seu saldo continua sendo transferido normalmente.
+                    </p>
+                </div>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-6">
 
