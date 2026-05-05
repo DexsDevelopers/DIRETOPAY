@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, User, Lock, Code, Shield, Key, Copy, Check, Save, Camera, Loader2, Eye, EyeOff, RefreshCw, ExternalLink, Terminal, Zap, Globe, AlertTriangle, Webhook, Plus, Trash2, Send, Power, CircleDot, Bell, BellRing, MessageCircle, Unlink, QrCode, Sun, Moon, Monitor } from 'lucide-react';
+import { Settings, User, Lock, Code, Shield, Key, Copy, Check, Save, Camera, Loader2, Eye, EyeOff, RefreshCw, ExternalLink, Terminal, Zap, Globe, AlertTriangle, Webhook, Plus, Trash2, Send, Power, CircleDot, Bell, BellRing, MessageCircle, Unlink, QrCode, Sun, Moon, Monitor, Percent, Info, TrendingUp, CheckCircle2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
@@ -261,6 +261,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
         { id: 'seguranca', label: 'Segurança', icon: <Lock size={16} /> },
         { id: 'api', label: 'Desenvolvedor / API', icon: <Code size={16} /> },
         { id: 'webhooks', label: 'Webhooks', icon: <Webhook size={16} /> },
+        { id: 'taxas', label: 'Minhas Taxas', icon: <Percent size={16} /> },
     ];
 
     return (
@@ -768,6 +769,129 @@ export default function SettingsPage({ userData, onProfileSaved }) {
 
                         {activeSubTab === 'webhooks' && (
                             <WebhooksTab />
+                        )}
+
+                        {activeSubTab === 'taxas' && (
+                            <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+                                {/* Header */}
+                                <div>
+                                    <h3 className="text-2xl font-black text-gray-900 mb-1">Minhas Taxas</h3>
+                                    <p className="text-gray-500 text-sm">Taxas aplicadas nas suas cobranças e saques.</p>
+                                </div>
+
+                                {/* Aviso chave nova — sem tom de alerta/golpe */}
+                                <div className="rounded-3xl border-2 border-amber-200 bg-amber-50 p-6 flex gap-4">
+                                    <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-amber-100 flex items-center justify-center">
+                                        <Info size={20} className="text-amber-500" />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="font-black text-amber-800 text-sm">Por que minha taxa está ajustada?</p>
+                                        <p className="text-amber-700 text-[13px] leading-relaxed">
+                                            Sua conta está usando uma <strong>chave Pix recém-cadastrada</strong>. Para contas com chaves novas, o sistema aplica automaticamente uma taxa ligeiramente superior durante o período inicial de validação. Isso é <strong>completamente normal</strong> — não há nenhuma pendência ou problema na sua conta.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Seção: Cobranças */}
+                                <div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Cobranças</p>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {/* Pix D+0 */}
+                                        <div className="rounded-3xl border border-gray-100 bg-white shadow-sm p-6 space-y-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
+                                                    <Zap size={18} className="text-primary" />
+                                                </div>
+                                                <div>
+                                                    <p className="font-black text-gray-900 text-sm">Pix D+0</p>
+                                                    <p className="text-[11px] text-gray-400">Pagamento instantâneo</p>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p className="text-3xl font-black text-primary">8,00%</p>
+                                                <p className="text-xs text-gray-400 mt-1">+ R$ 0,99 / transação</p>
+                                            </div>
+                                            <p className="text-[11px] text-gray-500 leading-relaxed">
+                                                PIX é o meio de pagamento instantâneo da plataforma. O saldo cai na sua conta na hora.
+                                            </p>
+                                        </div>
+
+                                        {/* Criptomoedas D+0 */}
+                                        <div className="rounded-3xl border border-gray-100 bg-white shadow-sm p-6 space-y-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-2xl bg-orange-100 flex items-center justify-center">
+                                                    <span className="text-orange-500 font-black text-sm">₿</span>
+                                                </div>
+                                                <div>
+                                                    <p className="font-black text-gray-900 text-sm">Criptomoedas D+0</p>
+                                                    <p className="text-[11px] text-gray-400">Recebimento em cripto</p>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p className="text-3xl font-black text-orange-500">7,00%</p>
+                                                <p className="text-xs text-gray-400 mt-1">+ R$ 10,00 / transação (à vista)</p>
+                                            </div>
+                                            <p className="text-[11px] text-gray-500 leading-relaxed">
+                                                Receba pagamentos com criptomoedas de forma segura e rápida.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Seção: Saques */}
+                                <div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Saques</p>
+                                    <div className="rounded-3xl border border-gray-100 bg-white shadow-sm p-6 space-y-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-2xl bg-green-100 flex items-center justify-center">
+                                                <TrendingUp size={18} className="text-green-600" />
+                                            </div>
+                                            <div>
+                                                <p className="font-black text-gray-900 text-sm">Saque Personalizado (Pix)</p>
+                                                <p className="text-[11px] text-gray-400">Transferência para sua chave Pix</p>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-3 gap-3">
+                                            {[
+                                                { label: 'Taxa fixa', value: 'R$ 3,50' },
+                                                { label: 'Taxa operacional', value: 'R$ 4,00' },
+                                                { label: 'Taxa percentual', value: '0,2%' },
+                                            ].map((item, i) => (
+                                                <div key={i} className="bg-gray-50 border border-gray-100 rounded-2xl p-4 text-center">
+                                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{item.label}</p>
+                                                    <p className="text-xl font-black text-gray-900">{item.value}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <p className="text-[11px] text-gray-500 leading-relaxed">
+                                            Exemplo: saque de R$ 100,00 → desconto de R$ 3,50 + R$ 4,00 + R$ 0,20 = <strong>R$ 92,30 líquido</strong>.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Como funciona */}
+                                <div className="rounded-3xl border border-gray-100 bg-gray-50 p-6 space-y-4">
+                                    <div className="flex items-center gap-2">
+                                        <CheckCircle2 size={16} className="text-primary" />
+                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Como funciona</p>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                        {[
+                                            { icon: <CheckCircle2 size={16} className="text-green-500" />, title: 'Saldo na hora', desc: 'Cada venda aprovada cai instantaneamente no seu saldo disponível.' },
+                                            { icon: <CheckCircle2 size={16} className="text-green-500" />, title: 'Sem análise', desc: 'Aprovação automática sem análise de crédito ou documentos.' },
+                                            { icon: <CheckCircle2 size={16} className="text-green-500" />, title: 'Taxa revisável', desc: 'Conforme seu volume de vendas aumenta, sua taxa pode ser negociada.' },
+                                        ].map((item, i) => (
+                                            <div key={i} className="flex gap-3 items-start bg-white rounded-2xl border border-gray-100 p-4">
+                                                <div className="flex-shrink-0 mt-0.5">{item.icon}</div>
+                                                <div>
+                                                    <p className="font-black text-gray-900 text-xs">{item.title}</p>
+                                                    <p className="text-[11px] text-gray-500 leading-relaxed mt-0.5">{item.desc}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
                         )}
 
                         {activeSubTab === 'aparencia' && (
