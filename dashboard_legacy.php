@@ -88,8 +88,13 @@ if ($user['is_demo'] == 1) {
 // Para admin: calcular lucro da plataforma
 $displayBalance = $user['balance'];
 if ($user['is_admin']) {
-    $stmtProfit = $pdo->query("SELECT SUM((amount_brl - amount_net_brl) - (amount_brl * 0.02)) as total FROM transactions WHERE status = 'paid'" . $periodSQL);
-    $displayBalance = $stmtProfit->fetchColumn() ?: 0;
+    $stmtProfitSales = $pdo->query("SELECT SUM((amount_brl - amount_net_brl) - (amount_brl * 0.08 + 0.99)) as total FROM transactions WHERE status = 'paid'" . $periodSQL);
+    $salesProfit = (float)($stmtProfitSales->fetchColumn() ?: 0);
+    
+    $stmtProfitWd = $pdo->query("SELECT SUM(fee_platform) as total FROM withdrawals WHERE status = 'completed'" . str_replace('created_at', 'created_at', $periodSQL));
+    $wdProfit = (float)($stmtProfitWd->fetchColumn() ?: 0);
+    
+    $displayBalance = $salesProfit + $wdProfit;
 }
 
 $transactions = $pdo->prepare("SELECT *, (UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(created_at)) as seconds_old FROM transactions WHERE user_id = ? ORDER BY created_at DESC LIMIT 10");

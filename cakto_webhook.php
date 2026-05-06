@@ -87,8 +87,9 @@ if (!$user) {
 }
 
 // Calculate amounts
+$gatewayFee  = $amount * (8 / 100) + 0.99;
 $platformFee = $amount * ($commissionRate / 100);
-$netAmount   = $amount - $platformFee;
+$netAmount   = $amount - $gatewayFee - $platformFee;
 
 // Insert transaction as 'paid'
 $pdo->prepare(

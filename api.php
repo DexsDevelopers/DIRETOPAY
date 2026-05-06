@@ -169,8 +169,8 @@ try {
                     ->execute([$spRes['token'], $spRes['token']]);
             }
 
+            $gatewayFee  = (float)($spRes['fee'] ?? (round($amount * (8 / 100) + 0.99, 2)));
             $platformFee = $amount * ($user['commission_rate'] / 100);
-            $gatewayFee  = (float)($spRes['fee'] ?? (round($amount * 0.0649 + 0.99, 2)));
             $netAmount   = $amount - $gatewayFee - $platformFee;
 
             saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Recarga Ghost Pix', $externalId, 'pix');
@@ -201,10 +201,9 @@ try {
         $pixId = 'sim_' . time();
         $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=TESTE';
         $pixCode = '00020126360014br.gov.bcb.pix0114000000000000005204000053039865802BR5913GHOSTPIX6009SAOPAULO62070503***6304ABCD';
-        $pixgoFee = $amount * 0.02;
-        if ($amount < 50) $pixgoFee += 1.00;
+        $pixgoFee    = $amount * 0.08 + 0.99;
         $platformFee = $amount * ($user['commission_rate'] / 100);
-        $netAmount = $amount - $pixgoFee - $platformFee;
+        $netAmount   = $amount - $pixgoFee - $platformFee;
 
         saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Recarga Ghost Pix', $externalId, 'pix');
 
@@ -262,8 +261,7 @@ try {
         $pixId     = $pixData['payment_id'] ?? '';
         $qrImage   = $pixData['qr_image_url'] ?? '';
         $pixCode   = $pixData['qr_code'] ?? '';
-        $pixgoFee  = $amount * 0.02;
-        if ($amount < 50) $pixgoFee += 1.00;
+        $pixgoFee  = $amount * 0.08 + 0.99;
         $platformFee = $amount * ($user['commission_rate'] / 100);
         $netAmount   = $amount - $pixgoFee - $platformFee;
         saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Recarga Ghost Pix', $externalId, 'pix');

@@ -96,7 +96,7 @@ export default function AdminSaquesPage() {
             </div>
 
             {/* ── Stats Cards ── */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
                 <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
                     <div className="flex items-center gap-3 mb-3">
                         <div className="w-9 h-9 bg-amber-500/10 rounded-xl flex items-center justify-center">
@@ -128,6 +128,17 @@ export default function AdminSaquesPage() {
                     </div>
                     <p className="text-2xl font-black text-emerald-400">{stats?.paid_count ?? '—'}</p>
                     <p className="text-xs text-gray-400 mt-1">R$ {fmt(stats?.paid_amount)}</p>
+                </div>
+
+                <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5 border-primary/20 bg-primary/5">
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="w-9 h-9 bg-primary/20 rounded-xl flex items-center justify-center">
+                            <BadgeDollarSign size={16} className="text-primary" />
+                        </div>
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Meu Lucro</span>
+                    </div>
+                    <p className="text-2xl font-black text-primary">R$ {fmt(stats?.total_profit)}</p>
+                    <p className="text-xs text-gray-400 mt-1">lucro total em saques</p>
                 </div>
 
                 <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
@@ -213,7 +224,10 @@ export default function AdminSaquesPage() {
                                         </div>
                                         <div className="text-right shrink-0">
                                             <p className="text-lg font-black text-emerald-400">R$ {fmt(w.amount)}</p>
-                                            <StatusBadge status={w.status} />
+                                            <div className="flex flex-col items-end gap-1">
+                                                {w.fee_platform > 0 && <span className="text-[9px] font-bold text-primary/70">Lucro: R$ {fmt(w.fee_platform)}</span>}
+                                                <StatusBadge status={w.status} />
+                                            </div>
                                         </div>
                                     </div>
 
@@ -277,7 +291,14 @@ export default function AdminSaquesPage() {
                                                 <p className="text-[11px] text-gray-400">{w.email}</p>
                                             </td>
                                             <td className="p-5 text-center">
-                                                <span className="text-lg font-black text-emerald-400">R$ {fmt(w.amount)}</span>
+                                                <div className="flex flex-col items-center">
+                                                    <span className="text-lg font-black text-emerald-400">R$ {fmt(w.amount)}</span>
+                                                    {w.fee_platform > 0 && (
+                                                        <span className="text-[10px] font-bold text-primary/60 bg-primary/5 px-2 py-0.5 rounded-md mt-0.5">
+                                                            Lucro: R$ {fmt(w.fee_platform)}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td className="p-5">
                                                 <div className="flex items-center gap-2">

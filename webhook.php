@@ -75,10 +75,9 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
             );
 
             // 3. Calcular e Credit lucro do Admin e Afiliado
-            // Lucro plataforma = Valor Bruto - Valor Líquido - Taxa PixGo (2% + R$1 se < R$50)
-            $pixgoFee = $transaction['amount_brl'] * 0.02;
-            if ($transaction['amount_brl'] < 50) $pixgoFee += 1.00;
-            $platformGrossProfit = $transaction['amount_brl'] - $transaction['amount_net_brl'] - $pixgoFee;
+            // Lucro plataforma = Valor Bruto - Valor Líquido - Taxa Gateway (8% + R$0,99)
+            $gatewayFee = $transaction['amount_brl'] * 0.08 + 0.99;
+            $platformGrossProfit = $transaction['amount_brl'] - $transaction['amount_net_brl'] - $gatewayFee;
             
             if ($platformGrossProfit > 0) {
                 // Verificar se o usuário da transação possui um afiliado
@@ -244,6 +243,7 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                 'customer_name' => $realPayerName ?: ($transaction['customer_name'] ?? ''),
                 'status' => 'paid',
                 'external_id' => $transaction['external_id'] ?? '',
+                'seller_email' => $userData['email'] ?? '',
                 'timestamp' => date('Y-m-d H:i:s')
             ];
 

@@ -19,9 +19,13 @@ try {
     $paidCount     = (int)$pdo->query("SELECT COUNT(*) FROM withdrawals WHERE status = 'completed'")->fetchColumn();
     $rejectedCount = (int)$pdo->query("SELECT COUNT(*) FROM withdrawals WHERE status = 'rejected'")->fetchColumn();
     $todayPending  = (int)$pdo->query("SELECT COUNT(*) FROM withdrawals WHERE status = 'pending' AND DATE(created_at) = CURDATE()")->fetchColumn();
+    
+    $totalProfit   = (float)($pdo->query("SELECT COALESCE(SUM(fee_platform),0) FROM withdrawals WHERE status = 'completed'")->fetchColumn() ?: 0);
+    $pendingGross  = (float)($pdo->query("SELECT COALESCE(SUM(amount_gross),0) FROM withdrawals WHERE status = 'pending'")->fetchColumn() ?: 0);
 
     // Main query - use w.* like get_admin_data.php does
-    $sql = "SELECT w.*, u.email, u.full_name AS user_full_name, u.pix_key AS user_pix_key
+    $sql = "SELECT w.id, w.user_id, w.amount, w.amount_gross, w.fee_platform, w.fee_gateway, w.pix_key, w.status, w.tx_hash, w.created_at, 
+                   u.email, u.full_name AS user_full_name, u.pix_key AS user_pix_key
             FROM withdrawals w
             JOIN users u ON w.user_id = u.id
             WHERE 1=1";
@@ -62,10 +66,12 @@ try {
         'stats' => [
             'pending_count'  => $pendingCount,
             'pending_amount' => $pendingAmount,
+            'pending_gross'  => $pendingGross,
             'paid_amount'    => $paidAmount,
             'paid_count'     => $paidCount,
             'rejected_count' => $rejectedCount,
             'today_pending'  => $todayPending,
+            'total_profit'   => $totalProfit,
         ],
         'withdrawals' => $withdrawals,
     ]);

@@ -110,7 +110,9 @@ try {
                 $pixCode = '00020126360014br.gov.bcb.pix0114000000000000005204000053039865802BR5925GHOSTPIX6009SAOPAULO62070503***6304ABCD';
                 $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=GHOSTPIX_SUB_' . $sid;
                 $pixId   = 'sim_sub_' . time();
-                $netAmt  = $amount * 0.95;
+                $pixgoFee    = $amount * (8 / 100) + 0.99;
+                $platformFee = $amount * ($subscription['commission_rate'] / 100);
+                $netAmt      = $amount - $pixgoFee - $platformFee;
 
                 saveTransaction($userId, $amount, $netAmt, $pixId, $pixCode, $qrImage, null, $subscription['subscriber_name'], $externalId, 'pix');
                 $txId = (int)$pdo->lastInsertId();
@@ -130,7 +132,7 @@ try {
                 $pixId   = $pixData['payment_id'] ?? '';
                 $qrImage = $pixData['qr_image_url'] ?? '';
                 $pixCode = $pixData['pix_code'] ?? ($pixData['payload'] ?? '');
-                $pixgoFee    = $amount * 0.02 + ($amount < 50 ? 1.00 : 0);
+                $pixgoFee    = $amount * (8 / 100) + 0.99;
                 $platformFee = $amount * ($subscription['commission_rate'] / 100);
                 $netAmt      = $amount - $pixgoFee - $platformFee;
 

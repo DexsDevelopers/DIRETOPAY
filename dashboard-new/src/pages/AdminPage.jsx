@@ -210,7 +210,7 @@ export default function AdminPage() {
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-gray-500 font-semibold">Taxa plataforma (saque)</span>
-                                <span className="text-orange-400 font-black">R$ 3,50 / saque</span>
+                                <span className="text-orange-400 font-black">5% / saque</span>
                             </div>
                             <div className="border-t border-gray-100 pt-1.5 flex justify-between items-center">
                                 <span className="text-gray-600 font-bold">Seu lucro (taxa padrão)</span>

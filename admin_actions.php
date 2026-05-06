@@ -114,7 +114,7 @@ try {
             $pdo->beginTransaction();
             try {
                 // Lock + verificar status para evitar double-processing
-                $stmtW = $pdo->prepare("SELECT w.user_id, w.amount, w.pix_key, w.status, u.full_name FROM withdrawals w JOIN users u ON u.id = w.user_id WHERE w.id = ? FOR UPDATE");
+                $stmtW = $pdo->prepare("SELECT w.user_id, w.amount, w.amount_gross, w.pix_key, w.status, u.full_name FROM withdrawals w JOIN users u ON u.id = w.user_id WHERE w.id = ? FOR UPDATE");
                 $stmtW->execute([$wId]);
                 $w = $stmtW->fetch();
                 if (!$w || $w['status'] !== 'pending') {
@@ -122,13 +122,17 @@ try {
                     echo json_encode(['error' => 'Saque não encontrado ou já processado']);
                     break;
                 }
+                
+                // O valor a ser debitado do saldo do usuário deve ser o valor BRUTO solicitado
+                $debitAmount = (float)($w['amount_gross'] ?: $w['amount']);
+
                 // Debitar saldo atomicamente
                 $result = adjustBalance(
                     (int)$w['user_id'],
-                    -abs((float)$w['amount']),
+                    -abs($debitAmount),
                     'withdraw_debit',
                     'wd_' . $wId,
-                    'Saque #' . $wId . ' aprovado — ' . ($hash ?: 'sem hash')
+                    'Saque #' . $wId . ' aprovado — ' . ($hash ?: 'sem hash') . ' (Valor Bruto: R$ ' . number_format($debitAmount, 2, ',', '.') . ')'
                 );
                 if (!$result['success']) {
                     $pdo->rollBack();

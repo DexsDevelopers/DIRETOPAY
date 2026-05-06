@@ -11,11 +11,10 @@ dist = 'dashboard-new/dist/assets'
 
 # Upload new JS and CSS builds (chunked)
 files = [
-    'index-BOn8jWox.js',
-    'index-DrOYxgbL.css',
+    'index-D1UxUajB.js',
+    'index-cZjWi1Ky.css',
     'rolldown-runtime-WehaI0Q3.js',
     'vendor-react-CIFpnPib.js',
-    'vendor-lucide-owoi_Ylx.js',
     'vendor-motion-BKEh_tME.js',
     'vendor-charts-He-U0hDw.js',
 ]

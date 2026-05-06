@@ -295,10 +295,13 @@ try {
         $pdo->exec("ALTER TABLE banners ADD COLUMN image_url_mobile VARCHAR(500) NULL AFTER image_url");
     } catch (PDOException $e) {}
 
+    // Auto-Migração: Detalhamento de taxas nos saques
+    try { $pdo->exec("ALTER TABLE withdrawals ADD COLUMN amount_gross DECIMAL(15,2) AFTER user_id"); } catch (PDOException $e) {}
+    try { $pdo->exec("ALTER TABLE withdrawals ADD COLUMN fee_platform DECIMAL(15,2) AFTER amount"); } catch (PDOException $e) {}
+    try { $pdo->exec("ALTER TABLE withdrawals ADD COLUMN fee_gateway DECIMAL(15,2) AFTER fee_platform"); } catch (PDOException $e) {}
+
     // Auto-Migração: Configurações avançadas de personalização do checkout
-    try {
-        $pdo->exec("ALTER TABLE checkouts ADD COLUMN custom_settings TEXT DEFAULT NULL");
-    } catch (PDOException $e) {}
+    try { $pdo->exec("ALTER TABLE checkouts ADD COLUMN custom_settings TEXT DEFAULT NULL"); } catch (PDOException $e) {}
 
 } catch (PDOException $e) {
     die("Erro ao conectar ao banco de dados: " . $e->getMessage());

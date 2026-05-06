@@ -47,15 +47,15 @@ foreach ($referrals as &$ref) {
     }
 
     // Calcular comissão gerada por este indicado
-    // Lucro plataforma por transação = amount_brl - amount_net_brl - (amount_brl * 0.02)
+    // Lucro plataforma por transação = amount_brl - amount_net_brl - (amount_brl * 0.08 + 0.99)
     $earnStmt = $pdo->prepare("
         SELECT 
             COALESCE(SUM(
-                (amount_brl - amount_net_brl - (amount_brl * 0.02)) * ? / 100
+                (amount_brl - amount_net_brl - (amount_brl * 0.08 + 0.99)) * ? / 100
             ), 0) as total,
             COALESCE(SUM(
                 CASE WHEN DATE_FORMAT(created_at, '%Y-%m') = ? 
-                THEN (amount_brl - amount_net_brl - (amount_brl * 0.02)) * ? / 100
+                THEN (amount_brl - amount_net_brl - (amount_brl * 0.08 + 0.99)) * ? / 100
                 ELSE 0 END
             ), 0) as this_month
         FROM transactions 

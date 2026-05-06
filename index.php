@@ -42,10 +42,12 @@ if ($isAuth && $requestPath === '/') {
     <title>Ghost Pix - Dashboard Premium</title>
     
     <!-- React Build Assets -->
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js">
-    <script type="module" crossorigin src="/assets/dashboard-react/index-CA8HnAkH.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-Syk19RDB.css">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js?v=11">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js?v=11">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-react-CIFpnPib.js?v=11">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-motion-BKEh_tME.js?v=11">
+    <script type="module" crossorigin src="/assets/dashboard-react/index-DxaUO0Tm.js?v=11"></script>
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-cZjWi1Ky.css?v=11">
     
     <!-- Preload fonts to avoid layout shift -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">

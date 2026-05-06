@@ -17,8 +17,13 @@ $currentDefTax = (float)($defTaxStmt->fetchColumn() ?: '5.0');
 $cardExtraFeeStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'card_extra_fee'");
 $cardExtraFee = (float)($cardExtraFeeStmt->fetchColumn() ?: '0');
 
-$stmtProfit = $pdo->query("SELECT SUM((amount_brl - amount_net_brl) - (amount_brl * 0.02)) as total FROM transactions WHERE status = 'paid'");
-$totalProfit = (float)($stmtProfit->fetchColumn() ?: 0);
+$stmtProfitSales = $pdo->query("SELECT SUM((amount_brl - amount_net_brl) - (amount_brl * 0.08 + 0.99)) as total FROM transactions WHERE status = 'paid'");
+$salesProfit = (float)($stmtProfitSales->fetchColumn() ?: 0);
+
+$stmtProfitWithdraws = $pdo->query("SELECT SUM(fee_platform) as total FROM withdrawals WHERE status = 'completed'");
+$withdrawProfit = (float)($stmtProfitWithdraws->fetchColumn() ?: 0);
+
+$totalProfit = $salesProfit + $withdrawProfit;
 
 // ── Dashboard Metrics ──────────────────────────────────────────────────────────
 $today    = date('Y-m-d');

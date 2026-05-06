@@ -21,7 +21,7 @@ $csrfToken = $headers['X-CSRF-Token'] ?? ($headers['x-csrf-token'] ?? '');
 check_csrf($csrfToken);
 
 $amount = (float)($input['amount'] ?? 0);
-$platformFee = 3.50;
+$platformFee = round($amount * 0.05, 2);
 $sigiloFee   = round($amount * 0.002 + 4.00, 2);
 $withdrawFee = $platformFee + $sigiloFee;
 
@@ -66,8 +66,8 @@ try {
     $pdo->beginTransaction();
 
     // Registrar pedido de saque (o saldo só é debitado quando o admin aprovar)
-    $stmt = $pdo->prepare("INSERT INTO withdrawals (user_id, amount, pix_key, status) VALUES (?, ?, ?, 'pending')");
-    $stmt->execute([$userId, $netAmount, $user['pix_key']]);
+    $stmt = $pdo->prepare("INSERT INTO withdrawals (user_id, amount_gross, amount, fee_platform, fee_gateway, pix_key, status) VALUES (?, ?, ?, ?, ?, ?, 'pending')");
+    $stmt->execute([$userId, $amount, $netAmount, $platformFee, $sigiloFee, $user['pix_key']]);
 
     $pdo->commit();
     write_log('INFO', 'Pedido de Saque Realizado', ['user_id' => $userId, 'amount' => $amount, 'platform_fee' => $platformFee, 'sigilo_fee' => $sigiloFee, 'total_fee' => $withdrawFee, 'net' => $netAmount]);
@@ -82,7 +82,7 @@ try {
     }
     
     // Notificar Admin via Telegram
-    try { TelegramService::notifyWithdrawal($userName, $amount, $user['pix_key']); } catch (Throwable $e) {}
+    try { TelegramService::notifyWithdrawal($userName, $amount, $user['pix_key'], $platformFee, $sigiloFee); } catch (Throwable $e) {}
     
     echo json_encode(['status' => 'success', 'message' => 'Solicitação de saque enviada ao administrador!']);
 } catch (Exception $e) {

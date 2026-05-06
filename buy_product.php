@@ -111,7 +111,7 @@ try {
         $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=GHOSTPIX_PRODUCT';
         $pixCode = '00020126360014br.gov.bcb.pix0114000000000000005204000053039865802BR5913GHOSTPIX6009SAOPAULO62070503***6304ABCD';
 
-        $pixgoFee    = $amount * 0.02 + ($amount < 50 ? 1.00 : 0);
+        $pixgoFee    = $amount * 0.08 + 0.99;
         $platformFee = $amount * ($product['commission_rate'] / 100);
         $netAmount   = $amount - $pixgoFee - $platformFee;
 
@@ -167,7 +167,7 @@ try {
             if (!empty($spRes['token'])) {
                 $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES ('sigilopay_webhook_token',?) ON DUPLICATE KEY UPDATE `value`=?")->execute([$spRes['token'], $spRes['token']]);
             }
-            $gatewayFee  = (float)($spRes['fee'] ?? round($amount * 0.0649 + 0.99, 2));
+            $gatewayFee  = (float)($spRes['fee'] ?? round($amount * 0.08 + 0.99, 2));
             $platformFee = $amount * ($product['commission_rate'] / 100);
             $netAmount   = $amount - $gatewayFee - $platformFee;
             saveTransaction($sellerId, $amount, $netAmount, $pixId, $pixCode, $qrImage, null, $customerName, $externalId, 'pix');
@@ -219,7 +219,7 @@ try {
         $qrImage = $pixData['qr_image_url'] ?? '';
         $pixCode = $pixData['pix_code'] ?? ($pixData['payload'] ?? ($pixData['qr_code'] ?? ''));
 
-        $pixgoFee    = $amount * 0.02 + ($amount < 50 ? 1.00 : 0);
+        $pixgoFee    = $amount * 0.08 + 0.99;
         $platformFee = $amount * ($product['commission_rate'] / 100);
         $netAmount   = $amount - $pixgoFee - $platformFee;
 

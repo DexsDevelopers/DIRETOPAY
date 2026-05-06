@@ -916,8 +916,9 @@ function handlePix(string $chatId, array $user, float $amount): void {
             }
             $pixId = $spRes['identifier'] ?? $externalId;
 
+            $gatewayFee  = $amount * (8 / 100) + 0.99;
             $platformFee = $amount * ($user['commission_rate'] / 100);
-            $netAmount   = $amount - $platformFee;
+            $netAmount   = $amount - $gatewayFee - $platformFee;
             saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, '', null, 'PIX via Telegram', $externalId, 'pix');
             $txId = (int)$pdo->lastInsertId();
 
@@ -1128,7 +1129,7 @@ function processWithdrawal(string $chatId, array $user, float $amount): void {
     global $pdo;
     sendTyping($chatId);
     $userId = (int)$user['id'];
-    $platformFee = 3.50;
+    $platformFee = round($amount * 0.05, 2);
     $sigiloFee   = round($amount * 0.002 + 4.00, 2);
     $withdrawFee = $platformFee + $sigiloFee;
     $netAmount = $amount - $withdrawFee;
@@ -1147,15 +1148,15 @@ function processWithdrawal(string $chatId, array $user, float $amount): void {
     }
 
     try {
-        $pdo->prepare("INSERT INTO withdrawals (user_id, amount, pix_key, status) VALUES (?, ?, ?, 'pending')")
-            ->execute([$userId, $netAmount, $freshUser['pix_key']]);
+        $pdo->prepare("INSERT INTO withdrawals (user_id, amount_gross, amount, fee_platform, fee_gateway, pix_key, status) VALUES (?, ?, ?, ?, ?, ?, 'pending')")
+            ->execute([$userId, $amount, $netAmount, $platformFee, $sigiloFee, $freshUser['pix_key']]);
         try {
-            TelegramService::notifyWithdrawal($user['full_name'], $amount, $freshUser['pix_key']);
+            TelegramService::notifyWithdrawal($user['full_name'], $amount, $freshUser['pix_key'], $platformFee, $sigiloFee);
         } catch (Throwable $e) {}
         uReply($chatId,
             "✅ <b>Saque Solicitado!</b>" . div() . "\n\n"
             . "💵 Valor: " . formatBRL($amount) . "\n"
-            . "📉 Taxa plataforma: -R$ 3,50\n"
+            . "📉 Taxa plataforma (5%): -" . formatBRL($platformFee) . "\n"
             . "📉 Taxa SigiloPay: -" . formatBRL($sigiloFee) . " (R$ 4,00 + 0,2%)\n"
             . "✅ Recebe: <b>" . formatBRL($netAmount) . "</b>\n"
             . "🔑 PIX: <code>{$freshUser['pix_key']}</code>\n\n"
@@ -1511,7 +1512,7 @@ switch ($command) {
             uReply($chatId,
                 "🏦 <b>Solicitar Saque</b>" . div() . "\n\n"
                 . "✅ Disponível: <b>" . formatBRL($available) . "</b>\n"
-                . "📉 Taxa: R$ 3,50 + R$ 4,00 + 0,2% (SigiloPay)\n"
+                . "📉 Taxa: 5% + R$ 4,00 + 0,2% (SigiloPay)\n"
                 . "📋 Mínimo: R$ 20,00\n\n"
                 . "Use: <code>/sacar 50</code>" . footer(),
                 afterActionKeyboard()

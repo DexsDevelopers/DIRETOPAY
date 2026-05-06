@@ -77,8 +77,7 @@ try {
         $pixId = 'sim_chk_' . time();
         $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=TESTE';
         $pixCode = '00020126360014br.gov.bcb.pix0114000000000000005204000053039865802BR5913GHOSTPIX6009SAOPAULO62070503***6304ABCD';
-        $pixgoFee = $totalAmount * 0.02;
-        if ($totalAmount < 50) $pixgoFee += 1.00;
+        $pixgoFee = $totalAmount * 0.08 + 0.99;
         $platformFee = $totalAmount * ($user['commission_rate'] / 100);
         $netAmount = $totalAmount - $pixgoFee - $platformFee;
 
@@ -153,7 +152,7 @@ try {
                     ->execute([$spRes['token'], $spRes['token']]);
             }
 
-            $gatewayFee  = (float)($spRes['fee'] ?? round($totalAmount * 0.0649 + 0.99, 2));
+            $gatewayFee  = (float)($spRes['fee'] ?? round($totalAmount * 0.08 + 0.99, 2));
             $platformFee = $totalAmount * ($user['commission_rate'] / 100);
             $netAmount   = $totalAmount - $gatewayFee - $platformFee;
 
@@ -214,8 +213,7 @@ try {
         $qrImage = $pixData['qr_image_url'] ?? '';
         $pixCode = $pixData['pix_code'] ?? ($pixData['payload'] ?? ($pixData['qr_code'] ?? ($pixData['qrcodepix'] ?? '')));
 
-        $pixgoFee    = $totalAmount * 0.02;
-        if ($totalAmount < 50) $pixgoFee += 1.00;
+        $pixgoFee    = $totalAmount * 0.08 + 0.99;
         $platformFee = $totalAmount * ($user['commission_rate'] / 100);
         $netAmount   = $totalAmount - $pixgoFee - $platformFee;
         saveTransaction($userId, $totalAmount, $netAmount, $pixId, $pixCode, $qrImage, null, $customerName, $externalId, 'pix');

@@ -148,17 +148,20 @@ class TelegramService
     }
 
     // ─── SAQUE SOLICITADO ────────────────────────────────────────────
-    public static function notifyWithdrawal(string $userName, float $amount, string $pixKey, float $fee = 3.50): bool
+    public static function notifyWithdrawal(string $userName, float $grossAmount, string $pixKey, float $platformFee = 3.50, float $sigiloFee = 0.00): bool
     {
-        $gross = number_format($amount, 2, ',', '.');
-        $net   = number_format($amount - $fee, 2, ',', '.');
-        $feeFmt= number_format($fee, 2, ',', '.');
+        $gross = number_format($grossAmount, 2, ',', '.');
+        $net   = number_format($grossAmount - $platformFee - $sigiloFee, 2, ',', '.');
+        $pFee  = number_format($platformFee, 2, ',', '.');
+        $sFee  = number_format($sigiloFee, 2, ',', '.');
+        
         $msg =
             "🏦 <b>SAQUE SOLICITADO</b>\n" . self::divider() . "\n\n"
           . "👤 <b>Usuário:</b>       {$userName}\n"
-          . "💵 <b>Valor Solicitado:</b> R$ {$gross}\n"
-          . "📉 <b>Taxa de Saque:</b>    R$ {$feeFmt}\n"
-          . "💎 <b>Valor a Receber:</b>  R$ {$net}\n"
+          . "💵 <b>Valor Bruto:</b>    R$ {$gross}\n"
+          . "📉 <b>Taxa SigiloPay:</b> R$ {$sFee}\n"
+          . "💰 <b>Meu Lucro:</b>      R$ {$pFee}\n"
+          . "💎 <b>Valor a Pagar:</b>  R$ {$net}\n"
           . "🔑 <b>Chave PIX:</b>   <code>{$pixKey}</code>\n\n"
           . "⚠️ <i>Aguardando aprovação manual.</i>"
           . self::footer();

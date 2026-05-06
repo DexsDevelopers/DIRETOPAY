@@ -152,9 +152,10 @@ try {
             }
 
             $userId    = $user['id'];
-            $commStmt  = $pdo->query("SELECT `value` FROM settings WHERE `key`='default_user_tax'");
             $commRate  = (float)($commStmt ? $commStmt->fetchColumn() : 5);
-            $netAmount = $amount * (1 - $commRate / 100);
+            $gatewayFee = $amount * (8 / 100) + 0.99;
+            $platformFee = $amount * ($commRate / 100);
+            $netAmount = $amount - $gatewayFee - $platformFee;
 
             $pdo->prepare("UPDATE users SET balance = balance + ? WHERE id = ?")->execute([$netAmount, $userId]);
 
