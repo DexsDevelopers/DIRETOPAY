@@ -11,7 +11,7 @@ if (empty($token)) {
     exit;
 }
 
-$ssoSecret = defined('SSO_SECRET') ? SSO_SECRET : 'ghostpix_helmer_sso_2026_secure_key';
+$ssoSecret = defined('SSO_SECRET') ? SSO_SECRET : 'ghostpix_7kchat_sso_2026_secure_key';
 
 // Parse token
 $parts = explode('.', $token);
