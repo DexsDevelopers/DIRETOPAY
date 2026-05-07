@@ -20,8 +20,8 @@ if (!$user) {
     exit;
 }
 
-// Shared secret (must match on Academy side)
-$ssoSecret = defined('SSO_SECRET') ? SSO_SECRET : 'ghostpix_helmer_sso_2026_secure_key';
+$ssoSecret   = defined('SSO_SECRET')   ? SSO_SECRET   : 'ghostpix_7kchat_sso_2026_secure_key';
+$academyUrl  = defined('ACADEMY_URL')  ? ACADEMY_URL  : 'https://7kchat.site';
 
 $payload = [
     'email' => $user['email'],
@@ -35,6 +35,5 @@ $payloadEncoded = base64_encode(json_encode($payload));
 $signature = hash_hmac('sha256', $payloadEncoded, $ssoSecret);
 $token = $payloadEncoded . '.' . $signature;
 
-$academyUrl = defined('ACADEMY_URL') ? ACADEMY_URL : 'https://helmer-mbs.site';
 header('Location: ' . $academyUrl . '/sso_login.php?token=' . urlencode($token));
 exit;
