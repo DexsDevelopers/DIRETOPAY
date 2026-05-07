@@ -56,7 +56,7 @@ if ($isAuth && $requestPath === '/') {
       body {
         margin: 0;
         background-color: #0a0a0c;
-        color: #1E1B4B;
+        color: #f8fafc;
         font-family: 'Outfit', sans-serif;
       }
       ::-webkit-scrollbar { width: 6px; }
