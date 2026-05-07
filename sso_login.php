@@ -1,6 +1,6 @@
 <?php
 /**
- * SSO Login - Receives token from Helmer Academy → logs into Ghost Pix
+ * SSO Login - Receives token from 7K CHAT → logs into Ghost Pix
  */
 require_once 'includes/db.php';
 

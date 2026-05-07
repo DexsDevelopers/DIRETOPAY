@@ -1,6 +1,6 @@
 <?php
 /**
- * SSO Redirect - Ghost Pix → Helmer Academy
+ * SSO Redirect - Ghost Pix → 7K CHAT
  * Generates a signed token and redirects user to Academy
  */
 require_once 'includes/db.php';
