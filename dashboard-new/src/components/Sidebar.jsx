@@ -169,13 +169,13 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
                 <p className="px-6 pb-2 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Ecossistema</p>
                 <a
                     href="/sso_redirect.php"
-                    className="w-full flex items-center justify-between px-6 py-3 rounded-full text-gray-500 hover:bg-red-50 hover:text-red-500 transition-all duration-300 group mb-1"
+                    className="w-full flex items-center justify-between px-6 py-3 rounded-full text-violet-500 bg-violet-50 border border-violet-100 hover:bg-violet-100 transition-all duration-300 group mb-1"
                 >
                     <div className="flex items-center gap-3">
-                        <GraduationCap size={20} className="text-red-400" />
-                        <span className="text-[13px] font-bold uppercase tracking-widest">Helmer Academy</span>
+                        <MessageCircle size={20} className="text-violet-500" />
+                        <span className="text-[13px] font-bold uppercase tracking-widest">7K CHAT</span>
                     </div>
-                    <ExternalLink size={14} className="opacity-0 group-hover:opacity-40 transition-opacity" />
+                    <ExternalLink size={14} className="opacity-40 group-hover:opacity-100 transition-opacity" />
                 </a>
             </div>
 
