@@ -23,9 +23,15 @@ if (!$user) {
 $ssoSecret   = defined('SSO_SECRET')   ? SSO_SECRET   : 'ghostpix_7kchat_sso_2026_secure_key';
 $academyUrl  = defined('ACADEMY_URL')  ? ACADEMY_URL  : 'https://7kchat.site';
 
+// Fetch total revenue to sync with 7K
+$stmtTotal = $pdo->prepare("SELECT SUM(amount_brl) as vol FROM transactions WHERE user_id = ? AND status = 'paid'");
+$stmtTotal->execute([$userId]);
+$totalRevenue = (float)($stmtTotal->fetch()['vol'] ?? 0);
+
 $payload = [
     'email' => $user['email'],
     'name' => $user['full_name'],
+    'total_revenue' => $totalRevenue,
     'from' => 'ghostpix',
     'ts' => time(),
     'nonce' => bin2hex(random_bytes(16))
