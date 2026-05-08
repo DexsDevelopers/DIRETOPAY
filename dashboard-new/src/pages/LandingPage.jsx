@@ -447,10 +447,13 @@ export default function LandingPage() {
             </section>
 
             {/* Awards Section */}
-            <section className="relative py-28 px-6 bg-[#07070d] overflow-hidden">
+            <section className="relative py-28 px-6 overflow-hidden bg-[#07070d]">
+                {/* fade top/bottom */}
+                <div className={`absolute top-0 inset-x-0 h-16 pointer-events-none z-10 ${isDark ? 'bg-gradient-to-b from-[#0a0a0f] to-transparent' : 'bg-gradient-to-b from-white to-transparent'}`} />
+                <div className={`absolute bottom-0 inset-x-0 h-16 pointer-events-none z-10 ${isDark ? 'bg-gradient-to-t from-[#0a0a0f] to-transparent' : 'bg-gradient-to-t from-gray-50 to-transparent'}`} />
                 {/* decorative glows */}
                 <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/5 rounded-full blur-[100px] pointer-events-none" />
-                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-700/6 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-700/8 rounded-full blur-[100px] pointer-events-none" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-32 bg-white/[0.02] rounded-full blur-[60px] pointer-events-none" />
                 <div className="max-w-7xl mx-auto relative z-10">
                     <div className="text-center max-w-3xl mx-auto mb-16">
