@@ -459,7 +459,7 @@ export default function LandingPage() {
 
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}
                                 className="flex flex-wrap justify-center lg:justify-start gap-3">
-                                {[{ icon: ShieldCheck, text: '100% Anônimo' }, { icon: Zap, text: 'Saque Instantâneo' }, { icon: Lock, text: 'Anti-MED' }].map((item, i) => (
+                                {[{ icon: ShieldCheck, text: '100% Anônimo' }, { icon: Zap, text: 'Saque Instantâneo' }, { icon: Lock, text: 'Anti-MED' }, { icon: User, text: 'Sem Documentos' }].map((item, i) => (
                                     <div key={i} className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold ${isDark ? 'bg-white/5 border-white/10 text-gray-400' : 'bg-white border-gray-200 text-gray-600'}`}>
                                         <item.icon size={14} className="text-primary shrink-0" />
                                         {item.text}
