@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 /**
  * telegram_daily_report.php — Relatório diário automático via Telegram
  *
  * Configurar como cron job no servidor para rodar às 23:55 diariamente:
- *   55 23 * * * curl -s "https://pixghost.site/telegram_daily_report.php?secret=SEU_SECRET" > /dev/null
+ *   55 23 * * * curl -s "https://LUNARPAY.site/telegram_daily_report.php?secret=SEU_SECRET" > /dev/null
  *
  * Ou usar um serviço como cron-job.org para chamar a URL diariamente.
  *
@@ -156,7 +156,7 @@ if ($salesCount === 0 && $newUsers === 0) {
     $msg .= "💪 <i>Dia produtivo. Seguimos crescendo!</i>\n";
 }
 
-$msg .= "{$div}\n🤖 <i>Ghost Pix • Relatório automático • " . date('H:i') . "</i>";
+$msg .= "{$div}\n🤖 <i>LunarPay • Relatório automático • " . date('H:i') . "</i>";
 
 // Enviar
 $sent = TelegramService::send($msg);

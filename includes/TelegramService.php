@@ -5,7 +5,7 @@
 class TelegramService
 {
     private static function divider(): string { return "━━━━━━━━━━━━━━━━━━━━"; }
-    private static function footer(): string  { return "\n" . self::divider() . "\n🤖 <i>Ghost Pix • " . date('d/m/Y \à\s H:i') . "</i>"; }
+    private static function footer(): string  { return "\n" . self::divider() . "\n🤖 <i>LunarPay • " . date('d/m/Y \à\s H:i') . "</i>"; }
 
     private static function token(): string  { return defined('TELEGRAM_BOT_TOKEN') ? TELEGRAM_BOT_TOKEN : ''; }
     private static function chatId(): string { return defined('TELEGRAM_CHAT_ID')   ? TELEGRAM_CHAT_ID   : ''; }

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once 'includes/db.php';
 header('Content-Type: application/json');
 
@@ -41,7 +41,7 @@ $expires = date('Y-m-d H:i:s', strtotime('+10 minutes'));
 $pdo->prepare("UPDATE users SET telegram_link_token = ?, telegram_link_expires = ? WHERE id = ?")
     ->execute([$token, $expires, $userId]);
 
-$botUsername = defined('TELEGRAM_USER_BOT_USERNAME') ? TELEGRAM_USER_BOT_USERNAME : 'GhostPixUserBot';
+$botUsername = defined('TELEGRAM_USER_BOT_USERNAME') ? TELEGRAM_USER_BOT_USERNAME : 'LunarPayUserBot';
 
 echo json_encode([
     'success' => true,

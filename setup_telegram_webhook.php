@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 /**
  * setup_telegram_webhook.php
  * Acesse UMA vez para registrar o webhook do bot.
  * Depois delete ou proteja este arquivo.
  *
- * URL: https://pixghost.site/setup_telegram_webhook.php?admin=1
+ * URL: https://LUNARPAY.site/setup_telegram_webhook.php?admin=1
  */
 require_once __DIR__ . '/includes/db.php';
 
@@ -21,7 +21,7 @@ if (!defined('TELEGRAM_BOT_TOKEN') || empty(TELEGRAM_BOT_TOKEN)) {
 
 $token  = TELEGRAM_BOT_TOKEN;
 $secret = defined('TELEGRAM_WEBHOOK_SECRET') ? TELEGRAM_WEBHOOK_SECRET : '';
-$url    = 'https://pixghost.site/telegram_bot.php' . ($secret ? "?secret={$secret}" : '');
+$url    = 'https://LUNARPAY.site/telegram_bot.php' . ($secret ? "?secret={$secret}" : '');
 
 $ch = curl_init("https://api.telegram.org/bot{$token}/setWebhook");
 curl_setopt_array($ch, [

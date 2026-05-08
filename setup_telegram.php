@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Setup Telegram — Configurar bots Admin + Usuário
  * Acesse: https://seusite.com/setup_telegram.php
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // ── Testar Bot Admin ────────────────────────────────────────────
     if (!empty($fields['TELEGRAM_BOT_TOKEN']) && !empty($fields['TELEGRAM_CHAT_ID'])) {
-        $testMsg = "✅ <b>Ghost Pix — Bot Admin conectado!</b>\n\n🔔 Notificações ativas:\n• 💰 Vendas confirmadas\n• 👤 Novos cadastros\n• 🏦 Saques solicitados";
+        $testMsg = "✅ <b>LunarPay — Bot Admin conectado!</b>\n\n🔔 Notificações ativas:\n• 💰 Vendas confirmadas\n• 👤 Novos cadastros\n• 🏦 Saques solicitados";
         $ch = curl_init("https://api.telegram.org/bot{$fields['TELEGRAM_BOT_TOKEN']}/sendMessage");
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true, CURLOPT_POST => true, CURLOPT_TIMEOUT => 10,
@@ -115,7 +115,7 @@ $mask = function($v) { return $v ? substr($v, 0, 8) . '...' . substr($v, -4) : '
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Setup Telegram — Ghost Pix</title>
+    <title>Setup Telegram — LunarPay</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0f; color: #e0e0e0; min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem; }
@@ -146,7 +146,7 @@ $mask = function($v) { return $v ? substr($v, 0, 8) . '...' . substr($v, -4) : '
 </head>
 <body>
 <div class="container">
-    <h1>👻 <span>Ghost Pix</span> — Setup Telegram</h1>
+    <h1>👻 <span>LunarPay</span> — Setup Telegram</h1>
     <p class="subtitle">Configure os bots do Telegram para notificações e interação com usuários</p>
 
     <?php if ($results): ?>
@@ -198,7 +198,7 @@ $mask = function($v) { return $v ? substr($v, 0, 8) . '...' . substr($v, -4) : '
             <div class="hint">Qualquer texto aleatório para segurança do webhook</div>
 
             <label>Username do Bot</label>
-            <input type="text" name="user_username" placeholder="GhostPixBot" value="<?= htmlspecialchars($current['TELEGRAM_USER_BOT_USERNAME'] ?? '') ?>">
+            <input type="text" name="user_username" placeholder="LunarPayBot" value="<?= htmlspecialchars($current['TELEGRAM_USER_BOT_USERNAME'] ?? '') ?>">
             <?php if (!empty($current['TELEGRAM_USER_BOT_USERNAME'])): ?>
             <div class="current">Atual: @<?= htmlspecialchars($current['TELEGRAM_USER_BOT_USERNAME']) ?></div>
             <?php endif; ?>

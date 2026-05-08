@@ -1,7 +1,7 @@
-<?php
+﻿<?php
 /**
  * ╔══════════════════════════════════════════════════════════════════════════╗
- * ║   Ghost Pix — Telegram User Bot v2.0                                   ║
+ * ║   LunarPay — Telegram User Bot v2.0                                   ║
  * ║   Bot inteligente, humanizado e profissional para vendedores            ║
  * ╚══════════════════════════════════════════════════════════════════════════╝
  *
@@ -105,7 +105,7 @@ function div(): string { return "\n━━━━━━━━━━━━━━━
 function divLight(): string { return "\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈"; }
 
 function footer(): string {
-    return "\n\n<i>👻 Ghost Pix • " . date('H:i') . "</i>";
+    return "\n\n<i>👻 LunarPay • " . date('H:i') . "</i>";
 }
 
 function greeting(): string {
@@ -325,7 +325,7 @@ if (isset($input['callback_query'])) {
         answerCallback($cbId);
         $today = getUserTodayStats((int)$user['id']);
         uEditMessage($cbChatId, $cbMsgId,
-            "👻 <b>Ghost Pix — Menu Principal</b>" . div() . "\n\n"
+            "👻 <b>LunarPay — Menu Principal</b>" . div() . "\n\n"
             . greeting() . ", <b>{$user['full_name']}</b>!\n\n"
             . "💰 Saldo: <b>" . formatBRL(getFreshBalance((int)$user['id'])) . "</b>\n"
             . "📊 Vendas hoje: <b>{$today['cnt']}</b> — " . formatBRL((float)$today['vol']) . "\n\n"
@@ -364,7 +364,7 @@ if (isset($input['callback_query'])) {
     }
     if ($cbData === 'act_dica') {
         answerCallback($cbId);
-        uReply($cbChatId, "💡 <b>Dica do Ghost Pix</b>" . div() . "\n\n" . randomTip() . "\n\n<i>Use /dica para mais dicas!</i>" . footer(), afterActionKeyboard());
+        uReply($cbChatId, "💡 <b>Dica do LunarPay</b>" . div() . "\n\n" . randomTip() . "\n\n<i>Use /dica para mais dicas!</i>" . footer(), afterActionKeyboard());
         http_response_code(200); exit;
     }
 
@@ -554,7 +554,7 @@ if ($command === 'start') {
             uReply($chatId,
                 "❌ <b>Token inválido ou expirado.</b>\n\n"
                 . "Gere um novo código em:\n"
-                . "⚙️ <b>Configurações → Telegram</b> no painel Ghost Pix."
+                . "⚙️ <b>Configurações → Telegram</b> no painel LunarPay."
                 . footer()
             );
         }
@@ -583,16 +583,16 @@ if ($command === 'start') {
                 "👤 <b>Nome Telegram:</b> {$tgName}\n"
                 . ($tgUsername ? "🔗 <b>Username:</b> @{$tgUsername}\n" : "")
                 . "💬 <b>Chat ID:</b> <code>{$chatId}</code>\n\n"
-                . "ℹ️ <i>Conta Ghost Pix não vinculada.</i>"
+                . "ℹ️ <i>Conta LunarPay não vinculada.</i>"
             );
         } catch (Throwable $e) {}
 
         uReply($chatId,
-            "👻 <b>Ghost Pix Bot</b>" . div() . "\n\n"
+            "👻 <b>LunarPay Bot</b>" . div() . "\n\n"
             . "Seu assistente de vendas no Telegram!\n"
             . "Consulte saldo, gere PIX, acompanhe vendas e muito mais.\n\n"
             . "<b>Como conectar:</b>\n\n"
-            . "1️⃣ Acesse o <b>Painel Ghost Pix</b>\n"
+            . "1️⃣ Acesse o <b>Painel LunarPay</b>\n"
             . "2️⃣ Vá em ⚙️ <b>Configurações → Telegram</b>\n"
             . "3️⃣ Clique em <b>\"Gerar Código de Vinculação\"</b>\n"
             . "4️⃣ Clique no link gerado para conectar\n\n"
@@ -609,7 +609,7 @@ $user = getUserByChatId($chatId);
 if (!$user) {
     uReply($chatId,
         "🔒 <b>Conta não vinculada</b>\n\n"
-        . "Vincule sua conta Ghost Pix primeiro:\n"
+        . "Vincule sua conta LunarPay primeiro:\n"
         . "⚙️ <b>Configurações → Telegram</b> no painel.\n\n"
         . "Depois use: /start SEU_CODIGO"
         . footer()
@@ -985,8 +985,8 @@ function handleCard(string $chatId, array $user, float $amount): void {
         $payload = [
             'amount'      => $amountCents,
             'postbackUrl' => $postbackUrl,
-            'companyName' => 'PIXGHOST',
-            'softDescriptor' => 'PIXGHOST',
+            'companyName' => 'LUNARPAY',
+            'softDescriptor' => 'LUNARPAY',
             'items'       => [[
                 'title'     => 'Cobrança via Telegram',
                 'unitPrice' => $amountCents,
@@ -1450,7 +1450,7 @@ switch ($command) {
     case 'inicio':
         $today = getUserTodayStats($userId);
         uReply($chatId,
-            "👻 <b>Ghost Pix — Menu Principal</b>" . div() . "\n\n"
+            "👻 <b>LunarPay — Menu Principal</b>" . div() . "\n\n"
             . greeting() . ", <b>{$userName}</b>!\n\n"
             . "💰 Saldo: <b>" . formatBRL(getFreshBalance($userId)) . "</b>\n"
             . "📊 Vendas hoje: <b>{$today['cnt']}</b> — " . formatBRL((float)$today['vol']) . "\n\n"
@@ -1462,7 +1462,7 @@ switch ($command) {
     case 'ajuda':
     case 'help':
         uReply($chatId,
-            "👻 <b>Ghost Pix Bot — Comandos</b>" . div() . "\n\n"
+            "👻 <b>LunarPay Bot — Comandos</b>" . div() . "\n\n"
             . "<b>💰 Financeiro</b>\n"
             . "/saldo — Saldo, vendas, meta\n"
             . "/pix {valor} — Gerar cobrança PIX\n"
@@ -1577,7 +1577,7 @@ switch ($command) {
     case 'dica':
     case 'tip':
         uReply($chatId,
-            "💡 <b>Dica do Ghost Pix</b>" . div() . "\n\n"
+            "💡 <b>Dica do LunarPay</b>" . div() . "\n\n"
             . randomTip() . "\n\n"
             . "<i>Use /dica novamente para outra dica!</i>" . footer(),
             afterActionKeyboard()
@@ -1644,12 +1644,12 @@ if (!$handled) {
                 handleVerMeta($chatId, $user);
                 break;
             case 'dica':
-                uReply($chatId, "💡 <b>Dica do Ghost Pix</b>" . div() . "\n\n" . randomTip() . footer(), afterActionKeyboard());
+                uReply($chatId, "💡 <b>Dica do LunarPay</b>" . div() . "\n\n" . randomTip() . footer(), afterActionKeyboard());
                 break;
             case 'menu':
                 $today = getUserTodayStats($userId);
                 uReply($chatId,
-                    "👻 <b>Ghost Pix — Menu Principal</b>" . div() . "\n\n"
+                    "👻 <b>LunarPay — Menu Principal</b>" . div() . "\n\n"
                     . greeting() . ", <b>{$userName}</b>!\n\n"
                     . "💰 Saldo: <b>" . formatBRL(getFreshBalance($userId)) . "</b>\n"
                     . "📊 Vendas hoje: <b>{$today['cnt']}</b> — " . formatBRL((float)$today['vol']) . "\n\n"

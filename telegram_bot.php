@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 /**
- * telegram_bot.php — Webhook do Bot Telegram para Ghost Pix
+ * telegram_bot.php — Webhook do Bot Telegram para LunarPay
  *
  * Registrar: POST https://api.telegram.org/bot{TOKEN}/setWebhook
- *   {"url": "https://pixghost.site/telegram_bot.php?secret=SEU_SECRET"}
+ *   {"url": "https://LUNARPAY.site/telegram_bot.php?secret=SEU_SECRET"}
  *
  * Comandos + Linguagem Natural suportados:
  *   /help | /start   — lista de comandos
@@ -54,7 +54,7 @@ function isAllowed(string $chatId): bool {
 
 function formatBRL(float $v): string { return 'R$ ' . number_format($v, 2, ',', '.'); }
 function div(): string { return "\n━━━━━━━━━━━━━━━━━━━━"; }
-function footer(): string { return div() . "\n🤖 <i>Ghost Pix Bot • " . date('H:i') . "</i>"; }
+function footer(): string { return div() . "\n🤖 <i>LunarPay Bot • " . date('H:i') . "</i>"; }
 
 function getAdminUserId(): ?int {
     global $pdo;
@@ -364,7 +364,7 @@ function handlePixGeneration(string $chatId, float $amount): void {
     if ($currentPixGoKey === 'SUA_API_KEY_AQUI' || empty($currentPixGoKey)) {
         $pixId   = 'sim_tg_' . time();
         $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=TESTE_PIX_' . $amount;
-        $pixCode = '00020126360014br.gov.bcb.pix0114000000000000005204000053039865802BR5913GHOSTPIX6009SAOPAULO62070503***6304ABCD';
+        $pixCode = '00020126360014br.gov.bcb.pix0114000000000000005204000053039865802BR5913LunarPay6009SAOPAULO62070503***6304ABCD';
 
         $pixgoFee    = $amount * 0.08 + 0.99;
         $platformFee = $amount * ($user['commission_rate'] / 100);
@@ -673,7 +673,7 @@ switch ($command) {
     case 'help':
         $g = greeting();
         reply($chatId,
-            "🤖 <b>{$g}! Sou o Ghost Pix Bot</b>" . div() . "\n\n"
+            "🤖 <b>{$g}! Sou o LunarPay Bot</b>" . div() . "\n\n"
             . "Você pode usar comandos ou me mandar mensagens normais em português.\n\n"
             . "<b>📊 Relatórios:</b>\n"
             . "/stats — Estatísticas rápidas\n"
