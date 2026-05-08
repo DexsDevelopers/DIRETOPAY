@@ -102,16 +102,16 @@ function RankingItem({ position, name, sales, amount, avatar, type }) {
         gold: 'bg-yellow-400/20 text-yellow-400 border-yellow-400/30',
         silver: 'bg-gray-300/20 text-gray-300 border-gray-300/30',
         bronze: 'bg-orange-400/20 text-orange-400 border-orange-400/30',
-        regular: 'bg-white/10 text-white border-white/10'
+        regular: 'bg-gray-100 text-gray-600 border-gray-200'
     };
     return (
         <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
             whileHover={{ x: 5, backgroundColor: 'rgba(255,255,255,0.06)' }}
-            className="flex items-center gap-5 bg-white/5 border border-white/5 rounded-2xl p-5 transition-all">
+            className="flex items-center gap-5 bg-gray-50 border border-gray-200 rounded-2xl p-5 transition-all">
             <div className={`w-10 h-10 flex items-center justify-center font-black rounded-xl border ${styles[type]}`}>{position}</div>
             <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl flex items-center justify-center font-bold text-white">{avatar}</div>
             <div className="flex-1">
-                <div className="font-semibold text-white">{name}</div>
+                <div className="font-semibold text-gray-900 dark:text-white">{name}</div>
                 <div className="text-xs text-gray-400">{sales} vendas este mês</div>
             </div>
             <div className="text-lg font-bold text-emerald-400">{amount}</div>
