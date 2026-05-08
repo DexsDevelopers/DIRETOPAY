@@ -389,7 +389,7 @@ export default function LandingPage() {
                     : 'left-0 translate-x-0 top-[38px] sm:top-[38px] w-full h-16 sm:h-20 rounded-none px-6 sm:px-16 border-b border-transparent backdrop-blur-sm ' + (isDark ? 'bg-[#0a0a0f]/80' : 'bg-white/80')
                 }`}>
                 <div className="flex items-center gap-2 sm:gap-3">
-                    <img src="/logo_premium.png" alt="LunarPay" className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl shadow-[0_0_16px_rgba(192,0,106,0.3)]" />
+                    <img src="/logo_premium.png?v=3" alt="LunarPay" className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl shadow-[0_0_16px_rgba(192,0,106,0.3)]" />
                     <span className={`font-black text-base sm:text-lg tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Lunar<span className="text-primary">Pay</span></span>
                 </div>
                 <div className="hidden lg:flex items-center gap-8 text-[12px] font-semibold text-gray-500">
@@ -774,7 +774,7 @@ export default function LandingPage() {
                         {/* Col 1 - Brand */}
                         <div className="space-y-5 lg:col-span-1">
                             <div className="flex items-center gap-2">
-                                <img src="/logo_premium.png" alt="LunarPay" className="w-8 h-8 rounded-lg" />
+                                <img src="/logo_premium.png?v=3" alt="LunarPay" className="w-8 h-8 rounded-lg" />
                                 <span className="font-black text-base text-gray-900">Lunar<span className="text-primary">Pay</span></span>
                             </div>
                             <p className="text-gray-500 text-sm leading-relaxed">O lado invisível que faz sua operação crescer!</p>
