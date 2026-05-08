@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
     ArrowRight, CheckCircle, Zap, Shield, Rocket, MessageCircle,
@@ -141,7 +141,7 @@ function DashboardMockup() {
                         <div className="w-10 h-10 bg-gradient-to-br from-pink-600 to-rose-700 rounded-xl flex items-center justify-center font-bold text-white">L</div>
                         <div>
                             <div className="text-xs text-gray-400">Bem-vindo,</div>
-                            <div className="font-semibold text-white">Lunar Member ðŸ‘‹</div>
+                            <div className="font-semibold text-white">Lunar Member 👋</div>
                         </div>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-400">
@@ -173,7 +173,7 @@ function DashboardMockup() {
                 </div>
                 <div>
                     <div className="text-xs text-gray-400">Venda realizada no Pix!</div>
-                    <div className="font-bold text-white">ComissÃ£o: {salesData[currentSale].amount}</div>
+                    <div className="font-bold text-white">Comissão: {salesData[currentSale].amount}</div>
                 </div>
                 <div className="text-xs text-gray-500 ml-2">agora</div>
             </motion.div>
@@ -245,7 +245,7 @@ function RankingItem({ position, name, sales, amount, avatar, type }) {
             whileHover={{ x: 4 }}
             className="flex items-center gap-4 rounded-2xl px-5 py-4 transition-all"
             style={{ background: '#e8e8f0', boxShadow: '6px 6px 16px #c4c4cc, -6px -6px 16px #ffffff' }}>
-            {/* PosiÃ§Ã£o */}
+            {/* Posição */}
             <div className={`w-9 h-9 shrink-0 flex items-center justify-center font-black text-sm rounded-xl border ${badgeStyles[type]}`}>
                 {position}
             </div>
@@ -256,7 +256,7 @@ function RankingItem({ position, name, sales, amount, avatar, type }) {
             {/* Info */}
             <div className="flex-1 min-w-0">
                 <div className="font-black text-gray-900 text-sm truncate">{name}</div>
-                <div className="text-xs text-gray-400 font-medium mt-0.5">{sales} vendas este mÃªs</div>
+                <div className="text-xs text-gray-400 font-medium mt-0.5">{sales} vendas este mês</div>
             </div>
             {/* Valor */}
             <div className="text-sm sm:text-base font-black text-emerald-500 shrink-0">{amount}</div>
@@ -373,7 +373,7 @@ export default function LandingPage() {
                         <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-primary">+{onlineUsers.toLocaleString('pt-BR')} <span className="hidden sm:inline">ao vivo</span></span>
                     </div>
                     <p className={`text-[10px] sm:text-[11px] font-semibold truncate text-center flex-1 mx-2 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                        <span className="hidden sm:inline">ðŸš€ </span>Canal Oficial no WhatsApp jÃ¡ estÃ¡ ativo!
+                        <span className="hidden sm:inline">🚀 </span>Canal Oficial no WhatsApp já está ativo!
                     </p>
                     <a href="https://whatsapp.com/channel/0029VbC56v0GZNComh5KQ73J" rel="noopener noreferrer" target="_blank"
                         className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#25D366]/10 border border-[#25D366]/25 text-[#25D366] text-[9px] sm:text-[10px] font-black uppercase tracking-widest hover:bg-[#25D366]/20 transition-all whitespace-nowrap">
@@ -382,7 +382,7 @@ export default function LandingPage() {
                 </div>
             </div>
 
-            {/* Navbar â€” full-width no topo, pill flutuante ao rolar */}
+            {/* Navbar — full-width no topo, pill flutuante ao rolar */}
             <nav className={`fixed z-50 flex items-center justify-between transition-all duration-500
                 ${scrolled
                     ? 'left-1/2 -translate-x-1/2 top-3 w-[94%] sm:w-[90%] max-w-6xl h-14 sm:h-16 rounded-[32px] px-5 sm:px-8 border shadow-[0_8px_32px_rgba(192,0,106,0.12)] backdrop-blur-3xl ' + (isDark ? 'bg-[#0f0f16]/95 border-white/10' : 'bg-white/95 border-pink-100')
@@ -393,9 +393,9 @@ export default function LandingPage() {
                     <span className={`font-black text-base sm:text-lg tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Lunar<span className="text-primary">Pay</span></span>
                 </div>
                 <div className="hidden lg:flex items-center gap-8 text-[12px] font-semibold text-gray-500">
-                    <a href="#" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>InÃ­cio</a>
-                    <a href="#solucoes" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>BenefÃ­cios</a>
-                    <a href="#" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>PremiaÃ§Ãµes</a>
+                    <a href="#" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Início</a>
+                    <a href="#solucoes" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Benefícios</a>
+                    <a href="#" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Premiações</a>
                     <Link to="/docs" className={`hover:text-primary transition-colors flex items-center gap-1.5 ${isDark ? 'text-gray-400' : ''}`}>API Docs <Code2 size={13} /></Link>
                     <a href="#faq" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>FAQ</a>
                 </div>
@@ -416,7 +416,7 @@ export default function LandingPage() {
                     backgroundSize: '55px 55px'
                 }}>
                 <Particles count={22} />
-                {/* fade bottom para suavizar saÃ­da do grid */}
+                {/* fade bottom para suavizar saída do grid */}
                 <div className={`absolute bottom-0 inset-x-0 h-40 pointer-events-none ${isDark ? 'bg-gradient-to-t from-[#0a0a0f]' : 'bg-gradient-to-t from-[#F8F8FC]'} to-transparent`} />
                 <div className={`absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[100px] pointer-events-none ${isDark ? 'bg-gradient-to-bl from-rose-900/20 to-pink-900/10 opacity-40' : 'bg-gradient-to-bl from-pink-100 to-rose-50 opacity-60'}`} />
                 <div className={`absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-[80px] pointer-events-none ${isDark ? 'bg-gradient-to-tr from-rose-900/15 to-transparent opacity-30' : 'bg-gradient-to-tr from-pink-50 to-transparent opacity-40'}`} />
@@ -428,21 +428,21 @@ export default function LandingPage() {
                             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }}
                                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${isDark ? 'bg-rose-950/40 border-rose-500/40' : 'bg-primary/5 border-primary/15'}`}>
                                 <div className={`w-2 h-2 shrink-0 rounded-full ${isDark ? 'bg-emerald-400' : 'bg-emerald-500'} animate-pulse`} />
-                                <span className={`text-xs sm:text-sm font-black tracking-tight ${isDark ? 'text-pink-300' : 'text-primary'}`}>+3.000 Sellers que confiam em nÃ³s!</span>
+                                <span className={`text-xs sm:text-sm font-black tracking-tight ${isDark ? 'text-pink-300' : 'text-primary'}`}>+3.000 Sellers que confiam em nós!</span>
                             </motion.div>
 
                             <div className="space-y-6">
                                 <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
                                     className={`text-[2.2rem] sm:text-5xl lg:text-6xl font-[1000] leading-[1.1] tracking-[-0.03em] ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                    O lado invisÃ­vel que faz{' '}
+                                    O lado invisível que faz{' '}
                                     <Typewriter
-                                        words={['sua operaÃ§Ã£o crescer!', 'suas vendas explodirem!', 'seu lucro decolar!', 'vocÃª ficar anÃ´nimo!']}
+                                        words={['sua operação crescer!', 'suas vendas explodirem!', 'seu lucro decolar!', 'você ficar anônimo!']}
                                         className="bg-gradient-to-r from-pink-600 to-rose-700 bg-clip-text text-transparent"
                                     />
                                 </motion.h1>
                                 <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
                                     className="text-gray-500 text-base sm:text-lg max-w-lg mx-auto lg:mx-0 font-medium leading-relaxed">
-                                    Receba via Pix com <strong>anonimato garantido</strong>. Sem exposiÃ§Ã£o de CPF/CNPJ, saques instantÃ¢neos e <strong>blindagem total contra MED</strong>.
+                                    Receba via Pix com <strong>anonimato garantido</strong>. Sem exposição de CPF/CNPJ, saques instantâneos e <strong>blindagem total contra MED</strong>.
                                 </motion.p>
                             </div>
 
@@ -451,7 +451,7 @@ export default function LandingPage() {
                                 <ShimmerButton className="w-full sm:w-auto">
                                 <Link to="/register" className="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-rose-700 text-white h-14 px-8 rounded-2xl flex items-center justify-center font-black hover:opacity-90 transition-all active:scale-95 group">
                                     <ShieldCheck className="mr-2 shrink-0" size={20} />
-                                    Quero ser um Lunar
+                                    Quero ser um Ghost
                                     <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform shrink-0" size={18} />
                                 </Link>
                                 </ShimmerButton>
@@ -463,7 +463,7 @@ export default function LandingPage() {
 
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}
                                 className="flex flex-wrap justify-center lg:justify-start gap-3">
-                                {[{ icon: ShieldCheck, text: '100% AnÃ´nimo' }, { icon: Zap, text: 'Saque InstantÃ¢neo' }, { icon: Lock, text: 'Anti-MED' }, { icon: User, text: 'Sem Documentos' }].map((item, i) => (
+                                {[{ icon: ShieldCheck, text: '100% Anônimo' }, { icon: Zap, text: 'Saque Instantâneo' }, { icon: Lock, text: 'Anti-MED' }, { icon: User, text: 'Sem Documentos' }].map((item, i) => (
                                     <div key={i} className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold ${isDark ? 'bg-white/5 border-white/10 text-gray-400' : 'bg-white border-gray-200 text-gray-600'}`}>
                                         <item.icon size={14} className="text-primary shrink-0" />
                                         {item.text}
@@ -472,7 +472,7 @@ export default function LandingPage() {
                             </motion.div>
                         </div>
 
-                        {/* Lado Direito - Dashboard: sÃ³ desktop */}
+                        {/* Lado Direito - Dashboard: só desktop */}
                         <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, duration: 0.8 }}
                             className="relative hidden lg:block">
                             <DashboardMockup />
@@ -496,13 +496,13 @@ export default function LandingPage() {
                         <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
                             className={`text-3xl sm:text-5xl font-black mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>A LunarPay vibra a cada meta batida!</motion.h2>
                         <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
-                            className="text-gray-500 text-lg">Reconhecemos sua performance com prÃªmios exclusivos. Cada marco Ã© uma conquista celebrada.</motion.p>
+                            className="text-gray-500 text-lg">Reconhecemos sua performance com prêmios exclusivos. Cada marco é uma conquista celebrada.</motion.p>
                     </div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <AwardCard icon={Medal} amount="100 Mil" name="Lunar Platinum" desc="Para quem transforma os primeiros 100 mil em apenas o comeÃ§o." color="platinum" delay={0.1} />
-                        <AwardCard icon={Trophy} amount="500 Mil" name="Lunar Gold" desc="Reconhece a ousadia de quem encara grandes desafios." color="gold" delay={0.2} />
-                        <AwardCard icon={Crown} amount="1 MilhÃ£o" name="Lunar Wine" desc="Celebra a excelÃªncia rara e sofisticaÃ§Ã£o estratÃ©gica." color="wine" delay={0.3} />
-                        <AwardCard icon={Gem} amount="5 MilhÃµes" name="Lunar Emerald" desc="Para quem chega aos 5 milhÃµes nÃ£o por acaso, mas por legado." color="emerald" delay={0.4} />
+                        <AwardCard icon={Medal} amount="100 Mil" name="Ghost Platinum" desc="Para quem transforma os primeiros 100 mil em apenas o começo." color="platinum" delay={0.1} />
+                        <AwardCard icon={Trophy} amount="500 Mil" name="Ghost Gold" desc="Reconhece a ousadia de quem encara grandes desafios." color="gold" delay={0.2} />
+                        <AwardCard icon={Crown} amount="1 Milhão" name="Ghost Wine" desc="Celebra a excelência rara e sofisticação estratégica." color="wine" delay={0.3} />
+                        <AwardCard icon={Gem} amount="5 Milhões" name="Ghost Emerald" desc="Para quem chega aos 5 milhões não por acaso, mas por legado." color="emerald" delay={0.4} />
                     </div>
                 </div>
             </section>
@@ -518,15 +518,15 @@ export default function LandingPage() {
                             </motion.div>
                             <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
                                 className="text-3xl sm:text-4xl font-black mb-6 leading-tight">
-                                Adquirente falhou?<br /><span className="text-primary">A LunarPay encontra outra rota na mesma hora.</span>
+                                Adquirente falhou?<br /><span className="text-primary">A Ghosts encontra outra rota na mesma hora.</span>
                             </motion.h2>
                             <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
                                 className="text-gray-400 text-lg mb-8 leading-relaxed">
-                                Deixe A LunarPay encontrar a rota com maior chance de aprovaÃ§Ã£o enquanto vocÃª foca em vender! Nosso sistema inteligente alterna automaticamente entre mÃºltiplos processadores.
+                                Deixe a Ghosts encontrar a rota com maior chance de aprovação enquanto você foca em vender! Nosso sistema inteligente alterna automaticamente entre múltiplos processadores.
                             </motion.p>
                             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }}
                                 className="grid grid-cols-2 gap-4">
-                                {['FÃ¡cil', 'RÃ¡pido', 'Seguro', 'Eficaz'].map((item, i) => (
+                                {['Fácil', 'Rápido', 'Seguro', 'Eficaz'].map((item, i) => (
                                     <div key={i} className={`flex items-center gap-3 px-5 py-4 rounded-xl border ${isDark ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200'}`}>
                                         <CheckCircle size={20} className="text-emerald-400" />
                                         <span className="font-bold text-gray-700">{item}</span>
@@ -555,7 +555,7 @@ export default function LandingPage() {
                                     <span className="text-xs font-bold text-gray-400">Cliente</span>
                                 </div>
 
-                                {/* Seta â€” horizontal no sm+, vertical no mobile */}
+                                {/* Seta — horizontal no sm+, vertical no mobile */}
                                 <div className="hidden sm:flex flex-1 items-center">
                                     <div className="flex-1 h-px bg-gradient-to-r from-white/20 to-rose-600/60" />
                                     <ArrowRight size={14} className="text-pink-400 shrink-0" />
@@ -568,7 +568,7 @@ export default function LandingPage() {
                                 <div className="flex flex-col gap-2 w-full sm:w-auto sm:min-w-[150px]">
                                     {[
                                         { label: 'Gateway A', active: false, status: 'Offline' },
-                                        { label: 'Gateway B', active: true, status: 'Ativo âœ“' },
+                                        { label: 'Gateway B', active: true, status: 'Ativo ✓' },
                                         { label: 'Gateway C', active: false, status: 'Stand-by' },
                                     ].map(({ label, active, status }) => (
                                         <motion.div key={label}
@@ -612,7 +612,7 @@ export default function LandingPage() {
                             <div className="mt-6 pt-5 border-t border-white/5 grid grid-cols-3 gap-3 text-center">
                                 {[
                                     { label: 'Uptime', value: '99.9%' },
-                                    { label: 'LatÃªncia', value: '<80ms' },
+                                    { label: 'Latência', value: '<80ms' },
                                     { label: 'Fallback', value: 'Auto' },
                                 ].map(s => (
                                     <div key={s.label}>
@@ -632,12 +632,12 @@ export default function LandingPage() {
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-black mb-6">
-                            <Flame size={16} /> CompetiÃ§Ã£o Mensal
+                            <Flame size={16} /> Competição Mensal
                         </motion.div>
                         <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
-                            className="text-3xl sm:text-5xl font-black mb-4">na LunarPay, sua performance importa!</motion.h2>
+                            className="text-3xl sm:text-5xl font-black mb-4">Na Ghosts, sua performance importa!</motion.h2>
                         <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
-                            className="text-gray-400 text-lg">Todos os meses, os sellers disputam o ranking para ganhar prÃªmios exclusivos. Vendeu mais? Sobe no ranking. Atingiu o topo? PremiaÃ§Ã£o garantida!</motion.p>
+                            className="text-gray-400 text-lg">Todos os meses, os sellers disputam o ranking para ganhar prêmios exclusivos. Vendeu mais? Sobe no ranking. Atingiu o topo? Premiação garantida!</motion.p>
                     </div>
                     <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                         className={`rounded-3xl p-8 ${isDark ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-200'} shadow-xl`}>
@@ -647,13 +647,13 @@ export default function LandingPage() {
                                 <h3 className="text-xl sm:text-2xl font-black">Top Sellers - Maio 2025</h3>
                             </div>
                             <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-xs font-black w-fit">
-                                <Gift size={14} /> PrÃªmios todos os meses
+                                <Gift size={14} /> Prêmios todos os meses
                             </div>
                         </div>
                         <div className="space-y-3">
                             <RankingItem position="1" name="Marcos R." sales="1.247" amount="R$ 89.420,00" avatar="MR" type="gold" />
                             <RankingItem position="2" name="Ana L." sales="982" amount="R$ 67.890,00" avatar="AL" type="silver" />
-                            <RankingItem position="3" name="JoÃ£o S." sales="756" amount="R$ 54.230,00" avatar="JS" type="bronze" />
+                            <RankingItem position="3" name="João S." sales="756" amount="R$ 54.230,00" avatar="JS" type="bronze" />
                             <RankingItem position="4" name="Carla F." sales="634" amount="R$ 45.120,00" avatar="CF" type="regular" />
                             <RankingItem position="5" name="Rafael P." sales="523" amount="R$ 38.450,00" avatar="RP" type="regular" />
                         </div>
@@ -666,18 +666,18 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto space-y-20">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-gray-200 pb-16">
                         <div className="space-y-4">
-                            <p className="text-[11px] font-black text-primary uppercase tracking-[0.4em]">SoluÃ§Ãµes Corporativas</p>
+                            <p className="text-[11px] font-black text-primary uppercase tracking-[0.4em]">Soluções Corporativas</p>
                             <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-gray-900">Projetado para <br /> <span className="text-primary italic">quem joga grande.</span></h2>
                         </div>
                         <p className="text-gray-400 max-w-xs font-bold leading-relaxed text-sm">Eliminamos as barreiras entre sua venda e seu lucro com tecnologia de ponta.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <AnimatedBorderCard><FeatureCard icon={ShieldCheck} title="Anonimato BancÃ¡rio" desc="Seus dados pessoais ou da sua empresa nunca sÃ£o revelados ao pagador. Total descriÃ§Ã£o para o seu negÃ³cio." delay={0.1} /></AnimatedBorderCard>
-                        <AnimatedBorderCard><FeatureCard icon={Zap} title="ConversÃ£o Extrema" desc="Checkout otimizado para o Pix. ExperiÃªncia de um clique que reduz o abandono em atÃ© 45%." delay={0.2} /></AnimatedBorderCard>
-                        <AnimatedBorderCard><FeatureCard icon={Layers} title="LunarPay - Dashboard Premium" desc="Gerencie mÃºltiplos projetos e fluxos financeiros em uma Ãºnica dashboard integrada e centralizada." delay={0.3} /></AnimatedBorderCard>
-                        <AnimatedBorderCard><FeatureCard icon={BarChart3} title="Analytics em Real-time" desc="Acompanhe cada centavo que entra. Insights detalhados de conversÃ£o e comportamento do cliente." delay={0.4} /></AnimatedBorderCard>
-                        <AnimatedBorderCard><FeatureCard icon={Rocket} title="Saques Sem Taxas" desc="TransferÃªncias ultra-rÃ¡pidas e gratuitas para sua conta bancÃ¡ria de preferÃªncia logo apÃ³s o processamento." delay={0.5} /></AnimatedBorderCard>
-                        <AnimatedBorderCard><FeatureCard icon={Globe} title="Infraestrutura Global" desc="Servidores distribuÃ­dos para garantir que seu link esteja sempre no ar, 24 horas por dia, 7 dias por semana." delay={0.6} /></AnimatedBorderCard>
+                        <AnimatedBorderCard><FeatureCard icon={ShieldCheck} title="Anonimato Bancário" desc="Seus dados pessoais ou da sua empresa nunca são revelados ao pagador. Total descrição para o seu negócio." delay={0.1} /></AnimatedBorderCard>
+                        <AnimatedBorderCard><FeatureCard icon={Zap} title="Conversão Extrema" desc="Checkout otimizado para o Pix. Experiência de um clique que reduz o abandono em até 45%." delay={0.2} /></AnimatedBorderCard>
+                        <AnimatedBorderCard><FeatureCard icon={Layers} title="LunarPay - Dashboard Premium" desc="Gerencie múltiplos projetos e fluxos financeiros em uma única dashboard integrada e centralizada." delay={0.3} /></AnimatedBorderCard>
+                        <AnimatedBorderCard><FeatureCard icon={BarChart3} title="Analytics em Real-time" desc="Acompanhe cada centavo que entra. Insights detalhados de conversão e comportamento do cliente." delay={0.4} /></AnimatedBorderCard>
+                        <AnimatedBorderCard><FeatureCard icon={Rocket} title="Saques Sem Taxas" desc="Transferências ultra-rápidas e gratuitas para sua conta bancária de preferência logo após o processamento." delay={0.5} /></AnimatedBorderCard>
+                        <AnimatedBorderCard><FeatureCard icon={Globe} title="Infraestrutura Global" desc="Servidores distribuídos para garantir que seu link esteja sempre no ar, 24 horas por dia, 7 dias por semana." delay={0.6} /></AnimatedBorderCard>
                     </div>
                 </div>
             </section>
@@ -687,14 +687,14 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-20 items-center">
                     <div className="space-y-10">
                         <div className="bg-primary/10 w-fit px-4 py-1.5 rounded-lg border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">Developers First</div>
-                        <h2 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">A API que <br /> <span className="text-gray-300 italic tracking-[-0.05em]">vocÃª sempre quis.</span></h2>
+                        <h2 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">A API que <br /> <span className="text-gray-300 italic tracking-[-0.05em]">você sempre quis.</span></h2>
                         <div className="space-y-6 text-gray-500 text-lg font-medium max-w-lg">
                             <div className="flex gap-4"><CheckCircle className="text-primary shrink-0" size={24} /><p>Endpoints simplificados e RESTful</p></div>
-                            <div className="flex gap-4"><CheckCircle className="text-primary shrink-0" size={24} /><p>AutenticaÃ§Ã£o via Bearer Token de alta seguranÃ§a</p></div>
-                            <div className="flex gap-4"><CheckCircle className="text-primary shrink-0" size={24} /><p>Webhooks redundantes e configurÃ¡veis</p></div>
+                            <div className="flex gap-4"><CheckCircle className="text-primary shrink-0" size={24} /><p>Autenticação via Bearer Token de alta segurança</p></div>
+                            <div className="flex gap-4"><CheckCircle className="text-primary shrink-0" size={24} /><p>Webhooks redundantes e configuráveis</p></div>
                         </div>
                         <Link to="/docs" className="inline-flex items-center gap-2 px-10 py-5 bg-gray-50 border border-gray-200 rounded-2xl font-black text-lg hover:bg-gray-100 transition-all group">
-                            LER DOCUMENTAÃ‡ÃƒO <ExternalLink className="opacity-40 group-hover:opacity-100 transition-opacity" size={20} />
+                            LER DOCUMENTAÇÃO <ExternalLink className="opacity-40 group-hover:opacity-100 transition-opacity" size={20} />
                         </Link>
                     </div>
                     <div className="relative group">
@@ -736,14 +736,14 @@ export default function LandingPage() {
             <section id="faq" className="py-16 sm:py-32 px-4 sm:px-6 bg-white">
                 <div className="max-w-4xl mx-auto space-y-20 text-center md:text-left">
                     <div className="space-y-4 text-center">
-                        <h2 className="text-4xl md:text-7xl font-black uppercase tracking-tighter text-gray-900">Respostas para <br /><span className="bg-gradient-to-r from-pink-600 to-rose-700 bg-clip-text text-transparent italic">suas dÃºvidas.</span></h2>
-                        <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Suporte humanizado disponÃ­vel 24/7</p>
+                        <h2 className="text-4xl md:text-7xl font-black uppercase tracking-tighter text-gray-900">Respostas para <br /><span className="bg-gradient-to-r from-pink-600 to-rose-700 bg-clip-text text-transparent italic">suas dúvidas.</span></h2>
+                        <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Suporte humanizado disponível 24/7</p>
                     </div>
                     <div className="bg-gray-50 border border-pink-100 rounded-[28px] sm:rounded-[48px] p-5 sm:p-8 md:p-16">
-                        <AccordionItem title="O LunarPay Ã© realmente anÃ´nimo?" content="Sim. Utilizamos uma camada de abstraÃ§Ã£o bancÃ¡ria onde seus dados pessoais ou da sua empresa nunca aparecem para o pagador final. O dinheiro cai na nossa conta de liquidaÃ§Ã£o e Ã© repassado instantaneamente para vocÃª." />
-                        <AccordionItem title="Tem alguma taxa por transaÃ§Ã£o?" content="NÃ£o! A LunarPay nÃ£o cobra taxa por transaÃ§Ã£o. VocÃª recebe o valor integral das suas vendas diretamente no seu saldo, sem surpresas e sem taxas escondidas." />
-                        <AccordionItem title="Como funciona o sistema de saques?" content="ApÃ³s a confirmaÃ§Ã£o do pagamento pelo nosso sistema (que ocorre em milissegundos), o saldo fica disponÃ­vel em sua conta LunarPay. VocÃª pode solicitar o saque via Pix para sua chave cadastrada a qualquer momento, sem taxas." />
-                        <AccordionItem title="Posso integrar com qualquer site ou bot?" content="Com certeza. Nossa API REST Ã© agnÃ³stica de linguagem e plataforma. Seja em um bot de Telegram, um dashboard customizado ou um e-commerce em WordPress, a integraÃ§Ã£o Ã© fluida e documentada." />
+                        <AccordionItem title="O LunarPay é realmente anônimo?" content="Sim. Utilizamos uma camada de abstração bancária onde seus dados pessoais ou da sua empresa nunca aparecem para o pagador final. O dinheiro cai na nossa conta de liquidação e é repassado instantaneamente para você." />
+                        <AccordionItem title="Tem alguma taxa por transação?" content="Não! A LunarPay não cobra taxa por transação. Você recebe o valor integral das suas vendas diretamente no seu saldo, sem surpresas e sem taxas escondidas." />
+                        <AccordionItem title="Como funciona o sistema de saques?" content="Após a confirmação do pagamento pelo nosso sistema (que ocorre em milissegundos), o saldo fica disponível em sua conta LunarPay. Você pode solicitar o saque via Pix para sua chave cadastrada a qualquer momento, sem taxas." />
+                        <AccordionItem title="Posso integrar com qualquer site ou bot?" content="Com certeza. Nossa API REST é agnóstica de linguagem e plataforma. Seja em um bot de Telegram, um dashboard customizado ou um e-commerce em WordPress, a integração é fluida e documentada." />
                     </div>
                 </div>
             </section>
@@ -754,13 +754,13 @@ export default function LandingPage() {
                     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent_60%)] pointer-events-none" />
                     <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-white/5 rounded-full blur-[60px]" />
                     <div className="space-y-12 relative z-10">
-                        <h2 className="text-3xl sm:text-5xl md:text-8xl font-black leading-[0.95] tracking-[-0.04em] uppercase text-white">O futuro dos <span className="text-pink-200">pagamentos</span> Ã© hoje.</h2>
+                        <h2 className="text-3xl sm:text-5xl md:text-8xl font-black leading-[0.95] tracking-[-0.04em] uppercase text-white">O futuro dos <span className="text-pink-200">pagamentos</span> é hoje.</h2>
                         <div className="pt-6">
                             <Link to="/register" className="inline-flex items-center justify-center bg-white text-primary h-14 sm:h-20 md:h-24 px-10 sm:px-16 md:px-20 rounded-[20px] sm:rounded-[32px] text-sm sm:text-xl md:text-2xl font-black hover:bg-pink-50 transition-all shadow-[0_20px_60px_rgba(0,0,0,0.2)] whitespace-nowrap active:scale-95">
                                 CRIAR CONTA AGORA
                             </Link>
                         </div>
-                        <p className="text-white/50 font-bold uppercase tracking-[0.2em] text-[10px]">Leva menos de 1 minuto para comeÃ§ar.</p>
+                        <p className="text-white/50 font-bold uppercase tracking-[0.2em] text-[10px]">Leva menos de 1 minuto para começar.</p>
                     </div>
                 </div>
             </section>
@@ -777,7 +777,7 @@ export default function LandingPage() {
                                 <img src="/logo_premium.png" alt="LunarPay" className="w-8 h-8 rounded-lg" />
                                 <span className="font-black text-base text-gray-900">Lunar<span className="text-primary">Pay</span></span>
                             </div>
-                            <p className="text-gray-500 text-sm leading-relaxed">O lado invisÃ­vel que faz sua operaÃ§Ã£o crescer!</p>
+                            <p className="text-gray-500 text-sm leading-relaxed">O lado invisível que faz sua operação crescer!</p>
                             <div className="flex flex-col gap-2">
                                 <a href="#" className="flex items-center gap-2 text-primary text-sm font-semibold hover:underline">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
@@ -790,23 +790,23 @@ export default function LandingPage() {
                             </div>
                         </div>
 
-                        {/* Col 2 - PÃ¡ginas */}
+                        {/* Col 2 - Páginas */}
                         <div className="space-y-4">
-                            <p className="text-[11px] font-black text-gray-800 uppercase tracking-[0.2em]">PÃ¡ginas</p>
+                            <p className="text-[11px] font-black text-gray-800 uppercase tracking-[0.2em]">Páginas</p>
                             <ul className="space-y-3 text-sm text-gray-500">
-                                <li><a href="#" className="hover:text-primary transition-colors">InÃ­cio</a></li>
-                                <li><a href="#solucoes" className="hover:text-primary transition-colors">BenefÃ­cios</a></li>
-                                <li><a href="#" className="hover:text-primary transition-colors">PremiaÃ§Ãµes</a></li>
+                                <li><a href="#" className="hover:text-primary transition-colors">Início</a></li>
+                                <li><a href="#solucoes" className="hover:text-primary transition-colors">Benefícios</a></li>
+                                <li><a href="#" className="hover:text-primary transition-colors">Premiações</a></li>
                                 <li><a href="#" className="hover:text-primary transition-colors">Quem Somos</a></li>
                                 <li><a href="#faq" className="hover:text-primary transition-colors">FAQ</a></li>
                             </ul>
                         </div>
 
-                        {/* Col 3 - InformaÃ§Ã£o */}
+                        {/* Col 3 - Informação */}
                         <div className="space-y-4">
-                            <p className="text-[11px] font-black text-gray-800 uppercase tracking-[0.2em]">InformaÃ§Ã£o</p>
+                            <p className="text-[11px] font-black text-gray-800 uppercase tracking-[0.2em]">Informação</p>
                             <ul className="space-y-3 text-sm text-gray-500">
-                                <li><a href="mailto:contato@lunarpay.site" className="hover:text-primary transition-colors">Suporte</a></li>
+                                <li><a href="mailto:contato@pixghost.site" className="hover:text-primary transition-colors">Suporte</a></li>
                                 <li><a href="#" className="hover:text-primary transition-colors">P. de Privacidade</a></li>
                                 <li><a href="#" className="hover:text-primary transition-colors">Termos de uso</a></li>
                                 <li><Link to="/docs" className="hover:text-primary transition-colors">API Docs</Link></li>
@@ -818,14 +818,14 @@ export default function LandingPage() {
                             <a href="#" className="flex items-center gap-3 bg-primary text-white rounded-xl px-5 py-3 hover:bg-secondary transition-colors w-full sm:w-auto">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
                                 <div className="text-left leading-tight">
-                                    <div className="text-[9px] opacity-80">DisponÃ­vel na</div>
+                                    <div className="text-[9px] opacity-80">Disponível na</div>
                                     <div className="text-sm font-bold">App Store</div>
                                 </div>
                             </a>
                             <a href="#" className="flex items-center gap-3 bg-primary text-white rounded-xl px-5 py-3 hover:bg-secondary transition-colors w-full sm:w-auto">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.3.17.64.24.99.19l12.2-12.2L12.92 8.3 3.18 23.76zm17.95-11.71L18.4 10.6l-3.4 3.4 3.4 3.4 2.77-1.54c.79-.44.79-1.63-.04-2.81zM2.4.46C2.15.72 2 1.1 2 1.6v20.8c0 .5.15.88.4 1.14l.06.06 11.65-11.65v-.3L2.46.4 2.4.46zm10.53 10.88l3.4-3.4-2.56-4.46L2.4.46C2.15.72 2 1.1 2 1.6v.08l10.93 9.66z"/></svg>
                                 <div className="text-left leading-tight">
-                                    <div className="text-[9px] opacity-80">DisponÃ­vel no</div>
+                                    <div className="text-[9px] opacity-80">Disponível no</div>
                                     <div className="text-sm font-bold">Google Play</div>
                                 </div>
                             </a>
@@ -834,8 +834,8 @@ export default function LandingPage() {
 
                     {/* Bottom bar */}
                     <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-100 pt-6 gap-3">
-                        <p className="text-gray-400 text-sm">Â© 2025 LunarPay.</p>
-                        <Link to="/register" className="text-sm text-gray-400 hover:text-primary transition-colors font-medium">Junte-se à LunarPay →</Link>
+                        <p className="text-gray-400 text-sm">© 2025 LunarPay.</p>
+                        <Link to="/register" className="text-sm text-gray-400 hover:text-primary transition-colors font-medium">Criar Conta LunarPay →</Link>
                     </div>
                 </div>
             </footer>
