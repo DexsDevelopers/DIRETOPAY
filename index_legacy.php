@@ -668,6 +668,371 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
         @media (max-width: 850px) {
             .benefit-cards { grid-template-columns: 1fr; padding: 0 20px; }
         }
+
+        /* ===== MELHORIAS INSPIRADAS NO GHOSTSPAY ===== */
+        
+        /* Dashboard Mockup V2 */
+        .hero-v2-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dashboard-mockup-v2 {
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .dashboard-card-v2 {
+            background: linear-gradient(145deg, rgba(20,20,25,0.98), rgba(10,10,15,0.99));
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.5);
+            transform: rotateY(-5deg) rotateX(5deg);
+            animation: float-dashboard 6s ease-in-out infinite;
+        }
+
+        @keyframes float-dashboard {
+            0%, 100% { transform: rotateY(-5deg) rotateX(5deg) translateY(0); }
+            50% { transform: rotateY(-5deg) rotateX(5deg) translateY(-15px); }
+        }
+
+        .dash-header-v2 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .dash-avatar-v2 {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), #7c3aed);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .dash-stats-row-v2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .dash-stat-mini-v2 {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 15px;
+        }
+
+        .dash-chart-v2 {
+            background: rgba(255,255,255,0.02);
+            border-radius: 16px;
+            padding: 20px;
+            height: 100px;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .chart-bar-v2 {
+            flex: 1;
+            background: linear-gradient(to top, #7c3aed, var(--primary));
+            border-radius: 4px 4px 0 0;
+            opacity: 0.7;
+        }
+
+        .live-sales-ticker-v2 {
+            position: absolute;
+            bottom: -20px;
+            left: -20px;
+            background: rgba(0,0,0,0.95);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 15px 20px;
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .ticker-icon-v2 {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--green), #22c55e);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Awards Section */
+        .awards-section-v2 {
+            padding: 100px 20px;
+            background: linear-gradient(180deg, transparent 0%, rgba(168,85,247,0.03) 50%, transparent 100%);
+        }
+
+        .awards-grid-v2 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            max-width: 1200px;
+            margin: 50px auto 0;
+        }
+
+        .award-card-v2 {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 35px 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .award-card-v2::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--award-color, #fff);
+        }
+
+        .award-card-v2:hover {
+            transform: translateY(-10px) scale(1.03);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .award-card-v2.platinum { --award-color: #e5e7eb; }
+        .award-card-v2.gold { --award-color: #fbbf24; }
+        .award-card-v2.wine { --award-color: #be185d; }
+        .award-card-v2.emerald { --award-color: #10b981; }
+
+        .award-trophy-v2 {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .award-amount-v2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--award-color);
+            margin-bottom: 5px;
+        }
+
+        .award-name-v2 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        /* Multi-Adquirentes Section */
+        .routing-section-v2 {
+            padding: 100px 20px;
+        }
+
+        .routing-container-v2 {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .routing-visual-v2 {
+            position: relative;
+            height: 350px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 24px;
+            padding: 30px;
+        }
+
+        .routing-node-v2 {
+            position: absolute;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 16px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .routing-node-v2.active {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+        }
+
+        .routing-node-v2.success {
+            background: rgba(74, 222, 128, 0.15);
+            border-color: var(--green);
+        }
+
+        .node-icon-v2 {
+            width: 35px;
+            height: 35px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .routing-features-v2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .routing-feature-v2 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .routing-feature-v2 i { color: var(--green); }
+
+        /* Ranking Section */
+        .ranking-section-v2 {
+            padding: 100px 20px;
+            background: linear-gradient(180deg, rgba(168,85,247,0.02) 0%, transparent 100%);
+        }
+
+        .ranking-card-v2 {
+            max-width: 900px;
+            margin: 50px auto 0;
+            background: rgba(20,20,25,0.95);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 28px;
+            padding: 40px;
+        }
+
+        .ranking-list-v2 {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ranking-item-v2 {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 18px 25px;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .ranking-item-v2:hover {
+            background: rgba(255,255,255,0.06);
+            transform: translateX(5px);
+        }
+
+        .rank-position-v2 {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            border-radius: 12px;
+        }
+
+        .rank-position-v2.gold { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+        .rank-position-v2.silver { background: rgba(203, 213, 225, 0.2); color: #cbd5e1; }
+        .rank-position-v2.bronze { background: rgba(249, 115, 22, 0.2); color: #f97316; }
+        .rank-position-v2.regular { background: rgba(255,255,255,0.1); color: #fff; }
+
+        .rank-avatar-v2 {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .rank-amount-v2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--green);
+            margin-left: auto;
+        }
+
+        /* Responsividade */
+        @media (max-width: 1100px) {
+            .hero-v2-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .dashboard-mockup-v2 {
+                order: -1;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+            .dashboard-card-v2 {
+                transform: none;
+                animation: none;
+            }
+            .awards-grid-v2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .routing-container-v2 {
+                grid-template-columns: 1fr;
+            }
+            .routing-visual-v2 {
+                order: -1;
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .awards-grid-v2 {
+                grid-template-columns: 1fr;
+            }
+            .routing-features-v2 {
+                grid-template-columns: 1fr;
+            }
+            .ranking-card-v2 {
+                padding: 25px;
+            }
+        }
     </style>
     <!-- SEO & Premium Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -810,46 +1175,315 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
         });
     </script>
 
-    <!-- Hero Section -->
+    <!-- Script for Live Sales Ticker -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const salesData = [
+                { amount: 'R$ 69,95', product: 'E-book Premium' },
+                { amount: 'R$ 149,90', product: 'Curso Completo' },
+                { amount: 'R$ 297,00', product: 'Mentoria Elite' },
+                { amount: 'R$ 47,00', product: 'Template Pro' },
+                { amount: 'R$ 97,00', product: 'Pack Ferramentas' }
+            ];
+            let currentSale = 0;
+            const salesTicker = document.getElementById('salesTicker');
+            
+            function updateSalesTicker() {
+                salesTicker.style.animation = 'none';
+                setTimeout(() => {
+                    currentSale = (currentSale + 1) % salesData.length;
+                    const tickerText = salesTicker.querySelector('div:nth-child(2) > div:last-child');
+                    if (tickerText) {
+                        tickerText.textContent = `Comissão: ${salesData[currentSale].amount}`;
+                    }
+                    salesTicker.style.animation = 'ticker-in 0.5s ease';
+                }, 100);
+            }
+            
+            setInterval(updateSalesTicker, 4000);
+        });
+    </script>
+
+    <!-- Hero Section V2 - Com Dashboard Mockup -->
     <header class="lp-hero">
-        <div class="hero-container" style="justify-content: center; flex-direction: column;">
-            <div class="hero-text-side" style="max-width: 1000px; text-align: center;">
-                <div class="lp-hero-badge" data-aos="fade-down">
-                    <span></span> Infraestrutura de pagamentos mais segura do Brasil
+        <div class="hero-v2-container">
+            <!-- Lado Esquerdo - Texto -->
+            <div class="hero-text-side" style="text-align: left;">
+                <div class="lp-hero-badge" data-aos="fade-down" style="margin-bottom: 20px;">
+                    <span></span> +3.000 Sellers que confiam em nós!
                 </div>
-                <h1 class="lp-responsive-title">ESCALE COM CONFIANÇA <br><span class="lp-gradient-text" style="font-size: 0.7em; display: block; margin-top: 10px; color: #fff; font-weight: 900; letter-spacing: 0;">PROTEÇÃO TOTAL PARA ALTA PERFORMANCE</span></h1>
-                <p>Receba via Pix com <strong>anonimato garantido</strong>. Sem exposição de CPF/CNPJ, saques instantâneos para qualquer conta e <strong>blindagem contra MED ou reembolsos</strong>.</p>
+                <h1 class="lp-responsive-title" style="text-align: left; margin: 0 0 20px 0; font-size: 3.5rem;">
+                    O lado invisível que faz <br><span style="color: var(--primary);">sua operação crescer!</span>
+                </h1>
+                <p style="text-align: left; margin: 0 0 30px 0; font-size: 1.2rem; max-width: 500px;">
+                    Receba via Pix com <strong>anonimato garantido</strong>. Sem exposição de CPF/CNPJ, saques instantâneos e <strong>blindagem total contra MED</strong>.
+                </p>
                 
-                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 30px;">
                     <?php if(isLoggedIn()): ?>
-                        <a href="dashboard.php" class="btn-lp-primary" style="padding: 18px 45px; font-size: 1.1rem; font-weight: 800; border-radius: 100px;">Acessar Meu Painel</a>
+                        <a href="dashboard.php" class="btn-lp-primary" style="padding: 18px 45px; font-size: 1.1rem; font-weight: 800; border-radius: 100px;">
+                            <i class="fas fa-th-large"></i> Acessar Painel
+                        </a>
                     <?php else: ?>
-                        <a href="auth/register.php" class="btn-lp-primary" style="padding: 18px 45px; font-size: 1.1rem; font-weight: 800; border-radius: 100px;">Quero minha conta blindada</a>
+                        <a href="auth/register.php" class="btn-lp-primary" style="padding: 18px 45px; font-size: 1.1rem; font-weight: 800; border-radius: 100px;">
+                            <i class="fas fa-ghost"></i> Quero ser um Ghost
+                        </a>
                     <?php endif; ?>
-                    <a href="#vsl" class="btn-lp-outline" style="padding: 18px 45px; font-size: 1.1rem; font-weight: 700; border-radius: 100px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); color: #fff;">Ver como funciona</a>
+                    <a href="#vsl" class="btn-lp-outline" style="padding: 18px 45px; font-size: 1.1rem; font-weight: 700; border-radius: 100px; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: #fff;">
+                        <i class="fas fa-play"></i> Ver como funciona
+                    </a>
                 </div>
 
                 <!-- PREMIUM BENEFIT CARDS -->
-                <div class="benefit-cards" data-aos="fade-up" data-aos-delay="200">
+                <div class="benefit-cards" data-aos="fade-up" data-aos-delay="200" style="margin-top: 20px;">
                     <div class="b-card">
                         <i class="fas fa-user-secret"></i>
                         <h4>100% Anônimo</h4>
-                        <p>Venda sem expor seus dados pessoais no checkout. Proxy financeiro de última geração.</p>
+                        <p>Venda sem expor seus dados pessoais no checkout.</p>
                     </div>
                     <div class="b-card">
                         <i class="fas fa-bolt-lightning"></i>
                         <h4>Saque Instantâneo</h4>
-                        <p>Recebeu, sacou. Liquidação imediata via API direto para sua chave Pix cadastrada.</p>
+                        <p>Liquidação imediata via API direto para sua chave Pix.</p>
                     </div>
                     <div class="b-card">
                         <i class="fas fa-shield-halved"></i>
-                        <h4>Anti-MED & Chargeback</h4>
-                        <p>Proteção absoluta contra estornos maliciosos. Seu saldo é protegido pelo Ghost Protocol.</p>
+                        <h4>Anti-MED</h4>
+                        <p>Proteção absoluta contra estornos maliciosos.</p>
                     </div>
+                </div>
+            </div>
+
+            <!-- Lado Direito - Dashboard Mockup -->
+            <div class="dashboard-mockup-v2" data-aos="fade-left">
+                <div class="dashboard-card-v2">
+                    <div class="dash-header-v2">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div class="dash-avatar-v2">G</div>
+                            <div>
+                                <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Bem-vindo,</div>
+                                <div style="font-weight: 600;">Ghost Seller 👋</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">
+                            <i class="fas fa-circle" style="color: var(--green); font-size: 0.5rem;"></i> Online
+                        </div>
+                    </div>
+                    <div class="dash-stats-row-v2">
+                        <div class="dash-stat-mini-v2">
+                            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 5px;">Faturamento Hoje</div>
+                            <div class="dash-stat-value-v2 up" style="font-size: 1.3rem; font-weight: 700; color: var(--green);">R$ 12.450,00</div>
+                        </div>
+                        <div class="dash-stat-mini-v2">
+                            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 5px;">Vendas</div>
+                            <div style="font-size: 1.3rem; font-weight: 700; color: #fff;">847</div>
+                        </div>
+                    </div>
+                    <div class="dash-chart-v2">
+                        <div class="chart-bar-v2" style="height: 40%;"></div>
+                        <div class="chart-bar-v2" style="height: 65%;"></div>
+                        <div class="chart-bar-v2" style="height: 45%;"></div>
+                        <div class="chart-bar-v2" style="height: 80%;"></div>
+                        <div class="chart-bar-v2" style="height: 55%;"></div>
+                        <div class="chart-bar-v2" style="height: 90%;"></div>
+                        <div class="chart-bar-v2" style="height: 70%;"></div>
+                    </div>
+                </div>
+                <div class="live-sales-ticker-v2" id="salesTicker">
+                    <div class="ticker-icon-v2">
+                        <i class="fas fa-check" style="color: #fff;"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.6);">Venda realizada no Pix!</div>
+                        <div style="font-weight: 700; color: #fff;">Comissão: R$ 69,95</div>
+                    </div>
+                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-left: 10px;">agora</div>
                 </div>
             </div>
         </div>
     </header>
+
+    <!-- Awards/Premiações Section -->
+    <section class="awards-section-v2" id="awards">
+        <div style="text-align: center; max-width: 700px; margin: 0 auto 50px;">
+            <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.3); padding: 8px 16px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; color: #fbbf24; margin-bottom: 20px;">
+                <i class="fas fa-trophy"></i> Programa de Recompensas
+            </div>
+            <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 15px;">A Ghosts vibra a cada meta batida!</h2>
+            <p style="font-size: 1.1rem; color: rgba(255,255,255,0.6);">
+                Reconhecemos sua performance com prêmios exclusivos. Cada marco é uma conquista celebrada.
+            </p>
+        </div>
+
+        <div class="awards-grid-v2">
+            <div class="award-card-v2 platinum" data-aos="fade-up" data-aos-delay="100">
+                <div class="award-trophy-v2">
+                    <i class="fas fa-medal" style="color: #e5e7eb;"></i>
+                </div>
+                <div class="award-amount-v2">100 Mil</div>
+                <div class="award-name-v2">Ghost Platinum</div>
+                <div class="award-desc-v2">Para quem transforma os primeiros 100 mil em apenas o começo.</div>
+            </div>
+
+            <div class="award-card-v2 gold" data-aos="fade-up" data-aos-delay="200">
+                <div class="award-trophy-v2">
+                    <i class="fas fa-trophy" style="color: #fbbf24;"></i>
+                </div>
+                <div class="award-amount-v2">500 Mil</div>
+                <div class="award-name-v2">Ghost Gold</div>
+                <div class="award-desc-v2">Reconhece a ousadia de quem encara grandes desafios.</div>
+            </div>
+
+            <div class="award-card-v2 wine" data-aos="fade-up" data-aos-delay="300">
+                <div class="award-trophy-v2">
+                    <i class="fas fa-crown" style="color: #be185d;"></i>
+                </div>
+                <div class="award-amount-v2">1 Milhão</div>
+                <div class="award-name-v2">Ghost Wine</div>
+                <div class="award-desc-v2">Celebra a excelência rara e sofisticação estratégica.</div>
+            </div>
+
+            <div class="award-card-v2 emerald" data-aos="fade-up" data-aos-delay="400">
+                <div class="award-trophy-v2">
+                    <i class="fas fa-gem" style="color: #10b981;"></i>
+                </div>
+                <div class="award-amount-v2">5 Milhões</div>
+                <div class="award-name-v2">Ghost Emerald</div>
+                <div class="award-desc-v2">Para quem chega aos 5 milhões não por acaso, mas por legado.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Multi-Adquirentes Section -->
+    <section class="routing-section-v2">
+        <div class="routing-container-v2">
+            <div data-aos="fade-right">
+                <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); padding: 8px 16px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; color: var(--primary); margin-bottom: 20px;">
+                    <i class="fas fa-network-wired"></i> Multi-Adquirentes
+                </div>
+                <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 20px; line-height: 1.3;">
+                    Adquirente falhou?<br>A Ghosts encontra outra rota na mesma hora.
+                </h2>
+                <p style="font-size: 1.1rem; color: rgba(255,255,255,0.7); line-height: 1.7; margin-bottom: 20px;">
+                    Deixe a Ghosts encontrar a rota com maior chance de aprovação enquanto você foca em vender! Nosso sistema inteligente alterna automaticamente entre múltiplos processadores.
+                </p>
+                <div class="routing-features-v2">
+                    <div class="routing-feature-v2">
+                        <i class="fas fa-check-circle"></i> Fácil
+                    </div>
+                    <div class="routing-feature-v2">
+                        <i class="fas fa-check-circle"></i> Rápido
+                    </div>
+                    <div class="routing-feature-v2">
+                        <i class="fas fa-check-circle"></i> Seguro
+                    </div>
+                    <div class="routing-feature-v2">
+                        <i class="fas fa-check-circle"></i> Eficaz
+                    </div>
+                </div>
+            </div>
+
+            <div class="routing-visual-v2" data-aos="fade-left">
+                <div class="routing-node-v2" style="top: 50%; left: 10px; transform: translateY(-50%);">
+                    <div class="node-icon-v2"><i class="fas fa-user"></i></div>
+                    <span style="font-weight: 600;">Seu Cliente</span>
+                </div>
+                <div class="routing-node-v2" style="top: 20%; right: 25%;">
+                    <div class="node-icon-v2"><i class="fas fa-university"></i></div>
+                    <span style="font-weight: 600;">Adquirente 1</span>
+                </div>
+                <div class="routing-node-v2 active" style="top: 50%; right: 15%; transform: translateY(-50%);">
+                    <div class="node-icon-v2"><i class="fas fa-university"></i></div>
+                    <span style="font-weight: 600;">Adquirente 2</span>
+                </div>
+                <div class="routing-node-v2" style="top: 80%; right: 25%;">
+                    <div class="node-icon-v2"><i class="fas fa-university"></i></div>
+                    <span style="font-weight: 600;">Adquirente 3</span>
+                </div>
+                <div class="routing-node-v2 success" style="top: 50%; right: 10px; transform: translateY(-50%);">
+                    <div class="node-icon-v2"><i class="fas fa-check"></i></div>
+                    <span style="font-weight: 600;">Pix Gerado!</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ranking/Competição Section -->
+    <section class="ranking-section-v2" id="ranking">
+        <div style="text-align: center; max-width: 700px; margin: 0 auto 50px;">
+            <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(74, 222, 128, 0.15); border: 1px solid rgba(74, 222, 128, 0.3); padding: 8px 16px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; color: var(--green); margin-bottom: 20px;">
+                <i class="fas fa-fire"></i> Competição Mensal
+            </div>
+            <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 15px;">Na Ghosts, sua performance importa!</h2>
+            <p style="font-size: 1.1rem; color: rgba(255,255,255,0.6);">
+                Todos os meses, os sellers disputam o ranking para ganhar prêmios exclusivos. Vendeu mais? Sobe no ranking. Atingiu o topo? Premiação garantida!
+            </p>
+        </div>
+
+        <div class="ranking-card-v2" data-aos="fade-up">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <i class="fas fa-trophy" style="font-size: 2rem; color: #fbbf24;"></i>
+                    <h3 style="font-size: 1.5rem; font-weight: 700;">Top Sellers - Maio 2025</h3>
+                </div>
+                <div style="background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.3); padding: 8px 16px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; color: #fbbf24;">
+                    <i class="fas fa-gift"></i> Prêmios todos os meses
+                </div>
+            </div>
+
+            <div class="ranking-list-v2">
+                <div class="ranking-item-v2">
+                    <div class="rank-position-v2 gold">1</div>
+                    <div class="rank-avatar-v2">MR</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Marcos R.</div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">1.247 vendas este mês</div>
+                    </div>
+                    <div class="rank-amount-v2">R$ 89.420,00</div>
+                </div>
+
+                <div class="ranking-item-v2">
+                    <div class="rank-position-v2 silver">2</div>
+                    <div class="rank-avatar-v2">AL</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Ana L.</div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">982 vendas este mês</div>
+                    </div>
+                    <div class="rank-amount-v2">R$ 67.890,00</div>
+                </div>
+
+                <div class="ranking-item-v2">
+                    <div class="rank-position-v2 bronze">3</div>
+                    <div class="rank-avatar-v2">JS</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">João S.</div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">756 vendas este mês</div>
+                    </div>
+                    <div class="rank-amount-v2">R$ 54.230,00</div>
+                </div>
+
+                <div class="ranking-item-v2">
+                    <div class="rank-position-v2 regular">4</div>
+                    <div class="rank-avatar-v2">CF</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Carla F.</div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">634 vendas este mês</div>
+                    </div>
+                    <div class="rank-amount-v2">R$ 45.120,00</div>
+                </div>
+
+                <div class="ranking-item-v2">
+                    <div class="rank-position-v2 regular">5</div>
+                    <div class="rank-avatar-v2">RP</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Rafael P.</div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">523 vendas este mês</div>
+                    </div>
+                    <div class="rank-amount-v2">R$ 38.450,00</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Instant Approval Highlight -->
     <section class="instant-approval-section" data-aos="fade-up">
