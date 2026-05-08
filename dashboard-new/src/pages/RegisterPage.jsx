@@ -64,8 +64,8 @@ export default function RegisterPage() {
     return (
         <div className="min-h-screen bg-white text-gray-900 font-['Outfit'] flex flex-col relative overflow-hidden">
             {/* Decorative blobs */}
-            <div className="absolute top-[-5%] right-[-5%] w-[50%] h-[50%] bg-gradient-to-bl from-purple-100 to-violet-50 rounded-full blur-[120px] -z-10 opacity-60" />
-            <div className="absolute bottom-[10%] left-[-10%] w-[40%] h-[40%] bg-gradient-to-tr from-purple-50 to-transparent rounded-full blur-[100px] -z-10 opacity-40" />
+            <div className="absolute top-[-5%] right-[-5%] w-[50%] h-[50%] bg-gradient-to-bl from-pink-100 to-rose-50 rounded-full blur-[120px] -z-10 opacity-60" />
+            <div className="absolute bottom-[10%] left-[-10%] w-[40%] h-[40%] bg-gradient-to-tr from-pink-50 to-transparent rounded-full blur-[100px] -z-10 opacity-40" />
 
             <div className="p-8">
                 <Link to="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-gray-900 transition-colors group">
@@ -88,7 +88,7 @@ export default function RegisterPage() {
                         <p className="text-gray-500 font-medium">Junte-se a milhares de LunarPayVendors hoje.</p>
                     </div>
 
-                    <div className="bg-white border border-purple-100 shadow-[0_20px_60px_rgba(124,58,237,0.1)] p-10 rounded-[56px] relative overflow-hidden">
+                    <div className="bg-white border border-pink-100 shadow-[0_20px_60px_rgba(192,0,106,0.1)] p-10 rounded-[56px] relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-[60px] -z-10" />
                         <form onSubmit={handleRegister} className="space-y-6">
                             {error && (
@@ -158,7 +158,7 @@ export default function RegisterPage() {
                                 </div>
                             </div>
 
-                            <div className="bg-purple-50 p-6 rounded-3xl border border-purple-100 flex gap-4">
+                            <div className="bg-pink-50 p-6 rounded-3xl border border-pink-100 flex gap-4">
                                 <ShieldAlert className="text-primary/40 shrink-0" size={24} />
                                 <p className="text-[11px] text-gray-500 leading-relaxed font-medium">Ao criar sua conta, você concorda com nossos <span className="text-gray-900 font-bold">Termos de Uso</span> e nossa <span className="text-gray-900 font-bold">Política de Privacidade Blindada</span>.</p>
                             </div>
@@ -166,7 +166,7 @@ export default function RegisterPage() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full h-16 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-full font-black text-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(124,58,237,0.35)] disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full h-16 bg-gradient-to-r from-pink-600 to-rose-700 text-white rounded-full font-black text-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(192,0,106,0.35)] disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {loading ? 'Criando Conta...' : 'Começar Gratuitamente'} <ArrowRight size={24} />
                             </button>

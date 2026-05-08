@@ -228,6 +228,7 @@ function AwardCard({ icon: Icon, amount, name, desc, color, delay }) {
 }
 
 function RankingItem({ position, name, sales, amount, avatar, type }) {
+    const { isDark } = useTheme();
     const badgeStyles = {
         gold:    'bg-yellow-400/20 text-yellow-500 border-yellow-400/40',
         silver:  'bg-gray-200/60  text-gray-500  border-gray-300/60',
@@ -244,7 +245,9 @@ function RankingItem({ position, name, sales, amount, avatar, type }) {
         <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
             whileHover={{ x: 4 }}
             className="flex items-center gap-4 rounded-2xl px-5 py-4 transition-all"
-            style={{ background: '#e8e8f0', boxShadow: '6px 6px 16px #c4c4cc, -6px -6px 16px #ffffff' }}>
+            style={isDark
+                ? { background: '#1a1a24', boxShadow: '6px 6px 16px #0d0d16, -6px -6px 16px #272732' }
+                : { background: '#e8e8f0', boxShadow: '6px 6px 16px #c4c4cc, -6px -6px 16px #ffffff' }}>
             {/* Posição */}
             <div className={`w-9 h-9 shrink-0 flex items-center justify-center font-black text-sm rounded-xl border ${badgeStyles[type]}`}>
                 {position}
@@ -301,7 +304,7 @@ function FeatureCard({ icon: Icon, title, desc, delay = 0 }) {
 function StatItem({ label, value }) {
     return (
         <div className="text-center space-y-1">
-            <p className="text-3xl md:text-5xl font-black tracking-tighter bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">{value}</p>
+            <p className="text-3xl md:text-5xl font-black tracking-tighter bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">{value}</p>
             <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-gray-400 whitespace-nowrap">{label}</p>
         </div>
     );
@@ -310,10 +313,10 @@ function StatItem({ label, value }) {
 function AccordionItem({ title, content }) {
     const [isOpen, setIsOpen] = useState(false);
     return (
-        <div className="border-b border-purple-100 last:border-0">
+        <div className="border-b border-pink-100 last:border-0">
             <button onClick={() => setIsOpen(!isOpen)} className="w-full py-8 flex items-center justify-between text-left group">
                 <span className="text-lg md:text-xl font-bold text-gray-700 group-hover:text-gray-900 transition-colors pr-8">{title}</span>
-                <div className={cn("w-10 h-10 rounded-full border border-purple-100 flex items-center justify-center transition-all duration-500 bg-purple-50", isOpen && "rotate-180 border-primary/30 bg-primary/10")}>
+                <div className={cn("w-10 h-10 rounded-full border border-pink-100 flex items-center justify-center transition-all duration-500 bg-pink-50", isOpen && "rotate-180 border-primary/30 bg-primary/10")}>
                     <ChevronDown className={cn("text-gray-400 transition-colors", isOpen && "text-primary")} size={20} />
                 </div>
             </button>
@@ -330,7 +333,7 @@ function ThemeToggle() {
     const { isDark, toggleTheme } = useTheme();
     return (
         <button onClick={toggleTheme} title={isDark ? 'Claro' : 'Escuro'}
-            className="relative flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-purple-100 bg-white/60 backdrop-blur-sm hover:bg-purple-50 hover:border-purple-200 transition-all group">
+            className="relative flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-pink-100 bg-white/60 backdrop-blur-sm hover:bg-pink-50 hover:border-pink-200 transition-all group">
             <span className={`transition-all duration-300 ${isDark ? 'text-amber-500 rotate-0' : 'text-gray-400 -rotate-12'}`}>
                 {isDark ? <Sun size={15} /> : <Moon size={15} />}
             </span>

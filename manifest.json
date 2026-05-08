@@ -1,22 +1,22 @@
 {
-  "name": "Ghost Pix",
-  "short_name": "Ghost Pix",
-  "description": "Ghost Pix - Pagamentos Anônimos e Seguros",
+  "name": "LunarPay",
+  "short_name": "LunarPay",
+  "description": "LunarPay - Pagamentos PIX Seguros e Instantâneos",
   "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#C0006A",
+  "theme_color": "#C0006A",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "logo_premium.png?v=8.0",
+      "src": "logo_premium.png?v=3",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "logo_premium.png?v=8.0",
+      "src": "logo_premium.png?v=3",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

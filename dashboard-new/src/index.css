@@ -139,6 +139,9 @@ html.dark .border-gray-100    { border-color: #242432 !important; }
 html.dark .border-gray-200    { border-color: #2c2c3e !important; }
 html.dark .border-gray-300    { border-color: #38384e !important; }
 html.dark .border-purple-100  { border-color: rgba(192,0,106,0.15) !important; }
+html.dark .border-pink-100    { border-color: rgba(192,0,106,0.15) !important; }
+html.dark .bg-pink-50         { background-color: rgba(192,0,106,0.06) !important; }
+html.dark .bg-pink-100        { background-color: rgba(192,0,106,0.08) !important; }
 
 html.dark .divide-gray-100 > * + * { border-color: #242432 !important; }
 
