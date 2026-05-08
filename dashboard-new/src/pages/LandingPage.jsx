@@ -183,19 +183,42 @@ function DashboardMockup() {
 }
 
 function AwardCard({ icon: Icon, amount, name, desc, color, delay }) {
-    const colors = { platinum: '#e5e7eb', gold: '#fbbf24', wine: '#C0006A', emerald: '#10b981' };
+    const palette = {
+        platinum: { hex: '#e2e8f0', glow: 'rgba(226,232,240,0.15)', border: 'rgba(226,232,240,0.2)', bg: 'rgba(226,232,240,0.06)', badge: 'PLATINUM' },
+        gold:     { hex: '#f59e0b', glow: 'rgba(245,158,11,0.18)',  border: 'rgba(245,158,11,0.25)',  bg: 'rgba(245,158,11,0.07)',  badge: 'GOLD' },
+        wine:     { hex: '#C0006A', glow: 'rgba(192,0,106,0.20)',   border: 'rgba(192,0,106,0.30)',   bg: 'rgba(192,0,106,0.08)',   badge: 'WINE' },
+        emerald:  { hex: '#10b981', glow: 'rgba(16,185,129,0.18)',  border: 'rgba(16,185,129,0.25)',  bg: 'rgba(16,185,129,0.07)',  badge: 'EMERALD' },
+    };
+    const p = palette[color];
     return (
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            transition={{ delay, duration: 0.5 }} whileHover={{ y: -10, scale: 1.03 }}
-            className="relative bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-3xl p-8 text-center overflow-hidden group">
-            <div className="absolute top-0 left-0 right-0 h-1" style={{ background: `linear-gradient(to right, ${colors[color]}, transparent)` }} />
-            <div className="w-16 h-16 mx-auto mb-5 rounded-2xl flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity"
-                style={{ background: `linear-gradient(135deg, ${colors[color]}40, ${colors[color]}20)` }}>
-                <Icon size={32} style={{ color: colors[color] }} />
+        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            transition={{ delay, duration: 0.5 }} whileHover={{ y: -8, scale: 1.02 }}
+            className="relative rounded-3xl p-px overflow-hidden group cursor-default"
+            style={{ background: `linear-gradient(135deg, ${p.border}, rgba(255,255,255,0.05) 60%, ${p.border})` }}>
+            {/* inner card */}
+            <div className="relative rounded-3xl p-8 text-center h-full flex flex-col items-center"
+                style={{ background: `linear-gradient(160deg, ${p.bg}, #0d0d14)` }}>
+                {/* ambient glow */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-24 rounded-full blur-[40px] pointer-events-none"
+                    style={{ background: p.glow }} />
+                {/* badge */}
+                <div className="text-[9px] font-black tracking-[0.3em] mb-5 px-3 py-1 rounded-full border"
+                    style={{ color: p.hex, borderColor: p.border, background: p.bg }}>
+                    {p.badge}
+                </div>
+                {/* icon */}
+                <motion.div
+                    animate={{ boxShadow: [`0 0 16px ${p.glow}`, `0 0 36px ${p.glow}`, `0 0 16px ${p.glow}`] }}
+                    transition={{ repeat: Infinity, duration: 2.5, delay }}
+                    className="w-20 h-20 mb-6 rounded-2xl flex items-center justify-center"
+                    style={{ background: `linear-gradient(135deg, ${p.hex}22, ${p.hex}0a)`, border: `1px solid ${p.border}` }}>
+                    <Icon size={36} style={{ color: p.hex }} />
+                </motion.div>
+                {/* amount */}
+                <div className="text-3xl font-black mb-1" style={{ color: p.hex }}>{amount}</div>
+                <h3 className="text-base font-black text-white mb-3">{name}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
             </div>
-            <div className="text-2xl font-black mb-2" style={{ color: colors[color] }}>{amount}</div>
-            <h3 className="text-lg font-bold text-white mb-2">{name}</h3>
-            <p className="text-sm text-gray-400 leading-relaxed">{desc}</p>
         </motion.div>
     );
 }
@@ -424,15 +447,19 @@ export default function LandingPage() {
             </section>
 
             {/* Awards Section */}
-            <section className={`py-24 px-6 ${isDark ? 'bg-[#0a0a0f]' : 'bg-gray-50'}`}>
-                <div className="max-w-7xl mx-auto">
+            <section className="relative py-28 px-6 bg-[#07070d] overflow-hidden">
+                {/* decorative glows */}
+                <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/5 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-700/6 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-32 bg-white/[0.02] rounded-full blur-[60px] pointer-events-none" />
+                <div className="max-w-7xl mx-auto relative z-10">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-sm font-black mb-6">
                             <Trophy size={16} /> Programa de Recompensas
                         </motion.div>
                         <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
-                            className="text-3xl sm:text-5xl font-black mb-4">A Ghosts vibra a cada meta batida!</motion.h2>
+                            className="text-3xl sm:text-5xl font-black mb-4 text-white">A Ghosts vibra a cada meta batida!</motion.h2>
                         <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
                             className="text-gray-400 text-lg">Reconhecemos sua performance com prêmios exclusivos. Cada marco é uma conquista celebrada.</motion.p>
                     </div>
