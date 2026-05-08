@@ -243,7 +243,8 @@ function RankingItem({ position, name, sales, amount, avatar, type }) {
     return (
         <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
             whileHover={{ x: 4 }}
-            className="flex items-center gap-4 bg-white border border-gray-100 rounded-2xl px-5 py-4 shadow-sm transition-all">
+            className="flex items-center gap-4 rounded-2xl px-5 py-4 transition-all"
+            style={{ background: '#e8e8f0', boxShadow: '6px 6px 16px #c4c4cc, -6px -6px 16px #ffffff' }}>
             {/* Posição */}
             <div className={`w-9 h-9 shrink-0 flex items-center justify-center font-black text-sm rounded-xl border ${badgeStyles[type]}`}>
                 {position}
@@ -264,17 +265,34 @@ function RankingItem({ position, name, sales, amount, avatar, type }) {
 }
 
 function FeatureCard({ icon: Icon, title, desc, delay = 0 }) {
+    const { isDark } = useTheme();
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            transition={{ delay, duration: 0.5 }} whileHover={{ y: -6, boxShadow: '0 24px 60px rgba(124,58,237,0.12)' }}
-            className="bg-white p-10 rounded-[40px] border border-purple-100 shadow-sm group relative overflow-hidden transition-all duration-300">
-            <div className="absolute top-0 right-0 p-8 opacity-[0.04] group-hover:opacity-[0.09] transition-opacity">
+            transition={{ delay, duration: 0.5 }}
+            whileHover={{ y: -6 }}
+            className="p-10 rounded-[40px] group relative overflow-hidden transition-all duration-300 cursor-default"
+            style={isDark ? {
+                background: '#1a1a24',
+                boxShadow: '10px 10px 30px #0d0d16, -10px -10px 30px #272732'
+            } : {
+                background: '#e8e8f0',
+                boxShadow: '10px 10px 30px #c4c4cc, -10px -10px 30px #ffffff'
+            }}>
+            <div className="absolute top-0 right-0 p-8 opacity-[0.04] group-hover:opacity-[0.08] transition-opacity">
                 <Icon size={120} className="text-primary" />
             </div>
-            <div className="w-14 h-14 bg-gradient-to-br from-purple-500/10 to-violet-600/10 rounded-2xl flex items-center justify-center text-primary mb-8 border border-primary/20">
-                <Icon size={28} />
+            {/* icon pill - neumorphic inset */}
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-primary mb-8 transition-all"
+                style={isDark ? {
+                    background: '#1a1a24',
+                    boxShadow: 'inset 4px 4px 10px #0d0d16, inset -4px -4px 10px #272732'
+                } : {
+                    background: '#e8e8f0',
+                    boxShadow: 'inset 4px 4px 10px #c4c4cc, inset -4px -4px 10px #ffffff'
+                }}>
+                <Icon size={26} />
             </div>
-            <h3 className="text-2xl font-black mb-4 tracking-tight text-gray-900 group-hover:text-primary transition-colors">{title}</h3>
+            <h3 className={`text-2xl font-black mb-4 tracking-tight group-hover:text-primary transition-colors ${isDark ? 'text-gray-100' : 'text-gray-800'}`}>{title}</h3>
             <p className="text-gray-500 font-medium leading-relaxed">{desc}</p>
         </motion.div>
     );
@@ -592,7 +610,7 @@ export default function LandingPage() {
             </section>
 
             {/* Ranking Section */}
-            <section className={`py-24 px-6 ${isDark ? 'bg-[#0a0a0f]' : 'bg-gray-50'}`}>
+            <section className={`py-24 px-6 ${isDark ? 'bg-[#0a0a0f]' : ''}`} style={isDark ? {} : { background: '#e8e8f0' }}>
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
@@ -627,7 +645,7 @@ export default function LandingPage() {
             </section>
 
             {/* Solutions Section */}
-            <section id="solucoes" className="py-32 px-6 bg-gray-50">
+            <section id="solucoes" className="py-32 px-6" style={{ background: '#e8e8f0' }}>
                 <div className="max-w-7xl mx-auto space-y-20">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-gray-200 pb-16">
                         <div className="space-y-4">
