@@ -946,13 +946,328 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
                 font-size: 0.9rem;
             }
         }
+
+        /* ===== NAVBAR ===== */
+        .gnavbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .gnavbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .gnavbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .gnavbar-logo-img {
+            height: 40px;
+            width: auto;
+        }
+
+        .gnavbar-logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -1px;
+        }
+
+        .gnavbar-logo-text span {
+            color: var(--primary);
+        }
+
+        .gnavbar-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .gnavbar-link {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .gnavbar-link:hover {
+            color: #fff;
+        }
+
+        .gnavbar-auth {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .gbtn {
+            padding: 10px 22px;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .gbtn-primary {
+            background: #fff;
+            color: #000;
+        }
+
+        .gbtn-primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        .gbtn-outline {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .gbtn-outline:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .gnavbar-mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .gnavbar-mobile {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 15, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .gnavbar-mobile.active {
+            display: block;
+        }
+
+        .gnavbar-mobile-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .gnavbar-mobile-link:hover {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+        }
+
+        @media (max-width: 900px) {
+            .gnavbar-links,
+            .gnavbar-auth {
+                display: none;
+            }
+            .gnavbar-mobile-toggle {
+                display: block;
+            }
+        }
+
+        /* ===== FOOTER ===== */
+        .gfooter {
+            background: linear-gradient(180deg, transparent 0%, rgba(168,85,247,0.05) 100%);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding: 60px 20px 30px;
+        }
+
+        .gfooter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 40px;
+        }
+
+        .gfooter-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .gfooter-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .gfooter-logo-img {
+            height: 45px;
+        }
+
+        .gfooter-logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .gfooter-logo-text span {
+            color: var(--primary);
+        }
+
+        .gfooter-tagline {
+            color: rgba(255,255,255,0.5);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .gfooter-social {
+            display: flex;
+            gap: 15px;
+        }
+
+        .gfooter-social a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .gfooter-social a:hover {
+            background: rgba(168,85,247,0.2);
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .gfooter-col h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .gfooter-col a {
+            display: block;
+            color: rgba(255,255,255,0.5);
+            text-decoration: none;
+            padding: 8px 0;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .gfooter-col a:hover {
+            color: #fff;
+        }
+
+        .gfooter-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+
+        .gfooter-bottom p {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .gfooter-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 <body>
-    <?php include 'includes/navbar.php'; ?>
+    <!-- NAVBAR -->
+    <nav class="gnavbar">
+        <div class="gnavbar-container">
+            <a href="/" class="gnavbar-logo">
+                <img src="logo_premium.png" alt="Ghost Pix" class="gnavbar-logo-img">
+                <span class="gnavbar-logo-text">GHOST<span>PIX</span></span>
+            </a>
+            
+            <div class="gnavbar-links">
+                <a href="#" class="gnavbar-link">Início</a>
+                <a href="#awards" class="gnavbar-link">Premiações</a>
+                <a href="#ranking" class="gnavbar-link">Ranking</a>
+                <a href="suporte.php" class="gnavbar-link">Suporte</a>
+            </div>
+            
+            <div class="gnavbar-auth">
+                <?php if(isLoggedIn()): ?>
+                    <a href="dashboard.php" class="gbtn gbtn-primary">Painel</a>
+                <?php else: ?>
+                    <a href="auth/login.php" class="gbtn gbtn-outline">Entrar</a>
+                    <a href="auth/register.php" class="gbtn gbtn-primary">Cadastrar</a>
+                <?php endif; ?>
+            </div>
+            
+            <button class="gnavbar-mobile-toggle" onclick="document.querySelector('.gnavbar-mobile').classList.toggle('active')">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="gnavbar-mobile">
+            <a href="#" class="gnavbar-mobile-link"><i class="fas fa-home"></i> Início</a>
+            <a href="#awards" class="gnavbar-mobile-link"><i class="fas fa-trophy"></i> Premiações</a>
+            <a href="#ranking" class="gnavbar-mobile-link"><i class="fas fa-chart-line"></i> Ranking</a>
+            <a href="suporte.php" class="gnavbar-mobile-link"><i class="fas fa-headset"></i> Suporte</a>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+            <?php if(isLoggedIn()): ?>
+                <a href="dashboard.php" class="gbtn gbtn-primary" style="width: 100%; text-align: center;">Acessar Painel</a>
+            <?php else: ?>
+                <a href="auth/login.php" class="gbtn gbtn-outline" style="width: 100%; text-align: center; margin-bottom: 10px;">Entrar</a>
+                <a href="auth/register.php" class="gbtn gbtn-primary" style="width: 100%; text-align: center;">Criar Conta</a>
+            <?php endif; ?>
+        </div>
+    </nav>
 
     <!-- HERO SECTION WITH DASHBOARD MOCKUP -->
     <section class="hero-v2">
@@ -1233,7 +1548,40 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
         </div>
     </section>
 
-    <?php include 'includes/footer.php'; ?>
+    <!-- FOOTER -->
+    <footer class="gfooter">
+        <div class="gfooter-container">
+            <div class="gfooter-brand">
+                <div class="gfooter-logo">
+                    <img src="logo_premium.png" alt="Ghost Pix" class="gfooter-logo-img">
+                    <span class="gfooter-logo-text">GHOST<span>PIX</span></span>
+                </div>
+                <p class="gfooter-tagline">O lado invisível que faz sua operação crescer!</p>
+                <div class="gfooter-social">
+                    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            
+            <div class="gfooter-links">
+                <div class="gfooter-col">
+                    <h4>Links Rápidos</h4>
+                    <a href="auth/register.php">Criar Conta</a>
+                    <a href="auth/login.php">Login</a>
+                    <a href="suporte.php">Suporte</a>
+                </div>
+                <div class="gfooter-col">
+                    <h4>Legal</h4>
+                    <a href="termos.php">Termos de Uso</a>
+                    <a href="privacidade.php">Privacidade</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="gfooter-bottom">
+            <p>&copy; 2025 Ghost Pix. Todos os direitos reservados.</p>
+        </div>
+    </footer>
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
