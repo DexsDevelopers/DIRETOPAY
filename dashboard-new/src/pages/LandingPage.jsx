@@ -259,7 +259,7 @@ function RankingItem({ position, name, sales, amount, avatar, type }) {
                 <div className="text-xs text-gray-400 font-medium mt-0.5">{sales} vendas este mês</div>
             </div>
             {/* Valor */}
-            <div className="text-base font-black text-emerald-500 shrink-0">{amount}</div>
+            <div className="text-sm sm:text-base font-black text-emerald-500 shrink-0">{amount}</div>
         </motion.div>
     );
 }
@@ -429,7 +429,7 @@ export default function LandingPage() {
 
                             <div className="space-y-6">
                                 <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                                    className="text-4xl sm:text-5xl lg:text-6xl font-[1000] leading-[0.95] tracking-[-0.04em] text-gray-900">
+                                    className={`text-4xl sm:text-5xl lg:text-6xl font-[1000] leading-[1.05] tracking-[-0.03em] ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                     O lado invisível que faz <br />
                                     <Typewriter
                                         words={['sua operação crescer!', 'suas vendas explodirem!', 'seu lucro decolar!', 'você ficar anônimo!']}
@@ -444,14 +444,14 @@ export default function LandingPage() {
 
                             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 }}
                                 className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                                <ShimmerButton>
-                                <Link to="/register" className="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-rose-700 text-white h-14 sm:h-16 px-8 rounded-2xl flex items-center justify-center font-black hover:opacity-90 hover:scale-105 transition-all active:scale-95 group whitespace-nowrap">
-                                    <ShieldCheck className="mr-2" size={20} />
+                                <ShimmerButton className="w-full sm:w-auto">
+                                <Link to="/register" className="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-rose-700 text-white h-14 px-8 rounded-2xl flex items-center justify-center font-black hover:opacity-90 transition-all active:scale-95 group">
+                                    <ShieldCheck className="mr-2 shrink-0" size={20} />
                                     Quero ser um Ghost
-                                    <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
+                                    <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform shrink-0" size={18} />
                                 </Link>
                                 </ShimmerButton>
-                                <a href="#solucoes" className="w-full sm:w-auto bg-gray-50 border border-gray-200 h-14 sm:h-16 px-8 rounded-2xl text-gray-700 font-black hover:bg-gray-100 transition-all active:scale-95 flex items-center justify-center whitespace-nowrap">
+                                <a href="#solucoes" className="w-full sm:w-auto bg-gray-50 border border-gray-200 h-14 px-8 rounded-2xl text-gray-700 font-black hover:bg-gray-100 transition-all active:scale-95 flex items-center justify-center">
                                     <Play size={18} className="mr-2" />
                                     Ver como funciona
                                 </a>
@@ -470,8 +470,10 @@ export default function LandingPage() {
 
                         {/* Lado Direito - Dashboard */}
                         <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, duration: 0.8 }}
-                            className="relative order-first lg:order-last">
-                            <DashboardMockup />
+                            className="relative order-first lg:order-last w-full overflow-hidden">
+                            <div className="scale-[0.75] sm:scale-90 lg:scale-100 origin-top">
+                                <DashboardMockup />
+                            </div>
                         </motion.div>
                     </div>
                 </div>
@@ -504,9 +506,9 @@ export default function LandingPage() {
             </section>
 
             {/* Multi-Adquirentes Section */}
-            <section className={`py-24 px-6 ${isDark ? 'bg-[#0a0a0f]' : 'bg-white'}`}>
+            <section className={`py-16 sm:py-24 px-4 sm:px-6 ${isDark ? 'bg-[#0a0a0f]' : 'bg-white'}`}>
                 <div className="max-w-7xl mx-auto">
-                    <div className="grid lg:grid-cols-2 gap-16 items-center">
+                    <div className="grid lg:grid-cols-2 gap-10 sm:gap-16 items-center">
                         <div>
                             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-black mb-6">
@@ -531,35 +533,37 @@ export default function LandingPage() {
                             </motion.div>
                         </div>
                         <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-                            className="relative rounded-3xl overflow-hidden bg-[#0f0008] border border-pink-900/30 p-8 shadow-2xl">
+                            className="relative rounded-3xl overflow-hidden bg-[#0f0008] border border-pink-900/30 p-5 sm:p-8 shadow-2xl">
 
-                            {/* Glow de fundo */}
                             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-rose-700/10 rounded-full blur-[60px] pointer-events-none" />
 
-                            {/* Label topo */}
-                            <div className="flex items-center gap-2 mb-8">
-                                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-                                <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Roteamento Inteligente em Tempo Real</span>
+                            <div className="flex items-center gap-2 mb-6">
+                                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shrink-0" />
+                                <span className="text-[10px] sm:text-xs font-black text-gray-400 uppercase tracking-widest">Roteamento Inteligente em Tempo Real</span>
                             </div>
 
-                            <div className="flex items-center justify-between gap-4 relative z-10">
+                            {/* Mobile: stacked layout */}
+                            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-2 relative z-10">
 
                                 {/* Cliente */}
-                                <div className="flex flex-col items-center gap-2">
-                                    <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center">
-                                        <User size={24} className="text-gray-300" />
+                                <div className="flex sm:flex-col items-center gap-3 sm:gap-2">
+                                    <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center">
+                                        <User size={20} className="text-gray-300" />
                                     </div>
                                     <span className="text-xs font-bold text-gray-400">Cliente</span>
                                 </div>
 
-                                {/* Linha de seta */}
-                                <div className="flex-1 flex items-center">
+                                {/* Seta — horizontal no sm+, vertical no mobile */}
+                                <div className="hidden sm:flex flex-1 items-center">
                                     <div className="flex-1 h-px bg-gradient-to-r from-white/20 to-rose-600/60" />
-                                    <ArrowRight size={16} className="text-pink-400 shrink-0" />
+                                    <ArrowRight size={14} className="text-pink-400 shrink-0" />
+                                </div>
+                                <div className="flex sm:hidden items-center justify-center text-pink-400">
+                                    <ArrowRight size={14} className="rotate-90" />
                                 </div>
 
                                 {/* Adquirentes */}
-                                <div className="flex flex-col gap-3 min-w-[160px]">
+                                <div className="flex flex-col gap-2 w-full sm:w-auto sm:min-w-[150px]">
                                     {[
                                         { label: 'Gateway A', active: false, status: 'Offline' },
                                         { label: 'Gateway B', active: true, status: 'Ativo ✓' },
@@ -568,48 +572,50 @@ export default function LandingPage() {
                                         <motion.div key={label}
                                             animate={active ? { scale: [1, 1.02, 1] } : {}}
                                             transition={{ repeat: Infinity, duration: 2 }}
-                                            className={`flex items-center justify-between px-4 py-3 rounded-xl border text-sm transition-all ${
+                                            className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-all ${
                                                 active
-                                                    ? 'bg-rose-700/20 border-rose-600/80 shadow-[0_0_24px_rgba(192,0,106,0.3)]'
+                                                    ? 'bg-rose-700/20 border-rose-600/80 shadow-[0_0_20px_rgba(192,0,106,0.25)]'
                                                     : 'bg-white/5 border-white/10 opacity-40'
                                             }`}>
                                             <div className="flex items-center gap-2">
-                                                <div className={`w-2 h-2 rounded-full ${active ? 'bg-emerald-400 animate-pulse' : 'bg-gray-600'}`} />
-                                                <span className={`font-bold ${active ? 'text-white' : 'text-gray-500'}`}>{label}</span>
+                                                <div className={`w-2 h-2 rounded-full shrink-0 ${active ? 'bg-emerald-400 animate-pulse' : 'bg-gray-600'}`} />
+                                                <span className={`font-bold text-sm ${active ? 'text-white' : 'text-gray-500'}`}>{label}</span>
                                             </div>
                                             <span className={`text-[10px] font-black uppercase ${active ? 'text-pink-300' : 'text-gray-600'}`}>{status}</span>
                                         </motion.div>
                                     ))}
                                 </div>
 
-                                {/* Linha de seta */}
-                                <div className="flex-1 flex items-center">
+                                {/* Seta */}
+                                <div className="hidden sm:flex flex-1 items-center">
                                     <div className="flex-1 h-px bg-gradient-to-r from-rose-600/60 to-emerald-500/60" />
-                                    <ArrowRight size={16} className="text-emerald-400 shrink-0" />
+                                    <ArrowRight size={14} className="text-emerald-400 shrink-0" />
+                                </div>
+                                <div className="flex sm:hidden items-center justify-center text-emerald-400">
+                                    <ArrowRight size={14} className="rotate-90" />
                                 </div>
 
                                 {/* Resultado */}
-                                <div className="flex flex-col items-center gap-2">
+                                <div className="flex sm:flex-col items-center gap-3 sm:gap-2">
                                     <motion.div
-                                        animate={{ boxShadow: ['0 0 16px rgba(16,185,129,0.2)', '0 0 32px rgba(16,185,129,0.4)', '0 0 16px rgba(16,185,129,0.2)'] }}
+                                        animate={{ boxShadow: ['0 0 12px rgba(16,185,129,0.2)', '0 0 28px rgba(16,185,129,0.4)', '0 0 12px rgba(16,185,129,0.2)'] }}
                                         transition={{ repeat: Infinity, duration: 2 }}
-                                        className="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/60 flex items-center justify-center">
-                                        <Check size={24} className="text-emerald-400" />
+                                        className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/60 flex items-center justify-center">
+                                        <Check size={20} className="text-emerald-400" />
                                     </motion.div>
                                     <span className="text-xs font-bold text-emerald-400">Aprovado</span>
                                 </div>
                             </div>
 
-                            {/* Rodapé com stats */}
-                            <div className="mt-8 pt-6 border-t border-white/5 grid grid-cols-3 gap-4 text-center">
+                            <div className="mt-6 pt-5 border-t border-white/5 grid grid-cols-3 gap-3 text-center">
                                 {[
                                     { label: 'Uptime', value: '99.9%' },
                                     { label: 'Latência', value: '<80ms' },
                                     { label: 'Fallback', value: 'Auto' },
                                 ].map(s => (
                                     <div key={s.label}>
-                                        <div className="text-lg font-black text-white">{s.value}</div>
-                                        <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{s.label}</div>
+                                        <div className="text-base sm:text-lg font-black text-white">{s.value}</div>
+                                        <div className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">{s.label}</div>
                                     </div>
                                 ))}
                             </div>
@@ -633,13 +639,13 @@ export default function LandingPage() {
                     </div>
                     <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                         className={`rounded-3xl p-8 ${isDark ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-200'} shadow-xl`}>
-                        <div className="flex items-center justify-between mb-8">
-                            <div className="flex items-center gap-4">
-                                <Trophy size={32} className="text-yellow-400" />
-                                <h3 className="text-2xl font-black">Top Sellers - Maio 2025</h3>
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                            <div className="flex items-center gap-3">
+                                <Trophy size={28} className="text-yellow-400 shrink-0" />
+                                <h3 className="text-xl sm:text-2xl font-black">Top Sellers - Maio 2025</h3>
                             </div>
-                            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-sm font-black">
-                                <Gift size={16} /> Prêmios todos os meses
+                            <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-xs font-black w-fit">
+                                <Gift size={14} /> Prêmios todos os meses
                             </div>
                         </div>
                         <div className="space-y-3">
@@ -675,11 +681,11 @@ export default function LandingPage() {
             </section>
 
             {/* API Section */}
-            <section id="tecnologia" className="py-32 px-6 bg-white">
-                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <section id="tecnologia" className="py-16 sm:py-32 px-4 sm:px-6 bg-white">
+                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-20 items-center">
                     <div className="space-y-10">
                         <div className="bg-primary/10 w-fit px-4 py-1.5 rounded-lg border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">Developers First</div>
-                        <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">A API que <br /> <span className="text-gray-300 italic tracking-[-0.05em]">você sempre quis.</span></h2>
+                        <h2 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">A API que <br /> <span className="text-gray-300 italic tracking-[-0.05em]">você sempre quis.</span></h2>
                         <div className="space-y-6 text-gray-500 text-lg font-medium max-w-lg">
                             <div className="flex gap-4"><CheckCircle className="text-primary shrink-0" size={24} /><p>Endpoints simplificados e RESTful</p></div>
                             <div className="flex gap-4"><CheckCircle className="text-primary shrink-0" size={24} /><p>Autenticação via Bearer Token de alta segurança</p></div>
@@ -691,7 +697,7 @@ export default function LandingPage() {
                     </div>
                     <div className="relative group">
                         <div className="absolute inset-0 bg-primary/15 blur-[80px] opacity-30 group-hover:opacity-50 transition-opacity rounded-full" />
-                        <div className="bg-[#0f0f14] border border-white/10 rounded-[48px] p-10 font-mono text-sm leading-relaxed shadow-2xl relative overflow-hidden">
+                        <div className="bg-[#0f0f14] border border-white/10 rounded-[32px] sm:rounded-[48px] p-6 sm:p-10 font-mono text-xs sm:text-sm leading-relaxed shadow-2xl relative overflow-hidden overflow-x-auto">
                             <div className="flex gap-2 mb-8">
                                 <div className="w-3 h-3 rounded-full bg-red-500/30 border border-red-500/50" />
                                 <div className="w-3 h-3 rounded-full bg-yellow-500/30 border border-yellow-500/50" />
@@ -725,13 +731,13 @@ export default function LandingPage() {
             </section>
 
             {/* FAQ Section */}
-            <section id="faq" className="py-32 px-6 bg-white">
+            <section id="faq" className="py-16 sm:py-32 px-4 sm:px-6 bg-white">
                 <div className="max-w-4xl mx-auto space-y-20 text-center md:text-left">
                     <div className="space-y-4 text-center">
                         <h2 className="text-4xl md:text-7xl font-black uppercase tracking-tighter text-gray-900">Respostas para <br /><span className="bg-gradient-to-r from-pink-600 to-rose-700 bg-clip-text text-transparent italic">suas dúvidas.</span></h2>
                         <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Suporte humanizado disponível 24/7</p>
                     </div>
-                    <div className="bg-gray-50 border border-pink-100 rounded-[48px] p-8 md:p-16">
+                    <div className="bg-gray-50 border border-pink-100 rounded-[28px] sm:rounded-[48px] p-5 sm:p-8 md:p-16">
                         <AccordionItem title="O Ghost Pix é realmente anônimo?" content="Sim. Utilizamos uma camada de abstração bancária onde seus dados pessoais ou da sua empresa nunca aparecem para o pagador final. O dinheiro cai na nossa conta de liquidação e é repassado instantaneamente para você." />
                         <AccordionItem title="Tem alguma taxa por transação?" content="Não! A Ghost Pix não cobra taxa por transação. Você recebe o valor integral das suas vendas diretamente no seu saldo, sem surpresas e sem taxas escondidas." />
                         <AccordionItem title="Como funciona o sistema de saques?" content="Após a confirmação do pagamento pelo nosso sistema (que ocorre em milissegundos), o saldo fica disponível em sua conta Ghost Pix. Você pode solicitar o saque via Pix para sua chave cadastrada a qualquer momento, sem taxas." />
@@ -758,10 +764,10 @@ export default function LandingPage() {
             </section>
 
             {/* Footer */}
-            <footer className="py-24 border-t border-gray-100 bg-white px-6">
-                <div className="max-w-7xl mx-auto flex flex-col gap-20">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
-                        <div className="space-y-8 col-span-1 lg:col-span-1">
+            <footer className="py-16 sm:py-24 border-t border-gray-100 bg-white px-6">
+                <div className="max-w-7xl mx-auto flex flex-col gap-12 sm:gap-20">
+                    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-16">
+                        <div className="space-y-6 col-span-2 md:col-span-1">
                             <div className="flex items-center gap-3">
                                 <img src="/logo_premium.png" alt="Ghost Pix" className="w-10 h-10 rounded-xl shadow-[0_0_20px_rgba(192,0,106,0.2)]" />
                                 <span className="font-black text-xl tracking-tighter text-gray-900">GHOST PIX</span>
