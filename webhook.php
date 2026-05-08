@@ -65,10 +65,10 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                 $upd->execute([$transaction['id']]);
             }
 
-            // 2. Adicionar valor ao saldo do usuário (valor líquido calculado no api.php)
+            // 2. Adicionar valor ao saldo do usuário (VALOR BRUTO conforme solicitado)
             adjustBalance(
                 (int)$transaction['user_id'],
-                (float)$transaction['amount_net_brl'],
+                (float)$transaction['amount_brl'],
                 'sale',
                 'tx_' . $transaction['id'],
                 'Venda confirmada PIX #' . $transaction['id'] . ' — R$ ' . number_format($transaction['amount_brl'], 2, ',', '.')

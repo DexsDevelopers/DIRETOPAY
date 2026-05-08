@@ -11,6 +11,12 @@ try {
     $stmt = $pdo->prepare("SELECT balance, pix_key, full_name FROM users WHERE id = ?");
     $stmt->execute([$userId]);
     $user = $stmt->fetch();
+
+    // Calcular saldo realmente disponível (subtraindo saques pendentes que ainda não foram debitados)
+    $stmtP = $pdo->prepare("SELECT COALESCE(SUM(amount_gross), 0) FROM withdrawals WHERE user_id = ? AND status = 'pending' AND is_debited = 0");
+    $stmtP->execute([$userId]);
+    $pendingTotal = (float)$stmtP->fetchColumn();
+    $availableBalance = (float)$user['balance'] - $pendingTotal;
 } catch (PDOException $e) {
     die("Erro no Banco de Dados: " . $e->getMessage() . " <br><br>Certifique-se de acessar <b>" . (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]/migrate_v2.php</b> para atualizar o sistema.");
 }
@@ -43,7 +49,7 @@ try {
                     <div style="text-align: center; margin-bottom: 2.2rem;">
                         <span class="stat-label">Saldo Disponível</span>
                         <div class="balance-display" style="font-size: 3rem; margin-top: 0.5rem; letter-spacing: -2px;">
-                            <span class="currency">R$</span><?php echo number_format($user['balance'], 2, ',', '.'); ?>
+                            <span class="currency">R$</span><?php echo number_format($availableBalance, 2, ',', '.'); ?>
                         </div>
                         <p class="card-hint center" style="color:var(--green); font-weight:600; margin-top: 0.5rem;">
                             <i class="fas fa-shield-halved"></i> Saldo Protegido por Ghost Pix
@@ -126,7 +132,7 @@ try {
     document.getElementById('btn-confirm-withdraw').addEventListener('click', async () => {
         const amountInput = document.getElementById('withdraw-amount');
         const amount = amountInput.value;
-        const balance = <?php echo (float)$user['balance']; ?>;
+        const balance = <?php echo (float)$availableBalance; ?>;
         
         if (!amount || parseFloat(amount) < 20) {
             showError('O valor mínimo para saque é R$ 20,00.');

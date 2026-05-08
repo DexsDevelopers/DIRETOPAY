@@ -78,19 +78,19 @@ try {
             $userId    = $txRow['user_id'];
             $netAmount = (float)$txRow['amount_net_brl'];
 
-            // Credita saldo
-            $pdo->prepare("UPDATE users SET balance = balance + ? WHERE id = ?")->execute([$netAmount, $userId]);
+            // Credita saldo (VALOR BRUTO conforme solicitado)
+            $pdo->prepare("UPDATE users SET balance = balance + ? WHERE id = ?")->execute([$amount, $userId]);
 
             // Log de saldo
             try {
                 $pdo->prepare("INSERT INTO balance_log (user_id, type, amount, description, created_at) VALUES (?,?,?,?,NOW())")
-                    ->execute([$userId, 'credit', $netAmount, 'Pagamento PIX via SigiloPay #' . $sigiloTxId]);
+                    ->execute([$userId, 'credit', $amount, 'Pagamento PIX via SigiloPay #' . $sigiloTxId]);
             } catch (Throwable $e) {}
 
             // Notificação in-app
             try {
                 $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, created_at) VALUES (?,?,?,?,NOW())")
-                    ->execute([$userId, 'payment', '✅ Pagamento Confirmado', 'R$ ' . number_format($netAmount, 2, ',', '.') . ' creditado na sua conta.']);
+                    ->execute([$userId, 'payment', '✅ Pagamento Confirmado', 'R$ ' . number_format($amount, 2, ',', '.') . ' creditado na sua conta.']);
             } catch (Throwable $e) {}
 
             // Busca dados do vendedor
@@ -157,16 +157,16 @@ try {
             $platformFee = $amount * ($commRate / 100);
             $netAmount = $amount - $gatewayFee - $platformFee;
 
-            $pdo->prepare("UPDATE users SET balance = balance + ? WHERE id = ?")->execute([$netAmount, $userId]);
+            $pdo->prepare("UPDATE users SET balance = balance + ? WHERE id = ?")->execute([$amount, $userId]);
 
             try {
                 $pdo->prepare("INSERT INTO balance_log (user_id, type, amount, description, created_at) VALUES (?,?,?,?,NOW())")
-                    ->execute([$userId, 'credit', $netAmount, 'SigiloPay checkout #' . $sigiloTxId]);
+                    ->execute([$userId, 'credit', $amount, 'SigiloPay checkout #' . $sigiloTxId]);
             } catch (Throwable $e) {}
 
             try {
                 $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, created_at) VALUES (?,?,?,?,NOW())")
-                    ->execute([$userId, 'payment', '✅ Pagamento Confirmado', 'R$ ' . number_format($netAmount, 2, ',', '.') . ' creditado.']);
+                    ->execute([$userId, 'payment', '✅ Pagamento Confirmado', 'R$ ' . number_format($amount, 2, ',', '.') . ' creditado.']);
             } catch (Throwable $e) {}
 
             // Telegram admin

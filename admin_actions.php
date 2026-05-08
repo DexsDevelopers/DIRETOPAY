@@ -114,7 +114,7 @@ try {
             $pdo->beginTransaction();
             try {
                 // Lock + verificar status para evitar double-processing
-                $stmtW = $pdo->prepare("SELECT w.user_id, w.amount, w.amount_gross, w.pix_key, w.status, u.full_name FROM withdrawals w JOIN users u ON u.id = w.user_id WHERE w.id = ? FOR UPDATE");
+                $stmtW = $pdo->prepare("SELECT w.user_id, w.amount, w.amount_gross, w.pix_key, w.status, w.is_debited, u.full_name FROM withdrawals w JOIN users u ON u.id = w.user_id WHERE w.id = ? FOR UPDATE");
                 $stmtW->execute([$wId]);
                 $w = $stmtW->fetch();
                 if (!$w || $w['status'] !== 'pending') {
@@ -126,18 +126,21 @@ try {
                 // O valor a ser debitado do saldo do usuário deve ser o valor BRUTO solicitado
                 $debitAmount = (float)($w['amount_gross'] ?: $w['amount']);
 
-                // Debitar saldo atomicamente
-                $result = adjustBalance(
-                    (int)$w['user_id'],
-                    -abs($debitAmount),
-                    'withdraw_debit',
-                    'wd_' . $wId,
-                    'Saque #' . $wId . ' aprovado — ' . ($hash ?: 'sem hash') . ' (Valor Bruto: R$ ' . number_format($debitAmount, 2, ',', '.') . ')'
-                );
-                if (!$result['success']) {
-                    $pdo->rollBack();
-                    echo json_encode(['error' => 'Falha ao debitar: ' . $result['error']]);
-                    break;
+                // Debitar saldo atomicamente se ainda não foi debitado (compatibilidade com saques antigos)
+                if (!$w['is_debited']) {
+                    $result = adjustBalance(
+                        (int)$w['user_id'],
+                        -abs($debitAmount),
+                        'withdraw_debit',
+                        'wd_' . $wId,
+                        'Saque #' . $wId . ' aprovado — ' . ($hash ?: 'sem hash') . ' (Valor Bruto: R$ ' . number_format($debitAmount, 2, ',', '.') . ')',
+                        true // Admin pode aprovar mesmo que o saldo tenha caído (ex: MED posterior ao pedido)
+                    );
+                    if (!$result['success']) {
+                        $pdo->rollBack();
+                        echo json_encode(['error' => 'Falha ao debitar: ' . $result['error']]);
+                        break;
+                    }
                 }
                 $pdo->prepare("UPDATE withdrawals SET status = 'completed', tx_hash = ? WHERE id = ?")->execute([$hash, $wId]);
                 $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, 'Saque Enviado! 💸', ?, 'success')")
@@ -157,15 +160,27 @@ try {
 
         case 'reject_withdraw':
             $wId = (int)$data['withdraw_id'];
-            $stmt = $pdo->prepare("SELECT w.user_id, w.amount, u.full_name FROM withdrawals w JOIN users u ON u.id = w.user_id WHERE w.id = ?");
+            $stmt = $pdo->prepare("SELECT w.user_id, w.amount, w.amount_gross, w.status, w.is_debited, u.full_name FROM withdrawals w JOIN users u ON u.id = w.user_id WHERE w.id = ?");
             $stmt->execute([$wId]);
             $w = $stmt->fetch();
-            if ($w) {
+            if ($w && $w['status'] === 'pending') {
                 $pdo->beginTransaction();
-                // Saldo não precisa ser devolvido pois nunca foi debitado (debitamos só na aprovação)
+                
+                // Se o saldo foi debitado no pedido, devolver agora
+                if ($w['is_debited']) {
+                    $refundAmount = (float)($w['amount_gross'] ?: $w['amount']);
+                    adjustBalance(
+                        (int)$w['user_id'],
+                        abs($refundAmount),
+                        'withdraw_refund',
+                        'wd_' . $wId,
+                        'Estorno de saque #' . $wId . ' rejeitado — R$ ' . number_format($refundAmount, 2, ',', '.')
+                    );
+                }
+
                 $pdo->prepare("UPDATE withdrawals SET status = 'rejected' WHERE id = ?")->execute([$wId]);
                 $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, 'Saque Rejeitado ❌', ?, 'warning')")
-                    ->execute([$w['user_id'], "Seu saque de R$ " . number_format($w['amount'], 2, ',', '.') . " foi rejeitado."]);
+                    ->execute([$w['user_id'], "Seu saque de R$ " . number_format($w['amount'], 2, ',', '.') . " foi rejeitado. O valor foi devolvido ao seu saldo."]);
                 $pdo->commit();
                 try { TelegramService::notifyWithdrawalRejected($w['full_name'], (float)$w['amount']); } catch (Throwable $e) {}
             }

@@ -1,0 +1,225 @@
+{
+  "protected_files_configuration": {
+    "version": "1.0.0",
+    "description": "Arquivos e padrões protegidos - requerem tratamento especial"
+  },
+  "protection_levels": {
+    "CRITICAL": {
+      "description": "Nunca modificar sem análise extensiva e aprovação",
+      "auto_execution": false,
+      "requires_approval": true,
+      "requires_review": "2_senior",
+      "safe_mode": "lockdown",
+      "notification": "security_team"
+    },
+    "HIGH": {
+      "description": "Modificar com cautela, análise obrigatória",
+      "auto_execution": false,
+      "requires_approval": true,
+      "requires_review": "1_senior",
+      "safe_mode": "watch"
+    },
+    "MEDIUM": {
+      "description": "Modificar com planejamento",
+      "auto_execution": false,
+      "requires_approval": false,
+      "requires_review": "1_dev"
+    }
+  },
+  "protected_patterns": {
+    "CRITICAL": [
+      {
+        "pattern": "prisma/schema.prisma",
+        "reason": "Database schema - impacto em todos os dados"
+      },
+      {
+        "pattern": "migrations/**/*.sql",
+        "reason": "Database migrations - podem ser destrutivas"
+      },
+      {
+        "pattern": ".env*",
+        "reason": "Environment variables - configurações sensíveis"
+      },
+      {
+        "pattern": "src/config/auth.ts",
+        "reason": "Authentication configuration"
+      },
+      {
+        "pattern": "src/config/security.ts",
+        "reason": "Security configuration"
+      },
+      {
+        "pattern": "src/utils/crypto.ts",
+        "reason": "Cryptography utilities"
+      },
+      {
+        "pattern": "src/utils/jwt.ts",
+        "reason": "JWT handling"
+      },
+      {
+        "pattern": "src/modules/payment/**/*",
+        "reason": "Payment system - financial impact"
+      },
+      {
+        "pattern": "src/modules/pix/**/*",
+        "reason": "PIX system - financial impact"
+      },
+      {
+        "pattern": "src/modules/wallet/**/*",
+        "reason": "Wallet system - financial impact"
+      },
+      {
+        "pattern": "src/modules/transaction/**/*",
+        "reason": "Transaction system - financial impact"
+      },
+      {
+        "pattern": "src/services/payment/**/*",
+        "reason": "Payment services"
+      },
+      {
+        "pattern": "src/webhooks/**/*",
+        "reason": "Webhook handlers - external integration"
+      },
+      {
+        "pattern": "src/middleware/auth.ts",
+        "reason": "Authentication middleware"
+      },
+      {
+        "pattern": "src/middleware/permission.ts",
+        "reason": "Authorization middleware"
+      },
+      {
+        "pattern": "docker-compose.prod.yml",
+        "reason": "Production Docker configuration"
+      },
+      {
+        "pattern": "kubernetes/**/*.yml",
+        "reason": "Kubernetes production configs"
+      },
+      {
+        "pattern": ".github/workflows/deploy.yml",
+        "reason": "Deploy workflow"
+      },
+      {
+        "pattern": "scripts/deploy*.sh",
+        "reason": "Deploy scripts"
+      },
+      {
+        "pattern": "Dockerfile.prod",
+        "reason": "Production Docker image"
+      }
+    ],
+    "HIGH": [
+      {
+        "pattern": "src/services/**/*.ts",
+        "reason": "Business services - impacto funcional"
+      },
+      {
+        "pattern": "src/controllers/**/*.ts",
+        "reason": "API controllers - interface externa"
+      },
+      {
+        "pattern": "src/routes/**/*.ts",
+        "reason": "API routes - interface externa"
+      },
+      {
+        "pattern": "src/types/**/*.ts",
+        "reason": "Type definitions - impacto em toda codebase"
+      },
+      {
+        "pattern": "src/models/**/*.ts",
+        "reason": "Data models - estrutura de dados"
+      },
+      {
+        "pattern": "src/repositories/**/*.ts",
+        "reason": "Data access layer"
+      },
+      {
+        "pattern": "src/integrations/**/*.ts",
+        "reason": "External integrations"
+      },
+      {
+        "pattern": "src/queue/**/*",
+        "reason": "Queue processing"
+      },
+      {
+        "pattern": "src/workers/**/*",
+        "reason": "Background workers"
+      },
+      {
+        "pattern": "src/realtime/**/*",
+        "reason": "Real-time features"
+      },
+      {
+        "pattern": "src/websocket/**/*",
+        "reason": "WebSocket handlers"
+      },
+      {
+        "pattern": "*.config.ts",
+        "reason": "Configuration files"
+      },
+      {
+        "pattern": "*.config.js",
+        "reason": "Configuration files"
+      },
+      {
+        "pattern": "tsconfig.json",
+        "reason": "TypeScript configuration"
+      },
+      {
+        "pattern": "package.json",
+        "reason": "Dependencies - impacto em toda aplicação"
+      }
+    ],
+    "MEDIUM": [
+      {
+        "pattern": "src/components/**/*.tsx",
+        "reason": "UI components"
+      },
+      {
+        "pattern": "src/hooks/**/*.ts",
+        "reason": "Custom hooks"
+      },
+      {
+        "pattern": "src/utils/**/*.ts",
+        "reason": "Utilities"
+      },
+      {
+        "pattern": "src/lib/**/*.ts",
+        "reason": "Library code"
+      },
+      {
+        "pattern": "tests/**/*.test.ts",
+        "reason": "Test files"
+      },
+      {
+        "pattern": "e2e/**/*.spec.ts",
+        "reason": "E2E tests"
+      }
+    ]
+  },
+  "special_rules": {
+    "database": {
+      "migrations": {
+        "destructive_operations": ["DROP", "DELETE", "ALTER COLUMN TYPE"],
+        "requires_backup": true,
+        "requires_maintenance_window": true,
+        "rollback_required": true
+      }
+    },
+    "payment": {
+      "webhooks": {
+        "signature_validation_required": true,
+        "idempotency_required": true,
+        "audit_logging_required": true
+      }
+    },
+    "security": {
+      "auth_changes": {
+        "security_team_review_required": true,
+        "penetration_test_recommended": true,
+        "staged_rollout_required": true
+      }
+    }
+  }
+}

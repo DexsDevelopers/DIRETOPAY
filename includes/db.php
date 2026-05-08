@@ -299,6 +299,7 @@ try {
     try { $pdo->exec("ALTER TABLE withdrawals ADD COLUMN amount_gross DECIMAL(15,2) AFTER user_id"); } catch (PDOException $e) {}
     try { $pdo->exec("ALTER TABLE withdrawals ADD COLUMN fee_platform DECIMAL(15,2) AFTER amount"); } catch (PDOException $e) {}
     try { $pdo->exec("ALTER TABLE withdrawals ADD COLUMN fee_gateway DECIMAL(15,2) AFTER fee_platform"); } catch (PDOException $e) {}
+    try { $pdo->exec("ALTER TABLE withdrawals ADD COLUMN is_debited TINYINT(1) DEFAULT 0 AFTER status"); } catch (PDOException $e) {}
 
     // Auto-Migração: Configurações avançadas de personalização do checkout
     try { $pdo->exec("ALTER TABLE checkouts ADD COLUMN custom_settings TEXT DEFAULT NULL"); } catch (PDOException $e) {}

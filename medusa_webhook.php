@@ -61,9 +61,9 @@ $txStmt->execute([$txId]);
 $transaction = $txStmt->fetch();
 
 if ($transaction) {
-    // Credit seller balance
+    // Credit seller balance (VALOR BRUTO conforme solicitado)
     $pdo->prepare("UPDATE users SET balance = balance + ? WHERE id = ?")
-        ->execute([$transaction['amount_net_brl'], $transaction['user_id']]);
+        ->execute([$transaction['amount_brl'], $transaction['user_id']]);
 
     // Insert notification for seller
     try {

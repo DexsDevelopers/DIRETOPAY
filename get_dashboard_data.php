@@ -39,8 +39,8 @@ switch ($period) {
 // --- 2. ESTATÍSTICAS ---
 $displayBalance = $user['balance'];
 
-// Saldo disponível para saque = saldo total - saques pendentes ainda não aprovados
-$pendingW = $pdo->prepare("SELECT COALESCE(SUM(amount),0) FROM withdrawals WHERE user_id = ? AND status = 'pending'");
+// Saldo disponível para saque = saldo total - saques pendentes ainda não debitados
+$pendingW = $pdo->prepare("SELECT COALESCE(SUM(amount_gross), 0) FROM withdrawals WHERE user_id = ? AND status = 'pending' AND is_debited = 0");
 $pendingW->execute([$userId]);
 $pendingWithdrawals = (float)$pendingW->fetchColumn();
 $availableForWithdraw = max(0, $user['balance'] - $pendingWithdrawals);

@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $hash = $_POST['tx_hash'] ?? '';
             $pdo->beginTransaction();
             try {
-                $stmtW = $pdo->prepare("SELECT w.user_id, w.amount, w.pix_key, w.status FROM withdrawals w WHERE w.id = ? FOR UPDATE");
+                $stmtW = $pdo->prepare("SELECT w.user_id, w.amount, w.amount_gross, w.pix_key, w.status, w.is_debited FROM withdrawals w WHERE w.id = ? FOR UPDATE");
                 $stmtW->execute([$wId]);
                 $wInfo = $stmtW->fetch();
                 if (!$wInfo || $wInfo['status'] !== 'pending') {
@@ -180,13 +180,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     header("Location: index.php?error=ja_processado");
                     exit;
                 }
-                adjustBalance(
-                    (int)$wInfo['user_id'],
-                    -abs((float)$wInfo['amount']),
-                    'withdraw_debit',
-                    'wd_' . $wId,
-                    'Saque #' . $wId . ' aprovado (admin legacy) — ' . ($hash ?: 'sem hash')
-                );
+                if (!$wInfo['is_debited']) {
+                    $debitAmount = (float)($wInfo['amount_gross'] ?: $wInfo['amount']);
+                    adjustBalance(
+                        (int)$wInfo['user_id'],
+                        -abs($debitAmount),
+                        'withdraw_debit',
+                        'wd_' . $wId,
+                        'Saque #' . $wId . ' aprovado (admin legacy) — ' . ($hash ?: 'sem hash'),
+                        true // Permitir aprovação mesmo com saldo baixo
+                    );
+                }
                 $pdo->prepare("UPDATE withdrawals SET status = 'completed', tx_hash = ? WHERE id = ?")->execute([$hash, $wId]);
                 $val = number_format($wInfo['amount'], 2, ',', '.');
                 $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, 'Saque Enviado! 💸', ?, 'success')")
@@ -208,7 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $wId = (int)$_POST['withdraw_id'];
             $pdo->beginTransaction();
             try {
-                $stmtW = $pdo->prepare("SELECT w.user_id, w.amount, w.status FROM withdrawals w WHERE w.id = ? FOR UPDATE");
+                $stmtW = $pdo->prepare("SELECT w.user_id, w.amount, w.amount_gross, w.status, w.is_debited FROM withdrawals w WHERE w.id = ? FOR UPDATE");
                 $stmtW->execute([$wId]);
                 $w = $stmtW->fetch();
                 if (!$w || $w['status'] !== 'pending') {
@@ -216,7 +220,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     header("Location: index.php?error=ja_processado");
                     exit;
                 }
-                // Saldo NÃO precisa ser devolvido — nunca foi debitado (débito só na aprovação)
+                // Se o saldo foi debitado no pedido, devolver agora
+                if ($w['is_debited']) {
+                    $refundAmount = (float)($w['amount_gross'] ?: $w['amount']);
+                    adjustBalance(
+                        (int)$w['user_id'],
+                        abs($refundAmount),
+                        'withdraw_refund',
+                        'wd_' . $wId,
+                        'Estorno de saque #' . $wId . ' rejeitado (legacy) — R$ ' . number_format($refundAmount, 2, ',', '.')
+                    );
+                }
                 $pdo->prepare("UPDATE withdrawals SET status = 'rejected' WHERE id = ?")->execute([$wId]);
                 $val = number_format($w['amount'], 2, ',', '.');
                 $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, 'Saque Rejeitado ❌', ?, 'warning')")

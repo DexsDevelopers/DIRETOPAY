@@ -418,7 +418,7 @@ if (isset($input['callback_query'])) {
     // ── Sacar Menu ──────────────────────────────────────────────────
     if ($cbData === 'act_sacar_menu') {
         answerCallback($cbId);
-        $pendingWd = $pdo->prepare("SELECT COALESCE(SUM(amount), 0) FROM withdrawals WHERE user_id = ? AND status = 'pending'");
+        $pendingWd = $pdo->prepare("SELECT COALESCE(SUM(amount_gross), 0) FROM withdrawals WHERE user_id = ? AND status = 'pending' AND is_debited = 0");
         $pendingWd->execute([$user['id']]);
         $pendingTotal = (float)$pendingWd->fetchColumn();
         $available = getFreshBalance((int)$user['id']) - $pendingTotal;
@@ -743,9 +743,10 @@ function handleSaldo(string $chatId, array $user): void {
 
     $balance = getFreshBalance($userId);
 
-    $pendingWd = $pdo->prepare("SELECT COALESCE(SUM(amount), 0) FROM withdrawals WHERE user_id = ? AND status = 'pending'");
+    $pendingWd = $pdo->prepare("SELECT COALESCE(SUM(amount_gross), 0) FROM withdrawals WHERE user_id = ? AND status = 'pending' AND is_debited = 0");
     $pendingWd->execute([$userId]);
     $pendingTotal = (float)$pendingWd->fetchColumn();
+    // Nota: withdrawals com is_debited = 1 já estão subtraídos do balance real do usuário
     $available = $balance - $pendingTotal;
 
     $today = getUserTodayStats($userId);
@@ -1095,7 +1096,7 @@ function handleSacar(string $chatId, array $user, float $amount): void {
     }
 
     $freshBal = getFreshBalance($userId);
-    $pendingWd = $pdo->prepare("SELECT COALESCE(SUM(amount), 0) FROM withdrawals WHERE user_id = ? AND status = 'pending'");
+    $pendingWd = $pdo->prepare("SELECT COALESCE(SUM(amount_gross), 0) FROM withdrawals WHERE user_id = ? AND status = 'pending' AND is_debited = 0");
     $pendingWd->execute([$userId]);
     $pendingTotal = (float)$pendingWd->fetchColumn();
     $available = $freshBal - $pendingTotal;
@@ -1129,16 +1130,24 @@ function processWithdrawal(string $chatId, array $user, float $amount): void {
     global $pdo;
     sendTyping($chatId);
     $userId = (int)$user['id'];
-    $platformFee = round($amount * 0.05, 2);
-    $sigiloFee   = round($amount * 0.002 + 4.00, 2);
-    $withdrawFee = $platformFee + $sigiloFee;
+    
+    // 1. Taxa de Venda (Custo PixGo: 8% + 0.99)
+    $saleGatewayCost = ($amount * 0.08) + 0.99;
+    // 2. Taxa de Saque (Custo Sigilo: 0.2% + 4.00)
+    $sigiloPayoutCost = ($amount * 0.002) + 4.00;
+    // 3. Lucro da Plataforma (5%)
+    $platformProfit = ($amount * 0.05);
+
+    $fee_gateway = round($saleGatewayCost + $sigiloPayoutCost, 2);
+    $fee_platform = round($platformProfit, 2);
+    $withdrawFee = $fee_gateway + $fee_platform;
     $netAmount = $amount - $withdrawFee;
 
     $stmt = $pdo->prepare("SELECT balance, pix_key FROM users WHERE id = ?");
     $stmt->execute([$userId]);
     $freshUser = $stmt->fetch();
 
-    $pendingWd = $pdo->prepare("SELECT COALESCE(SUM(amount), 0) FROM withdrawals WHERE user_id = ? AND status = 'pending'");
+    $pendingWd = $pdo->prepare("SELECT COALESCE(SUM(amount_gross), 0) FROM withdrawals WHERE user_id = ? AND status = 'pending' AND is_debited = 0");
     $pendingWd->execute([$userId]);
     $available = (float)$freshUser['balance'] - (float)$pendingWd->fetchColumn();
 
@@ -1148,10 +1157,35 @@ function processWithdrawal(string $chatId, array $user, float $amount): void {
     }
 
     try {
-        $pdo->prepare("INSERT INTO withdrawals (user_id, amount_gross, amount, fee_platform, fee_gateway, pix_key, status) VALUES (?, ?, ?, ?, ?, ?, 'pending')")
-            ->execute([$userId, $amount, $netAmount, $platformFee, $sigiloFee, $freshUser['pix_key']]);
+        $pdo->beginTransaction();
+
+        // 1. Debitar saldo imediatamente (Reservar)
+        $adjust = adjustBalance(
+            $userId,
+            -abs($amount),
+            'withdraw_reserve_bot',
+            '', // A ser preenchido com ID do saque depois
+            "Reserva de saldo via Bot para saque de " . formatBRL($amount)
+        );
+
+        if (!$adjust['success']) {
+            $pdo->rollBack();
+            uReply($chatId, "❌ Falha ao reservar saldo: " . $adjust['error'] . footer(), afterActionKeyboard());
+            return;
+        }
+
+        // 2. Registrar pedido de saque
+        $pdo->prepare("INSERT INTO withdrawals (user_id, amount_gross, amount, fee_platform, fee_gateway, pix_key, status, is_debited) VALUES (?, ?, ?, ?, ?, ?, 'pending', 1)")
+            ->execute([$userId, $amount, $netAmount, $fee_platform, $fee_gateway, $freshUser['pix_key']]);
+        $wId = $pdo->lastInsertId();
+
+        // 3. Atualizar log de saldo com o ID do saque
+        $pdo->prepare("UPDATE balance_log SET reference_id = ? WHERE user_id = ? AND origin = 'withdraw_reserve_bot' AND reference_id = '' ORDER BY id DESC LIMIT 1")
+            ->execute(['wd_' . $wId, $userId]);
+
+        $pdo->commit();
         try {
-            TelegramService::notifyWithdrawal($user['full_name'], $amount, $freshUser['pix_key'], $platformFee, $sigiloFee);
+            TelegramService::notifyWithdrawal($user['full_name'], $amount, $freshUser['pix_key'], $fee_platform, $fee_gateway);
         } catch (Throwable $e) {}
         uReply($chatId,
             "✅ <b>Saque Solicitado!</b>" . div() . "\n\n"
@@ -1506,7 +1540,7 @@ switch ($command) {
         if ($amount > 0) {
             handleSacar($chatId, $user, $amount);
         } else {
-            $pendingWd = $pdo->prepare("SELECT COALESCE(SUM(amount), 0) FROM withdrawals WHERE user_id = ? AND status = 'pending'");
+            $pendingWd = $pdo->prepare("SELECT COALESCE(SUM(amount_gross), 0) FROM withdrawals WHERE user_id = ? AND status = 'pending' AND is_debited = 0");
             $pendingWd->execute([$userId]);
             $available = getFreshBalance($userId) - (float)$pendingWd->fetchColumn();
             uReply($chatId,
@@ -1586,7 +1620,7 @@ if (!$handled) {
                 handleSacar($chatId, $user, $nlp['amount'] ?? 0);
                 break;
             case 'sacar_help':
-                $pendingWd = $pdo->prepare("SELECT COALESCE(SUM(amount), 0) FROM withdrawals WHERE user_id = ? AND status = 'pending'");
+                $pendingWd = $pdo->prepare("SELECT COALESCE(SUM(amount_gross), 0) FROM withdrawals WHERE user_id = ? AND status = 'pending' AND is_debited = 0");
                 $pendingWd->execute([$userId]);
                 $available = getFreshBalance($userId) - (float)$pendingWd->fetchColumn();
                 uReply($chatId,

@@ -1,0 +1,156 @@
+{
+  "routing_configuration": {
+    "version": "1.0.0",
+    "description": "Configuração de roteamento de tarefas para Credit Saver Pro Enterprise"
+  },
+  "classification_rules": {
+    "levels": {
+      "LOW_COST": {
+        "id": "low",
+        "priority": 1,
+        "keywords": [
+          "css", "style", "color", "font", "spacing", "margin", "padding",
+          "text", "label", "button", "input", "component ui",
+          "layout", "align", "flex", "grid", "responsive",
+          "icon", "image", "visual", "theme", "config theme",
+          "documentation", "comment", "readme", "example",
+          "copy", "wording", "message", "translation"
+        ],
+        "max_tokens": 4096,
+        "max_files": 3,
+        "max_lines_per_file": 20,
+        "confirmation_required": false,
+        "model": "economical",
+        "execution_mode": "direct"
+      },
+      "MEDIUM_COST": {
+        "id": "medium",
+        "priority": 2,
+        "keywords": [
+          "crud", "api", "endpoint", "route", "controller",
+          "component", "hook", "util", "helper", "service",
+          "database query", "find", "filter", "sort",
+          "form", "validation", "schema", "zod", "yup",
+          "integration", "fetch", "request", "response",
+          "refactor", "extract", "move", "rename",
+          "unit test", "test", "jest", "vitest"
+        ],
+        "max_tokens": 8192,
+        "max_files": 6,
+        "max_lines_per_file": 50,
+        "confirmation_required": false,
+        "model": "medium",
+        "execution_mode": "planned"
+      },
+      "HIGH_COST": {
+        "id": "high",
+        "priority": 3,
+        "keywords": [
+          "payment", "pix", "transaction", "gateway", "webhook",
+          "callback", "notification", "charge", "refund",
+          "auth", "jwt", "token", "session", "login", "password", "encrypt", "hash",
+          "database", "migration", "schema", "model", "prisma", "sequelize",
+          "production", "deploy", "build", "release", "ci/cd",
+          "security", "permission", "role", "access", "authorize",
+          "crypto", "encryption", "decrypt", "signature", "certificate",
+          "queue", "worker", "job", "background", "async", "realtime",
+          "websocket", "socket", "event", "stream", "live",
+          "balance", "wallet", "transfer", "withdraw", "deposit"
+        ],
+        "max_tokens": 16384,
+        "max_files": 10,
+        "max_lines_per_file": 100,
+        "confirmation_required": true,
+        "model": "premium",
+        "execution_mode": "analyzed"
+      },
+      "CRITICAL_COST": {
+        "id": "critical",
+        "priority": 4,
+        "keywords": [
+          "financial", "banking", "money", "balance", "wallet",
+          "withdraw", "deposit", "transfer", "payout",
+          "bank webhook", "bank api", "financial gateway",
+          "user balance", "account balance", "ledger", "accounting",
+          "compliance", "regulatory", "legal", "audit", "audit trail",
+          "critical migration", "destructive change", "drop table",
+          "production deploy", "live deploy", "hotfix",
+          "master auth", "root access", "super admin",
+          "core system", "critical path", "single point of failure",
+          "pci", "gdpr", "lgpd", "encryption key", "rotation"
+        ],
+        "max_tokens": 32768,
+        "max_files": 50,
+        "max_lines_per_file": null,
+        "confirmation_required": true,
+        "confirmation_type": "explicit",
+        "model": "maximum",
+        "execution_mode": "step_by_step",
+        "safe_mode": "lockdown"
+      }
+    }
+  },
+  "override_rules": {
+    "force_upgrade": [
+      {
+        "condition": "contains_payment_keyword",
+        "action": "minimum_high"
+      },
+      {
+        "condition": "contains_auth_keyword",
+        "action": "minimum_high"
+      },
+      {
+        "condition": "contains_database_migration",
+        "action": "minimum_high"
+      },
+      {
+        "condition": "contains_financial_data",
+        "action": "minimum_critical"
+      },
+      {
+        "condition": "is_production_deploy",
+        "action": "minimum_high"
+      }
+    ],
+    "allow_downgrade": [
+      {
+        "condition": "has_comprehensive_tests",
+        "max_level": "medium",
+        "restricted_from": ["critical"]
+      },
+      {
+        "condition": "is_isolated_development",
+        "max_level": "low",
+        "restricted_from": ["high", "critical"]
+      }
+    ]
+  },
+  "context_settings": {
+    "low": {
+      "load_strategy": "minimal",
+      "include_tests": false,
+      "include_dependencies": false,
+      "compression": "high"
+    },
+    "medium": {
+      "load_strategy": "focused",
+      "include_tests": false,
+      "include_dependencies": true,
+      "compression": "medium"
+    },
+    "high": {
+      "load_strategy": "comprehensive",
+      "include_tests": true,
+      "include_dependencies": true,
+      "compression": "low"
+    },
+    "critical": {
+      "load_strategy": "exhaustive",
+      "include_tests": true,
+      "include_dependencies": true,
+      "include_documentation": true,
+      "compression": "none"
+    }
+  }
+}
