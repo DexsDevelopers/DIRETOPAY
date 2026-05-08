@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ghost-pix-v11';
+const CACHE_NAME = 'lunarpay-v1';
 
 // Install - sem cache.addAll para garantir que o SW sempre ativa
 self.addEventListener('install', (event) => {
@@ -33,7 +33,7 @@ self.addEventListener('push', (event) => {
     console.log('[SW] Push received:', event);
 
     let data = {
-        title: 'Ghost Pix',
+        title: 'LunarPay',
         body: 'Nova notificação recebida!',
         icon: '/logo_premium.png'
     };
@@ -55,7 +55,7 @@ self.addEventListener('push', (event) => {
         icon: data.icon,
         badge: '/logo_premium.png',
         vibrate: [200, 100, 200],
-        tag: 'ghost-pix-' + Date.now(),
+        tag: 'lunarpay-' + Date.now(),
         renotify: true,
         requireInteraction: false,
         data: {
