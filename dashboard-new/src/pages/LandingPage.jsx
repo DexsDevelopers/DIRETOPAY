@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
     ArrowRight, CheckCircle, Zap, Shield, Rocket, MessageCircle,
@@ -9,6 +9,109 @@ import {
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
 import { useTheme } from '../contexts/ThemeContext';
+
+// ===== EFEITOS UIVERSE =====
+
+/* 1. Spotlight cursor glow */
+function SpotlightCursor() {
+    const [pos, setPos] = useState({ x: -999, y: -999 });
+    useEffect(() => {
+        const move = (e) => setPos({ x: e.clientX, y: e.clientY });
+        window.addEventListener('mousemove', move);
+        return () => window.removeEventListener('mousemove', move);
+    }, []);
+    return (
+        <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden"
+            style={{ background: `radial-gradient(600px circle at ${pos.x}px ${pos.y}px, rgba(192,0,106,0.07), transparent 40%)` }}
+        />
+    );
+}
+
+/* 2. Floating particles hero */
+function Particles({ count = 18 }) {
+    const particles = Array.from({ length: count }, (_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: Math.random() * 3 + 1,
+        duration: Math.random() * 8 + 6,
+        delay: Math.random() * 4,
+    }));
+    return (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {particles.map(p => (
+                <motion.div key={p.id}
+                    className="absolute rounded-full bg-primary/20"
+                    style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size }}
+                    animate={{ y: [0, -30, 0], opacity: [0.2, 0.6, 0.2] }}
+                    transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
+                />
+            ))}
+        </div>
+    );
+}
+
+/* 3. Grain texture overlay */
+function GrainOverlay() {
+    return (
+        <div className="pointer-events-none fixed inset-0 z-[9998] opacity-[0.025]"
+            style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+                backgroundSize: '128px'
+            }}
+        />
+    );
+}
+
+/* 4. Shimmer button wrapper */
+function ShimmerButton({ children, className = '', ...props }) {
+    return (
+        <div className="relative group inline-flex" {...props}>
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-600 to-rose-500 rounded-2xl blur opacity-50 group-hover:opacity-80 transition duration-500 group-hover:duration-200 animate-pulse" />
+            <div className={`relative ${className}`}>{children}</div>
+        </div>
+    );
+}
+
+/* 5. Typewriter */
+function Typewriter({ words, className = '' }) {
+    const [index, setIndex] = useState(0);
+    const [displayed, setDisplayed] = useState('');
+    const [deleting, setDeleting] = useState(false);
+    useEffect(() => {
+        const word = words[index % words.length];
+        const speed = deleting ? 50 : 100;
+        const timeout = setTimeout(() => {
+            if (!deleting && displayed.length < word.length) {
+                setDisplayed(word.slice(0, displayed.length + 1));
+            } else if (deleting && displayed.length > 0) {
+                setDisplayed(displayed.slice(0, -1));
+            } else if (!deleting) {
+                setTimeout(() => setDeleting(true), 1400);
+            } else {
+                setDeleting(false);
+                setIndex(i => i + 1);
+            }
+        }, speed);
+        return () => clearTimeout(timeout);
+    }, [displayed, deleting, index, words]);
+    return (
+        <span className={className}>
+            {displayed}
+            <span className="animate-pulse">|</span>
+        </span>
+    );
+}
+
+/* 6. Animated border card */
+function AnimatedBorderCard({ children, className = '' }) {
+    return (
+        <div className={`relative group ${className}`}>
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-600 via-rose-500 to-pink-700 rounded-3xl opacity-0 group-hover:opacity-30 blur transition duration-500" />
+            <div className="relative h-full">{children}</div>
+        </div>
+    );
+}
 
 // ===== COMPONENTES AUXILIARES =====
 
@@ -211,6 +314,8 @@ export default function LandingPage() {
 
     return (
         <div className={`min-h-screen font-['Outfit'] overflow-x-hidden selection:bg-primary selection:text-white ${isDark ? 'bg-[#0a0a0f] text-gray-100' : 'bg-white text-gray-900'}`}>
+            <SpotlightCursor />
+            <GrainOverlay />
             
             {/* Announcement Bar */}
             <div className={`sticky top-0 z-[60] backdrop-blur-2xl border-b py-2 px-4 sm:px-6 ${isDark ? 'bg-[#0f0f16]/95 border-white/5' : 'bg-white/97 border-purple-100/80'}`}>
@@ -254,6 +359,7 @@ export default function LandingPage() {
 
             {/* Hero Section V2 */}
             <section className={`pt-32 sm:pt-40 pb-20 px-6 relative overflow-hidden min-h-screen ${isDark ? 'bg-[#0a0a0f]' : 'bg-white'}`}>
+                <Particles count={22} />
                 <div className={`absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[100px] pointer-events-none ${isDark ? 'bg-gradient-to-bl from-rose-900/20 to-pink-900/10 opacity-40' : 'bg-gradient-to-bl from-pink-100 to-rose-50 opacity-60'}`} />
                 <div className={`absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-[80px] pointer-events-none ${isDark ? 'bg-gradient-to-tr from-rose-900/15 to-transparent opacity-30' : 'bg-gradient-to-tr from-pink-50 to-transparent opacity-40'}`} />
                 
@@ -271,7 +377,10 @@ export default function LandingPage() {
                                 <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
                                     className="text-4xl sm:text-5xl lg:text-6xl font-[1000] leading-[0.95] tracking-[-0.04em] text-gray-900">
                                     O lado invisível que faz <br />
-                                    <span className="bg-gradient-to-r from-pink-600 to-rose-700 bg-clip-text text-transparent">sua operação crescer!</span>
+                                    <Typewriter
+                                        words={['sua operação crescer!', 'suas vendas explodirem!', 'seu lucro decolar!', 'você ficar anônimo!']}
+                                        className="bg-gradient-to-r from-pink-600 to-rose-700 bg-clip-text text-transparent"
+                                    />
                                 </motion.h1>
                                 <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
                                     className="text-gray-500 text-lg sm:text-xl max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
@@ -281,11 +390,13 @@ export default function LandingPage() {
 
                             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 }}
                                 className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                                <Link to="/register" className="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-rose-700 text-white h-14 sm:h-16 px-8 rounded-2xl flex items-center justify-center font-black hover:opacity-90 hover:scale-105 transition-all shadow-[0_16px_40px_rgba(192,0,106,0.35)] active:scale-95 group whitespace-nowrap">
+                                <ShimmerButton>
+                                <Link to="/register" className="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-rose-700 text-white h-14 sm:h-16 px-8 rounded-2xl flex items-center justify-center font-black hover:opacity-90 hover:scale-105 transition-all active:scale-95 group whitespace-nowrap">
                                     <ShieldCheck className="mr-2" size={20} />
                                     Quero ser um Ghost
                                     <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
                                 </Link>
+                                </ShimmerButton>
                                 <a href="#solucoes" className="w-full sm:w-auto bg-gray-50 border border-gray-200 h-14 sm:h-16 px-8 rounded-2xl text-gray-700 font-black hover:bg-gray-100 transition-all active:scale-95 flex items-center justify-center whitespace-nowrap">
                                     <Play size={18} className="mr-2" />
                                     Ver como funciona
@@ -495,12 +606,12 @@ export default function LandingPage() {
                         <p className="text-gray-400 max-w-xs font-bold leading-relaxed text-sm">Eliminamos as barreiras entre sua venda e seu lucro com tecnologia de ponta.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <FeatureCard icon={ShieldCheck} title="Anonimato Bancário" desc="Seus dados pessoais ou da sua empresa nunca são revelados ao pagador. Total descrição para o seu negócio." delay={0.1} />
-                        <FeatureCard icon={Zap} title="Conversão Extrema" desc="Checkout otimizado para o Pix. Experiência de um clique que reduz o abandono em até 45%." delay={0.2} />
-                        <FeatureCard icon={Layers} title="Multicontas em Um" desc="Gerencie múltiplos projetos e fluxos financeiros em uma única dashboard integrada e centralizada." delay={0.3} />
-                        <FeatureCard icon={BarChart3} title="Analytics em Real-time" desc="Acompanhe cada centavo que entra. Insights detalhados de conversão e comportamento do cliente." delay={0.4} />
-                        <FeatureCard icon={Rocket} title="Saques Sem Taxas" desc="Transferências ultra-rápidas e gratuitas para sua conta bancária de preferência logo após o processamento." delay={0.5} />
-                        <FeatureCard icon={Globe} title="Infraestrutura Global" desc="Servidores distribuídos para garantir que seu link esteja sempre no ar, 24 horas por dia, 7 dias por semana." delay={0.6} />
+                        <AnimatedBorderCard><FeatureCard icon={ShieldCheck} title="Anonimato Bancário" desc="Seus dados pessoais ou da sua empresa nunca são revelados ao pagador. Total descrição para o seu negócio." delay={0.1} /></AnimatedBorderCard>
+                        <AnimatedBorderCard><FeatureCard icon={Zap} title="Conversão Extrema" desc="Checkout otimizado para o Pix. Experiência de um clique que reduz o abandono em até 45%." delay={0.2} /></AnimatedBorderCard>
+                        <AnimatedBorderCard><FeatureCard icon={Layers} title="Multicontas em Um" desc="Gerencie múltiplos projetos e fluxos financeiros em uma única dashboard integrada e centralizada." delay={0.3} /></AnimatedBorderCard>
+                        <AnimatedBorderCard><FeatureCard icon={BarChart3} title="Analytics em Real-time" desc="Acompanhe cada centavo que entra. Insights detalhados de conversão e comportamento do cliente." delay={0.4} /></AnimatedBorderCard>
+                        <AnimatedBorderCard><FeatureCard icon={Rocket} title="Saques Sem Taxas" desc="Transferências ultra-rápidas e gratuitas para sua conta bancária de preferência logo após o processamento." delay={0.5} /></AnimatedBorderCard>
+                        <AnimatedBorderCard><FeatureCard icon={Globe} title="Infraestrutura Global" desc="Servidores distribuídos para garantir que seu link esteja sempre no ar, 24 horas por dia, 7 dias por semana." delay={0.6} /></AnimatedBorderCard>
                     </div>
                 </div>
             </section>
