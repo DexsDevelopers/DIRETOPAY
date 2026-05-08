@@ -403,7 +403,7 @@ export default function LandingPage() {
             </nav>
 
             {/* Hero Section V2 */}
-            <section className={`pt-32 sm:pt-40 pb-20 px-6 relative overflow-hidden min-h-screen ${isDark ? 'bg-[#0a0a0f]' : 'bg-[#F8F8FC]'}`}
+            <section className={`pt-28 sm:pt-36 pb-16 sm:pb-24 px-4 sm:px-6 relative overflow-hidden ${isDark ? 'bg-[#0a0a0f]' : 'bg-[#F8F8FC]'}`}
                 style={isDark ? {
                     backgroundImage: 'linear-gradient(0deg, transparent 24%, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.03) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03) 76%, transparent 77%), linear-gradient(90deg, transparent 24%, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.03) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03) 76%, transparent 77%)',
                     backgroundSize: '55px 55px'
@@ -418,26 +418,26 @@ export default function LandingPage() {
                 <div className={`absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-[80px] pointer-events-none ${isDark ? 'bg-gradient-to-tr from-rose-900/15 to-transparent opacity-30' : 'bg-gradient-to-tr from-pink-50 to-transparent opacity-40'}`} />
                 
                 <div className="max-w-7xl mx-auto relative z-10">
-                    <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center min-h-[80vh]">
+                    <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
                         {/* Lado Esquerdo */}
-                        <div className="space-y-8 text-center lg:text-left">
+                        <div className="space-y-6 sm:space-y-8 text-center lg:text-left">
                             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }}
-                                className={`inline-flex items-center gap-3 px-5 py-3 rounded-full border ${isDark ? 'bg-rose-950/40 border-rose-500/40' : 'bg-primary/5 border-primary/15'}`}>
-                                <div className={`w-2 h-2 rounded-full ${isDark ? 'bg-emerald-400' : 'bg-emerald-500'} animate-pulse`} />
-                                <span className={`text-sm font-black tracking-tight ${isDark ? 'text-pink-300' : 'text-primary'}`}>+3.000 Sellers que confiam em nós!</span>
+                                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${isDark ? 'bg-rose-950/40 border-rose-500/40' : 'bg-primary/5 border-primary/15'}`}>
+                                <div className={`w-2 h-2 shrink-0 rounded-full ${isDark ? 'bg-emerald-400' : 'bg-emerald-500'} animate-pulse`} />
+                                <span className={`text-xs sm:text-sm font-black tracking-tight ${isDark ? 'text-pink-300' : 'text-primary'}`}>+3.000 Sellers que confiam em nós!</span>
                             </motion.div>
 
                             <div className="space-y-6">
                                 <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                                    className={`text-4xl sm:text-5xl lg:text-6xl font-[1000] leading-[1.05] tracking-[-0.03em] ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                    O lado invisível que faz <br />
+                                    className={`text-[2.2rem] sm:text-5xl lg:text-6xl font-[1000] leading-[1.1] tracking-[-0.03em] ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                    O lado invisível que faz{' '}
                                     <Typewriter
                                         words={['sua operação crescer!', 'suas vendas explodirem!', 'seu lucro decolar!', 'você ficar anônimo!']}
                                         className="bg-gradient-to-r from-pink-600 to-rose-700 bg-clip-text text-transparent"
                                     />
                                 </motion.h1>
                                 <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
-                                    className="text-gray-500 text-lg sm:text-xl max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
+                                    className="text-gray-500 text-base sm:text-lg max-w-lg mx-auto lg:mx-0 font-medium leading-relaxed">
                                     Receba via Pix com <strong>anonimato garantido</strong>. Sem exposição de CPF/CNPJ, saques instantâneos e <strong>blindagem total contra MED</strong>.
                                 </motion.p>
                             </div>
@@ -451,29 +451,27 @@ export default function LandingPage() {
                                     <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform shrink-0" size={18} />
                                 </Link>
                                 </ShimmerButton>
-                                <a href="#solucoes" className="w-full sm:w-auto bg-gray-50 border border-gray-200 h-14 px-8 rounded-2xl text-gray-700 font-black hover:bg-gray-100 transition-all active:scale-95 flex items-center justify-center">
-                                    <Play size={18} className="mr-2" />
+                                <a href="#solucoes" className="w-full sm:w-auto bg-gray-50 border border-gray-200 h-14 px-8 rounded-2xl text-gray-700 font-black hover:bg-gray-100 transition-all active:scale-95 flex items-center justify-center gap-2">
+                                    <Play size={18} className="shrink-0" />
                                     Ver como funciona
                                 </a>
                             </motion.div>
 
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}
-                                className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
+                                className="flex flex-wrap justify-center lg:justify-start gap-3">
                                 {[{ icon: ShieldCheck, text: '100% Anônimo' }, { icon: Zap, text: 'Saque Instantâneo' }, { icon: Lock, text: 'Anti-MED' }].map((item, i) => (
-                                    <div key={i} className={`flex items-center gap-2 px-4 py-2 rounded-xl border ${isDark ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200'}`}>
-                                        <item.icon size={16} className="text-primary" />
-                                        <span className="text-sm font-bold text-gray-600">{item.text}</span>
+                                    <div key={i} className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold ${isDark ? 'bg-white/5 border-white/10 text-gray-400' : 'bg-white border-gray-200 text-gray-600'}`}>
+                                        <item.icon size={14} className="text-primary shrink-0" />
+                                        {item.text}
                                     </div>
                                 ))}
                             </motion.div>
                         </div>
 
-                        {/* Lado Direito - Dashboard */}
+                        {/* Lado Direito - Dashboard: só desktop */}
                         <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, duration: 0.8 }}
-                            className="relative order-first lg:order-last w-full overflow-hidden">
-                            <div className="scale-[0.75] sm:scale-90 lg:scale-100 origin-top">
-                                <DashboardMockup />
-                            </div>
+                            className="relative hidden lg:block">
+                            <DashboardMockup />
                         </motion.div>
                     </div>
                 </div>
