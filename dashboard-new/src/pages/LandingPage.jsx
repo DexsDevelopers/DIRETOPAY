@@ -98,23 +98,37 @@ function AwardCard({ icon: Icon, amount, name, desc, color, delay }) {
 }
 
 function RankingItem({ position, name, sales, amount, avatar, type }) {
-    const styles = {
-        gold: 'bg-yellow-400/20 text-yellow-400 border-yellow-400/30',
-        silver: 'bg-gray-300/20 text-gray-300 border-gray-300/30',
-        bronze: 'bg-orange-400/20 text-orange-400 border-orange-400/30',
-        regular: 'bg-gray-100 text-gray-600 border-gray-200'
+    const badgeStyles = {
+        gold:    'bg-yellow-400/20 text-yellow-500 border-yellow-400/40',
+        silver:  'bg-gray-200/60  text-gray-500  border-gray-300/60',
+        bronze:  'bg-orange-400/20 text-orange-500 border-orange-400/40',
+        regular: 'bg-gray-100     text-gray-500  border-gray-200'
+    };
+    const avatarStyles = {
+        gold:    'from-yellow-400 to-orange-400',
+        silver:  'from-gray-400   to-gray-500',
+        bronze:  'from-orange-400 to-orange-600',
+        regular: 'from-pink-600   to-rose-700'
     };
     return (
         <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-            whileHover={{ x: 5, backgroundColor: 'rgba(255,255,255,0.06)' }}
-            className="flex items-center gap-5 bg-gray-50 border border-gray-200 rounded-2xl p-5 transition-all">
-            <div className={`w-10 h-10 flex items-center justify-center font-black rounded-xl border ${styles[type]}`}>{position}</div>
-            <div className="w-12 h-12 bg-gradient-to-br from-pink-600 to-rose-700 rounded-xl flex items-center justify-center font-bold text-white">{avatar}</div>
-            <div className="flex-1">
-                <div className="font-semibold text-gray-900 dark:text-white">{name}</div>
-                <div className="text-xs text-gray-400">{sales} vendas este mês</div>
+            whileHover={{ x: 4 }}
+            className="flex items-center gap-4 bg-white border border-gray-100 rounded-2xl px-5 py-4 shadow-sm transition-all">
+            {/* Posição */}
+            <div className={`w-9 h-9 shrink-0 flex items-center justify-center font-black text-sm rounded-xl border ${badgeStyles[type]}`}>
+                {position}
             </div>
-            <div className="text-lg font-bold text-emerald-400">{amount}</div>
+            {/* Avatar */}
+            <div className={`w-11 h-11 shrink-0 bg-gradient-to-br ${avatarStyles[type]} rounded-xl flex items-center justify-center font-black text-white text-sm`}>
+                {avatar}
+            </div>
+            {/* Info */}
+            <div className="flex-1 min-w-0">
+                <div className="font-black text-gray-900 text-sm truncate">{name}</div>
+                <div className="text-xs text-gray-400 font-medium mt-0.5">{sales} vendas este mês</div>
+            </div>
+            {/* Valor */}
+            <div className="text-base font-black text-emerald-500 shrink-0">{amount}</div>
         </motion.div>
     );
 }
