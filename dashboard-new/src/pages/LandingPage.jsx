@@ -382,28 +382,32 @@ export default function LandingPage() {
                 </div>
             </div>
 
-            {/* Navbar */}
-            <nav className={`fixed left-1/2 -translate-x-1/2 z-50 w-[94%] sm:w-[90%] max-w-6xl h-16 sm:h-20 bg-white/90 backdrop-blur-3xl border border-purple-100 rounded-[32px] px-6 sm:px-10 flex items-center justify-between shadow-[0_8px_32px_rgba(124,58,237,0.1)] transition-all duration-300 overflow-hidden ${scrolled ? 'top-3' : 'top-32 sm:top-24'}`}>
-                <div className="flex items-center gap-3">
-                    <img src="/logo_premium.png" alt="Ghost Pix" className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-[0_0_20px_rgba(192,0,106,0.3)]" />
-                    <span className="font-black text-lg sm:text-xl tracking-tighter text-gray-900">GHOST<span className="text-primary italic">PIX</span></span>
+            {/* Navbar — full-width no topo, pill flutuante ao rolar */}
+            <nav className={`fixed z-50 flex items-center justify-between transition-all duration-500
+                ${scrolled
+                    ? 'left-1/2 -translate-x-1/2 top-3 w-[94%] sm:w-[90%] max-w-6xl h-14 sm:h-16 rounded-[32px] px-5 sm:px-8 border shadow-[0_8px_32px_rgba(192,0,106,0.12)] backdrop-blur-3xl ' + (isDark ? 'bg-[#0f0f16]/95 border-white/10' : 'bg-white/95 border-pink-100')
+                    : 'left-0 translate-x-0 top-[38px] sm:top-[38px] w-full h-16 sm:h-20 rounded-none px-6 sm:px-16 border-b border-transparent backdrop-blur-sm ' + (isDark ? 'bg-[#0a0a0f]/80' : 'bg-white/80')
+                }`}>
+                <div className="flex items-center gap-2 sm:gap-3">
+                    <img src="/logo_premium.png" alt="Ghost Pix" className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl shadow-[0_0_16px_rgba(192,0,106,0.3)]" />
+                    <span className={`font-black text-base sm:text-lg tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Ghosts<span className="text-primary">Pay</span></span>
                 </div>
-                <div className="hidden lg:flex items-center gap-10 text-[11px] font-black uppercase tracking-[0.2em] text-gray-400">
-                    <a href="#solucoes" className="hover:text-gray-900 transition-colors">Soluções</a>
-                    <a href="#tecnologia" className="hover:text-gray-900 transition-colors">Tecnologia</a>
-                    <Link to="/docs" className="hover:text-primary transition-colors flex items-center gap-2">API Docs <Code2 size={14} /></Link>
-                    <a href="#faq" className="hover:text-gray-900 transition-colors">FAQ</a>
-                    <a href="/loja" className="hover:text-primary transition-colors flex items-center gap-1.5"><Store size={13} />Loja</a>
+                <div className="hidden lg:flex items-center gap-8 text-[12px] font-semibold text-gray-500">
+                    <a href="#" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Início</a>
+                    <a href="#solucoes" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Benefícios</a>
+                    <a href="#" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Premiações</a>
+                    <Link to="/docs" className={`hover:text-primary transition-colors flex items-center gap-1.5 ${isDark ? 'text-gray-400' : ''}`}>API Docs <Code2 size={13} /></Link>
+                    <a href="#faq" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>FAQ</a>
                 </div>
-                <div className="flex items-center gap-3 sm:gap-4">
+                <div className="flex items-center gap-2 sm:gap-3">
                     <ThemeToggle />
-                    <Link to="/login" className="text-[9px] sm:text-[11px] font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 hover:text-gray-900 transition-colors px-1 sm:px-2 hidden sm:block">Entrar</Link>
-                    <Link to="/register" className="bg-gradient-to-r from-pink-600 to-rose-700 text-white text-[9px] sm:text-[11px] font-black uppercase tracking-[0.1em] sm:tracking-[0.15em] px-4 sm:px-8 py-2 sm:py-3.5 rounded-xl sm:rounded-2xl hover:opacity-90 transition-all active:scale-95 shadow-[0_8px_20px_rgba(192,0,106,0.3)] whitespace-nowrap">Conta</Link>
+                    <Link to="/login" className={`hidden sm:block text-[12px] font-semibold px-4 py-2 rounded-full border transition-all hover:border-primary hover:text-primary ${isDark ? 'text-gray-300 border-white/15' : 'text-gray-600 border-gray-200'}`}>Login</Link>
+                    <Link to="/register" className="bg-gradient-to-r from-pink-600 to-rose-700 text-white text-[11px] sm:text-[12px] font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-full hover:opacity-90 transition-all active:scale-95 shadow-[0_4px_16px_rgba(192,0,106,0.35)] whitespace-nowrap">Cadastre-se</Link>
                 </div>
             </nav>
 
             {/* Hero Section V2 */}
-            <section className={`pt-28 sm:pt-36 pb-16 sm:pb-24 px-4 sm:px-6 relative overflow-hidden ${isDark ? 'bg-[#0a0a0f]' : 'bg-[#F8F8FC]'}`}
+            <section className={`pt-36 sm:pt-44 pb-16 sm:pb-24 px-4 sm:px-6 relative overflow-hidden ${isDark ? 'bg-[#0a0a0f]' : 'bg-[#F8F8FC]'}`}
                 style={isDark ? {
                     backgroundImage: 'linear-gradient(0deg, transparent 24%, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.03) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03) 76%, transparent 77%), linear-gradient(90deg, transparent 24%, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.03) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03) 76%, transparent 77%)',
                     backgroundSize: '55px 55px'
