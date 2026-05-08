@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once '../includes/db.php';
 
 if (!isAdmin()) {
@@ -21,10 +21,10 @@ try {
     $count = $pdo->query("SELECT COUNT(*) FROM email_templates")->fetchColumn();
     if ($count == 0) {
         $defaults = [
-            ['account_approved', 'Sua conta Ghost Pix foi APROVADA! 🔥', '<p>Olá, <strong>{name}</strong>!</p><p>Temos ótimas notícias: sua conta foi verificada e <strong>aprovada</strong> pela nossa equipe.</p><p>Você já pode acessar seu painel e começar a receber pagamentos com total blindagem e anonimato.</p>'],
+            ['account_approved', 'Sua conta LunarPay foi APROVADA! 🔥', '<p>Olá, <strong>{name}</strong>!</p><p>Temos ótimas notícias: sua conta foi verificada e <strong>aprovada</strong> pela nossa equipe.</p><p>Você já pode acessar seu painel e começar a receber pagamentos com total blindagem e anonimato.</p>'],
             ['sale_confirmed', '💰 Venda Confirmada: R$ {amount}', '<p>Boas vendas, <strong>{name}</strong>!</p><p>Um novo pagamento via PIX foi confirmado na sua conta.</p><p style=\'font-size: 24px; color: #4ade80; font-weight: bold;\'>R$ {amount}</p><p>O saldo já foi creditado na sua carteira e está disponível para consulta no dashboard.</p>'],
-            ['withdrawal_paid', '💸 Seu saque foi PAGO!', '<p>Olá, <strong>{name}</strong>!</p><p>Seu pedido de saque no valor de <strong>R$ {amount}</strong> foi processado e enviado com sucesso para sua chave PIX cadastrada.</p><p>Obrigado por utilizar o sistema Ghost Pix!</p>'],
-            ['global_announcement', '📢 Comunicado Ghost Pix: {title}', '<p>Olá, <strong>{name}</strong>!</p><div style=\'padding: 15px; background: rgba(74, 222, 128, 0.05); border-left: 4px solid #4ade80;\'>{message}</div>']
+            ['withdrawal_paid', '💸 Seu saque foi PAGO!', '<p>Olá, <strong>{name}</strong>!</p><p>Seu pedido de saque no valor de <strong>R$ {amount}</strong> foi processado e enviado com sucesso para sua chave PIX cadastrada.</p><p>Obrigado por utilizar o sistema LunarPay!</p>'],
+            ['global_announcement', '📢 Comunicado LunarPay: {title}', '<p>Olá, <strong>{name}</strong>!</p><div style=\'padding: 15px; background: rgba(74, 222, 128, 0.05); border-left: 4px solid #4ade80;\'>{message}</div>']
         ];
         $stmtInsert = $pdo->prepare("INSERT INTO email_templates (slug, subject, message) VALUES (?, ?, ?)");
         foreach ($defaults as $d) {
@@ -78,7 +78,7 @@ $availableVars = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>Ghost Pix - Configurações de E-mail</title>
+    <title>LunarPay - Configurações de E-mail</title>
     <link rel="stylesheet" href="../style.css?v=125.0">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

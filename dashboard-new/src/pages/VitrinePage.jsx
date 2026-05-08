@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Sparkles, Star, ShoppingCart, RefreshCw, Search, Filter, Package, TrendingUp, Award, ChevronDown, X, ExternalLink, Check, Copy, Link, CreditCard, QrCode, Shield } from 'lucide-react';
 
-const CATEGORIES = ['Todos', 'Digital', 'Físico', 'Serviço', 'Curso', 'Software', 'Template', 'E-book', 'Outro'];
+const CATEGORIES = ['Todos', 'Digital', 'FÃ­sico', 'ServiÃ§o', 'Curso', 'Software', 'Template', 'E-book', 'Outro'];
 const SORTS = [
   { value: 'popular', label: 'Mais Vendidos' },
   { value: 'recent', label: 'Mais Recentes' },
   { value: 'rating', label: 'Melhor Avaliados' },
-  { value: 'price_asc', label: 'Menor Preço' },
-  { value: 'price_desc', label: 'Maior Preço' },
+  { value: 'price_asc', label: 'Menor PreÃ§o' },
+  { value: 'price_desc', label: 'Maior PreÃ§o' },
 ];
 
 function StarRating({ rating, count }) {
@@ -120,7 +120,7 @@ function BuyModal({ product, onClose, onSuccess }) {
       });
       const data = await res.json();
       if (data.valid) { setCouponInfo(data); setCouponCode(code); setCouponError(''); }
-      else setCouponError(data.error || 'Cupom inválido');
+      else setCouponError(data.error || 'Cupom invÃ¡lido');
     } catch { setCouponError('Erro ao validar cupom.'); }
     setCouponLoading(false);
   };
@@ -144,7 +144,7 @@ function BuyModal({ product, onClose, onSuccess }) {
           window.open(data.checkout_url, '_blank');
           onClose();
         } else {
-          setError(data.message || 'Erro ao gerar link de cartão.');
+          setError(data.message || 'Erro ao gerar link de cartÃ£o.');
         }
       } else {
         const res = await fetch('/buy_product.php', {
@@ -156,7 +156,7 @@ function BuyModal({ product, onClose, onSuccess }) {
         if (data.success) { setPixData(data); setStep(2); }
         else setError(data.message || 'Erro ao gerar pagamento.');
       }
-    } catch { setError('Erro de conexão.'); }
+    } catch { setError('Erro de conexÃ£o.'); }
     setLoading(false);
   };
 
@@ -164,7 +164,7 @@ function BuyModal({ product, onClose, onSuccess }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
       <div className="bg-white border border-gray-200 shadow-xl rounded-2xl w-full max-w-md">
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
-          <h2 className="font-black text-gray-900">{step === 1 ? 'Finalizar Compra' : paymentMethod === 'card' ? 'Pagar com Cartão' : 'Pagar com PIX'}</h2>
+          <h2 className="font-black text-gray-900">{step === 1 ? 'Finalizar Compra' : paymentMethod === 'card' ? 'Pagar com CartÃ£o' : 'Pagar com PIX'}</h2>
           <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all"><X size={16} /></button>
         </div>
 
@@ -213,7 +213,7 @@ function BuyModal({ product, onClose, onSuccess }) {
                       : 'bg-gray-50 border-gray-200 text-gray-400 hover:bg-gray-100 hover:text-gray-900'
                   }`}
                 >
-                  <CreditCard size={15} /> Cartão
+                  <CreditCard size={15} /> CartÃ£o
                 </button>
               </div>
             </div>
@@ -227,7 +227,7 @@ function BuyModal({ product, onClose, onSuccess }) {
                     value={couponInput}
                     onChange={e => { setCouponInput(e.target.value.toUpperCase()); setCouponError(''); }}
                     onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), applyCoupon())}
-                    placeholder="Código do cupom (opcional)"
+                    placeholder="CÃ³digo do cupom (opcional)"
                     className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/40 font-mono uppercase"
                   />
                   <button type="button" onClick={applyCoupon} disabled={couponLoading || !couponInput.trim()}
@@ -264,15 +264,15 @@ function BuyModal({ product, onClose, onSuccess }) {
               {loading
                 ? (paymentMethod === 'card' ? 'Gerando link...' : 'Gerando PIX...')
                 : paymentMethod === 'card'
-                  ? `Pagar com Cartão — R$ ${finalPrice.toFixed(2).replace('.', ',')}`
-                  : `Gerar PIX — R$ ${finalPrice.toFixed(2).replace('.', ',')}`
+                  ? `Pagar com CartÃ£o â€” R$ ${finalPrice.toFixed(2).replace('.', ',')}`
+                  : `Gerar PIX â€” R$ ${finalPrice.toFixed(2).replace('.', ',')}`
               }
             </button>
           </div>
         ) : (
           <div className="p-5 space-y-4 text-center">
             {pixData?.qr_image && <img src={pixData.qr_image} alt="QR Code" className="w-48 h-48 mx-auto rounded-xl border border-gray-200" />}
-            <p className="text-sm text-gray-500">Escaneie o QR Code ou copie o código PIX</p>
+            <p className="text-sm text-gray-500">Escaneie o QR Code ou copie o cÃ³digo PIX</p>
             {pixData?.pix_code && (
               <button onClick={() => navigator.clipboard.writeText(pixData.pix_code)} className="w-full py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs font-mono text-gray-600 hover:bg-gray-100 transition-all truncate px-4">
                 {pixData.pix_code.substring(0, 40)}... (clique para copiar)
@@ -288,20 +288,20 @@ function BuyModal({ product, onClose, onSuccess }) {
                   {copied ? <><Check size={12} /> Copiado</> : <><Copy size={12} /> Copiar</>}
                 </button>
               </div>
-              <p className="text-[11px] text-gray-400">Salve este link — após o pagamento você verá seu produto aqui.</p>
+              <p className="text-[11px] text-gray-400">Salve este link â€” apÃ³s o pagamento vocÃª verÃ¡ seu produto aqui.</p>
             </div>
           )}
 
             <div className="flex items-center gap-2 justify-center p-3 bg-green-500/10 border border-green-500/20 rounded-xl">
               <Check size={14} className="text-green-400" />
-              <p className="text-xs text-green-400 font-semibold">Pagamento confirmado automaticamente após o PIX</p>
+              <p className="text-xs text-green-400 font-semibold">Pagamento confirmado automaticamente apÃ³s o PIX</p>
             </div>
 
             {deliveryUrl && (
               <a href={deliveryUrl} target="_blank" rel="noopener noreferrer"
                 className="w-full py-3 bg-primary text-white font-black rounded-xl hover:bg-primary/90 transition-all text-sm flex items-center justify-center gap-2"
               >
-                <ExternalLink size={14} /> Ir para página de entrega
+                <ExternalLink size={14} /> Ir para pÃ¡gina de entrega
               </a>
             )}
             <button onClick={onClose} className="w-full py-3 bg-gray-100 rounded-xl text-gray-600 hover:bg-gray-200 transition-all text-sm font-semibold">Fechar</button>
@@ -332,7 +332,7 @@ function ResellModal({ product, onClose }) {
         <div className="p-5 space-y-4">
           <div className="p-4 bg-primary/5 border border-primary/10 rounded-xl">
             <p className="text-sm font-bold mb-1 text-gray-900">{product.name}</p>
-            <p className="text-xs text-gray-500">Compartilhe este link e ganhe comissão em cada venda</p>
+            <p className="text-xs text-gray-500">Compartilhe este link e ganhe comissÃ£o em cada venda</p>
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Seu Link de Revenda</label>
@@ -343,7 +343,7 @@ function ResellModal({ product, onClose }) {
               </button>
             </div>
           </div>
-          <p className="text-xs text-gray-400 text-center">A comissão de revenda é definida pelo vendedor original</p>
+          <p className="text-xs text-gray-400 text-center">A comissÃ£o de revenda Ã© definida pelo vendedor original</p>
         </div>
       </div>
     </div>
@@ -388,7 +388,7 @@ export default function VitrinePage() {
         <div className="relative">
           <div className="flex items-center gap-2 text-primary mb-2">
             <Sparkles size={18} />
-            <span className="text-xs font-black uppercase tracking-widest">Vitrine PixGhost</span>
+            <span className="text-xs font-black uppercase tracking-widest">Vitrine PixLunar</span>
           </div>
           <h1 className="text-3xl font-black tracking-tight mb-2">Explore & <span className="text-primary italic">Compre</span></h1>
           <p className="text-gray-500 max-w-lg">Descubra produtos exclusivos de vendedores verificados. Compre, revenda e acompanhe suas entregas.</p>
@@ -398,16 +398,16 @@ export default function VitrinePage() {
         </div>
       </div>
 
-      {/* ── Segurança da Plataforma ── */}
+      {/* â”€â”€ SeguranÃ§a da Plataforma â”€â”€ */}
       <div className="flex items-start gap-4 rounded-2xl px-5 py-5 bg-green-500/[0.08] border border-green-500/25">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-green-500/15">
           <Shield size={20} className="text-green-400" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-black text-green-400 mb-1">🛡️ Compra Protegida pela Plataforma</p>
+          <p className="text-sm font-black text-green-400 mb-1">ðŸ›¡ï¸ Compra Protegida pela Plataforma</p>
           <p className="text-[13px] text-gray-700 leading-relaxed">
-            <strong className="text-gray-900">Todos os produtos possuem segurança Ghost Pix.</strong>{' '}
-            O pagamento ao vendedor só é liberado após a confirmação de entrega do produto. Compre com tranquilidade e segurança total.
+            <strong className="text-gray-900">Todos os produtos possuem seguranÃ§a LUNARPAY.</strong>{' '}
+            O pagamento ao vendedor sÃ³ Ã© liberado apÃ³s a confirmaÃ§Ã£o de entrega do produto. Compre com tranquilidade e seguranÃ§a total.
           </p>
         </div>
       </div>
@@ -472,7 +472,7 @@ export default function VitrinePage() {
         <div className="flex justify-center gap-2 pt-4">
           <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-4 py-2 rounded-xl bg-gray-100 text-gray-500 hover:bg-gray-200 disabled:opacity-30 text-sm font-semibold transition-all">Anterior</button>
           <span className="px-4 py-2 text-sm text-gray-400 font-semibold">{page} / {totalPages}</span>
-          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="px-4 py-2 rounded-xl bg-gray-100 text-gray-500 hover:bg-gray-200 disabled:opacity-30 text-sm font-semibold transition-all">Próximo</button>
+          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="px-4 py-2 rounded-xl bg-gray-100 text-gray-500 hover:bg-gray-200 disabled:opacity-30 text-sm font-semibold transition-all">PrÃ³ximo</button>
         </div>
       )}
     </div>

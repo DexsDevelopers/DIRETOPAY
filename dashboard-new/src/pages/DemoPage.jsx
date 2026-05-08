@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -99,7 +99,7 @@ function SimulatedDashboard() {
                         <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
                             <Zap size={14} className="text-primary" />
                         </div>
-                        <span className="text-sm font-black tracking-tight">GHOST<span className="text-primary italic">PIX</span></span>
+                        <span className="text-sm font-black tracking-tight">Lunar<span className="text-primary italic">PIX</span></span>
                         <span className="text-[9px] bg-primary/10 text-primary font-black px-2 py-0.5 rounded-full uppercase">Demo ao vivo</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -233,10 +233,10 @@ export default function DemoPage() {
             {/* Navbar */}
             <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-5xl h-14 bg-[#0a0a0a]/70 backdrop-blur-2xl border border-white/10 rounded-full px-6 flex items-center justify-between">
                 <Link to="/" className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-primary/20 flex items-center justify-center">
-                        <span className="text-primary font-black text-xs italic">G</span>
+                    <div className="w-7 h-7 rounded-lg bg-primary/20 flex items-center justify-center overflow-hidden">
+                        <img src="/logo_premium.png" alt="LunarPay" className="w-full h-full object-cover" />
                     </div>
-                    <span className="text-sm font-black tracking-tight">GHOST<span className="text-primary italic">PIX</span></span>
+                    <span className="text-sm font-black tracking-tight">Lunar<span className="text-primary italic">Pay</span></span>
                 </Link>
                 <div className="flex items-center gap-3">
                     <Link to="/" className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-colors hidden sm:block">
@@ -264,7 +264,7 @@ export default function DemoPage() {
                         <span className="text-[10px] font-black text-primary uppercase tracking-widest">Demo Interativa</span>
                     </div>
                     <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black leading-[0.95] tracking-[-0.04em] mb-6">
-                        Veja o Ghost Pix
+                        Veja o LunarPay
                         <br />
                         <span className="text-primary italic">em ação.</span>
                     </h1>
@@ -419,7 +419,7 @@ export default function DemoPage() {
 
                                 <div className="mt-4 flex items-center justify-center gap-2 text-[10px] text-white/20">
                                     <Lock size={10} />
-                                    <span>Pagamento seguro via Ghost Pix</span>
+                                    <span>Pagamento seguro via LunarPay</span>
                                 </div>
                             </div>
                         </div>
@@ -488,7 +488,7 @@ export default function DemoPage() {
             <footer className="border-t border-white/5 px-6 py-8">
                 <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-2">
-                        <span className="text-sm font-black tracking-tight">GHOST<span className="text-primary italic">PIX</span></span>
+                        <span className="text-sm font-black tracking-tight">Lunar<span className="text-primary italic">PIX</span></span>
                         <span className="text-[10px] text-white/20">© {new Date().getFullYear()}</span>
                     </div>
                     <div className="flex items-center gap-6 text-[10px] text-white/30 font-bold uppercase tracking-widest">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Star, ShoppingCart, ArrowLeft, Package, Store, Calendar, Tag, Shield, MessageSquare, Send, Loader2, X, Check, Copy, ExternalLink, CreditCard, QrCode, RefreshCw } from 'lucide-react';
 
@@ -35,7 +35,7 @@ function StarInput({ value, onChange }) {
   );
 }
 
-const INTERVAL_LABELS = { weekly: 'semana', monthly: 'mês', yearly: 'ano' };
+const INTERVAL_LABELS = { weekly: 'semana', monthly: 'mÃªs', yearly: 'ano' };
 
 function BuyModal({ product, variants = [], onClose }) {
   const isSubscription = product.type === 'subscription';
@@ -73,7 +73,7 @@ function BuyModal({ product, variants = [], onClose }) {
       });
       const data = await res.json();
       if (data.valid) { setCouponInfo(data); setCouponCode(code); }
-      else setCouponError(data.error || 'Cupom inválido');
+      else setCouponError(data.error || 'Cupom invÃ¡lido');
     } catch { setCouponError('Erro ao validar cupom.'); }
     setCouponLoading(false);
   };
@@ -83,7 +83,7 @@ function BuyModal({ product, variants = [], onClose }) {
   const handleCheckout = async () => {
     if (!name.trim()) { setError('Informe seu nome.'); return; }
     if (isSubscription && !email.trim()) { setError('Informe seu e-mail para a assinatura.'); return; }
-    if (hasVariants && !selectedVariant) { setError('Selecione uma opção do produto.'); return; }
+    if (hasVariants && !selectedVariant) { setError('Selecione uma opÃ§Ã£o do produto.'); return; }
     setLoading(true); setError('');
     try {
       if (isSubscription) {
@@ -103,7 +103,7 @@ function BuyModal({ product, variants = [], onClose }) {
         });
         const data = await res.json();
         if (data.success && data.checkout_url) { window.open(data.checkout_url, '_blank'); onClose(); }
-        else setError(data.message || 'Erro ao gerar link de cartão.');
+        else setError(data.message || 'Erro ao gerar link de cartÃ£o.');
       } else {
         const res = await fetch('/buy_product.php', {
           method: 'POST',
@@ -114,7 +114,7 @@ function BuyModal({ product, variants = [], onClose }) {
         if (data.success) { setPixData(data); setStep(2); }
         else setError(data.message || 'Erro ao gerar pagamento.');
       }
-    } catch { setError('Erro de conexão.'); }
+    } catch { setError('Erro de conexÃ£o.'); }
     setLoading(false);
   };
 
@@ -142,7 +142,7 @@ function BuyModal({ product, variants = [], onClose }) {
                   ) : (
                     <p className="text-primary font-black">
                       R$ {basePrice.toFixed(2).replace('.', ',')}
-                      {isSubscription && <span className="text-gray-400 text-xs font-normal">/{INTERVAL_LABELS[product.subscription_interval] || 'mês'}</span>}
+                      {isSubscription && <span className="text-gray-400 text-xs font-normal">/{INTERVAL_LABELS[product.subscription_interval] || 'mÃªs'}</span>}
                     </p>
                   )}
                   {selectedVariant && <span className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{selectedVariant.name}</span>}
@@ -153,7 +153,7 @@ function BuyModal({ product, variants = [], onClose }) {
             {/* Variant selector */}
             {hasVariants && (
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Selecione uma Opção *</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Selecione uma OpÃ§Ã£o *</label>
                 <div className="grid grid-cols-1 gap-2">
                   {variants.map(v => (
                     <button key={v.id} type="button" onClick={() => { setSelectedVariant(v); setCouponInfo(null); }}
@@ -168,7 +168,7 @@ function BuyModal({ product, variants = [], onClose }) {
 
             {error && <p className="text-red-400 text-xs bg-red-500/10 border border-red-500/20 rounded-xl p-3">{error}</p>}
 
-            {/* Payment method — not shown for subscriptions */}
+            {/* Payment method â€” not shown for subscriptions */}
             {!isSubscription && (
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1.5">Forma de Pagamento</label>
@@ -179,20 +179,20 @@ function BuyModal({ product, variants = [], onClose }) {
                 </button>
                 <button type="button" onClick={() => setPaymentMethod('card')}
                   className={`flex items-center justify-center gap-2 py-3 rounded-xl border font-bold text-sm transition-all ${paymentMethod === 'card' ? 'bg-blue-500/15 border-blue-500/40 text-blue-500' : 'bg-gray-50 border-gray-200 text-gray-500 hover:bg-gray-100'}`}>
-                  <CreditCard size={15} /> Cartão
+                  <CreditCard size={15} /> CartÃ£o
                 </button>
               </div>
             </div>
             )}
 
-            {/* Coupon — not shown for subscriptions */}
+            {/* Coupon â€” not shown for subscriptions */}
             {!isSubscription && (!couponInfo ? (
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1.5">Cupom de Desconto</label>
                 <div className="flex gap-2">
                   <input value={couponInput} onChange={e => { setCouponInput(e.target.value.toUpperCase()); setCouponError(''); }}
                     onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), applyCoupon())}
-                    placeholder="Código do cupão (opcional)"
+                    placeholder="CÃ³digo do cupÃ£o (opcional)"
                     className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary/40 font-mono uppercase" />
                   <button type="button" onClick={applyCoupon} disabled={couponLoading || !couponInput.trim()}
                     className="px-4 py-2 bg-gray-100 border border-gray-200 rounded-xl text-xs font-bold text-gray-500 hover:bg-gray-200 transition-all disabled:opacity-40">
@@ -223,7 +223,7 @@ function BuyModal({ product, variants = [], onClose }) {
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1.5">E-mail *</label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="seu@email.com"
                 className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary/40" />
-              <p className="text-[10px] text-gray-400 mt-1.5">Usado para enviar cobranças de renovação</p>
+              <p className="text-[10px] text-gray-400 mt-1.5">Usado para enviar cobranÃ§as de renovaÃ§Ã£o</p>
             </div>
             )}
             <div>
@@ -233,18 +233,18 @@ function BuyModal({ product, variants = [], onClose }) {
             </div>
             <button onClick={handleCheckout} disabled={loading}
               className={`w-full py-3 font-black rounded-xl transition-all disabled:opacity-50 ${paymentMethod === 'card' && !isSubscription ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-primary text-white hover:bg-primary/90'}`}>
-              {loading ? 'Processando...' : isSubscription ? `Assinar — R$ ${finalPrice.toFixed(2).replace('.', ',')}/${INTERVAL_LABELS[product.subscription_interval] || 'mês'}` : `Pagar R$ ${finalPrice.toFixed(2).replace('.', ',')}`}
+              {loading ? 'Processando...' : isSubscription ? `Assinar â€” R$ ${finalPrice.toFixed(2).replace('.', ',')}/${INTERVAL_LABELS[product.subscription_interval] || 'mÃªs'}` : `Pagar R$ ${finalPrice.toFixed(2).replace('.', ',')}`}
             </button>
           </div>
         ) : (
           <div className="p-5 space-y-4 text-center">
             {isSubscription && (
               <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-xs text-blue-300 font-semibold">
-                🔄 Após o pagamento sua assinatura será ativada automaticamente
+                ðŸ”„ ApÃ³s o pagamento sua assinatura serÃ¡ ativada automaticamente
               </div>
             )}
             {pixData?.qr_image && <img src={pixData.qr_image} alt="QR Code" className="w-48 h-48 mx-auto rounded-xl border border-gray-200" />}
-            <p className="text-sm text-gray-500">Escaneie o QR Code ou copie o código PIX</p>
+            <p className="text-sm text-gray-500">Escaneie o QR Code ou copie o cÃ³digo PIX</p>
             {pixData?.pix_code && (
               <button onClick={() => navigator.clipboard.writeText(pixData.pix_code)}
                 className="w-full py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs font-mono text-gray-600 hover:bg-gray-100 transition-all truncate px-4">
@@ -287,7 +287,7 @@ function ReviewCard({ review }) {
             {(review.user_name || review.buyer_name || 'A').charAt(0).toUpperCase()}
           </div>
           <div>
-            <p className="text-sm font-bold text-gray-900">{review.user_name || review.buyer_name || 'Anônimo'}</p>
+            <p className="text-sm font-bold text-gray-900">{review.user_name || review.buyer_name || 'AnÃ´nimo'}</p>
             <p className="text-[10px] text-gray-400">{timeAgo}</p>
           </div>
         </div>
@@ -302,11 +302,11 @@ function getTimeAgo(date) {
   const seconds = Math.floor((new Date() - date) / 1000);
   if (seconds < 60) return 'agora';
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m atrás`;
+  if (minutes < 60) return `${minutes}m atrÃ¡s`;
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h atrás`;
+  if (hours < 24) return `${hours}h atrÃ¡s`;
   const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}d atrás`;
+  if (days < 30) return `${days}d atrÃ¡s`;
   return date.toLocaleDateString('pt-BR');
 }
 
@@ -377,7 +377,7 @@ export default function ProductDetailPage() {
       } else {
         setReviewResult({ error: data.error });
       }
-    } catch { setReviewResult({ error: 'Erro de conexão' }); }
+    } catch { setReviewResult({ error: 'Erro de conexÃ£o' }); }
     setReviewLoading(false);
   };
 
@@ -401,8 +401,8 @@ export default function ProductDetailPage() {
     return (
       <div className="max-w-5xl mx-auto text-center py-24 space-y-4">
         <Package size={48} className="text-gray-300 mx-auto" />
-        <p className="text-xl font-bold text-gray-500">Produto não encontrado</p>
-        <Link to="/vitrine" className="text-primary font-bold text-sm hover:underline">Voltar à vitrine</Link>
+        <p className="text-xl font-bold text-gray-500">Produto nÃ£o encontrado</p>
+        <Link to="/vitrine" className="text-primary font-bold text-sm hover:underline">Voltar Ã  vitrine</Link>
       </div>
     );
   }
@@ -422,7 +422,7 @@ export default function ProductDetailPage() {
 
       {/* Back */}
       <button onClick={() => navigate('/vitrine')} className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-900 font-bold transition-colors">
-        <ArrowLeft size={16} /> Voltar à Vitrine
+        <ArrowLeft size={16} /> Voltar Ã  Vitrine
       </button>
 
       {/* Product Main */}
@@ -451,7 +451,7 @@ export default function ProductDetailPage() {
                 <Store size={14} />
                 <span className="font-semibold">{product.seller_store || product.seller_name}</span>
               </Link>
-              <span className="text-gray-200">•</span>
+              <span className="text-gray-200">â€¢</span>
               <StarRating rating={product.avg_rating || 0} count={product.review_count || 0} />
             </div>
           </div>
@@ -469,7 +469,7 @@ export default function ProductDetailPage() {
 
           {product.description && (
             <div className="space-y-2">
-              <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest">Descrição</h3>
+              <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest">DescriÃ§Ã£o</h3>
               <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">{product.description}</p>
             </div>
           )}
@@ -485,7 +485,7 @@ export default function ProductDetailPage() {
             <Shield size={16} className="text-primary shrink-0 mt-0.5" />
             <div>
               <p className="text-xs font-bold text-gray-700">Compra Segura</p>
-              <p className="text-[11px] text-gray-400">Pagamento processado pela Ghost Pix com criptografia de ponta a ponta.</p>
+              <p className="text-[11px] text-gray-400">Pagamento processado pela LUNARPAY com criptografia de ponta a ponta.</p>
             </div>
           </div>
         </div>
@@ -496,7 +496,7 @@ export default function ProductDetailPage() {
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-black flex items-center gap-2">
             <MessageSquare size={20} className="text-primary" />
-            Avaliações
+            AvaliaÃ§Ãµes
             <span className="text-sm font-bold text-gray-400">({reviews.length})</span>
           </h2>
         </div>
@@ -507,7 +507,7 @@ export default function ProductDetailPage() {
             <div className="flex flex-col items-center justify-center gap-2">
               <p className="text-5xl font-black text-primary">{parseFloat(product.avg_rating).toFixed(1)}</p>
               <StarRating rating={product.avg_rating || 0} size={18} />
-              <p className="text-xs text-gray-400">{product.review_count} avaliações</p>
+              <p className="text-xs text-gray-400">{product.review_count} avaliaÃ§Ãµes</p>
             </div>
             <div className="space-y-2">
               {ratingDist.map(r => (
@@ -527,7 +527,7 @@ export default function ProductDetailPage() {
         {/* Review Form */}
         {canReview && (
           <div className="p-6 bg-gray-50 border border-gray-100 rounded-2xl space-y-4">
-            <h3 className="font-bold text-sm text-gray-900">Deixe sua avaliação</h3>
+            <h3 className="font-bold text-sm text-gray-900">Deixe sua avaliaÃ§Ã£o</h3>
             <StarInput value={reviewRating} onChange={setReviewRating} />
             <textarea
               value={reviewComment}
@@ -542,7 +542,7 @@ export default function ProductDetailPage() {
               <button onClick={submitReview} disabled={reviewLoading || reviewRating < 1}
                 className="px-6 py-2.5 bg-primary text-white font-black text-xs rounded-xl hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center gap-2">
                 {reviewLoading ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
-                Enviar Avaliação
+                Enviar AvaliaÃ§Ã£o
               </button>
             </div>
             {reviewResult?.error && <p className="text-red-400 text-xs">{reviewResult.error}</p>}
@@ -558,7 +558,7 @@ export default function ProductDetailPage() {
         ) : (
           <div className="text-center py-12 space-y-2">
             <MessageSquare size={32} className="text-gray-300 mx-auto" />
-            <p className="text-sm text-gray-500">Nenhuma avaliação ainda</p>
+            <p className="text-sm text-gray-500">Nenhuma avaliaÃ§Ã£o ainda</p>
             <p className="text-xs text-gray-400">Seja o primeiro a avaliar este produto!</p>
           </div>
         )}

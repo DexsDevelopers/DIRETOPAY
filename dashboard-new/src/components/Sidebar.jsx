@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import {
     LayoutDashboard,
     History,
@@ -75,7 +75,7 @@ function SidebarLink({ item, location, onTabChange, onClose }) {
 
 export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userData }) {
     const location = useLocation();
-    const userInitial = userData?.name?.charAt(0).toUpperCase() || 'G';
+    const userInitial = userData?.name?.charAt(0).toUpperCase() || 'L';
 
     const principalItems = [
         { id: 'dashboard', icon: <LayoutDashboard size={18} />, label: 'Dashboard', path: '/dashboard' },
@@ -131,7 +131,7 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
                     <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center border border-primary/20">
                         <span className="text-primary font-bold text-xl">{userInitial}</span>
                     </div>
-                    <span className="font-bold text-xl tracking-tight text-gray-900">GHOST<span className="text-primary italic">PIX</span></span>
+                    <span className="font-bold text-xl tracking-tight text-gray-900">Lunar<span className="text-primary italic">Pay</span></span>
                 </div>
                 <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-900 transition-colors">
                     <X size={24} />
@@ -149,7 +149,7 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
                     {vendedorItems.map(item => <SidebarLink key={item.id} item={item} {...linkProps} />)}
                 </SidebarSection>
 
-                <SidebarSection label="Vitrine PixGhost">
+                <SidebarSection label="Vitrine LunarPay">
                     {vitrineItems.map(item => <SidebarLink key={item.id} item={item} {...linkProps} />)}
                 </SidebarSection>
 

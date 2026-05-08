@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
     Users, Link2, Copy, Check, TrendingUp, DollarSign,
     Percent, UserPlus, Loader2, Share2, Info, ArrowUpRight,
@@ -30,8 +30,8 @@ export default function AffiliatePage() {
         if (!data?.ref_link) return;
         if (navigator.share) {
             navigator.share({
-                title: 'Ghost Pix - Convite',
-                text: 'Crie sua conta na Ghost Pix e comece a receber pagamentos Pix anonimamente!',
+                title: 'LunarPay - Convite',
+                text: 'Crie sua conta na LunarPay e comece a receber pagamentos Pix anonimamente!',
                 url: data.ref_link,
             }).catch(() => {});
         } else {

@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, Mail, ArrowRight, Shield, ChevronLeft, KeyRound, Check, Zap, CreditCard, Package, Users, Wallet, Bell, BarChart3, Activity, Globe, MessageCircle, QrCode, ShieldCheck, Webhook } from 'lucide-react';
 
 const LEFT_PILLS = [
-    { Icon: Zap,          label: 'PIX Instantâneo', top: '13%', left: '4%',  delay: 0.1, float: -7 },
+    { Icon: Zap,          label: 'PIX InstantÃ¢neo', top: '13%', left: '4%',  delay: 0.1, float: -7 },
     { Icon: CreditCard,   label: 'Checkout',         top: '26%', left: '9%',  delay: 0.3, float: 8  },
     { Icon: Package,      label: 'Produtos',          top: '41%', left: '3%',  delay: 0.5, float: -6 },
     { Icon: Users,        label: 'Afiliados',         top: '56%', left: '7%',  delay: 0.7, float: 9  },
     { Icon: Wallet,       label: 'Saques',            top: '70%', left: '4%',  delay: 0.9, float: -8 },
-    { Icon: Bell,         label: 'Notificações',      top: '82%', left: '10%', delay: 1.1, float: 7  },
+    { Icon: Bell,         label: 'NotificaÃ§Ãµes',      top: '82%', left: '10%', delay: 1.1, float: 7  },
 ];
 
 const RIGHT_PILLS = [
     { Icon: ShieldCheck,  label: 'Anti-fraude',    top: '11%', right: '5%',  delay: 0.2, float: 8  },
-    { Icon: BarChart3,    label: 'Relatórios',     top: '24%', right: '9%',  delay: 0.4, float: -7 },
+    { Icon: BarChart3,    label: 'RelatÃ³rios',     top: '24%', right: '9%',  delay: 0.4, float: -7 },
     { Icon: QrCode,       label: 'QR Code PIX',    top: '38%', right: '3%',  delay: 0.6, float: 9  },
-    { Icon: Globe,        label: 'Multi-domínio',  top: '52%', right: '7%',  delay: 0.8, float: -6 },
+    { Icon: Globe,        label: 'Multi-domÃ­nio',  top: '52%', right: '7%',  delay: 0.8, float: -6 },
     { Icon: Activity,     label: 'Tempo Real',     top: '65%', right: '4%',  delay: 1.0, float: 8  },
     { Icon: MessageCircle,label: 'Chat Suporte',   top: '78%', right: '8%',  delay: 1.2, float: -9 },
 ];
@@ -84,7 +84,7 @@ export default function LoginPage() {
                 setResetToken(data.reset_token);
                 setError('');
             } else {
-                setError(data.error || 'Email ou senha inválidos.');
+                setError(data.error || 'Email ou senha invÃ¡lidos.');
             }
         } catch (err) {
             setError('Erro ao conectar com o servidor.');
@@ -97,7 +97,7 @@ export default function LoginPage() {
     const handleResetPassword = async (e) => {
         e.preventDefault();
         if (newPassword.length < 6) { setError('A senha deve ter pelo menos 6 caracteres.'); return; }
-        if (newPassword !== confirmPassword) { setError('As senhas não conferem.'); return; }
+        if (newPassword !== confirmPassword) { setError('As senhas nÃ£o conferem.'); return; }
         setLoading(true);
         setError('');
         try {
@@ -117,7 +117,7 @@ export default function LoginPage() {
             } else {
                 setError(data.error || 'Erro ao redefinir senha.');
             }
-        } catch { setError('Erro de conexão.'); }
+        } catch { setError('Erro de conexÃ£o.'); }
         finally { setLoading(false); }
     };
 
@@ -127,7 +127,7 @@ export default function LoginPage() {
             <div className="absolute top-[-5%] right-[-5%] w-[45%] h-[45%] bg-gradient-to-bl from-purple-100 to-violet-50 rounded-full blur-[100px] -z-10 opacity-70" />
             <div className="absolute bottom-[-5%] left-[-5%] w-[35%] h-[35%] bg-gradient-to-tr from-purple-50 to-transparent rounded-full blur-[80px] -z-10 opacity-50" />
 
-            {/* Floating Pills — left side (hidden on small screens) */}
+            {/* Floating Pills â€” left side (hidden on small screens) */}
             <div className="hidden lg:block pointer-events-none">
                 {LEFT_PILLS.map((pill, i) => (
                     <div key={i} className="absolute" style={{ top: pill.top, left: pill.left }}>
@@ -136,7 +136,7 @@ export default function LoginPage() {
                 ))}
             </div>
 
-            {/* Floating Pills — right side (hidden on small screens) */}
+            {/* Floating Pills â€” right side (hidden on small screens) */}
             <div className="hidden lg:block pointer-events-none">
                 {RIGHT_PILLS.map((pill, i) => (
                     <div key={i} className="absolute" style={{ top: pill.top, right: pill.right }}>
@@ -193,7 +193,7 @@ export default function LoginPage() {
 
                         {resetSuccess && (
                             <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-bold p-4 rounded-2xl text-center mb-6 animate-in fade-in zoom-in duration-300 flex items-center justify-center gap-2">
-                                <Check size={14} /> Senha atualizada! Faça login com sua nova senha.
+                                <Check size={14} /> Senha atualizada! FaÃ§a login com sua nova senha.
                             </div>
                         )}
 
@@ -220,7 +220,7 @@ export default function LoginPage() {
                                         <input
                                             required
                                             type="password"
-                                            placeholder="Mínimo 6 caracteres"
+                                            placeholder="MÃ­nimo 6 caracteres"
                                             value={newPassword}
                                             onChange={e => setNewPassword(e.target.value)}
                                             className="w-full bg-gray-50 border border-gray-200 rounded-full py-4 pl-14 pr-6 font-bold text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/50 focus:bg-white transition-all"
@@ -267,7 +267,7 @@ export default function LoginPage() {
                                 </div>
                             )}
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Endereço de E-mail</label>
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">EndereÃ§o de E-mail</label>
                                 <div className="relative group">
                                     <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors" size={18} />
                                     <input
@@ -291,7 +291,7 @@ export default function LoginPage() {
                                     <input
                                         required
                                         type="password"
-                                        placeholder="••••••••"
+                                        placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                                         value={password}
                                         onChange={e => setPassword(e.target.value)}
                                         className="w-full bg-gray-50 border border-gray-200 rounded-full py-4 pl-14 pr-6 font-bold text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/50 focus:bg-white transition-all"
@@ -311,14 +311,14 @@ export default function LoginPage() {
                     </div>
 
                     <p className="text-center mt-8 text-gray-500 text-sm font-medium">
-                        Não tem uma conta ainda? {' '}
+                        NÃ£o tem uma conta ainda? {' '}
                         <Link to="/register" className="text-primary font-black hover:text-secondary transition-colors">Criar Conta Blindada</Link>
                     </p>
                 </motion.div>
             </div>
 
             <footer className="p-8 text-center">
-                <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">GHOST PIX v2.0 • Security FIRST</p>
+                <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">LUNARPAY v2.0 â€¢ Security FIRST</p>
             </footer>
         </div>
     );

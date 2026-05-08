@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, ArrowRight, ChevronLeft, KeyRound, Check, AlertTriangle, RefreshCw } from 'lucide-react';
@@ -28,10 +28,10 @@ export default function ResetPasswordPage() {
                 setTokenValid(true);
                 setUserName(data.name || '');
             } else {
-                setTokenError(data.error || 'Link inválido.');
+                setTokenError(data.error || 'Link invÃ¡lido.');
             }
         } catch {
-            setTokenError('Erro de conexão.');
+            setTokenError('Erro de conexÃ£o.');
         } finally {
             setLoading(false);
         }
@@ -40,7 +40,7 @@ export default function ResetPasswordPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (newPassword.length < 6) { setError('A senha deve ter pelo menos 6 caracteres.'); return; }
-        if (newPassword !== confirmPassword) { setError('As senhas não conferem.'); return; }
+        if (newPassword !== confirmPassword) { setError('As senhas nÃ£o conferem.'); return; }
         setSaving(true);
         setError('');
 
@@ -58,7 +58,7 @@ export default function ResetPasswordPage() {
                 setError(data.error || 'Erro ao redefinir senha.');
             }
         } catch {
-            setError('Erro de conexão.');
+            setError('Erro de conexÃ£o.');
         } finally {
             setSaving(false);
         }
@@ -92,7 +92,7 @@ export default function ResetPasswordPage() {
                                 <AlertTriangle className="text-red-500" size={32} />
                             </div>
                             <h1 className="text-2xl font-black text-gray-900">{tokenError}</h1>
-                            <p className="text-gray-500 text-sm">Solicite um novo link de redefinição de senha.</p>
+                            <p className="text-gray-500 text-sm">Solicite um novo link de redefiniÃ§Ã£o de senha.</p>
                             <Link
                                 to="/forgot-password"
                                 className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-violet-600 text-white px-8 py-4 rounded-full font-black hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(124,58,237,0.3)]"
@@ -115,7 +115,7 @@ export default function ResetPasswordPage() {
                                     <KeyRound className="text-primary" size={32} />
                                 </div>
                                 <h1 className="text-4xl font-black mb-2 tracking-tight text-gray-900">Nova <span className="text-primary italic">Senha</span></h1>
-                                {userName && <p className="text-gray-500 font-medium text-sm">Olá, {userName}! Crie sua nova senha abaixo.</p>}
+                                {userName && <p className="text-gray-500 font-medium text-sm">OlÃ¡, {userName}! Crie sua nova senha abaixo.</p>}
                             </div>
 
                             <div className="bg-white border border-purple-100 shadow-[0_20px_60px_rgba(124,58,237,0.1)] p-8 md:p-10 rounded-[48px] relative overflow-hidden">
@@ -135,7 +135,7 @@ export default function ResetPasswordPage() {
                                             <input
                                                 required
                                                 type="password"
-                                                placeholder="Mínimo 6 caracteres"
+                                                placeholder="MÃ­nimo 6 caracteres"
                                                 value={newPassword}
                                                 onChange={e => setNewPassword(e.target.value)}
                                                 className="w-full bg-gray-50 border border-gray-200 rounded-full py-4 pl-14 pr-6 font-bold text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/50 focus:bg-white transition-all"
@@ -173,7 +173,7 @@ export default function ResetPasswordPage() {
             </div>
 
             <footer className="p-8 text-center">
-                <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">GHOST PIX v2.0 • Security FIRST</p>
+                <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">LUNARPAY v2.0 â€¢ Security FIRST</p>
             </footer>
         </div>
     );

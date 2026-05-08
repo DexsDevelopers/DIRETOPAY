@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+﻿import { createContext, useContext, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const ThemeContext = createContext({ isDark: false, toggleTheme: () => {}, setIsDark: () => {} });
@@ -12,7 +12,7 @@ const isPublicPath = (pathname) =>
 export function ThemeProvider({ children }) {
     const location = useLocation();
     const [isDark, setIsDark] = useState(() => {
-        const saved = localStorage.getItem('ghost_theme');
+        const saved = localStorage.getItem('Lunar_theme');
         if (saved) return saved === 'dark';
         return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
     });
@@ -24,7 +24,7 @@ export function ThemeProvider({ children }) {
         } else {
             html.classList.remove('dark');
         }
-        localStorage.setItem('ghost_theme', isDark ? 'dark' : 'light');
+        localStorage.setItem('Lunar_theme', isDark ? 'dark' : 'light');
     }, [isDark, location.pathname]);
 
     const toggleTheme = () => setIsDark(d => !d);

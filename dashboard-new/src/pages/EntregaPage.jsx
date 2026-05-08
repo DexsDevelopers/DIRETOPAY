@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { CheckCircle, Clock, Package, Copy, Check, ExternalLink, Download, Mail, Truck, MessageCircle, AlertCircle, RefreshCw } from 'lucide-react';
 
@@ -117,7 +117,7 @@ export default function EntregaPage() {
             <div className="w-full max-w-lg">
                 {/* Logo */}
                 <div className="text-center mb-8">
-                    <span className="font-black text-2xl tracking-tight text-gray-900">GHOST<span className="text-primary italic">PIX</span></span>
+                    <span className="font-black text-2xl tracking-tight text-gray-900">Lunar<span className="text-primary italic">PIX</span></span>
                 </div>
 
                 {/* Status Card */}

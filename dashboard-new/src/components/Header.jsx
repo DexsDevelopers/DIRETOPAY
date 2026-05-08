@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -118,13 +118,13 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
                                                 <X size={18} className="text-gray-400" />
                                             </button>
                                             <div className="w-8 h-8 rounded-xl overflow-hidden border border-purple-100 shadow-sm shrink-0">
-                                                <img src="/logo_premium.png" alt="Ghost Pix"
+                                                <img src="/logo_premium.png" alt="LunarPay"
                                                     className="w-full h-full object-cover"
-                                                    onError={e => { e.target.style.display = 'none'; e.target.parentElement.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center"><span class="text-white font-black text-xs">G</span></div>'; }} />
+                                                    onError={e => { e.target.style.display = 'none'; e.target.parentElement.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-pink-600 to-rose-700 flex items-center justify-center"><span class="text-white font-black text-xs">L</span></div>'; }} />
                                             </div>
                                             <div>
                                                 <p className="font-black text-sm text-gray-900 leading-none">Notificações</p>
-                                                <p className="text-[10px] text-gray-400 font-medium mt-0.5">Ghost Pix</p>
+                                                <p className="text-[10px] text-gray-400 font-medium mt-0.5">LunarPay</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">

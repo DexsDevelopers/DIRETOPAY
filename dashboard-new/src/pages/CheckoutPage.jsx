@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -473,7 +473,7 @@ export default function CheckoutPage() {
                 </div>
                 )}
                 <p className="text-center text-[10px] text-white/8 font-black uppercase tracking-[0.4em] mt-4">
-                    Powered by Ghost Pix Technology
+                    Powered by LunarPay Technology
                 </p>
             </div>
 
