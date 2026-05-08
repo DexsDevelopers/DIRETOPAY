@@ -183,21 +183,25 @@ function DashboardMockup() {
 }
 
 function AwardCard({ icon: Icon, amount, name, desc, color, delay }) {
+    const { isDark } = useTheme();
     const palette = {
-        platinum: { hex: '#e2e8f0', glow: 'rgba(226,232,240,0.15)', border: 'rgba(226,232,240,0.2)', bg: 'rgba(226,232,240,0.06)', badge: 'PLATINUM' },
-        gold:     { hex: '#f59e0b', glow: 'rgba(245,158,11,0.18)',  border: 'rgba(245,158,11,0.25)',  bg: 'rgba(245,158,11,0.07)',  badge: 'GOLD' },
-        wine:     { hex: '#C0006A', glow: 'rgba(192,0,106,0.20)',   border: 'rgba(192,0,106,0.30)',   bg: 'rgba(192,0,106,0.08)',   badge: 'WINE' },
-        emerald:  { hex: '#10b981', glow: 'rgba(16,185,129,0.18)',  border: 'rgba(16,185,129,0.25)',  bg: 'rgba(16,185,129,0.07)',  badge: 'EMERALD' },
+        platinum: { hex: isDark ? '#e2e8f0' : '#64748b', glow: 'rgba(100,116,139,0.15)', border: isDark ? 'rgba(226,232,240,0.2)' : 'rgba(100,116,139,0.25)', bg: isDark ? 'rgba(226,232,240,0.06)' : 'rgba(100,116,139,0.06)', badge: 'PLATINUM' },
+        gold:     { hex: '#f59e0b', glow: 'rgba(245,158,11,0.18)',  border: 'rgba(245,158,11,0.3)',   bg: isDark ? 'rgba(245,158,11,0.07)'  : 'rgba(245,158,11,0.06)',  badge: 'GOLD' },
+        wine:     { hex: '#C0006A', glow: 'rgba(192,0,106,0.20)',   border: 'rgba(192,0,106,0.3)',    bg: isDark ? 'rgba(192,0,106,0.08)'   : 'rgba(192,0,106,0.06)',   badge: 'WINE' },
+        emerald:  { hex: '#10b981', glow: 'rgba(16,185,129,0.18)',  border: 'rgba(16,185,129,0.3)',   bg: isDark ? 'rgba(16,185,129,0.07)'  : 'rgba(16,185,129,0.06)',  badge: 'EMERALD' },
     };
     const p = palette[color];
+    const cardBg = isDark
+        ? `linear-gradient(160deg, ${p.bg}, #0d0d14)`
+        : `linear-gradient(160deg, ${p.bg}, #ffffff)`;
     return (
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ delay, duration: 0.5 }} whileHover={{ y: -8, scale: 1.02 }}
             className="relative rounded-3xl p-px overflow-hidden group cursor-default"
-            style={{ background: `linear-gradient(135deg, ${p.border}, rgba(255,255,255,0.05) 60%, ${p.border})` }}>
+            style={{ background: `linear-gradient(135deg, ${p.border}, ${isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.9)'} 60%, ${p.border})` }}>
             {/* inner card */}
             <div className="relative rounded-3xl p-8 text-center h-full flex flex-col items-center"
-                style={{ background: `linear-gradient(160deg, ${p.bg}, #0d0d14)` }}>
+                style={{ background: cardBg }}>
                 {/* ambient glow */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-24 rounded-full blur-[40px] pointer-events-none"
                     style={{ background: p.glow }} />
@@ -216,7 +220,7 @@ function AwardCard({ icon: Icon, amount, name, desc, color, delay }) {
                 </motion.div>
                 {/* amount */}
                 <div className="text-3xl font-black mb-1" style={{ color: p.hex }}>{amount}</div>
-                <h3 className="text-base font-black text-white mb-3">{name}</h3>
+                <h3 className={`text-base font-black mb-3 ${isDark ? 'text-white' : 'text-gray-800'}`}>{name}</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
             </div>
         </motion.div>
@@ -447,14 +451,11 @@ export default function LandingPage() {
             </section>
 
             {/* Awards Section */}
-            <section className="relative py-28 px-6 overflow-hidden bg-[#07070d]">
-                {/* fade top/bottom */}
-                <div className={`absolute top-0 inset-x-0 h-16 pointer-events-none z-10 ${isDark ? 'bg-gradient-to-b from-[#0a0a0f] to-transparent' : 'bg-gradient-to-b from-white to-transparent'}`} />
-                <div className={`absolute bottom-0 inset-x-0 h-16 pointer-events-none z-10 ${isDark ? 'bg-gradient-to-t from-[#0a0a0f] to-transparent' : 'bg-gradient-to-t from-gray-50 to-transparent'}`} />
+            <section className={`relative py-28 px-6 overflow-hidden ${isDark ? 'bg-[#0d0d14]' : 'bg-[#faf9ff]'}`}>
                 {/* decorative glows */}
-                <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/5 rounded-full blur-[100px] pointer-events-none" />
-                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-700/8 rounded-full blur-[100px] pointer-events-none" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-32 bg-white/[0.02] rounded-full blur-[60px] pointer-events-none" />
+                <div className={`absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none ${isDark ? 'bg-yellow-500/5' : 'bg-yellow-300/20'}`} />
+                <div className={`absolute bottom-0 right-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none ${isDark ? 'bg-pink-700/8' : 'bg-pink-300/20'}`} />
+                <div className={`absolute top-1/2 left-0 w-72 h-72 rounded-full blur-[100px] pointer-events-none ${isDark ? 'bg-emerald-900/10' : 'bg-emerald-100/40'}`} />
                 <div className="max-w-7xl mx-auto relative z-10">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
@@ -462,9 +463,9 @@ export default function LandingPage() {
                             <Trophy size={16} /> Programa de Recompensas
                         </motion.div>
                         <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
-                            className="text-3xl sm:text-5xl font-black mb-4 text-white">A Ghosts vibra a cada meta batida!</motion.h2>
+                            className={`text-3xl sm:text-5xl font-black mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>A Ghosts vibra a cada meta batida!</motion.h2>
                         <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
-                            className="text-gray-400 text-lg">Reconhecemos sua performance com prêmios exclusivos. Cada marco é uma conquista celebrada.</motion.p>
+                            className="text-gray-500 text-lg">Reconhecemos sua performance com prêmios exclusivos. Cada marco é uma conquista celebrada.</motion.p>
                     </div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         <AwardCard icon={Medal} amount="100 Mil" name="Ghost Platinum" desc="Para quem transforma os primeiros 100 mil em apenas o começo." color="platinum" delay={0.1} />
