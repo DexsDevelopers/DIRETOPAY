@@ -403,8 +403,17 @@ export default function LandingPage() {
             </nav>
 
             {/* Hero Section V2 */}
-            <section className={`pt-32 sm:pt-40 pb-20 px-6 relative overflow-hidden min-h-screen ${isDark ? 'bg-[#0a0a0f]' : 'bg-white'}`}>
+            <section className={`pt-32 sm:pt-40 pb-20 px-6 relative overflow-hidden min-h-screen ${isDark ? 'bg-[#0a0a0f]' : 'bg-[#F8F8FC]'}`}
+                style={isDark ? {
+                    backgroundImage: 'linear-gradient(0deg, transparent 24%, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.03) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03) 76%, transparent 77%), linear-gradient(90deg, transparent 24%, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.03) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03) 76%, transparent 77%)',
+                    backgroundSize: '55px 55px'
+                } : {
+                    backgroundImage: 'linear-gradient(0deg, transparent 24%, #E1E1E8 25%, #E1E1E8 26%, transparent 27%, transparent 74%, #E1E1E8 75%, #E1E1E8 76%, transparent 77%), linear-gradient(90deg, transparent 24%, #E1E1E8 25%, #E1E1E8 26%, transparent 27%, transparent 74%, #E1E1E8 75%, #E1E1E8 76%, transparent 77%)',
+                    backgroundSize: '55px 55px'
+                }}>
                 <Particles count={22} />
+                {/* fade bottom para suavizar saída do grid */}
+                <div className={`absolute bottom-0 inset-x-0 h-40 pointer-events-none ${isDark ? 'bg-gradient-to-t from-[#0a0a0f]' : 'bg-gradient-to-t from-[#F8F8FC]'} to-transparent`} />
                 <div className={`absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[100px] pointer-events-none ${isDark ? 'bg-gradient-to-bl from-rose-900/20 to-pink-900/10 opacity-40' : 'bg-gradient-to-bl from-pink-100 to-rose-50 opacity-60'}`} />
                 <div className={`absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-[80px] pointer-events-none ${isDark ? 'bg-gradient-to-tr from-rose-900/15 to-transparent opacity-30' : 'bg-gradient-to-tr from-pink-50 to-transparent opacity-40'}`} />
                 
