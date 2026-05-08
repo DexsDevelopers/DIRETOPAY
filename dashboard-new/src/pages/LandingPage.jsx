@@ -348,26 +348,54 @@ export default function LandingPage() {
                             </motion.div>
                         </div>
                         <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-                            className={`relative h-[400px] rounded-3xl p-8 ${isDark ? 'bg-white/5' : 'bg-gray-100'}`}>
-                            <div className="absolute top-1/2 left-4 -translate-y-1/2 bg-white/10 border border-white/20 rounded-2xl px-5 py-4 flex items-center gap-3">
-                                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center"><User size={20} /></div>
-                                <span className="font-bold">Seu Cliente</span>
-                            </div>
-                            <div className="absolute top-[15%] right-[20%] bg-white/10 border border-white/20 rounded-2xl px-5 py-4 flex items-center gap-3">
-                                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center"><Landmark size={20} /></div>
-                                <span className="font-bold">Adquirente 1</span>
-                            </div>
-                            <div className="absolute top-1/2 right-[10%] -translate-y-1/2 bg-purple-500/20 border border-purple-500 rounded-2xl px-5 py-4 flex items-center gap-3 shadow-[0_0_30px_rgba(168,85,247,0.3)]">
-                                <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center"><Landmark size={20} className="text-purple-400" /></div>
-                                <span className="font-bold">Adquirente 2</span>
-                            </div>
-                            <div className="absolute bottom-[15%] right-[20%] bg-white/10 border border-white/20 rounded-2xl px-5 py-4 flex items-center gap-3">
-                                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center"><Landmark size={20} /></div>
-                                <span className="font-bold">Adquirente 3</span>
-                            </div>
-                            <div className="absolute top-1/2 right-4 -translate-y-1/2 bg-emerald-500/15 border border-emerald-500 rounded-2xl px-5 py-4 flex items-center gap-3">
-                                <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center"><Check size={20} className="text-emerald-400" /></div>
-                                <span className="font-bold text-emerald-400">Pix Gerado!</span>
+                            className={`rounded-3xl p-8 ${isDark ? 'bg-white/5' : 'bg-gray-100'}`}>
+                            <div className="grid grid-cols-3 gap-4 items-center">
+                                {/* Coluna 1: Cliente */}
+                                <div className="flex flex-col items-center justify-center">
+                                    <div className={`flex items-center gap-3 px-4 py-3 rounded-2xl border w-full justify-center ${isDark ? 'bg-white/10 border-white/20' : 'bg-white border-gray-200 shadow-sm'}`}>
+                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${isDark ? 'bg-white/10' : 'bg-gray-100'}`}><User size={18} /></div>
+                                        <span className="font-bold text-sm">Seu Cliente</span>
+                                    </div>
+                                    <div className="flex gap-1 mt-3">
+                                        {[0,1,2].map(i => <div key={i} className="w-6 h-0.5 bg-gray-300 rounded-full" />)}
+                                        <ArrowRight size={14} className="text-gray-400 -ml-1" />
+                                    </div>
+                                </div>
+
+                                {/* Coluna 2: Adquirentes */}
+                                <div className="flex flex-col gap-3">
+                                    {[
+                                        { label: 'Adquirente 1', active: false },
+                                        { label: 'Adquirente 2', active: true },
+                                        { label: 'Adquirente 3', active: false },
+                                    ].map(({ label, active }) => (
+                                        <div key={label} className={`flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all ${
+                                            active
+                                                ? 'bg-purple-500/15 border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.25)]'
+                                                : isDark ? 'bg-white/5 border-white/10 opacity-50' : 'bg-white border-gray-200 opacity-60 shadow-sm'
+                                        }`}>
+                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${active ? 'bg-purple-500/20' : isDark ? 'bg-white/10' : 'bg-gray-100'}`}>
+                                                <Landmark size={16} className={active ? 'text-purple-400' : ''} />
+                                            </div>
+                                            <span className={`font-bold text-sm ${active ? 'text-purple-400' : ''}`}>{label}</span>
+                                            {active && <span className="ml-auto text-[10px] font-black text-purple-400 uppercase">Ativo</span>}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Coluna 3: Resultado */}
+                                <div className="flex flex-col items-center justify-center">
+                                    <div className="flex gap-1 mb-3 rotate-180">
+                                        {[0,1,2].map(i => <div key={i} className="w-6 h-0.5 bg-emerald-400/50 rounded-full" />)}
+                                        <ArrowRight size={14} className="text-emerald-400 -ml-1" />
+                                    </div>
+                                    <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border bg-emerald-500/10 border-emerald-500 w-full justify-center shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                                        <div className="w-9 h-9 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+                                            <Check size={18} className="text-emerald-400" />
+                                        </div>
+                                        <span className="font-bold text-sm text-emerald-400">Pix Gerado!</span>
+                                    </div>
+                                </div>
                             </div>
                         </motion.div>
                     </div>
