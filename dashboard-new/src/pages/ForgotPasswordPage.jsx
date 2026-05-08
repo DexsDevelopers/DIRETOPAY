@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, ArrowRight, ChevronLeft, KeyRound, Check } from 'lucide-react';
@@ -30,10 +30,10 @@ export default function ForgotPasswordPage() {
             if (data.success) {
                 setSent(true);
             } else {
-                setError(data.error || 'Erro ao processar solicitaÃ§Ã£o.');
+                setError(data.error || 'Erro ao processar solicitação.');
             }
         } catch {
-            setError('Erro de conexÃ£o. Tente novamente.');
+            setError('Erro de conexão. Tente novamente.');
         } finally {
             setLoading(false);
         }
@@ -75,10 +75,10 @@ export default function ForgotPasswordPage() {
                                 </div>
                                 <div>
                                     <h2 className="text-xl font-black mb-2 text-gray-900">E-mail Enviado!</h2>
-                                    <p className="text-gray-500 text-sm">Se o e-mail <span className="text-gray-900 font-bold">{email}</span> estiver cadastrado, vocÃª receberÃ¡ um link para redefinir sua senha.</p>
+                                    <p className="text-gray-500 text-sm">Se o e-mail <span className="text-gray-900 font-bold">{email}</span> estiver cadastrado, você receberá um link para redefinir sua senha.</p>
                                 </div>
                                 <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4">
-                                    <p className="text-amber-500 text-xs font-bold">âš ï¸ Verifique tambÃ©m a pasta de SPAM / Lixo EletrÃ´nico</p>
+                                    <p className="text-amber-500 text-xs font-bold">⚠️ Verifique também a pasta de SPAM / Lixo Eletrônico</p>
                                 </div>
                                 <Link
                                     to="/login"
@@ -129,7 +129,7 @@ export default function ForgotPasswordPage() {
             </div>
 
             <footer className="p-8 text-center">
-                <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">LUNARPAY v2.0 â€¢ Security FIRST</p>
+                <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">GHOST PIX v2.0 • Security FIRST</p>
             </footer>
         </div>
     );

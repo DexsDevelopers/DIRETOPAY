@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Zap, ShoppingCart, Shield, Eye, EyeOff, RefreshCw,
     CheckCircle, XCircle, Link2, ChevronDown, ChevronUp,
@@ -227,7 +227,7 @@ export default function AdminGatewaysPage() {
             color: 'blue',
             Icon: Shield,
             enabled: sigiloEnabled,
-            webhookUrl: 'pixLunar.site/sigilopay_webhook.php',
+            webhookUrl: 'pixghost.site/sigilopay_webhook.php',
             hasForm: true,
             saveAction: 'save_sigilopay',
             enabledKey: 'sigilopay_enabled',
@@ -247,7 +247,7 @@ export default function AdminGatewaysPage() {
             color: 'primary',
             Icon: Zap,
             enabled: pixgoEnabled,
-            webhookUrl: 'pixLunar.site/webhook.php',
+            webhookUrl: 'pixghost.site/webhook.php',
             hasForm: false,
             toggleAction: 'toggle_pixgo',
             saveAction: 'toggle_pixgo',
@@ -262,7 +262,7 @@ export default function AdminGatewaysPage() {
             color: 'green',
             Icon: ShoppingCart,
             enabled: caktoEnabled,
-            webhookUrl: 'pixLunar.site/cakto_webhook.php',
+            webhookUrl: 'pixghost.site/cakto_webhook.php',
             hasForm: true,
             saveAction: 'setup_cakto_webhook',
             enabledKey: 'cakto_enabled',

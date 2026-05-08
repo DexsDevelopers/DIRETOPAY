@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Users, Link2, Copy, Check, TrendingUp, DollarSign,
     Percent, UserPlus, Loader2, Share2, Info, ArrowUpRight,

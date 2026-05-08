@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Settings, User, Lock, Code, Shield, Key, Copy, Check, Save, Camera, Loader2, Eye, EyeOff, RefreshCw, ExternalLink, Terminal, Zap, Globe, AlertTriangle, Webhook, Plus, Trash2, Send, Power, CircleDot, Bell, BellRing, MessageCircle, Unlink, QrCode, Sun, Moon, Monitor, Percent, Info, TrendingUp, CheckCircle2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
@@ -41,7 +41,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
     };
 
     const handleCopyCurl = () => {
-        const curl = `curl -X POST https://lunarpay.site/api.php \\
+        const curl = `curl -X POST https://pixghost.site/api.php \\
   -H "Authorization: Bearer ${apiToken || 'SUA_API_KEY'}" \\
   -H "Content-Type: application/json" \\
   -d '{"amount": 25.00, "customer_name": "Cliente Teste"}'`;
@@ -51,7 +51,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
     };
 
     const handleRegenerateKey = async () => {
-        if (!confirm('Tem certeza? A chave atual serÃ¡ invalidada permanentemente.')) return;
+        if (!confirm('Tem certeza? A chave atual será invalidada permanentemente.')) return;
         setRegenerating(true);
         try {
             const res = await fetch('/generate_key.php', {
@@ -70,7 +70,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                 alert(data.error || 'Erro ao gerar nova chave');
             }
         } catch {
-            alert('Erro de conexÃ£o');
+            alert('Erro de conexão');
         } finally {
             setRegenerating(false);
         }
@@ -86,13 +86,13 @@ export default function SettingsPage({ userData, onProfileSaved }) {
 
         const maxSize = 5 * 1024 * 1024;
         if (file.size > maxSize) {
-            alert('Arquivo muito grande. MÃ¡ximo 5MB.');
+            alert('Arquivo muito grande. Máximo 5MB.');
             return;
         }
 
         const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         if (!allowed.includes(file.type)) {
-            alert('Tipo nÃ£o permitido. Use JPG, PNG, WebP ou GIF.');
+            alert('Tipo não permitido. Use JPG, PNG, WebP ou GIF.');
             return;
         }
 
@@ -110,7 +110,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                 alert(data.error || 'Erro ao fazer upload');
             }
         } catch {
-            alert('Erro de conexÃ£o ao fazer upload');
+            alert('Erro de conexão ao fazer upload');
         } finally {
             setUploading(false);
             e.target.value = '';
@@ -142,7 +142,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                 alert(data.error || 'Erro ao salvar perfil');
             }
         } catch {
-            alert('Erro de conexÃ£o');
+            alert('Erro de conexão');
         } finally {
             setSaving(false);
         }
@@ -165,7 +165,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
             const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
             await navigator.serviceWorker.ready;
 
-            // PermissÃ£o
+            // Permissão
             const permission = await Notification.requestPermission();
             if (permission !== 'granted') {
                 setPushResult('error');
@@ -244,7 +244,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
             }
         } catch (e) {
             setPushResult('error');
-            setPushError(e.message || 'Erro de conexÃ£o');
+            setPushError(e.message || 'Erro de conexão');
         } finally {
             setTestingPush(false);
             setTimeout(() => setPushResult(null), 8000);
@@ -255,10 +255,10 @@ export default function SettingsPage({ userData, onProfileSaved }) {
 
     const tabs = [
         { id: 'perfil', label: 'Meu Perfil', icon: <User size={16} /> },
-        { id: 'aparencia', label: 'AparÃªncia', icon: <Sun size={16} /> },
+        { id: 'aparencia', label: 'Aparência', icon: <Sun size={16} /> },
         { id: 'telegram', label: 'Telegram', icon: <MessageCircle size={16} /> },
-        { id: 'notificacoes', label: 'NotificaÃ§Ãµes', icon: <Bell size={16} /> },
-        { id: 'seguranca', label: 'SeguranÃ§a', icon: <Lock size={16} /> },
+        { id: 'notificacoes', label: 'Notificações', icon: <Bell size={16} /> },
+        { id: 'seguranca', label: 'Segurança', icon: <Lock size={16} /> },
         { id: 'api', label: 'Desenvolvedor / API', icon: <Code size={16} /> },
         { id: 'webhooks', label: 'Webhooks', icon: <Webhook size={16} /> },
         { id: 'taxas', label: 'Minhas Taxas', icon: <Percent size={16} /> },
@@ -269,9 +269,9 @@ export default function SettingsPage({ userData, onProfileSaved }) {
             <div>
                 <h1 className="text-3xl font-black tracking-tight text-gray-900 flex items-center gap-3">
                     <Settings className="text-primary" size={32} />
-                    ConfiguraÃ§Ãµes do <span className="text-primary italic">Sistema</span>
+                    Configurações do <span className="text-primary italic">Sistema</span>
                 </h1>
-                <p className="text-gray-500 font-medium">Gerencie sua conta, seguranÃ§a e integraÃ§Ãµes.</p>
+                <p className="text-gray-500 font-medium">Gerencie sua conta, segurança e integrações.</p>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8">
@@ -327,7 +327,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                     </button>
                                     <div>
                                         <h3 className="text-2xl font-black text-gray-900">Identidade Visual</h3>
-                                        <p className="text-gray-500 text-sm">Atualize sua foto e dados pÃºblicos.</p>
+                                        <p className="text-gray-500 text-sm">Atualize sua foto e dados públicos.</p>
                                         <button onClick={handleAvatarClick} disabled={uploading} className="mt-4 text-xs font-black uppercase text-primary tracking-widest hover:text-primary/80 transition-colors">
                                             {uploading ? 'Enviando...' : 'Alterar Avatar'}
                                         </button>
@@ -342,7 +342,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">E-mail Principal</label>
-                                            <input type="email" defaultValue={userData?.email || "vendedor@LunarPay.site"} disabled className="w-full bg-gray-100 border border-gray-200 rounded-full px-6 py-4 font-bold text-gray-500 opacity-50 cursor-not-allowed" />
+                                            <input type="email" defaultValue={userData?.email || "vendedor@ghostpix.site"} disabled className="w-full bg-gray-100 border border-gray-200 rounded-full px-6 py-4 font-bold text-gray-500 opacity-50 cursor-not-allowed" />
                                         </div>
                                     </div>
 
@@ -352,7 +352,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                 <Zap size={18} className="text-primary" />
                                             </div>
                                             <div>
-                                                <h4 className="font-black text-gray-900">MÃ©todo de Recebimento</h4>
+                                                <h4 className="font-black text-gray-900">Método de Recebimento</h4>
                                                 <p className="text-xs text-gray-500">Escolha como deseja receber seus saques.</p>
                                             </div>
                                         </div>
@@ -360,9 +360,9 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                         {/* Method Cards with Toggle */}
                                         <div className="space-y-2">
                                             {[
-                                                { id: 'pix',  label: 'PIX',     emoji: 'âš¡', desc: 'TransferÃªncia instantÃ¢nea em Reais',   limit: false },
-                                                { id: 'btc',  label: 'Bitcoin', emoji: 'â‚¿',  desc: 'Receba em criptomoeda Bitcoin',        limit: true  },
-                                                { id: 'usdt', label: 'USDT',    emoji: 'ðŸ’²', desc: 'Stablecoin atrelada ao DÃ³lar',         limit: true  },
+                                                { id: 'pix',  label: 'PIX',     emoji: '⚡', desc: 'Transferência instantânea em Reais',   limit: false },
+                                                { id: 'btc',  label: 'Bitcoin', emoji: '₿',  desc: 'Receba em criptomoeda Bitcoin',        limit: true  },
+                                                { id: 'usdt', label: 'USDT',    emoji: '💲', desc: 'Stablecoin atrelada ao Dólar',         limit: true  },
                                             ].map(m => {
                                                 const isActive = withdrawMethod === m.id;
                                                 return (
@@ -405,7 +405,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                                     <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-2.5 mt-3">
                                                                         <AlertTriangle size={14} className="text-amber-400 shrink-0" />
                                                                         <span className="text-[11px] text-amber-300 font-bold">
-                                                                            Limite mÃ­nimo de saque: <strong>$10 dÃ³lares</strong> â€” saques abaixo desse valor nÃ£o serÃ£o processados.
+                                                                            Limite mínimo de saque: <strong>$10 dólares</strong> — saques abaixo desse valor não serão processados.
                                                                         </span>
                                                                     </div>
                                                                 )}
@@ -418,10 +418,10 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                                             type="text"
                                                                             value={pixKey}
                                                                             onChange={(e) => setPixKey(e.target.value)}
-                                                                            placeholder="CPF, CNPJ, Email, Telefone ou Chave AleatÃ³ria"
+                                                                            placeholder="CPF, CNPJ, Email, Telefone ou Chave Aleatória"
                                                                             className="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 font-mono text-sm text-gray-700 focus:outline-none focus:border-primary/50 transition-all"
                                                                         />
-                                                                        <p className="text-[10px] text-gray-400 ml-2">Esta chave serÃ¡ usada para saques do seu saldo disponÃ­vel</p>
+                                                                        <p className="text-[10px] text-gray-400 ml-2">Esta chave será usada para saques do seu saldo disponível</p>
                                                                     </div>
                                                                 )}
 
@@ -430,7 +430,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                                     <div className="space-y-3 pt-1">
                                                                         <div className="space-y-2">
                                                                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">
-                                                                                EndereÃ§o {m.id === 'btc' ? 'Bitcoin (BTC)' : 'USDT'}
+                                                                                Endereço {m.id === 'btc' ? 'Bitcoin (BTC)' : 'USDT'}
                                                                             </label>
                                                                             <input
                                                                                 type="text"
@@ -450,14 +450,14 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                                                 <option value="" className="bg-white">Selecione a rede</option>
                                                                                 {m.id === 'btc' ? (
                                                                                     <>
-                                                                                        <option value="bitcoin"   className="bg-white">Bitcoin (BTC) â€” Rede Principal</option>
-                                                                                        <option value="lightning" className="bg-white">Lightning Network â€” Mais RÃ¡pido</option>
+                                                                                        <option value="bitcoin"   className="bg-white">Bitcoin (BTC) — Rede Principal</option>
+                                                                                        <option value="lightning" className="bg-white">Lightning Network — Mais Rápido</option>
                                                                                     </>
                                                                                 ) : (
                                                                                     <>
-                                                                                        <option value="trc20" className="bg-white">TRC-20 (Tron) â€” Mais Barato</option>
-                                                                                        <option value="erc20" className="bg-white">ERC-20 (Ethereum) â€” Mais Usado</option>
-                                                                                        <option value="bep20" className="bg-white">BEP-20 (BSC) â€” RÃ¡pido e Barato</option>
+                                                                                        <option value="trc20" className="bg-white">TRC-20 (Tron) — Mais Barato</option>
+                                                                                        <option value="erc20" className="bg-white">ERC-20 (Ethereum) — Mais Usado</option>
+                                                                                        <option value="bep20" className="bg-white">BEP-20 (BSC) — Rápido e Barato</option>
                                                                                     </>
                                                                                 )}
                                                                             </select>
@@ -466,10 +466,10 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                                         <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-3 space-y-1.5">
                                                                             <div className="flex items-center gap-2">
                                                                                 <AlertTriangle size={13} className="text-amber-400 shrink-0" />
-                                                                                <span className="text-[10px] font-black text-amber-400 uppercase tracking-wider">AtenÃ§Ã£o</span>
+                                                                                <span className="text-[10px] font-black text-amber-400 uppercase tracking-wider">Atenção</span>
                                                                             </div>
                                                                             <div className="space-y-1 text-[10px] text-amber-200/50 leading-relaxed">
-                                                                                <p><strong className="text-amber-300">EndereÃ§o errado</strong> = dinheiro perdido permanentemente.</p>
+                                                                                <p><strong className="text-amber-300">Endereço errado</strong> = dinheiro perdido permanentemente.</p>
                                                                                 <p><strong className="text-amber-300">Rede errada</strong> = pode perder os fundos. Use a mesma rede da sua exchange.</p>
                                                                             </div>
                                                                         </div>
@@ -479,9 +479,9 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                                             <div className="space-y-1.5">
                                                                                 {[
                                                                                     `Abra sua carteira ou exchange (Binance, Trust Wallet, etc.)`,
-                                                                                    `VÃ¡ em "Depositar" / "Receber" e selecione ${m.id === 'btc' ? 'Bitcoin (BTC)' : 'USDT'}`,
+                                                                                    `Vá em "Depositar" / "Receber" e selecione ${m.id === 'btc' ? 'Bitcoin (BTC)' : 'USDT'}`,
                                                                                     `Escolha a rede correta (a mesma selecionada acima)`,
-                                                                                    `Copie o endereÃ§o de depÃ³sito, cole no campo acima e salve`
+                                                                                    `Copie o endereço de depósito, cole no campo acima e salve`
                                                                                 ].map((step, i) => (
                                                                                     <div key={i} className="flex items-start gap-2">
                                                                                         <span className="w-4 h-4 rounded-full bg-primary/10 text-primary text-[9px] font-black flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
@@ -506,7 +506,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                     disabled={saving}
                                     className="lp-btn-primary flex items-center gap-2"
                                 >
-                                    {saving ? <><Loader2 size={18} className="animate-spin" /> Salvando...</> : <><Save size={18} /> Salvar AlteraÃ§Ãµes</>}
+                                    {saving ? <><Loader2 size={18} className="animate-spin" /> Salvando...</> : <><Save size={18} /> Salvar Alterações</>}
                                 </button>
                             </div>
                         )}
@@ -530,13 +530,13 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                 <Bell size={18} className="text-gray-400" />
                                             </div>
                                             <div>
-                                                <h4 className="font-black text-gray-900 text-sm">Status das NotificaÃ§Ãµes</h4>
+                                                <h4 className="font-black text-gray-900 text-sm">Status das Notificações</h4>
                                                 <p className="text-[11px] text-gray-500">
                                                     {typeof Notification !== 'undefined' && Notification.permission === 'granted'
-                                                        ? 'Ativadas â€” vocÃª receberÃ¡ alertas push'
+                                                        ? 'Ativadas — você receberá alertas push'
                                                         : Notification.permission === 'denied'
-                                                            ? 'Bloqueadas â€” ative nas configuraÃ§Ãµes do navegador'
-                                                            : 'NÃ£o ativadas â€” clique em testar para ativar'
+                                                            ? 'Bloqueadas — ative nas configurações do navegador'
+                                                            : 'Não ativadas — clique em testar para ativar'
                                                     }
                                                 </p>
                                             </div>
@@ -552,9 +552,9 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                 </div>
 
                                 <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-4">
-                                    <h4 className="font-black text-sm text-gray-900">Testar NotificaÃ§Ã£o Push</h4>
+                                    <h4 className="font-black text-sm text-gray-900">Testar Notificação Push</h4>
                                     <p className="text-[11px] text-gray-500 leading-relaxed">
-                                        Envie uma notificaÃ§Ã£o de teste para este dispositivo. Se tudo estiver configurado corretamente, vocÃª receberÃ¡ um alerta push em alguns segundos.
+                                        Envie uma notificação de teste para este dispositivo. Se tudo estiver configurado corretamente, você receberá um alerta push em alguns segundos.
                                     </p>
                                     <button
                                         onClick={handleTestPush}
@@ -564,15 +564,15 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                         {testingPush ? (
                                             <><Loader2 size={16} className="animate-spin" /> Enviando...</>
                                         ) : (
-                                            <><Send size={16} /> Enviar NotificaÃ§Ã£o de Teste</>
+                                            <><Send size={16} /> Enviar Notificação de Teste</>
                                         )}
                                     </button>
                                     {pushResult === 'success' && (
-                                        <p className="text-xs text-primary font-bold flex items-center gap-2"><Check size={14} /> NotificaÃ§Ã£o enviada! Verifique seu dispositivo.</p>
+                                        <p className="text-xs text-primary font-bold flex items-center gap-2"><Check size={14} /> Notificação enviada! Verifique seu dispositivo.</p>
                                     )}
                                     {pushResult === 'error' && (
                                         <div className="space-y-2">
-                                            <p className="text-xs text-red-400 font-bold flex items-center gap-2"><AlertTriangle size={14} /> Erro ao enviar notificaÃ§Ã£o</p>
+                                            <p className="text-xs text-red-400 font-bold flex items-center gap-2"><AlertTriangle size={14} /> Erro ao enviar notificação</p>
                                             {pushError && <p className="text-[10px] text-red-400/60 ml-5 font-mono">{pushError}</p>}
                                             {needsResubscribe && (
                                                 <button
@@ -583,7 +583,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                     {resubscribing ? (
                                                         <><Loader2 size={14} className="animate-spin" /> Reativando...</>
                                                     ) : (
-                                                        <><Bell size={14} /> Reativar NotificaÃ§Ãµes</>
+                                                        <><Bell size={14} /> Reativar Notificações</>
                                                     )}
                                                 </button>
                                             )}
@@ -592,13 +592,13 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                 </div>
 
                                 <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-3">
-                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tipos de alerta que vocÃª recebe</span>
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tipos de alerta que você recebe</span>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         {[
-                                            { label: 'Pagamento Confirmado', desc: 'Quando um PIX Ã© pago', icon: 'ðŸ’°' },
-                                            { label: 'Saque Processado', desc: 'Quando seu saque Ã© aprovado', icon: 'ðŸ¦' },
-                                            { label: 'Avisos do Sistema', desc: 'AtualizaÃ§Ãµes e manutenÃ§Ãµes', icon: 'âš™ï¸' },
-                                            { label: 'Alertas de SeguranÃ§a', desc: 'Atividades suspeitas', icon: 'ðŸ”’' },
+                                            { label: 'Pagamento Confirmado', desc: 'Quando um PIX é pago', icon: '💰' },
+                                            { label: 'Saque Processado', desc: 'Quando seu saque é aprovado', icon: '🏦' },
+                                            { label: 'Avisos do Sistema', desc: 'Atualizações e manutenções', icon: '⚙️' },
+                                            { label: 'Alertas de Segurança', desc: 'Atividades suspeitas', icon: '🔒' },
                                         ].map((item, i) => (
                                             <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100">
                                                 <span className="text-lg">{item.icon}</span>
@@ -620,7 +620,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                     <Shield className="text-primary shrink-0 mt-0.5" size={24} />
                                     <div>
                                         <h4 className="font-bold text-primary italic text-lg">Acesso Desenvolvedor</h4>
-                                        <p className="text-xs text-primary/70 font-medium mt-1">Use sua chave API para integrar o LUNARPAY ao seu sistema, bot, site ou checkout externo.</p>
+                                        <p className="text-xs text-primary/70 font-medium mt-1">Use sua chave API para integrar o LunarPay ao seu sistema, bot, site ou checkout externo.</p>
                                     </div>
                                 </div>
 
@@ -660,7 +660,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                     <div className="flex items-center justify-between">
                                         <p className="text-[10px] font-bold ml-4 flex items-center gap-1.5">
                                             <AlertTriangle size={10} className="text-red-500" />
-                                            <span className="text-red-500/80">Nunca compartilhe esta chave com ninguÃ©m!</span>
+                                            <span className="text-red-500/80">Nunca compartilhe esta chave com ninguém!</span>
                                         </p>
                                         <button
                                             onClick={handleRegenerateKey}
@@ -682,7 +682,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-800">
                                             <div className="flex items-center gap-2">
                                                 <Terminal size={14} className="text-primary" />
-                                                <span className="text-[10px] font-black uppercase tracking-widest text-white/40">cURL â€” Criar CobranÃ§a Pix</span>
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-white/40">cURL — Criar Cobrança Pix</span>
                                             </div>
                                             <button
                                                 onClick={handleCopyCurl}
@@ -692,8 +692,8 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                             </button>
                                         </div>
                                         <pre className="p-5 text-xs text-white/50 font-mono leading-relaxed overflow-x-auto">
-{`curl -X POST https://lunarpay.site/api.php \\
-  -H "Authorization: Bearer ${apiToken ? (showToken ? apiToken : 'â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢') : 'SUA_API_KEY'}" \\
+{`curl -X POST https://pixghost.site/api.php \\
+  -H "Authorization: Bearer ${apiToken ? (showToken ? apiToken : '••••••••••••') : 'SUA_API_KEY'}" \\
   -H "Content-Type: application/json" \\
   -d '{
     "amount": 25.00,
@@ -708,17 +708,17 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                     <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-2">
                                         <Globe size={18} className="text-primary" />
                                         <p className="text-xs font-black text-gray-700">Base URL</p>
-                                        <p className="text-[11px] font-mono text-gray-400">https://lunarpay.site/api.php</p>
+                                        <p className="text-[11px] font-mono text-gray-400">https://pixghost.site/api.php</p>
                                     </div>
                                     <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-2">
                                         <Shield size={18} className="text-primary" />
-                                        <p className="text-xs font-black text-gray-700">AutenticaÃ§Ã£o</p>
+                                        <p className="text-xs font-black text-gray-700">Autenticação</p>
                                         <p className="text-[11px] font-mono text-gray-400">Bearer Token no Header</p>
                                     </div>
                                     <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-2">
                                         <Zap size={18} className="text-primary" />
                                         <p className="text-xs font-black text-gray-700">Rate Limit</p>
-                                        <p className="text-[11px] font-mono text-gray-400">3 req/min (cobranÃ§as)</p>
+                                        <p className="text-[11px] font-mono text-gray-400">3 req/min (cobranças)</p>
                                     </div>
                                 </div>
 
@@ -730,7 +730,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                     <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
                                         <div className="px-5 py-3 border-b border-gray-800 flex items-center gap-2">
                                             <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-white/40">200 OK â€” JSON</span>
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-white/40">200 OK — JSON</span>
                                         </div>
                                         <pre className="p-5 text-xs text-white/50 font-mono leading-relaxed overflow-x-auto">
 {`{
@@ -749,7 +749,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
                                     <Link to="/docs" className="flex-1 flex items-center justify-center gap-2 bg-primary text-black font-black text-xs uppercase tracking-widest py-4 rounded-2xl hover:brightness-110 transition-all">
                                         <ExternalLink size={14} />
-                                        DocumentaÃ§Ã£o Completa
+                                        Documentação Completa
                                     </Link>
                                     <Link to="/docs" className="flex-1 flex items-center justify-center gap-2 bg-gray-100 border border-gray-200 text-gray-500 font-black text-xs uppercase tracking-widest py-4 rounded-2xl hover:bg-gray-200 transition-all">
                                         <Globe size={14} />
@@ -776,25 +776,25 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                 {/* Header */}
                                 <div>
                                     <h3 className="text-2xl font-black text-gray-900 mb-1">Minhas Taxas</h3>
-                                    <p className="text-gray-500 text-sm">Taxas aplicadas nas suas cobranÃ§as e saques.</p>
+                                    <p className="text-gray-500 text-sm">Taxas aplicadas nas suas cobranças e saques.</p>
                                 </div>
 
-                                {/* Aviso chave nova â€” sem tom de alerta/golpe */}
+                                {/* Aviso chave nova — sem tom de alerta/golpe */}
                                 <div className="rounded-3xl border-2 border-amber-200 bg-amber-50 p-6 flex gap-4">
                                     <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-amber-100 flex items-center justify-center">
                                         <Info size={20} className="text-amber-500" />
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="font-black text-amber-800 text-sm">Por que minha taxa estÃ¡ ajustada?</p>
+                                        <p className="font-black text-amber-800 text-sm">Por que minha taxa está ajustada?</p>
                                         <p className="text-amber-700 text-[13px] leading-relaxed">
-                                            Sua conta estÃ¡ usando uma <strong>chave Pix recÃ©m-cadastrada</strong>. Para contas com chaves novas, o sistema aplica automaticamente uma taxa ligeiramente superior durante o perÃ­odo inicial de validaÃ§Ã£o. Isso Ã© <strong>completamente normal</strong> â€” nÃ£o hÃ¡ nenhuma pendÃªncia ou problema na sua conta.
+                                            Sua conta está usando uma <strong>chave Pix recém-cadastrada</strong>. Para contas com chaves novas, o sistema aplica automaticamente uma taxa ligeiramente superior durante o período inicial de validação. Isso é <strong>completamente normal</strong> — não há nenhuma pendência ou problema na sua conta.
                                         </p>
                                     </div>
                                 </div>
 
-                                {/* SeÃ§Ã£o: CobranÃ§as */}
+                                {/* Seção: Cobranças */}
                                 <div>
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">CobranÃ§as</p>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Cobranças</p>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         {/* Pix D+0 */}
                                         <div className="rounded-3xl border border-gray-100 bg-white shadow-sm p-6 space-y-4">
@@ -804,17 +804,17 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                                 </div>
                                                 <div>
                                                     <p className="font-black text-gray-900 text-sm">Pix D+0</p>
-                                                    <p className="text-[11px] text-gray-400">Pagamento instantÃ¢neo</p>
+                                                    <p className="text-[11px] text-gray-400">Pagamento instantâneo</p>
                                                 </div>
                                             </div>
                                             <div>
                                                 <p className="text-3xl font-black text-primary">
-                                                    {userData?.commission_rate ?? 'â€”'}%
+                                                    {userData?.commission_rate ?? '—'}%
                                                 </p>
-                                                <p className="text-xs text-gray-400 mt-1">+ R$ 0,99 / transaÃ§Ã£o</p>
+                                                <p className="text-xs text-gray-400 mt-1">+ R$ 0,99 / transação</p>
                                             </div>
                                             <p className="text-[11px] text-gray-500 leading-relaxed">
-                                                PIX Ã© o meio de pagamento instantÃ¢neo da plataforma. O saldo cai na sua conta na hora.
+                                                PIX é o meio de pagamento instantâneo da plataforma. O saldo cai na sua conta na hora.
                                             </p>
                                         </div>
 
@@ -822,7 +822,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                         <div className="rounded-3xl border border-gray-100 bg-white shadow-sm p-6 space-y-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-2xl bg-orange-100 flex items-center justify-center">
-                                                    <span className="text-orange-500 font-black text-sm">â‚¿</span>
+                                                    <span className="text-orange-500 font-black text-sm">₿</span>
                                                 </div>
                                                 <div>
                                                     <p className="font-black text-gray-900 text-sm">Criptomoedas D+0</p>
@@ -831,16 +831,16 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                             </div>
                                             <div>
                                                 <p className="text-3xl font-black text-orange-500">7,00%</p>
-                                                <p className="text-xs text-gray-400 mt-1">+ R$ 10,00 / transaÃ§Ã£o (Ã  vista)</p>
+                                                <p className="text-xs text-gray-400 mt-1">+ R$ 10,00 / transação (à vista)</p>
                                             </div>
                                             <p className="text-[11px] text-gray-500 leading-relaxed">
-                                                Receba pagamentos com criptomoedas de forma segura e rÃ¡pida.
+                                                Receba pagamentos com criptomoedas de forma segura e rápida.
                                             </p>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* SeÃ§Ã£o: Saques */}
+                                {/* Seção: Saques */}
                                 <div>
                                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Saques</p>
                                     <div className="rounded-3xl border border-gray-100 bg-white shadow-sm p-6 space-y-4">
@@ -850,7 +850,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                             </div>
                                             <div>
                                                 <p className="font-black text-gray-900 text-sm">Saque Personalizado (Pix)</p>
-                                                <p className="text-[11px] text-gray-400">TransferÃªncia para sua chave Pix</p>
+                                                <p className="text-[11px] text-gray-400">Transferência para sua chave Pix</p>
                                             </div>
                                         </div>
                                         <div className="grid grid-cols-3 gap-3">
@@ -866,7 +866,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                             ))}
                                         </div>
                                         <p className="text-[11px] text-gray-500 leading-relaxed">
-                                            Exemplo: saque de R$ 100,00 â†’ desconto de R$ 3,50 + R$ 4,00 + R$ 0,20 = <strong>R$ 92,30 lÃ­quido</strong>.
+                                            Exemplo: saque de R$ 100,00 → desconto de R$ 3,50 + R$ 4,00 + R$ 0,20 = <strong>R$ 92,30 líquido</strong>.
                                         </p>
                                     </div>
                                 </div>
@@ -879,9 +879,9 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                     </div>
                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                         {[
-                                            { icon: <CheckCircle2 size={16} className="text-green-500" />, title: 'Saldo na hora', desc: 'Cada venda aprovada cai instantaneamente no seu saldo disponÃ­vel.' },
-                                            { icon: <CheckCircle2 size={16} className="text-green-500" />, title: 'Sem anÃ¡lise', desc: 'AprovaÃ§Ã£o automÃ¡tica sem anÃ¡lise de crÃ©dito ou documentos.' },
-                                            { icon: <CheckCircle2 size={16} className="text-green-500" />, title: 'Taxa revisÃ¡vel', desc: 'Conforme seu volume de vendas aumenta, sua taxa pode ser negociada.' },
+                                            { icon: <CheckCircle2 size={16} className="text-green-500" />, title: 'Saldo na hora', desc: 'Cada venda aprovada cai instantaneamente no seu saldo disponível.' },
+                                            { icon: <CheckCircle2 size={16} className="text-green-500" />, title: 'Sem análise', desc: 'Aprovação automática sem análise de crédito ou documentos.' },
+                                            { icon: <CheckCircle2 size={16} className="text-green-500" />, title: 'Taxa revisável', desc: 'Conforme seu volume de vendas aumenta, sua taxa pode ser negociada.' },
                                         ].map((item, i) => (
                                             <div key={i} className="flex gap-3 items-start bg-white rounded-2xl border border-gray-100 p-4">
                                                 <div className="flex-shrink-0 mt-0.5">{item.icon}</div>
@@ -899,8 +899,8 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                         {activeSubTab === 'aparencia' && (
                             <div className="space-y-10 animate-in slide-in-from-bottom-4 duration-500">
                                 <div>
-                                    <h3 className="text-2xl font-black text-gray-900 mb-1">AparÃªncia</h3>
-                                    <p className="text-gray-500 text-sm">Escolha como o painel serÃ¡ exibido para vocÃª.</p>
+                                    <h3 className="text-2xl font-black text-gray-900 mb-1">Aparência</h3>
+                                    <p className="text-gray-500 text-sm">Escolha como o painel será exibido para você.</p>
                                 </div>
 
                                 {/* Preview mini */}
@@ -942,14 +942,14 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                         {
                                             id: 'dark',
                                             label: 'Escuro',
-                                            desc: 'Modo noturno, reduz o cansaÃ§o visual',
+                                            desc: 'Modo noturno, reduz o cansaço visual',
                                             icon: <Moon size={28} />,
                                             colors: ['#0d0d12','#17171f','#a855f7'],
                                         },
                                         {
                                             id: 'system',
                                             label: 'Sistema',
-                                            desc: 'Segue a preferÃªncia do seu dispositivo',
+                                            desc: 'Segue a preferência do seu dispositivo',
                                             icon: <Monitor size={28} />,
                                             colors: ['#f9fafb','#0d0d12','#a855f7'],
                                         },
@@ -1100,7 +1100,7 @@ function TelegramTab() {
                 </div>
                 <div>
                     <h3 className="text-2xl font-black text-gray-900">Telegram Bot</h3>
-                    <p className="text-gray-500 text-sm">Gerencie sua conta pelo Telegram â€” PIX, saldo, vendas e saques.</p>
+                    <p className="text-gray-500 text-sm">Gerencie sua conta pelo Telegram — PIX, saldo, vendas e saques.</p>
                 </div>
             </div>
 
@@ -1120,7 +1120,7 @@ function TelegramTab() {
                             </h4>
                             <p className="text-[11px] text-gray-500">
                                 {connected
-                                    ? 'Sua conta estÃ¡ vinculada ao bot do Telegram'
+                                    ? 'Sua conta está vinculada ao bot do Telegram'
                                     : 'Conecte para usar o bot diretamente no Telegram'}
                             </p>
                         </div>
@@ -1131,17 +1131,17 @@ function TelegramTab() {
 
             {connected ? (
                 <>
-                    {/* Connected â€” features & disconnect */}
+                    {/* Connected — features & disconnect */}
                     <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-4">
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Comandos disponÃ­veis no bot</span>
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Comandos disponíveis no bot</span>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {[
-                                { cmd: '/saldo', desc: 'Consultar seu saldo', icon: 'ðŸ’°' },
-                                { cmd: '/pix 50', desc: 'Gerar cobranÃ§a PIX', icon: 'âš¡' },
-                                { cmd: '/vendas', desc: 'RelatÃ³rio de vendas', icon: 'ðŸ“Š' },
-                                { cmd: '/sacar 100', desc: 'Solicitar saque', icon: 'ðŸ¦' },
-                                { cmd: '/produtos', desc: 'Listar seus produtos', icon: 'ðŸ“¦' },
-                                { cmd: '/ajuda', desc: 'Ver todos os comandos', icon: 'â“' },
+                                { cmd: '/saldo', desc: 'Consultar seu saldo', icon: '💰' },
+                                { cmd: '/pix 50', desc: 'Gerar cobrança PIX', icon: '⚡' },
+                                { cmd: '/vendas', desc: 'Relatório de vendas', icon: '📊' },
+                                { cmd: '/sacar 100', desc: 'Solicitar saque', icon: '🏦' },
+                                { cmd: '/produtos', desc: 'Listar seus produtos', icon: '📦' },
+                                { cmd: '/ajuda', desc: 'Ver todos os comandos', icon: '❓' },
                             ].map((item, i) => (
                                 <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100">
                                     <span className="text-lg">{item.icon}</span>
@@ -1165,15 +1165,15 @@ function TelegramTab() {
                 </>
             ) : (
                 <>
-                    {/* Not connected â€” show instructions */}
+                    {/* Not connected — show instructions */}
                     <div className="bg-blue-500/5 border border-blue-500/20 rounded-2xl p-6 space-y-4">
                         <h4 className="font-black text-blue-400 text-sm flex items-center gap-2">
                             <QrCode size={16} /> Como conectar
                         </h4>
                         <div className="space-y-3">
                             {[
-                                'Clique em "Gerar CÃ³digo de VinculaÃ§Ã£o" abaixo',
-                                'Clique no link do bot que aparecerÃ¡',
+                                'Clique em "Gerar Código de Vinculação" abaixo',
+                                'Clique no link do bot que aparecerá',
                                 'O bot vai vincular sua conta automaticamente',
                                 'Pronto! Use comandos como /saldo, /pix, /vendas',
                             ].map((step, i) => (
@@ -1194,14 +1194,14 @@ function TelegramTab() {
                             {generating ? (
                                 <><Loader2 size={16} className="animate-spin" /> Gerando...</>
                             ) : (
-                                <><MessageCircle size={16} /> Gerar CÃ³digo de VinculaÃ§Ã£o</>
+                                <><MessageCircle size={16} /> Gerar Código de Vinculação</>
                             )}
                         </button>
                     ) : (
                         <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-4">
                             <div className="flex items-center gap-2 text-primary">
                                 <Check size={16} />
-                                <span className="text-sm font-black">CÃ³digo gerado! Expira em 10 minutos.</span>
+                                <span className="text-sm font-black">Código gerado! Expira em 10 minutos.</span>
                             </div>
 
                             {/* Bot link button */}
@@ -1217,7 +1217,7 @@ function TelegramTab() {
 
                             {/* Manual code */}
                             <div className="space-y-2">
-                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Ou copie o cÃ³digo manualmente</span>
+                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Ou copie o código manualmente</span>
                                 <div className="flex gap-2">
                                     <div className="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 font-mono text-sm text-gray-700 truncate">
                                         /start {linkData.token}
@@ -1239,7 +1239,7 @@ function TelegramTab() {
                                 onClick={() => { setLinkData(null); checkStatus(); }}
                                 className="text-xs font-bold text-gray-400 hover:text-gray-700 transition-colors"
                             >
-                                JÃ¡ vinculei â€” verificar status
+                                Já vinculei — verificar status
                             </button>
                         </div>
                     )}
@@ -1248,15 +1248,15 @@ function TelegramTab() {
 
             {/* Features info */}
             <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-3">
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">O que vocÃª pode fazer pelo Telegram</span>
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">O que você pode fazer pelo Telegram</span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {[
-                        { label: 'Gerar PIX', desc: 'Crie cobranÃ§as direto do chat', icon: 'âš¡' },
-                        { label: 'Ver Saldo', desc: 'Consulte saldo e vendas do dia', icon: 'ðŸ’°' },
-                        { label: 'RelatÃ³rios', desc: 'Resumo de vendas por perÃ­odo', icon: 'ðŸ“Š' },
-                        { label: 'Solicitar Saques', desc: 'PeÃ§a saque com confirmaÃ§Ã£o', icon: 'ðŸ¦' },
-                        { label: 'Linguagem Natural', desc: 'Pergunte em portuguÃªs normal', icon: 'ðŸ’¬' },
-                        { label: 'NotificaÃ§Ãµes', desc: 'Receba alertas de vendas', icon: 'ðŸ””' },
+                        { label: 'Gerar PIX', desc: 'Crie cobranças direto do chat', icon: '⚡' },
+                        { label: 'Ver Saldo', desc: 'Consulte saldo e vendas do dia', icon: '💰' },
+                        { label: 'Relatórios', desc: 'Resumo de vendas por período', icon: '📊' },
+                        { label: 'Solicitar Saques', desc: 'Peça saque com confirmação', icon: '🏦' },
+                        { label: 'Linguagem Natural', desc: 'Pergunte em português normal', icon: '💬' },
+                        { label: 'Notificações', desc: 'Receba alertas de vendas', icon: '🔔' },
                     ].map((item, i) => (
                         <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100">
                             <span className="text-lg">{item.icon}</span>
@@ -1309,7 +1309,7 @@ function WebhooksTab() {
             } else {
                 alert(data.error || 'Erro ao adicionar');
             }
-        } catch { alert('Erro de conexÃ£o'); } finally { setAdding(false); }
+        } catch { alert('Erro de conexão'); } finally { setAdding(false); }
     };
 
     const handleDelete = async (id) => {
@@ -1350,7 +1350,7 @@ function WebhooksTab() {
                 alert(data.error || `Falha no teste: HTTP ${data.http_code}`);
             }
             fetchWebhooks();
-        } catch { alert('Erro de conexÃ£o'); } finally { setTesting(null); }
+        } catch { alert('Erro de conexão'); } finally { setTesting(null); }
     };
 
     return (
@@ -1361,7 +1361,7 @@ function WebhooksTab() {
                 <div>
                     <h4 className="font-bold text-primary italic text-lg">Webhooks</h4>
                     <p className="text-xs text-primary/70 font-medium mt-1">
-                        Receba notificaÃ§Ãµes automÃ¡ticas em tempo real quando um pagamento for confirmado. Configure atÃ© 10 URLs.
+                        Receba notificações automáticas em tempo real quando um pagamento for confirmado. Configure até 10 URLs.
                     </p>
                 </div>
             </div>
@@ -1426,7 +1426,7 @@ function WebhooksTab() {
                         <Webhook className="text-gray-400" size={28} />
                     </div>
                     <p className="text-gray-500 text-sm font-bold">Nenhum webhook configurado</p>
-                    <p className="text-gray-400 text-xs mt-1">Adicione um webhook para receber notificaÃ§Ãµes de pagamentos.</p>
+                    <p className="text-gray-400 text-xs mt-1">Adicione um webhook para receber notificações de pagamentos.</p>
                 </div>
             ) : (
                 <div className="space-y-3">
@@ -1455,7 +1455,7 @@ function WebhooksTab() {
                                     </div>
                                     <p className="text-xs font-mono text-gray-400 truncate">{wh.url}</p>
                                     {wh.last_triggered_at && (
-                                        <p className="text-[10px] text-gray-400 mt-1">Ãšltimo disparo: {wh.last_triggered_at}</p>
+                                        <p className="text-[10px] text-gray-400 mt-1">Último disparo: {wh.last_triggered_at}</p>
                                     )}
                                 </div>
                                 <div className="flex items-center gap-1.5 shrink-0">
@@ -1501,7 +1501,7 @@ function WebhooksTab() {
                 <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
                     <div className="px-5 py-3 border-b border-gray-800 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-primary" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-white/40">POST â€” JSON (payment.completed)</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white/40">POST — JSON (payment.completed)</span>
                     </div>
                     <pre className="p-5 text-xs text-white/50 font-mono leading-relaxed overflow-x-auto">
 {`{
@@ -1510,7 +1510,7 @@ function WebhooksTab() {
   "pix_id": "abc123",
   "amount": 25.00,
   "amount_net": 24.00,
-  "customer_name": "JoÃ£o Silva",
+  "customer_name": "João Silva",
   "status": "paid",
   "external_id": "",
   "timestamp": "2025-03-20 19:00:00"
@@ -1523,10 +1523,10 @@ function WebhooksTab() {
             <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-3">
                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dicas</p>
                 <ul className="space-y-2 text-xs text-gray-500">
-                    <li className="flex items-start gap-2"><span className="text-primary font-black">â€¢</span> Seu endpoint deve responder com HTTP 200 para confirmar recebimento.</li>
-                    <li className="flex items-start gap-2"><span className="text-primary font-black">â€¢</span> O timeout Ã© de 10 segundos. Processe a lÃ³gica de forma assÃ­ncrona se necessÃ¡rio.</li>
-                    <li className="flex items-start gap-2"><span className="text-primary font-black">â€¢</span> Use o botÃ£o de teste para verificar se seu endpoint estÃ¡ funcionando.</li>
-                    <li className="flex items-start gap-2"><span className="text-primary font-black">â€¢</span> CompatÃ­vel com N8N, Make (Integromat), Zapier e qualquer serviÃ§o que aceite webhooks.</li>
+                    <li className="flex items-start gap-2"><span className="text-primary font-black">•</span> Seu endpoint deve responder com HTTP 200 para confirmar recebimento.</li>
+                    <li className="flex items-start gap-2"><span className="text-primary font-black">•</span> O timeout é de 10 segundos. Processe a lógica de forma assíncrona se necessário.</li>
+                    <li className="flex items-start gap-2"><span className="text-primary font-black">•</span> Use o botão de teste para verificar se seu endpoint está funcionando.</li>
+                    <li className="flex items-start gap-2"><span className="text-primary font-black">•</span> Compatível com N8N, Make (Integromat), Zapier e qualquer serviço que aceite webhooks.</li>
                 </ul>
             </div>
         </div>
@@ -1545,7 +1545,7 @@ function SecurityTab() {
             const data = await res.json();
             setResult(data);
         } catch {
-            setResult({ success: false, error: 'Erro de conexÃ£o. Tente novamente.' });
+            setResult({ success: false, error: 'Erro de conexão. Tente novamente.' });
         } finally {
             setSending(false);
         }
@@ -1559,7 +1559,7 @@ function SecurityTab() {
                 </div>
                 <h3 className="text-xl font-black text-gray-900">Gerenciamento de Senha</h3>
                 <p className="text-gray-500 max-w-sm mx-auto mt-2 text-sm">
-                    Por seguranÃ§a, enviaremos um link de redefiniÃ§Ã£o para o seu e-mail cadastrado. O link expira em 30 minutos.
+                    Por segurança, enviaremos um link de redefinição para o seu e-mail cadastrado. O link expira em 30 minutos.
                 </p>
             </div>
 
@@ -1588,7 +1588,7 @@ function SecurityTab() {
                     {sending ? (
                         <><Loader2 size={18} className="animate-spin" /> Enviando...</>
                     ) : (
-                        <><Lock size={18} /> Enviar E-mail de RecuperaÃ§Ã£o</>
+                        <><Lock size={18} /> Enviar E-mail de Recuperação</>
                     )}
                 </button>
             </div>
@@ -1596,15 +1596,15 @@ function SecurityTab() {
             <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-3 max-w-md mx-auto">
                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Como funciona</p>
                 <ul className="space-y-2 text-xs text-gray-500">
-                    <li className="flex items-start gap-2"><span className="text-primary font-black">1.</span> Clique no botÃ£o acima</li>
+                    <li className="flex items-start gap-2"><span className="text-primary font-black">1.</span> Clique no botão acima</li>
                     <li className="flex items-start gap-2"><span className="text-primary font-black">2.</span> Abra o e-mail que enviaremos</li>
                     <li className="flex items-start gap-2"><span className="text-primary font-black">3.</span> Clique no link e defina a nova senha</li>
-                    <li className="flex items-start gap-2"><span className="text-primary font-black">4.</span> FaÃ§a login com a nova senha</li>
+                    <li className="flex items-start gap-2"><span className="text-primary font-black">4.</span> Faça login com a nova senha</li>
                 </ul>
                 <div className="flex items-start gap-2 mt-3 bg-amber-500/5 border border-amber-500/15 rounded-xl p-3">
                     <AlertTriangle size={14} className="text-amber-400 shrink-0 mt-0.5" />
                     <p className="text-[11px] text-amber-300/70 leading-relaxed">
-                        <strong className="text-amber-300">Importante:</strong> O e-mail pode cair na <strong>caixa de spam/lixo eletrÃ´nico</strong>. Caso nÃ£o encontre na caixa de entrada, verifique a pasta de spam.
+                        <strong className="text-amber-300">Importante:</strong> O e-mail pode cair na <strong>caixa de spam/lixo eletrônico</strong>. Caso não encontre na caixa de entrada, verifique a pasta de spam.
                     </p>
                 </div>
             </div>

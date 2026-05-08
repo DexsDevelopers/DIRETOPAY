@@ -1,4 +1,4 @@
-﻿// LUNARPAY SPA v2.1 - Build for Auth & Checkout
+// LunarPay SPA v2.1 - Build for Auth & Checkout
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
@@ -55,7 +55,7 @@ import AdminGatewaysPage from './pages/AdminGatewaysPage';
 import BuyerChatPage from './pages/BuyerChatPage';
 import AnnouncementModal from './components/AnnouncementModal';
 
-// ProteÃ§Ã£o de Rota Admin
+// Proteção de Rota Admin
 function AdminRoute({ children, userData }) {
   if (!userData?.is_admin) return <Navigate to="/dashboard" />;
   return children;
@@ -129,7 +129,7 @@ export default function App() {
     console.log("APP MOUNTED. Current path:", location.pathname);
     fetchDashboard();
 
-    // Polling de notificaÃ§Ãµes a cada 30s
+    // Polling de notificações a cada 30s
     const notifInterval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(notifInterval);
   }, []);
@@ -204,7 +204,7 @@ export default function App() {
   console.log("RENDERING APP. Path:", location.pathname, "dashboardData:", !!dashboardData);
 
   const fetchDashboard = async () => {
-    console.log("LUNARPAY SPA v2.2 - Iniciando carga de dados...");
+    console.log("LunarPay SPA v2.2 - Iniciando carga de dados...");
     try {
       const res = await fetch('/get_dashboard_data.php');
       const data = await res.json();
@@ -220,8 +220,8 @@ export default function App() {
     }
   };
 
-  // GeneratePixCard jÃ¡ chama o `/api.php` e retorna { id, amount, code, image }.
-  // Aqui a gente sÃ³ precisa abrir o modal e atualizar o dashboard.
+  // GeneratePixCard já chama o `/api.php` e retorna { id, amount, code, image }.
+  // Aqui a gente só precisa abrir o modal e atualizar o dashboard.
   const handleManualPix = async (pixData) => {
     try {
       if (!pixData?.id) return;
@@ -233,7 +233,7 @@ export default function App() {
   };
 
   const handleDeleteTransaction = async (id) => {
-    if (!confirm('Deseja excluir esta transaÃ§Ã£o?')) return;
+    if (!confirm('Deseja excluir esta transação?')) return;
     try {
       const res = await fetch(`/delete_transaction.php?id=${id}`);
       const data = await res.json();
@@ -245,7 +245,7 @@ export default function App() {
     isSidebarOpen,
     setIsSidebarOpen,
     setActiveTab,
-    userData: dashboardData?.user || { name: 'UsuÃ¡rio', email: '' },
+    userData: dashboardData?.user || { name: 'Usuário', email: '' },
     balance: dashboardData?.balance || '0,00',
     notifications: dashboardData?.notifications || [],
     onMarkRead: handleMarkRead,
@@ -260,8 +260,8 @@ export default function App() {
       <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-gray-900">OlÃ¡, <span className="text-primary italic">{userData?.name?.split(' ')[0] || 'Lunar'}</span> ðŸ‘‹</h1>
-            <p className="text-gray-500 font-medium">Aqui estÃ¡ o resumo do seu impÃ©rio hoje.</p>
+            <h1 className="text-3xl font-black tracking-tight text-gray-900">Olá, <span className="text-primary italic">{userData?.name?.split(' ')[0] || 'Lunar'}</span> 👋</h1>
+            <p className="text-gray-500 font-medium">Aqui está o resumo do seu império hoje.</p>
           </div>
           <div className="flex items-center gap-3">
             <button

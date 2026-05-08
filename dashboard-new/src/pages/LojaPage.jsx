@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Store, Package, ShoppingBag, Star, TrendingUp, ExternalLink, Pencil, Check, X, Sparkles, BarChart3, Users } from 'lucide-react';
 
 export default function LojaPage() {
@@ -53,7 +53,7 @@ export default function LojaPage() {
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black tracking-tight">Minha <span className="text-primary italic">Loja</span></h1>
-          <p className="text-gray-500 text-sm mt-1">VisÃ£o geral da sua loja na plataforma</p>
+          <p className="text-gray-500 text-sm mt-1">Visão geral da sua loja na plataforma</p>
         </div>
         {store.slug && (
           <a href={`/loja/${store.slug}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2.5 bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 rounded-xl text-sm font-semibold hover:bg-gray-100 transition-all">
@@ -67,7 +67,7 @@ export default function LojaPage() {
         {[
           { label: 'Produtos Ativos', value: stats.active_products || 0, icon: <Package size={18} />, color: 'text-primary' },
           { label: 'Pedidos Total', value: stats.total_orders || 0, icon: <ShoppingBag size={18} />, color: 'text-blue-400' },
-          { label: 'AvaliaÃ§Ã£o MÃ©dia', value: stats.avg_rating ? `${parseFloat(stats.avg_rating).toFixed(1)}â˜…` : 'â€”', icon: <Star size={18} />, color: 'text-yellow-400' },
+          { label: 'Avaliação Média', value: stats.avg_rating ? `${parseFloat(stats.avg_rating).toFixed(1)}★` : '—', icon: <Star size={18} />, color: 'text-yellow-400' },
           { label: 'Receita Total', value: stats.total_revenue ? `R$ ${parseFloat(stats.total_revenue).toFixed(2).replace('.', ',')}` : 'R$ 0,00', icon: <TrendingUp size={18} />, color: 'text-green-400' },
         ].map(s => (
           <div key={s.label} className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
@@ -82,11 +82,11 @@ export default function LojaPage() {
 
         {/* Store Info */}
         <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 space-y-5">
-          <h2 className="font-black text-base flex items-center gap-2 text-gray-900"><Store size={16} className="text-primary" />InformaÃ§Ãµes da Loja</h2>
+          <h2 className="font-black text-base flex items-center gap-2 text-gray-900"><Store size={16} className="text-primary" />Informações da Loja</h2>
 
           {[
             { field: 'store_name', label: 'Nome da Loja', value: store.store_name || '', placeholder: 'Minha Loja Digital' },
-            { field: 'store_description', label: 'DescriÃ§Ã£o', value: store.store_description || '', placeholder: 'DescriÃ§Ã£o da sua loja...', textarea: true },
+            { field: 'store_description', label: 'Descrição', value: store.store_description || '', placeholder: 'Descrição da sua loja...', textarea: true },
             { field: 'store_banner', label: 'URL do Banner', value: store.store_banner || '', placeholder: 'https://...' },
           ].map(({ field, label, value, placeholder, textarea }) => (
             <div key={field}>
@@ -122,7 +122,7 @@ export default function LojaPage() {
             <div className="flex flex-col items-center justify-center h-40 gap-3 text-center">
               <Package size={28} className="text-gray-200" />
               <p className="text-sm text-gray-400">Nenhum produto cadastrado ainda</p>
-              <a href="/vendedor/produtos" className="text-xs text-primary hover:underline font-semibold">Criar produtos â†’</a>
+              <a href="/vendedor/produtos" className="text-xs text-primary hover:underline font-semibold">Criar produtos →</a>
             </div>
           ) : (
             <div className="space-y-3">
@@ -144,7 +144,7 @@ export default function LojaPage() {
                 </div>
               ))}
               {products.length > 5 && (
-                <a href="/vendedor/produtos" className="block text-center text-xs text-gray-400 hover:text-primary transition-colors pt-2 font-semibold">Ver todos os {products.length} produtos â†’</a>
+                <a href="/vendedor/produtos" className="block text-center text-xs text-gray-400 hover:text-primary transition-colors pt-2 font-semibold">Ver todos os {products.length} produtos →</a>
               )}
             </div>
           )}
@@ -158,7 +158,7 @@ export default function LojaPage() {
             <Sparkles size={22} className="text-primary" />
           </div>
           <div>
-            <p className="font-black text-base">Vitrine PixLunar</p>
+            <p className="font-black text-base">Vitrine PixGhost</p>
             <p className="text-sm text-gray-500">Ative seus produtos na vitrine global e alcance mais compradores</p>
           </div>
         </div>
