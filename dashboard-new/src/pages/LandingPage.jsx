@@ -451,7 +451,7 @@ export default function LandingPage() {
                                 <ShimmerButton className="w-full sm:w-auto">
                                 <Link to="/register" className="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-rose-700 text-white h-14 px-8 rounded-2xl flex items-center justify-center font-black hover:opacity-90 transition-all active:scale-95 group">
                                     <ShieldCheck className="mr-2 shrink-0" size={20} />
-                                    Quero ser um Ghost
+                                    Quero entrar na LunarPay
                                     <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform shrink-0" size={18} />
                                 </Link>
                                 </ShimmerButton>
@@ -499,10 +499,10 @@ export default function LandingPage() {
                             className="text-gray-500 text-lg">Reconhecemos sua performance com prêmios exclusivos. Cada marco é uma conquista celebrada.</motion.p>
                     </div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <AwardCard icon={Medal} amount="100 Mil" name="Ghost Platinum" desc="Para quem transforma os primeiros 100 mil em apenas o começo." color="platinum" delay={0.1} />
-                        <AwardCard icon={Trophy} amount="500 Mil" name="Ghost Gold" desc="Reconhece a ousadia de quem encara grandes desafios." color="gold" delay={0.2} />
-                        <AwardCard icon={Crown} amount="1 Milhão" name="Ghost Wine" desc="Celebra a excelência rara e sofisticação estratégica." color="wine" delay={0.3} />
-                        <AwardCard icon={Gem} amount="5 Milhões" name="Ghost Emerald" desc="Para quem chega aos 5 milhões não por acaso, mas por legado." color="emerald" delay={0.4} />
+                        <AwardCard icon={Medal} amount="100 Mil" name="Lunar Platinum" desc="Para quem transforma os primeiros 100 mil em apenas o começo." color="platinum" delay={0.1} />
+                        <AwardCard icon={Trophy} amount="500 Mil" name="Lunar Gold" desc="Reconhece a ousadia de quem encara grandes desafios." color="gold" delay={0.2} />
+                        <AwardCard icon={Crown} amount="1 Milhão" name="Lunar Wine" desc="Celebra a excelência rara e sofisticação estratégica." color="wine" delay={0.3} />
+                        <AwardCard icon={Gem} amount="5 Milhões" name="Lunar Emerald" desc="Para quem chega aos 5 milhões não por acaso, mas por legado." color="emerald" delay={0.4} />
                     </div>
                 </div>
             </section>
@@ -518,11 +518,11 @@ export default function LandingPage() {
                             </motion.div>
                             <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
                                 className="text-3xl sm:text-4xl font-black mb-6 leading-tight">
-                                Adquirente falhou?<br /><span className="text-primary">A Ghosts encontra outra rota na mesma hora.</span>
+                                Adquirente falhou?<br /><span className="text-primary">A LunarPay encontra outra rota na mesma hora.</span>
                             </motion.h2>
                             <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
                                 className="text-gray-400 text-lg mb-8 leading-relaxed">
-                                Deixe a Ghosts encontrar a rota com maior chance de aprovação enquanto você foca em vender! Nosso sistema inteligente alterna automaticamente entre múltiplos processadores.
+                                Deixe a LunarPay encontrar a rota com maior chance de aprovação enquanto você foca em vender! Nosso sistema inteligente alterna automaticamente entre múltiplos processadores.
                             </motion.p>
                             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }}
                                 className="grid grid-cols-2 gap-4">
@@ -635,7 +635,7 @@ export default function LandingPage() {
                             <Flame size={16} /> Competição Mensal
                         </motion.div>
                         <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
-                            className="text-3xl sm:text-5xl font-black mb-4">Na Ghosts, sua performance importa!</motion.h2>
+                            className="text-3xl sm:text-5xl font-black mb-4">Na LunarPay, sua performance importa!</motion.h2>
                         <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
                             className="text-gray-400 text-lg">Todos os meses, os sellers disputam o ranking para ganhar prêmios exclusivos. Vendeu mais? Sobe no ranking. Atingiu o topo? Premiação garantida!</motion.p>
                     </div>
@@ -806,7 +806,7 @@ export default function LandingPage() {
                         <div className="space-y-4">
                             <p className="text-[11px] font-black text-gray-800 uppercase tracking-[0.2em]">Informação</p>
                             <ul className="space-y-3 text-sm text-gray-500">
-                                <li><a href="mailto:contato@pixghost.site" className="hover:text-primary transition-colors">Suporte</a></li>
+                                <li><a href="mailto:contato@lunarpay.site" className="hover:text-primary transition-colors">Suporte</a></li>
                                 <li><a href="#" className="hover:text-primary transition-colors">P. de Privacidade</a></li>
                                 <li><a href="#" className="hover:text-primary transition-colors">Termos de uso</a></li>
                                 <li><Link to="/docs" className="hover:text-primary transition-colors">API Docs</Link></li>
