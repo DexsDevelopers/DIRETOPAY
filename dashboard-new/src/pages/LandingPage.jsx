@@ -30,12 +30,12 @@ function DashboardMockup() {
                 initial={{ opacity: 0, rotateY: -10 }}
                 animate={{ opacity: 1, rotateY: -5 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
-                className="bg-gradient-to-br from-[#1a1a24] to-[#0f0f16] border border-white/10 rounded-3xl p-6 shadow-2xl"
+                className="bg-gradient-to-br from-[#1a0010] to-[#0f0008] border border-white/10 rounded-3xl p-6 shadow-2xl"
                 style={{ transformStyle: 'preserve-3d', animation: 'float 6s ease-in-out infinite' }}
             >
                 <div className="flex items-center justify-between mb-5 pb-4 border-b border-white/5">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl flex items-center justify-center font-bold text-white">G</div>
+                        <div className="w-10 h-10 bg-gradient-to-br from-pink-600 to-rose-700 rounded-xl flex items-center justify-center font-bold text-white">G</div>
                         <div>
                             <div className="text-xs text-gray-400">Bem-vindo,</div>
                             <div className="font-semibold text-white">Ghost Seller 👋</div>
@@ -59,13 +59,13 @@ function DashboardMockup() {
                     {[40, 65, 45, 80, 55, 90, 70].map((h, i) => (
                         <motion.div key={i} initial={{ height: 0 }} animate={{ height: `${h}%` }}
                             transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
-                            className="flex-1 bg-gradient-to-t from-purple-600 to-purple-400 rounded-t opacity-70" />
+                            className="flex-1 bg-gradient-to-t from-rose-700 to-pink-500 rounded-t opacity-70" />
                     ))}
                 </div>
             </motion.div>
             <motion.div key={currentSale} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                className="absolute -bottom-4 -left-4 bg-black/95 border border-white/10 rounded-2xl p-4 backdrop-blur-xl flex items-center gap-4 z-10 shadow-2xl">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">
+                className="absolute -bottom-4 -left-4 bg-[#0f0008]/95 border border-pink-900/30 rounded-2xl p-4 backdrop-blur-xl flex items-center gap-4 z-10 shadow-2xl">
+                <div className="w-12 h-12 bg-gradient-to-br from-pink-600 to-rose-700 rounded-xl flex items-center justify-center">
                     <Check className="text-white" size={24} />
                 </div>
                 <div>
@@ -80,7 +80,7 @@ function DashboardMockup() {
 }
 
 function AwardCard({ icon: Icon, amount, name, desc, color, delay }) {
-    const colors = { platinum: '#e5e7eb', gold: '#fbbf24', wine: '#be185d', emerald: '#10b981' };
+    const colors = { platinum: '#e5e7eb', gold: '#fbbf24', wine: '#C0006A', emerald: '#10b981' };
     return (
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ delay, duration: 0.5 }} whileHover={{ y: -10, scale: 1.03 }}
@@ -109,7 +109,7 @@ function RankingItem({ position, name, sales, amount, avatar, type }) {
             whileHover={{ x: 5, backgroundColor: 'rgba(255,255,255,0.06)' }}
             className="flex items-center gap-5 bg-gray-50 border border-gray-200 rounded-2xl p-5 transition-all">
             <div className={`w-10 h-10 flex items-center justify-center font-black rounded-xl border ${styles[type]}`}>{position}</div>
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl flex items-center justify-center font-bold text-white">{avatar}</div>
+            <div className="w-12 h-12 bg-gradient-to-br from-pink-600 to-rose-700 rounded-xl flex items-center justify-center font-bold text-white">{avatar}</div>
             <div className="flex-1">
                 <div className="font-semibold text-gray-900 dark:text-white">{name}</div>
                 <div className="text-xs text-gray-400">{sales} vendas este mês</div>
@@ -221,7 +221,7 @@ export default function LandingPage() {
             {/* Navbar */}
             <nav className={`fixed left-1/2 -translate-x-1/2 z-50 w-[94%] sm:w-[90%] max-w-6xl h-16 sm:h-20 bg-white/90 backdrop-blur-3xl border border-purple-100 rounded-[32px] px-6 sm:px-10 flex items-center justify-between shadow-[0_8px_32px_rgba(124,58,237,0.1)] transition-all duration-300 overflow-hidden ${scrolled ? 'top-3' : 'top-32 sm:top-24'}`}>
                 <div className="flex items-center gap-3">
-                    <img src="/logo_premium.png" alt="Ghost Pix" className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-[0_0_20px_rgba(168,85,247,0.3)]" />
+                    <img src="/logo_premium.png" alt="Ghost Pix" className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-[0_0_20px_rgba(192,0,106,0.3)]" />
                     <span className="font-black text-lg sm:text-xl tracking-tighter text-gray-900">GHOST<span className="text-primary italic">PIX</span></span>
                 </div>
                 <div className="hidden lg:flex items-center gap-10 text-[11px] font-black uppercase tracking-[0.2em] text-gray-400">
@@ -234,30 +234,30 @@ export default function LandingPage() {
                 <div className="flex items-center gap-3 sm:gap-4">
                     <ThemeToggle />
                     <Link to="/login" className="text-[9px] sm:text-[11px] font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 hover:text-gray-900 transition-colors px-1 sm:px-2 hidden sm:block">Entrar</Link>
-                    <Link to="/register" className="bg-gradient-to-r from-purple-500 to-violet-600 text-white text-[9px] sm:text-[11px] font-black uppercase tracking-[0.1em] sm:tracking-[0.15em] px-4 sm:px-8 py-2 sm:py-3.5 rounded-xl sm:rounded-2xl hover:opacity-90 transition-all active:scale-95 shadow-[0_8px_20px_rgba(124,58,237,0.3)] whitespace-nowrap">Conta</Link>
+                    <Link to="/register" className="bg-gradient-to-r from-pink-600 to-rose-700 text-white text-[9px] sm:text-[11px] font-black uppercase tracking-[0.1em] sm:tracking-[0.15em] px-4 sm:px-8 py-2 sm:py-3.5 rounded-xl sm:rounded-2xl hover:opacity-90 transition-all active:scale-95 shadow-[0_8px_20px_rgba(192,0,106,0.3)] whitespace-nowrap">Conta</Link>
                 </div>
             </nav>
 
             {/* Hero Section V2 */}
             <section className={`pt-32 sm:pt-40 pb-20 px-6 relative overflow-hidden min-h-screen ${isDark ? 'bg-[#0a0a0f]' : 'bg-white'}`}>
-                <div className={`absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[100px] pointer-events-none ${isDark ? 'bg-gradient-to-bl from-purple-900/20 to-violet-900/10 opacity-40' : 'bg-gradient-to-bl from-purple-100 to-violet-50 opacity-60'}`} />
-                <div className={`absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-[80px] pointer-events-none ${isDark ? 'bg-gradient-to-tr from-purple-900/15 to-transparent opacity-30' : 'bg-gradient-to-tr from-purple-50 to-transparent opacity-40'}`} />
+                <div className={`absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[100px] pointer-events-none ${isDark ? 'bg-gradient-to-bl from-rose-900/20 to-pink-900/10 opacity-40' : 'bg-gradient-to-bl from-pink-100 to-rose-50 opacity-60'}`} />
+                <div className={`absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-[80px] pointer-events-none ${isDark ? 'bg-gradient-to-tr from-rose-900/15 to-transparent opacity-30' : 'bg-gradient-to-tr from-pink-50 to-transparent opacity-40'}`} />
                 
                 <div className="max-w-7xl mx-auto relative z-10">
                     <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center min-h-[80vh]">
                         {/* Lado Esquerdo */}
                         <div className="space-y-8 text-center lg:text-left">
                             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }}
-                                className={`inline-flex items-center gap-3 px-5 py-3 rounded-full border ${isDark ? 'bg-purple-950/40 border-purple-500/40' : 'bg-primary/5 border-primary/15'}`}>
+                                className={`inline-flex items-center gap-3 px-5 py-3 rounded-full border ${isDark ? 'bg-rose-950/40 border-rose-500/40' : 'bg-primary/5 border-primary/15'}`}>
                                 <div className={`w-2 h-2 rounded-full ${isDark ? 'bg-emerald-400' : 'bg-emerald-500'} animate-pulse`} />
-                                <span className={`text-sm font-black tracking-tight ${isDark ? 'text-purple-300' : 'text-primary'}`}>+3.000 Sellers que confiam em nós!</span>
+                                <span className={`text-sm font-black tracking-tight ${isDark ? 'text-pink-300' : 'text-primary'}`}>+3.000 Sellers que confiam em nós!</span>
                             </motion.div>
 
                             <div className="space-y-6">
                                 <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
                                     className="text-4xl sm:text-5xl lg:text-6xl font-[1000] leading-[0.95] tracking-[-0.04em] text-gray-900">
                                     O lado invisível que faz <br />
-                                    <span className="bg-gradient-to-r from-purple-500 to-violet-600 bg-clip-text text-transparent">sua operação crescer!</span>
+                                    <span className="bg-gradient-to-r from-pink-600 to-rose-700 bg-clip-text text-transparent">sua operação crescer!</span>
                                 </motion.h1>
                                 <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
                                     className="text-gray-500 text-lg sm:text-xl max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
@@ -267,7 +267,7 @@ export default function LandingPage() {
 
                             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 }}
                                 className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                                <Link to="/register" className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-violet-600 text-white h-14 sm:h-16 px-8 rounded-2xl flex items-center justify-center font-black hover:opacity-90 hover:scale-105 transition-all shadow-[0_16px_40px_rgba(124,58,237,0.35)] active:scale-95 group whitespace-nowrap">
+                                <Link to="/register" className="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-rose-700 text-white h-14 sm:h-16 px-8 rounded-2xl flex items-center justify-center font-black hover:opacity-90 hover:scale-105 transition-all shadow-[0_16px_40px_rgba(192,0,106,0.35)] active:scale-95 group whitespace-nowrap">
                                     <ShieldCheck className="mr-2" size={20} />
                                     Quero ser um Ghost
                                     <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
@@ -348,10 +348,10 @@ export default function LandingPage() {
                             </motion.div>
                         </div>
                         <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-                            className="relative rounded-3xl overflow-hidden bg-[#0f0f16] border border-white/10 p-8 shadow-2xl">
+                            className="relative rounded-3xl overflow-hidden bg-[#0f0008] border border-pink-900/30 p-8 shadow-2xl">
 
                             {/* Glow de fundo */}
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-purple-600/10 rounded-full blur-[60px] pointer-events-none" />
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-rose-700/10 rounded-full blur-[60px] pointer-events-none" />
 
                             {/* Label topo */}
                             <div className="flex items-center gap-2 mb-8">
@@ -371,15 +371,15 @@ export default function LandingPage() {
 
                                 {/* Linha de seta */}
                                 <div className="flex-1 flex items-center">
-                                    <div className="flex-1 h-px bg-gradient-to-r from-white/20 to-purple-500/60" />
-                                    <ArrowRight size={16} className="text-purple-400 shrink-0" />
+                                    <div className="flex-1 h-px bg-gradient-to-r from-white/20 to-rose-600/60" />
+                                    <ArrowRight size={16} className="text-pink-400 shrink-0" />
                                 </div>
 
                                 {/* Adquirentes */}
                                 <div className="flex flex-col gap-3 min-w-[160px]">
                                     {[
                                         { label: 'Gateway A', active: false, status: 'Offline' },
-                                        { label: 'Gateway B', active: true,  status: 'Ativo ✓' },
+                                        { label: 'Gateway B', active: true, status: 'Ativo ✓' },
                                         { label: 'Gateway C', active: false, status: 'Stand-by' },
                                     ].map(({ label, active, status }) => (
                                         <motion.div key={label}
@@ -387,21 +387,21 @@ export default function LandingPage() {
                                             transition={{ repeat: Infinity, duration: 2 }}
                                             className={`flex items-center justify-between px-4 py-3 rounded-xl border text-sm transition-all ${
                                                 active
-                                                    ? 'bg-purple-500/20 border-purple-500/80 shadow-[0_0_24px_rgba(168,85,247,0.3)]'
+                                                    ? 'bg-rose-700/20 border-rose-600/80 shadow-[0_0_24px_rgba(192,0,106,0.3)]'
                                                     : 'bg-white/5 border-white/10 opacity-40'
                                             }`}>
                                             <div className="flex items-center gap-2">
                                                 <div className={`w-2 h-2 rounded-full ${active ? 'bg-emerald-400 animate-pulse' : 'bg-gray-600'}`} />
                                                 <span className={`font-bold ${active ? 'text-white' : 'text-gray-500'}`}>{label}</span>
                                             </div>
-                                            <span className={`text-[10px] font-black uppercase ${active ? 'text-purple-300' : 'text-gray-600'}`}>{status}</span>
+                                            <span className={`text-[10px] font-black uppercase ${active ? 'text-pink-300' : 'text-gray-600'}`}>{status}</span>
                                         </motion.div>
                                     ))}
                                 </div>
 
                                 {/* Linha de seta */}
                                 <div className="flex-1 flex items-center">
-                                    <div className="flex-1 h-px bg-gradient-to-r from-purple-500/60 to-emerald-500/60" />
+                                    <div className="flex-1 h-px bg-gradient-to-r from-rose-600/60 to-emerald-500/60" />
                                     <ArrowRight size={16} className="text-emerald-400 shrink-0" />
                                 </div>
 
@@ -476,7 +476,7 @@ export default function LandingPage() {
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-gray-200 pb-16">
                         <div className="space-y-4">
                             <p className="text-[11px] font-black text-primary uppercase tracking-[0.4em]">Soluções Corporativas</p>
-                            <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-gray-900">Projetado para <br /> <span className="text-gray-400 italic">quem joga grande.</span></h2>
+                            <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-gray-900">Projetado para <br /> <span className="text-primary italic">quem joga grande.</span></h2>
                         </div>
                         <p className="text-gray-400 max-w-xs font-bold leading-relaxed text-sm">Eliminamos as barreiras entre sua venda e seu lucro com tecnologia de ponta.</p>
                     </div>
@@ -545,10 +545,10 @@ export default function LandingPage() {
             <section id="faq" className="py-32 px-6 bg-white">
                 <div className="max-w-4xl mx-auto space-y-20 text-center md:text-left">
                     <div className="space-y-4 text-center">
-                        <h2 className="text-4xl md:text-7xl font-black uppercase tracking-tighter text-gray-900">Respostas para <br /><span className="bg-gradient-to-r from-purple-500 to-violet-600 bg-clip-text text-transparent italic">suas dúvidas.</span></h2>
+                        <h2 className="text-4xl md:text-7xl font-black uppercase tracking-tighter text-gray-900">Respostas para <br /><span className="bg-gradient-to-r from-pink-600 to-rose-700 bg-clip-text text-transparent italic">suas dúvidas.</span></h2>
                         <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Suporte humanizado disponível 24/7</p>
                     </div>
-                    <div className="bg-gray-50 border border-purple-100 rounded-[48px] p-8 md:p-16">
+                    <div className="bg-gray-50 border border-pink-100 rounded-[48px] p-8 md:p-16">
                         <AccordionItem title="O Ghost Pix é realmente anônimo?" content="Sim. Utilizamos uma camada de abstração bancária onde seus dados pessoais ou da sua empresa nunca aparecem para o pagador final. O dinheiro cai na nossa conta de liquidação e é repassado instantaneamente para você." />
                         <AccordionItem title="Tem alguma taxa por transação?" content="Não! A Ghost Pix não cobra taxa por transação. Você recebe o valor integral das suas vendas diretamente no seu saldo, sem surpresas e sem taxas escondidas." />
                         <AccordionItem title="Como funciona o sistema de saques?" content="Após a confirmação do pagamento pelo nosso sistema (que ocorre em milissegundos), o saldo fica disponível em sua conta Ghost Pix. Você pode solicitar o saque via Pix para sua chave cadastrada a qualquer momento, sem taxas." />
@@ -559,13 +559,13 @@ export default function LandingPage() {
 
             {/* CTA Final */}
             <section className="py-16 sm:py-32 px-4 sm:px-6 bg-gray-50">
-                <div className="max-w-6xl mx-auto bg-gradient-to-br from-violet-600 via-purple-600 to-purple-700 p-8 sm:p-12 md:p-32 rounded-[32px] sm:rounded-[64px] relative overflow-hidden text-center">
+                <div className="max-w-6xl mx-auto bg-gradient-to-br from-pink-600 via-rose-600 to-rose-800 p-8 sm:p-12 md:p-32 rounded-[32px] sm:rounded-[64px] relative overflow-hidden text-center">
                     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent_60%)] pointer-events-none" />
                     <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-white/5 rounded-full blur-[60px]" />
                     <div className="space-y-12 relative z-10">
-                        <h2 className="text-3xl sm:text-5xl md:text-8xl font-black leading-[0.95] tracking-[-0.04em] uppercase text-white">O futuro dos <span className="text-purple-200">pagamentos</span> é hoje.</h2>
+                        <h2 className="text-3xl sm:text-5xl md:text-8xl font-black leading-[0.95] tracking-[-0.04em] uppercase text-white">O futuro dos <span className="text-pink-200">pagamentos</span> é hoje.</h2>
                         <div className="pt-6">
-                            <Link to="/register" className="inline-flex items-center justify-center bg-white text-primary h-14 sm:h-20 md:h-24 px-10 sm:px-16 md:px-20 rounded-[20px] sm:rounded-[32px] text-sm sm:text-xl md:text-2xl font-black hover:bg-purple-50 transition-all shadow-[0_20px_60px_rgba(0,0,0,0.2)] whitespace-nowrap active:scale-95">
+                            <Link to="/register" className="inline-flex items-center justify-center bg-white text-primary h-14 sm:h-20 md:h-24 px-10 sm:px-16 md:px-20 rounded-[20px] sm:rounded-[32px] text-sm sm:text-xl md:text-2xl font-black hover:bg-pink-50 transition-all shadow-[0_20px_60px_rgba(0,0,0,0.2)] whitespace-nowrap active:scale-95">
                                 CRIAR CONTA AGORA
                             </Link>
                         </div>
@@ -580,13 +580,13 @@ export default function LandingPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
                         <div className="space-y-8 col-span-1 lg:col-span-1">
                             <div className="flex items-center gap-3">
-                                <img src="/logo_premium.png" alt="Ghost Pix" className="w-10 h-10 rounded-xl shadow-[0_0_20px_rgba(168,85,247,0.2)]" />
+                                <img src="/logo_premium.png" alt="Ghost Pix" className="w-10 h-10 rounded-xl shadow-[0_0_20px_rgba(192,0,106,0.2)]" />
                                 <span className="font-black text-xl tracking-tighter text-gray-900">GHOST PIX</span>
                             </div>
                             <p className="text-gray-500 font-medium leading-relaxed max-w-xs">A infraestrutura financeira definitiva para quem busca privacidade, velocidade e escala.</p>
                             <div className="flex gap-4">
-                                <a href="#" className="w-10 h-10 rounded-full bg-purple-50 border border-purple-100 text-purple-400 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all"><MessageCircle size={18} /></a>
-                                <a href="#" className="w-10 h-10 rounded-full bg-purple-50 border border-purple-100 text-purple-400 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all"><ExternalLink size={18} /></a>
+                                <a href="#" className="w-10 h-10 rounded-full bg-pink-50 border border-pink-100 text-primary flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all"><MessageCircle size={18} /></a>
+                                <a href="#" className="w-10 h-10 rounded-full bg-pink-50 border border-pink-100 text-primary flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all"><ExternalLink size={18} /></a>
                             </div>
                         </div>
                         <div className="space-y-8">
