@@ -85,7 +85,7 @@ export default function RegisterPage() {
                             <Check size={12} /> Acesso Instantâneo Ativado
                         </div>
                         <h1 className="text-5xl font-black mb-3 tracking-tighter text-gray-900">Crie seu <span className="text-primary italic">Império.</span></h1>
-                        <p className="text-gray-500 font-medium">Junte-se a milhares de Ghost Vendors hoje.</p>
+                        <p className="text-gray-500 font-medium">Junte-se a milhares de LunarPayVendors hoje.</p>
                     </div>
 
                     <div className="bg-white border border-purple-100 shadow-[0_20px_60px_rgba(124,58,237,0.1)] p-10 rounded-[56px] relative overflow-hidden">

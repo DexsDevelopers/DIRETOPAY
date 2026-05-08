@@ -35,18 +35,18 @@ if ($isAuth && $requestPath === '/') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Ghost Pix" />
+    <meta name="apple-mobile-web-app-title" content="LunarPay" />
     <link rel="apple-touch-icon" href="/logo_premium.png" />
     <meta name="csrf-token" content="<?php echo csrf_token(); ?>">
     <script>window.__AUTH__ = <?php echo json_encode($isAuth); ?>;</script>
-    <title>Ghost Pix - Dashboard Premium</title>
+    <title>LunarPay - Dashboard Premium</title>
     
     <!-- React Build Assets -->
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/rolldown-runtime-WehaI0Q3.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-charts-He-U0hDw.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-react-CIFpnPib.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-motion-BKEh_tME.js">
-    <script type="module" crossorigin src="/assets/dashboard-react/assets/index-0sjMmQNv.js"></script>
+    <script type="module" crossorigin src="/assets/dashboard-react/assets/index-xPR_dC-T.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/dashboard-react/assets/index-BqYQEQPw.css">
     
     <!-- Preload fonts to avoid layout shift -->

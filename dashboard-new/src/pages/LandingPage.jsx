@@ -141,7 +141,7 @@ function DashboardMockup() {
                         <div className="w-10 h-10 bg-gradient-to-br from-pink-600 to-rose-700 rounded-xl flex items-center justify-center font-bold text-white">G</div>
                         <div>
                             <div className="text-xs text-gray-400">Bem-vindo,</div>
-                            <div className="font-semibold text-white">Ghost Seller 👋</div>
+                            <div className="font-semibold text-white">Lunar Member 👋</div>
                         </div>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-400">
@@ -389,8 +389,8 @@ export default function LandingPage() {
                     : 'left-0 translate-x-0 top-[38px] sm:top-[38px] w-full h-16 sm:h-20 rounded-none px-6 sm:px-16 border-b border-transparent backdrop-blur-sm ' + (isDark ? 'bg-[#0a0a0f]/80' : 'bg-white/80')
                 }`}>
                 <div className="flex items-center gap-2 sm:gap-3">
-                    <img src="/logo_premium.png" alt="Ghost Pix" className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl shadow-[0_0_16px_rgba(192,0,106,0.3)]" />
-                    <span className={`font-black text-base sm:text-lg tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Ghosts<span className="text-primary">Pay</span></span>
+                    <img src="/logo_premium.png" alt="LunarPay" className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl shadow-[0_0_16px_rgba(192,0,106,0.3)]" />
+                    <span className={`font-black text-base sm:text-lg tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Lunar<span className="text-primary">Pay</span></span>
                 </div>
                 <div className="hidden lg:flex items-center gap-8 text-[12px] font-semibold text-gray-500">
                     <a href="#" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Início</a>
@@ -494,7 +494,7 @@ export default function LandingPage() {
                             <Trophy size={16} /> Programa de Recompensas
                         </motion.div>
                         <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
-                            className={`text-3xl sm:text-5xl font-black mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>A Ghosts vibra a cada meta batida!</motion.h2>
+                            className={`text-3xl sm:text-5xl font-black mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>A LunarPay vibra a cada meta batida!</motion.h2>
                         <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
                             className="text-gray-500 text-lg">Reconhecemos sua performance com prêmios exclusivos. Cada marco é uma conquista celebrada.</motion.p>
                     </div>
@@ -674,7 +674,7 @@ export default function LandingPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         <AnimatedBorderCard><FeatureCard icon={ShieldCheck} title="Anonimato Bancário" desc="Seus dados pessoais ou da sua empresa nunca são revelados ao pagador. Total descrição para o seu negócio." delay={0.1} /></AnimatedBorderCard>
                         <AnimatedBorderCard><FeatureCard icon={Zap} title="Conversão Extrema" desc="Checkout otimizado para o Pix. Experiência de um clique que reduz o abandono em até 45%." delay={0.2} /></AnimatedBorderCard>
-                        <AnimatedBorderCard><FeatureCard icon={Layers} title="Multicontas em Um" desc="Gerencie múltiplos projetos e fluxos financeiros em uma única dashboard integrada e centralizada." delay={0.3} /></AnimatedBorderCard>
+                        <AnimatedBorderCard><FeatureCard icon={Layers} title="LunarPay - Dashboard Premium" desc="Gerencie múltiplos projetos e fluxos financeiros em uma única dashboard integrada e centralizada." delay={0.3} /></AnimatedBorderCard>
                         <AnimatedBorderCard><FeatureCard icon={BarChart3} title="Analytics em Real-time" desc="Acompanhe cada centavo que entra. Insights detalhados de conversão e comportamento do cliente." delay={0.4} /></AnimatedBorderCard>
                         <AnimatedBorderCard><FeatureCard icon={Rocket} title="Saques Sem Taxas" desc="Transferências ultra-rápidas e gratuitas para sua conta bancária de preferência logo após o processamento." delay={0.5} /></AnimatedBorderCard>
                         <AnimatedBorderCard><FeatureCard icon={Globe} title="Infraestrutura Global" desc="Servidores distribuídos para garantir que seu link esteja sempre no ar, 24 horas por dia, 7 dias por semana." delay={0.6} /></AnimatedBorderCard>
@@ -707,10 +707,10 @@ export default function LandingPage() {
                             </div>
                             <div className="space-y-2 text-white/80">
                                 <p className="text-white/20">// Initialize your integration</p>
-                                <p><span className="text-purple-400">const</span> ghost = <span className="text-blue-400">new</span> <span className="text-purple-400">GhostPix</span>{'({'} key: <span className="text-orange-400">'pk_live_...'</span> {'})'};</p>
+                                <p><span className="text-purple-400">const</span> lunarPay = <span className="text-blue-400">new</span> <span className="text-purple-400">LunarPay</span>{'({'} key: <span className="text-orange-400">'pk_live_...'</span> {'})'};</p>
                                 <p>&nbsp;</p>
                                 <p className="text-white/20">// Generate an anonymous Pix</p>
-                                <p><span className="text-purple-400">await</span> ghost.<span className="text-blue-400">createTransaction</span>{'({'}</p>
+                                <p><span className="text-purple-400">await</span> lunarPay.<span className="text-blue-400">createTransaction</span>{'({'}</p>
                                 <p className="pl-4">amount: <span className="text-orange-400">97.00</span>,</p>
                                 <p className="pl-4">customer: <span className="text-purple-300">'John Doe'</span></p>
                                 <p>{'})'};</p>
@@ -725,7 +725,7 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto px-6">
                     <p className="text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.5em] mb-16">Empresas e Empreendedores que confiam</p>
                     <div className="flex flex-wrap justify-center gap-x-12 gap-y-10 md:gap-24 opacity-30 hover:opacity-70 transition-all duration-700">
-                        {['TECHFLOW', 'ZENITH', 'NEXUS-X', 'CRYPTO-GEN', 'PULSE-PAY', 'GHOST-STT'].map(p => (
+                        {['TECHFLOW', 'ZENITH', 'NEXUS-X', 'CRYPTO-GEN', 'PULSE-PAY', 'LUNARPAY-STT'].map(p => (
                             <span key={p} className="text-xl md:text-3xl font-[1000] italic tracking-tighter text-gray-600 whitespace-nowrap">{p}</span>
                         ))}
                     </div>
@@ -740,9 +740,9 @@ export default function LandingPage() {
                         <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Suporte humanizado disponível 24/7</p>
                     </div>
                     <div className="bg-gray-50 border border-pink-100 rounded-[28px] sm:rounded-[48px] p-5 sm:p-8 md:p-16">
-                        <AccordionItem title="O Ghost Pix é realmente anônimo?" content="Sim. Utilizamos uma camada de abstração bancária onde seus dados pessoais ou da sua empresa nunca aparecem para o pagador final. O dinheiro cai na nossa conta de liquidação e é repassado instantaneamente para você." />
-                        <AccordionItem title="Tem alguma taxa por transação?" content="Não! A Ghost Pix não cobra taxa por transação. Você recebe o valor integral das suas vendas diretamente no seu saldo, sem surpresas e sem taxas escondidas." />
-                        <AccordionItem title="Como funciona o sistema de saques?" content="Após a confirmação do pagamento pelo nosso sistema (que ocorre em milissegundos), o saldo fica disponível em sua conta Ghost Pix. Você pode solicitar o saque via Pix para sua chave cadastrada a qualquer momento, sem taxas." />
+                        <AccordionItem title="O LunarPay é realmente anônimo?" content="Sim. Utilizamos uma camada de abstração bancária onde seus dados pessoais ou da sua empresa nunca aparecem para o pagador final. O dinheiro cai na nossa conta de liquidação e é repassado instantaneamente para você." />
+                        <AccordionItem title="Tem alguma taxa por transação?" content="Não! A LunarPay não cobra taxa por transação. Você recebe o valor integral das suas vendas diretamente no seu saldo, sem surpresas e sem taxas escondidas." />
+                        <AccordionItem title="Como funciona o sistema de saques?" content="Após a confirmação do pagamento pelo nosso sistema (que ocorre em milissegundos), o saldo fica disponível em sua conta LunarPay. Você pode solicitar o saque via Pix para sua chave cadastrada a qualquer momento, sem taxas." />
                         <AccordionItem title="Posso integrar com qualquer site ou bot?" content="Com certeza. Nossa API REST é agnóstica de linguagem e plataforma. Seja em um bot de Telegram, um dashboard customizado ou um e-commerce em WordPress, a integração é fluida e documentada." />
                     </div>
                 </div>
@@ -774,8 +774,8 @@ export default function LandingPage() {
                         {/* Col 1 - Brand */}
                         <div className="space-y-5 lg:col-span-1">
                             <div className="flex items-center gap-2">
-                                <img src="/logo_premium.png" alt="GhostsPay" className="w-8 h-8 rounded-lg" />
-                                <span className="font-black text-base text-gray-900">Ghosts<span className="text-primary">Pay</span></span>
+                                <img src="/logo_premium.png" alt="LunarPay" className="w-8 h-8 rounded-lg" />
+                                <span className="font-black text-base text-gray-900">Lunar<span className="text-primary">Pay</span></span>
                             </div>
                             <p className="text-gray-500 text-sm leading-relaxed">O lado invisível que faz sua operação crescer!</p>
                             <div className="flex flex-col gap-2">
@@ -834,7 +834,7 @@ export default function LandingPage() {
 
                     {/* Bottom bar */}
                     <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-100 pt-6 gap-3">
-                        <p className="text-gray-400 text-sm">© 2025 GhostsPay.</p>
+                        <p className="text-gray-400 text-sm">© 2025 LunarPay.</p>
                         <Link to="/register" className="text-sm text-gray-400 hover:text-primary transition-colors font-medium">Become a Ghost →</Link>
                     </div>
                 </div>

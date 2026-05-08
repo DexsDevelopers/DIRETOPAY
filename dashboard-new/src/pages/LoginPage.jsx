@@ -185,7 +185,7 @@ export default function LoginPage() {
                             <Shield className="text-primary" size={32} />
                         </div>
                         <h1 className="text-4xl font-black mb-2 tracking-tight text-gray-900">Bem-vindo de <span className="text-primary italic">Volta</span></h1>
-                        <p className="text-gray-500 font-medium text-sm px-4">Acesse sua central de comando blindada Ghost Pix.</p>
+                        <p className="text-gray-500 font-medium text-sm px-4">Acesse sua central de comando blindada LunarPay.</p>
                     </div>
 
                     <div className="bg-white border border-purple-100 shadow-[0_20px_60px_rgba(124,58,237,0.1)] p-8 md:p-10 rounded-[48px] relative overflow-hidden">
