@@ -348,54 +348,87 @@ export default function LandingPage() {
                             </motion.div>
                         </div>
                         <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-                            className={`rounded-3xl p-8 ${isDark ? 'bg-white/5' : 'bg-gray-100'}`}>
-                            <div className="grid grid-cols-3 gap-4 items-center">
-                                {/* Coluna 1: Cliente */}
-                                <div className="flex flex-col items-center justify-center">
-                                    <div className={`flex items-center gap-3 px-4 py-3 rounded-2xl border w-full justify-center ${isDark ? 'bg-white/10 border-white/20' : 'bg-white border-gray-200 shadow-sm'}`}>
-                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${isDark ? 'bg-white/10' : 'bg-gray-100'}`}><User size={18} /></div>
-                                        <span className="font-bold text-sm">Seu Cliente</span>
+                            className="relative rounded-3xl overflow-hidden bg-[#0f0f16] border border-white/10 p-8 shadow-2xl">
+
+                            {/* Glow de fundo */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-purple-600/10 rounded-full blur-[60px] pointer-events-none" />
+
+                            {/* Label topo */}
+                            <div className="flex items-center gap-2 mb-8">
+                                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                                <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Roteamento Inteligente em Tempo Real</span>
+                            </div>
+
+                            <div className="flex items-center justify-between gap-4 relative z-10">
+
+                                {/* Cliente */}
+                                <div className="flex flex-col items-center gap-2">
+                                    <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center">
+                                        <User size={24} className="text-gray-300" />
                                     </div>
-                                    <div className="flex gap-1 mt-3">
-                                        {[0,1,2].map(i => <div key={i} className="w-6 h-0.5 bg-gray-300 rounded-full" />)}
-                                        <ArrowRight size={14} className="text-gray-400 -ml-1" />
-                                    </div>
+                                    <span className="text-xs font-bold text-gray-400">Cliente</span>
                                 </div>
 
-                                {/* Coluna 2: Adquirentes */}
-                                <div className="flex flex-col gap-3">
+                                {/* Linha de seta */}
+                                <div className="flex-1 flex items-center">
+                                    <div className="flex-1 h-px bg-gradient-to-r from-white/20 to-purple-500/60" />
+                                    <ArrowRight size={16} className="text-purple-400 shrink-0" />
+                                </div>
+
+                                {/* Adquirentes */}
+                                <div className="flex flex-col gap-3 min-w-[160px]">
                                     {[
-                                        { label: 'Adquirente 1', active: false },
-                                        { label: 'Adquirente 2', active: true },
-                                        { label: 'Adquirente 3', active: false },
-                                    ].map(({ label, active }) => (
-                                        <div key={label} className={`flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all ${
-                                            active
-                                                ? 'bg-purple-500/15 border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.25)]'
-                                                : isDark ? 'bg-white/5 border-white/10 opacity-50' : 'bg-white border-gray-200 opacity-60 shadow-sm'
-                                        }`}>
-                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${active ? 'bg-purple-500/20' : isDark ? 'bg-white/10' : 'bg-gray-100'}`}>
-                                                <Landmark size={16} className={active ? 'text-purple-400' : ''} />
+                                        { label: 'Gateway A', active: false, status: 'Offline' },
+                                        { label: 'Gateway B', active: true,  status: 'Ativo ✓' },
+                                        { label: 'Gateway C', active: false, status: 'Stand-by' },
+                                    ].map(({ label, active, status }) => (
+                                        <motion.div key={label}
+                                            animate={active ? { scale: [1, 1.02, 1] } : {}}
+                                            transition={{ repeat: Infinity, duration: 2 }}
+                                            className={`flex items-center justify-between px-4 py-3 rounded-xl border text-sm transition-all ${
+                                                active
+                                                    ? 'bg-purple-500/20 border-purple-500/80 shadow-[0_0_24px_rgba(168,85,247,0.3)]'
+                                                    : 'bg-white/5 border-white/10 opacity-40'
+                                            }`}>
+                                            <div className="flex items-center gap-2">
+                                                <div className={`w-2 h-2 rounded-full ${active ? 'bg-emerald-400 animate-pulse' : 'bg-gray-600'}`} />
+                                                <span className={`font-bold ${active ? 'text-white' : 'text-gray-500'}`}>{label}</span>
                                             </div>
-                                            <span className={`font-bold text-sm ${active ? 'text-purple-400' : ''}`}>{label}</span>
-                                            {active && <span className="ml-auto text-[10px] font-black text-purple-400 uppercase">Ativo</span>}
-                                        </div>
+                                            <span className={`text-[10px] font-black uppercase ${active ? 'text-purple-300' : 'text-gray-600'}`}>{status}</span>
+                                        </motion.div>
                                     ))}
                                 </div>
 
-                                {/* Coluna 3: Resultado */}
-                                <div className="flex flex-col items-center justify-center">
-                                    <div className="flex gap-1 mb-3 rotate-180">
-                                        {[0,1,2].map(i => <div key={i} className="w-6 h-0.5 bg-emerald-400/50 rounded-full" />)}
-                                        <ArrowRight size={14} className="text-emerald-400 -ml-1" />
-                                    </div>
-                                    <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border bg-emerald-500/10 border-emerald-500 w-full justify-center shadow-[0_0_20px_rgba(16,185,129,0.2)]">
-                                        <div className="w-9 h-9 bg-emerald-500/20 rounded-xl flex items-center justify-center">
-                                            <Check size={18} className="text-emerald-400" />
-                                        </div>
-                                        <span className="font-bold text-sm text-emerald-400">Pix Gerado!</span>
-                                    </div>
+                                {/* Linha de seta */}
+                                <div className="flex-1 flex items-center">
+                                    <div className="flex-1 h-px bg-gradient-to-r from-purple-500/60 to-emerald-500/60" />
+                                    <ArrowRight size={16} className="text-emerald-400 shrink-0" />
                                 </div>
+
+                                {/* Resultado */}
+                                <div className="flex flex-col items-center gap-2">
+                                    <motion.div
+                                        animate={{ boxShadow: ['0 0 16px rgba(16,185,129,0.2)', '0 0 32px rgba(16,185,129,0.4)', '0 0 16px rgba(16,185,129,0.2)'] }}
+                                        transition={{ repeat: Infinity, duration: 2 }}
+                                        className="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/60 flex items-center justify-center">
+                                        <Check size={24} className="text-emerald-400" />
+                                    </motion.div>
+                                    <span className="text-xs font-bold text-emerald-400">Aprovado</span>
+                                </div>
+                            </div>
+
+                            {/* Rodapé com stats */}
+                            <div className="mt-8 pt-6 border-t border-white/5 grid grid-cols-3 gap-4 text-center">
+                                {[
+                                    { label: 'Uptime', value: '99.9%' },
+                                    { label: 'Latência', value: '<80ms' },
+                                    { label: 'Fallback', value: 'Auto' },
+                                ].map(s => (
+                                    <div key={s.label}>
+                                        <div className="text-lg font-black text-white">{s.value}</div>
+                                        <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{s.label}</div>
+                                    </div>
+                                ))}
                             </div>
                         </motion.div>
                     </div>
