@@ -766,53 +766,76 @@ export default function LandingPage() {
             </section>
 
             {/* Footer */}
-            <footer className="py-16 sm:py-24 border-t border-gray-100 bg-white px-6">
-                <div className="max-w-7xl mx-auto flex flex-col gap-12 sm:gap-20">
-                    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-16">
-                        <div className="space-y-6 col-span-2 md:col-span-1">
-                            <div className="flex items-center gap-3">
-                                <img src="/logo_premium.png" alt="Ghost Pix" className="w-10 h-10 rounded-xl shadow-[0_0_20px_rgba(192,0,106,0.2)]" />
-                                <span className="font-black text-xl tracking-tighter text-gray-900">GHOST PIX</span>
+            <footer className="px-4 sm:px-8 pb-6 pt-2 bg-gray-50">
+                <div className="max-w-6xl mx-auto bg-white border border-pink-100 rounded-[28px] sm:rounded-[36px] px-6 sm:px-10 py-10 sm:py-12 shadow-sm">
+                    {/* Top grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+
+                        {/* Col 1 - Brand */}
+                        <div className="space-y-5 lg:col-span-1">
+                            <div className="flex items-center gap-2">
+                                <img src="/logo_premium.png" alt="GhostsPay" className="w-8 h-8 rounded-lg" />
+                                <span className="font-black text-base text-gray-900">Ghosts<span className="text-primary">Pay</span></span>
                             </div>
-                            <p className="text-gray-500 font-medium leading-relaxed max-w-xs">A infraestrutura financeira definitiva para quem busca privacidade, velocidade e escala.</p>
-                            <div className="flex gap-4">
-                                <a href="#" className="w-10 h-10 rounded-full bg-pink-50 border border-pink-100 text-primary flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all"><MessageCircle size={18} /></a>
-                                <a href="#" className="w-10 h-10 rounded-full bg-pink-50 border border-pink-100 text-primary flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all"><ExternalLink size={18} /></a>
+                            <p className="text-gray-500 text-sm leading-relaxed">O lado invisível que faz sua operação crescer!</p>
+                            <div className="flex flex-col gap-2">
+                                <a href="#" className="flex items-center gap-2 text-primary text-sm font-semibold hover:underline">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                                    LinkedIn
+                                </a>
+                                <a href="#" className="flex items-center gap-2 text-primary text-sm font-semibold hover:underline">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                                    Instagram
+                                </a>
                             </div>
                         </div>
-                        <div className="space-y-8">
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">Plataforma</p>
-                            <ul className="space-y-4 text-sm font-bold text-gray-500">
-                                <li><a href="#solucoes" className="hover:text-gray-900 transition-colors">Produtos</a></li>
-                                <li><a href="#tecnologia" className="hover:text-gray-900 transition-colors">Tecnologia</a></li>
-                                <li><Link to="/docs" className="hover:text-gray-900 transition-colors">Documentação</Link></li>
-                                <li><a href="#" className="hover:text-gray-900 transition-colors">Termos de Uso</a></li>
+
+                        {/* Col 2 - Páginas */}
+                        <div className="space-y-4">
+                            <p className="text-[11px] font-black text-gray-800 uppercase tracking-[0.2em]">Páginas</p>
+                            <ul className="space-y-3 text-sm text-gray-500">
+                                <li><a href="#" className="hover:text-primary transition-colors">Início</a></li>
+                                <li><a href="#solucoes" className="hover:text-primary transition-colors">Benefícios</a></li>
+                                <li><a href="#" className="hover:text-primary transition-colors">Premiações</a></li>
+                                <li><a href="#" className="hover:text-primary transition-colors">Quem Somos</a></li>
+                                <li><a href="#faq" className="hover:text-primary transition-colors">FAQ</a></li>
                             </ul>
                         </div>
-                        <div className="space-y-8">
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">Desenvolvedores</p>
-                            <ul className="space-y-4 text-sm font-bold text-gray-500">
-                                <li><Link to="/docs" className="hover:text-gray-900 transition-colors">API Reference</Link></li>
-                                <li><a href="#" className="hover:text-gray-900 transition-colors">Status da Rede</a></li>
-                                <li><a href="#" className="hover:text-gray-900 transition-colors">SDKs</a></li>
-                                <li><a href="#" className="hover:text-gray-900 transition-colors">GitHub</a></li>
+
+                        {/* Col 3 - Informação */}
+                        <div className="space-y-4">
+                            <p className="text-[11px] font-black text-gray-800 uppercase tracking-[0.2em]">Informação</p>
+                            <ul className="space-y-3 text-sm text-gray-500">
+                                <li><a href="mailto:contato@pixghost.site" className="hover:text-primary transition-colors">Suporte</a></li>
+                                <li><a href="#" className="hover:text-primary transition-colors">P. de Privacidade</a></li>
+                                <li><a href="#" className="hover:text-primary transition-colors">Termos de uso</a></li>
+                                <li><Link to="/docs" className="hover:text-primary transition-colors">API Docs</Link></li>
                             </ul>
                         </div>
-                        <div className="space-y-8">
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">Suporte</p>
-                            <ul className="space-y-4 text-sm font-bold text-gray-500">
-                                <li><a href="mailto:contato@pixghost.site" className="hover:text-gray-900 transition-colors">contato@pixghost.site</a></li>
-                                <li><a href="#" className="text-primary hover:text-secondary transition-colors flex items-center gap-2">Canal WhatsApp <ExternalLink size={12} /></a></li>
-                                <li><a href="#" className="hover:text-gray-900 transition-colors">Falar com Humano</a></li>
-                            </ul>
+
+                        {/* Col 4 - App Stores */}
+                        <div className="space-y-3 flex flex-col justify-start">
+                            <a href="#" className="flex items-center gap-3 bg-primary text-white rounded-xl px-5 py-3 hover:bg-secondary transition-colors w-full sm:w-auto">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                                <div className="text-left leading-tight">
+                                    <div className="text-[9px] opacity-80">Disponível na</div>
+                                    <div className="text-sm font-bold">App Store</div>
+                                </div>
+                            </a>
+                            <a href="#" className="flex items-center gap-3 bg-primary text-white rounded-xl px-5 py-3 hover:bg-secondary transition-colors w-full sm:w-auto">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.3.17.64.24.99.19l12.2-12.2L12.92 8.3 3.18 23.76zm17.95-11.71L18.4 10.6l-3.4 3.4 3.4 3.4 2.77-1.54c.79-.44.79-1.63-.04-2.81zM2.4.46C2.15.72 2 1.1 2 1.6v20.8c0 .5.15.88.4 1.14l.06.06 11.65-11.65v-.3L2.46.4 2.4.46zm10.53 10.88l3.4-3.4-2.56-4.46L2.4.46C2.15.72 2 1.1 2 1.6v.08l10.93 9.66z"/></svg>
+                                <div className="text-left leading-tight">
+                                    <div className="text-[9px] opacity-80">Disponível no</div>
+                                    <div className="text-sm font-bold">Google Play</div>
+                                </div>
+                            </a>
                         </div>
                     </div>
-                    <div className="flex flex-col md:flex-row items-center justify-between border-t border-gray-100 pt-12 gap-8">
-                        <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.3em]">© 2026 GHOST PIX TECHNOLOGY LTD. ALL RIGHTS RESERVED.</p>
-                        <div className="flex items-center gap-8">
-                            <div className="flex items-center gap-2 text-gray-400"><Lock size={12} /><span className="text-[9px] font-black uppercase">FIPS 140-2 Compliant</span></div>
-                            <div className="flex items-center gap-2 text-gray-400"><ShieldCheck size={12} /><span className="text-[9px] font-black uppercase">PCI DSS Certified</span></div>
-                        </div>
+
+                    {/* Bottom bar */}
+                    <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-100 pt-6 gap-3">
+                        <p className="text-gray-400 text-sm">© 2025 GhostsPay.</p>
+                        <Link to="/register" className="text-sm text-gray-400 hover:text-primary transition-colors font-medium">Become a Ghost →</Link>
                     </div>
                 </div>
             </footer>
