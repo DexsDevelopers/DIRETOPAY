@@ -36,7 +36,7 @@ if ($isAuth && $requestPath === '/') {
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="LunarPay" />
-    <link rel="apple-touch-icon" href="/logo_premium.png" />
+    <link rel="apple-touch-icon" href="/logo_lunarpay.png" />
     <meta name="csrf-token" content="<?php echo csrf_token(); ?>">
     <script>window.__AUTH__ = <?php echo json_encode($isAuth); ?>;</script>
     <title>LunarPay - Dashboard Premium</title>

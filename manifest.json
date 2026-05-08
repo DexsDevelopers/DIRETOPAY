@@ -10,13 +10,13 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "logo_premium.png?v=3",
+      "src": "logo_lunarpay.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "logo_premium.png?v=3",
+      "src": "logo_lunarpay.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

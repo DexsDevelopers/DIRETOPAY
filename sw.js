@@ -35,7 +35,7 @@ self.addEventListener('push', (event) => {
     let data = {
         title: 'LunarPay',
         body: 'Nova notificação recebida!',
-        icon: '/logo_premium.png'
+        icon: '/logo_lunarpay.png'
     };
 
     if (event.data) {
@@ -53,7 +53,7 @@ self.addEventListener('push', (event) => {
     const options = {
         body: data.body,
         icon: data.icon,
-        badge: '/logo_premium.png',
+        badge: '/logo_lunarpay.png',
         vibrate: [200, 100, 200],
         tag: 'lunarpay-' + Date.now(),
         renotify: true,
