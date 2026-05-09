@@ -16,6 +16,7 @@ $user = $stmt->fetch();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="theme-color" content="#000000">
+    <link rel="icon" type="image/png" href="logo_lunarpay.png">
     <link rel="manifest" href="manifest.json">
     <title>Ghost Pix - Perfil (V2)</title>
     <link rel="stylesheet" href="style.css?v=125.0">

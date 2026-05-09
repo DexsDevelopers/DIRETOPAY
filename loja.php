@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ghost Pix — Loja</title>
 <meta name="description" content="Descubra e compre produtos digitais, cursos e serviços de vendedores verificados. Pagamento 100% via PIX, sem cadastro.">
-<link rel="icon" href="/logo_premium.png">
+<link rel="icon" type="image/png" href="/logo_lunarpay.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('ghost_loja_theme');if(t==='light'||(!t&&matchMedia('(prefers-color-scheme:light)').matches))document.documentElement.classList.add('light')}catch(e){}</script>

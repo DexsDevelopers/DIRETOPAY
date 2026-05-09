@@ -14,7 +14,7 @@ if (!$isAuth) {
   <head>
     <base href="/">
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/assets/dashboard-react/favicon.svg" />
+    <link rel="icon" type="image/png" href="/logo_lunarpay.png" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -26,12 +26,12 @@ if (!$isAuth) {
     <title>Ghost Pix - Dashboard Premium</title>
     
     <!-- React Build Assets -->
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js?v=11">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js?v=11">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-react-CIFpnPib.js?v=11">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-motion-BKEh_tME.js?v=11">
-    <script type="module" crossorigin src="/assets/dashboard-react/index-DxaUO0Tm.js?v=11"></script>
-    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-cZjWi1Ky.css?v=11">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js?v=12">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js?v=12">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-react-CIFpnPib.js?v=12">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-motion-BKEh_tME.js?v=12">
+    <script type="module" crossorigin src="/assets/dashboard-react/index-CEna3Vp7.js?v=12"></script>
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-Dv6a6K4u.css?v=12">
     
     <!-- Preload fonts to avoid layout shift -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">

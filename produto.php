@@ -72,7 +72,7 @@ $variantsJson = json_encode($variants, JSON_HEX_TAG|JSON_HEX_APOS);
 <?php if ($product && $product['description']): ?>
 <meta name="description" content="<?= htmlspecialchars(mb_substr($product['description'], 0, 155)) ?>">
 <?php endif; ?>
-<link rel="icon" href="/logo_premium.png">
+<link rel="icon" type="image/png" href="/logo_lunarpay.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>

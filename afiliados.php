@@ -21,6 +21,7 @@ $referrals = $stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="theme-color" content="#000000">
+    <link rel="icon" type="image/png" href="logo_lunarpay.png">
     <title>Ghost Pix - Afiliados</title>
     <link rel="stylesheet" href="style.css?v=125.0">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
