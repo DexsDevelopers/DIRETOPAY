@@ -6,9 +6,9 @@ import { cn } from '../lib/utils';
 const parceiros = [
     {
         id: '7kchat',
-        name: '7K Chat',
-        tagline: 'Suporte e atendimento ao cliente',
-        description: 'Plataforma de chat integrada para você conversar com seus clientes em tempo real, direto do seu painel.',
+        name: '7K Community',
+        tagline: 'Converse com quem já fatura alto',
+        description: 'Comunidade exclusiva de BigPlayers que faturam R$50K, R$100K e R$500K/mês. Troque estratégias, bastidores e network real com quem já chegou lá. Não é curso. É acesso direto a quem já está no nível.',
         url: '/sso_redirect.php',
         sso: true,
         badge: 'SSO Ativo',
