@@ -90,13 +90,19 @@ function NavGroup({ item, location, onTabChange, onClose, isDark }) {
                 />
             </button>
 
-            <div className={cn(
-                "overflow-hidden transition-all duration-250 ease-in-out",
-                open ? 'max-h-[400px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
-            )}>
-                {item.children.map(child => (
-                    <NavSubItem key={child.id} item={child} location={location} onTabChange={onTabChange} onClose={onClose} isDark={isDark} />
-                ))}
+            <div
+                style={{
+                    display: 'grid',
+                    gridTemplateRows: open ? '1fr' : '0fr',
+                    transition: 'grid-template-rows 0.25s ease',
+                    pointerEvents: open ? 'auto' : 'none',
+                }}
+            >
+                <div style={{ overflow: 'hidden', minHeight: 0 }}>
+                    {item.children.map(child => (
+                        <NavSubItem key={child.id} item={child} location={location} onTabChange={onTabChange} onClose={onClose} isDark={isDark} />
+                    ))}
+                </div>
             </div>
         </div>
     );
