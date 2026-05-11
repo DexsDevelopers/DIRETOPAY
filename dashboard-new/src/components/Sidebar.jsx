@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
     LayoutDashboard,
     History,
@@ -7,6 +7,7 @@ import {
     Settings,
     LogOut,
     ChevronRight,
+    ChevronDown,
     X,
     Gift,
     GraduationCap,
@@ -29,15 +30,6 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../lib/utils';
 
-function SidebarSection({ label, children }) {
-    return (
-        <div className="pt-5">
-            <p className="px-6 pb-2 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{label}</p>
-            {children}
-        </div>
-    );
-}
-
 function SidebarLink({ item, location, onTabChange, onClose }) {
     const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
     return (
@@ -48,11 +40,9 @@ function SidebarLink({ item, location, onTabChange, onClose }) {
                 if (window.innerWidth < 1024) onClose();
             }}
             className={cn(
-                "w-full flex items-center justify-between px-6 py-3 rounded-full transition-all duration-300 group mb-1",
+                "w-full flex items-center justify-between px-5 py-2.5 rounded-full transition-all duration-200 group mb-0.5",
                 isActive
-                    ? item.accent
-                        ? 'bg-primary/10 text-primary font-bold border border-primary/20'
-                        : 'bg-primary/10 text-primary font-bold border border-primary/20'
+                    ? 'bg-primary/10 text-primary font-bold border border-primary/20'
                     : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
             )}
         >
@@ -70,6 +60,51 @@ function SidebarLink({ item, location, onTabChange, onClose }) {
                 : <ChevronRight size={14} className="opacity-0 group-hover:opacity-20 transition-opacity" />
             }
         </Link>
+    );
+}
+
+function SidebarSection({ label, items, location, linkProps, defaultOpen = false }) {
+    const hasActive = items.some(
+        item => location.pathname === item.path || location.pathname.startsWith(item.path + '/')
+    );
+    const [open, setOpen] = useState(defaultOpen || hasActive);
+
+    useEffect(() => {
+        if (hasActive) setOpen(true);
+    }, [location.pathname]);
+
+    return (
+        <div className="mt-1">
+            <button
+                onClick={() => setOpen(o => !o)}
+                className={cn(
+                    "w-full flex items-center justify-between px-4 py-2 rounded-xl transition-all duration-200 group",
+                    hasActive
+                        ? 'text-primary'
+                        : 'text-gray-400 hover:text-gray-700'
+                )}
+            >
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">{label}</span>
+                <ChevronDown
+                    size={13}
+                    className={cn(
+                        "transition-transform duration-300",
+                        open ? 'rotate-0' : '-rotate-90'
+                    )}
+                />
+            </button>
+
+            <div className={cn(
+                "overflow-hidden transition-all duration-300 ease-in-out",
+                open ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
+            )}>
+                <div className="pt-1 pb-2">
+                    {items.map(item => (
+                        <SidebarLink key={item.id} item={item} {...linkProps} />
+                    ))}
+                </div>
+            </div>
+        </div>
     );
 }
 
@@ -106,14 +141,14 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
     const adminItems = [
         { id: 'admin',          icon: <ShieldCheck size={18} />, label: 'Admin Geral',        path: '/admin',           accent: true },
         { id: 'admin-usuarios', icon: <Users size={18} />,      label: 'Gestão de Usuários', path: '/admin/usuarios',   accent: true },
-        { id: 'admin-vendas', icon: <ShoppingBag size={18} />, label: 'Todas as Vendas', path: '/admin/vendas', accent: true },
-        { id: 'admin-produtos', icon: <Package size={18} />, label: 'Moderar Produtos', path: '/admin/produtos', accent: true },
-        { id: 'apis', icon: <Settings size={18} />, label: 'Gestão de APIs', path: '/admin/apis', accent: true },
-        { id: 'admin-banners',  icon: <Image size={18} />,    label: 'Banners da Loja', path: '/admin/banners',  accent: true },
-        { id: 'admin-anuncios', icon: <Megaphone size={18} />, label: 'Anúncios', path: '/admin/anuncios', accent: true },
-        { id: 'admin-chats', icon: <MessageCircle size={18} />, label: 'Chats', path: '/admin/chats', accent: true },
-        { id: 'admin-gateways', icon: <Cpu size={18} />, label: 'Gateways', path: '/admin/gateways', accent: true },
-        { id: 'admin-saques', icon: <Wallet size={18} />, label: 'Saques', path: '/admin/saques', accent: true },
+        { id: 'admin-vendas',   icon: <ShoppingBag size={18} />, label: 'Todas as Vendas',   path: '/admin/vendas',     accent: true },
+        { id: 'admin-produtos', icon: <Package size={18} />,    label: 'Moderar Produtos',   path: '/admin/produtos',   accent: true },
+        { id: 'apis',           icon: <Settings size={18} />,   label: 'Gestão de APIs',     path: '/admin/apis',       accent: true },
+        { id: 'admin-banners',  icon: <Image size={18} />,      label: 'Banners da Loja',    path: '/admin/banners',    accent: true },
+        { id: 'admin-anuncios', icon: <Megaphone size={18} />,  label: 'Anúncios',           path: '/admin/anuncios',   accent: true },
+        { id: 'admin-chats',    icon: <MessageCircle size={18} />, label: 'Chats',            path: '/admin/chats',      accent: true },
+        { id: 'admin-gateways', icon: <Cpu size={18} />,        label: 'Gateways',           path: '/admin/gateways',   accent: true },
+        { id: 'admin-saques',   icon: <Wallet size={18} />,     label: 'Saques',             path: '/admin/saques',     accent: true },
     ];
 
     const linkProps = { location, onTabChange, onClose };
@@ -123,7 +158,7 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
         {isOpen && (
             <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onClose} />
         )}
-        <aside className={`fixed z-50 top-0 left-0 h-full w-[280px] bg-white border-r border-gray-100 flex flex-col transform transition-transform duration-300 ease-out will-change-transform shadow-[4px_0_24px_rgba(124,58,237,0.06)] ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <aside className={`fixed z-50 top-0 left-0 h-full w-[280px] bg-white border-r border-gray-100 flex flex-col transform transition-transform duration-300 ease-out will-change-transform shadow-[4px_0_24px_rgba(192,0,106,0.06)] ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
 
             {/* Header */}
             <div className="p-6 flex items-center justify-between">
@@ -139,34 +174,21 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 px-4 py-2 overflow-y-auto custom-scrollbar">
+            <nav className="flex-1 px-3 py-2 overflow-y-auto custom-scrollbar">
 
-                <SidebarSection label="Principal">
-                    {principalItems.map(item => <SidebarLink key={item.id} item={item} {...linkProps} />)}
-                </SidebarSection>
-
-                <SidebarSection label="Vendedor">
-                    {vendedorItems.map(item => <SidebarLink key={item.id} item={item} {...linkProps} />)}
-                </SidebarSection>
-
-                <SidebarSection label="Vitrine LunarPay">
-                    {vitrineItems.map(item => <SidebarLink key={item.id} item={item} {...linkProps} />)}
-                </SidebarSection>
-
-                <SidebarSection label="Conta">
-                    {contaItems.map(item => <SidebarLink key={item.id} item={item} {...linkProps} />)}
-                </SidebarSection>
+                <SidebarSection label="Principal" items={principalItems} location={location} linkProps={linkProps} defaultOpen={true} />
+                <SidebarSection label="Vendedor" items={vendedorItems} location={location} linkProps={linkProps} />
+                <SidebarSection label="Vitrine LunarPay" items={vitrineItems} location={location} linkProps={linkProps} />
+                <SidebarSection label="Conta" items={contaItems} location={location} linkProps={linkProps} />
 
                 {userData?.is_admin && (
-                    <SidebarSection label="Administração">
-                        {adminItems.map(item => <SidebarLink key={item.id} item={item} {...linkProps} />)}
-                    </SidebarSection>
+                    <SidebarSection label="Administração" items={adminItems} location={location} linkProps={linkProps} />
                 )}
             </nav>
 
             {/* Ecossistema */}
             <div className="px-4 pt-4 border-t border-gray-100">
-                <p className="px-6 pb-2 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Ecossistema</p>
+                <p className="px-4 pb-2 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Ecossistema</p>
                 <a
                     href="/sso_redirect.php"
                     className="w-full flex items-center justify-between px-6 py-3 rounded-full text-violet-500 bg-violet-50 border border-violet-100 hover:bg-violet-100 transition-all duration-300 group mb-1"
