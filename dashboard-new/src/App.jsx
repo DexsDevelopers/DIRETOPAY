@@ -53,6 +53,7 @@ import AdminChatsPage from './pages/AdminChatsPage';
 import AdminSaquesPage from './pages/AdminSaquesPage';
 import AdminGatewaysPage from './pages/AdminGatewaysPage';
 import BuyerChatPage from './pages/BuyerChatPage';
+import ParceirosPage from './pages/ParceirosPage';
 import AnnouncementModal from './components/AnnouncementModal';
 
 // Proteção de Rota Admin
@@ -548,6 +549,14 @@ export default function App() {
                 <AdminChatsPage />
               </DashboardLayout>
             </AdminRoute>
+          </PrivateRoute>
+        } />
+
+        <Route path="/parceiros" element={
+          <PrivateRoute>
+            <DashboardLayout {...commonProps} activeTab="parceiros">
+              <ParceirosPage />
+            </DashboardLayout>
           </PrivateRoute>
         } />
 

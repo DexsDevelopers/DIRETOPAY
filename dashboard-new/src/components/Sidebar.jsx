@@ -3,7 +3,7 @@ import {
     LayoutDashboard, History, BarChart3, Wallet, Settings, LogOut,
     ChevronRight, X, Gift, ExternalLink, ShoppingBag,
     Package, Store, Sparkles, Link2, Palette, ShieldCheck, Image,
-    Users, Ticket, Megaphone, MessageCircle, RefreshCw, Cpu,
+    Users, Ticket, Megaphone, MessageCircle, RefreshCw, Cpu, Handshake,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../lib/utils';
@@ -143,8 +143,9 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
                 { id: 'loja',     icon: <Store size={16} />,   label: 'Minha Loja', path: '/vendedor/loja' },
             ],
         },
-        { type: 'item', id: 'afiliado', icon: <Gift size={18} />,     label: 'Afiliado',       path: '/afiliado' },
-        { type: 'item', id: 'settings', icon: <Settings size={18} />, label: 'Configurações',  path: '/config' },
+        { type: 'item', id: 'afiliado',   icon: <Gift size={18} />,       label: 'Afiliado',      path: '/afiliado' },
+        { type: 'item', id: 'parceiros',  icon: <Handshake size={18} />,  label: 'Parceiros',     path: '/parceiros' },
+        { type: 'item', id: 'settings',   icon: <Settings size={18} />,   label: 'Configurações', path: '/config' },
     ];
 
     if (userData?.is_admin) {
@@ -207,17 +208,7 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
 
                 {/* Footer */}
                 <div className={`border-t ${border}`}>
-                    <div className="px-3 py-2">
-                        <a
-                            href="/sso_redirect.php"
-                            className={cn("flex items-center gap-3.5 px-4 py-3 rounded-xl text-[14px] font-medium transition-all group", isDark ? 'text-gray-300 hover:bg-white/[0.06] hover:text-white' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900')}
-                        >
-                            <MessageCircle size={18} className={cn("shrink-0", isDark ? 'text-gray-500 group-hover:text-gray-200' : 'text-gray-400 group-hover:text-gray-700')} />
-                            <span className="flex-1">7K Chat</span>
-                            <ExternalLink size={13} className="opacity-30 group-hover:opacity-70 transition-opacity" />
-                        </a>
-                    </div>
-                    <div className={`px-3 pb-4 pt-1 border-t ${border}`}>
+                    <div className={`px-3 pb-4 pt-3`}>
                         <button
                             onClick={() => window.location.href = '../auth/logout.php'}
                             className={cn("w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-[14px] font-medium transition-all", isDark ? 'text-red-400 hover:bg-red-500/10' : 'text-red-500 hover:bg-red-50')}
