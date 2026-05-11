@@ -1,106 +1,71 @@
 ﻿import React, { useState, useEffect } from 'react';
 import {
-    LayoutDashboard,
-    History,
-    BarChart3,
-    Wallet,
-    Settings,
-    LogOut,
-    ChevronRight,
-    ChevronDown,
-    X,
-    Gift,
-    GraduationCap,
-    ExternalLink,
-    ShoppingBag,
-    Package,
-    Store,
-    Sparkles,
-    Link2,
-    Palette,
-    ShieldCheck,
-    Image,
-    Users,
-    Ticket,
-    Megaphone,
-    MessageCircle,
-    RefreshCw,
-    Cpu,
+    LayoutDashboard, History, BarChart3, Wallet, Settings, LogOut,
+    ChevronRight, ChevronDown, X, Gift, ExternalLink, ShoppingBag,
+    Package, Store, Sparkles, Link2, Palette, ShieldCheck, Image,
+    Users, Ticket, Megaphone, MessageCircle, RefreshCw, Cpu,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../lib/utils';
+import { useTheme } from '../contexts/ThemeContext';
 
-function SidebarLink({ item, location, onTabChange, onClose }) {
+function SidebarLink({ item, location, onTabChange, onClose, isDark }) {
     const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
     return (
         <Link
             to={item.path}
-            onClick={() => {
-                onTabChange(item.id);
-                if (window.innerWidth < 1024) onClose();
-            }}
+            onClick={() => { onTabChange(item.id); if (window.innerWidth < 1024) onClose(); }}
             className={cn(
-                "w-full flex items-center justify-between px-5 py-2.5 rounded-full transition-all duration-200 group mb-0.5",
+                "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group mb-0.5 text-sm font-semibold",
                 isActive
-                    ? 'bg-primary/10 text-primary font-bold border border-primary/20'
-                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-primary/15 text-primary'
+                    : isDark
+                        ? 'text-gray-400 hover:bg-white/6 hover:text-gray-100'
+                        : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
             )}
         >
-            <div className="flex items-center gap-3">
-                <span className={cn(
-                    "transition-colors",
-                    isActive ? 'text-primary' : (item.accent ? 'text-primary' : 'text-gray-400 group-hover:text-gray-900')
-                )}>
-                    {item.icon}
-                </span>
-                <span className="text-[13px] font-bold uppercase tracking-widest">{item.label}</span>
-            </div>
-            {isActive
-                ? <ChevronRight size={14} className="opacity-50" />
-                : <ChevronRight size={14} className="opacity-0 group-hover:opacity-20 transition-opacity" />
-            }
+            <span className={cn(
+                "shrink-0 transition-colors",
+                isActive ? 'text-primary' : isDark ? 'text-gray-500 group-hover:text-gray-300' : 'text-gray-400 group-hover:text-gray-600'
+            )}>
+                {item.icon}
+            </span>
+            <span className="flex-1 truncate">{item.label}</span>
+            {isActive && <ChevronRight size={13} className="shrink-0 opacity-50" />}
         </Link>
     );
 }
 
-function SidebarSection({ label, items, location, linkProps, defaultOpen = false }) {
+function SidebarSection({ label, items, location, linkProps, isDark, defaultOpen = false }) {
     const hasActive = items.some(
         item => location.pathname === item.path || location.pathname.startsWith(item.path + '/')
     );
     const [open, setOpen] = useState(defaultOpen || hasActive);
 
-    useEffect(() => {
-        if (hasActive) setOpen(true);
-    }, [location.pathname]);
+    useEffect(() => { if (hasActive) setOpen(true); }, [location.pathname]);
 
     return (
-        <div className="mt-1">
+        <div className="mb-1">
             <button
                 onClick={() => setOpen(o => !o)}
                 className={cn(
-                    "w-full flex items-center justify-between px-4 py-2 rounded-xl transition-all duration-200 group",
+                    "w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-bold tracking-wider uppercase transition-colors duration-150",
                     hasActive
                         ? 'text-primary'
-                        : 'text-gray-400 hover:text-gray-700'
+                        : isDark ? 'text-gray-500 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600'
                 )}
             >
-                <span className="text-[10px] font-black uppercase tracking-[0.2em]">{label}</span>
-                <ChevronDown
-                    size={13}
-                    className={cn(
-                        "transition-transform duration-300",
-                        open ? 'rotate-0' : '-rotate-90'
-                    )}
-                />
+                <span>{label}</span>
+                <ChevronDown size={14} className={cn("transition-transform duration-200 shrink-0", open ? 'rotate-0' : '-rotate-90')} />
             </button>
 
             <div className={cn(
-                "overflow-hidden transition-all duration-300 ease-in-out",
-                open ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
+                "overflow-hidden transition-all duration-250 ease-in-out",
+                open ? 'max-h-[500px] opacity-100 mt-0.5' : 'max-h-0 opacity-0'
             )}>
-                <div className="pt-1 pb-2">
+                <div className="pl-1 pb-1">
                     {items.map(item => (
-                        <SidebarLink key={item.id} item={item} {...linkProps} />
+                        <SidebarLink key={item.id} item={item} isDark={isDark} {...linkProps} />
                     ))}
                 </div>
             </div>
@@ -110,108 +75,113 @@ function SidebarSection({ label, items, location, linkProps, defaultOpen = false
 
 export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userData }) {
     const location = useLocation();
+    const { isDark } = useTheme();
     const userInitial = userData?.name?.charAt(0).toUpperCase() || 'L';
+    const userName = userData?.name?.split(' ')[0] || 'Usuário';
 
     const principalItems = [
-        { id: 'dashboard', icon: <LayoutDashboard size={18} />, label: 'Dashboard', path: '/dashboard' },
-        { id: 'vendas', icon: <History size={18} />, label: 'Vendas', path: '/vendas' },
-        { id: 'relatorios', icon: <BarChart3 size={18} />, label: 'Relatórios', path: '/relatorios' },
-        { id: 'saques', icon: <Wallet size={18} />, label: 'Saques', path: '/saques' },
-        { id: 'afiliado', icon: <Gift size={18} />, label: 'Afiliado', path: '/afiliado' },
+        { id: 'dashboard',  icon: <LayoutDashboard size={17} />, label: 'Dashboard',  path: '/dashboard' },
+        { id: 'vendas',     icon: <History size={17} />,         label: 'Vendas',     path: '/vendas' },
+        { id: 'relatorios', icon: <BarChart3 size={17} />,       label: 'Relatórios', path: '/relatorios' },
+        { id: 'saques',     icon: <Wallet size={17} />,          label: 'Saques',     path: '/saques' },
+        { id: 'afiliado',   icon: <Gift size={17} />,            label: 'Afiliado',   path: '/afiliado' },
     ];
 
     const vendedorItems = [
-        { id: 'checkouts', icon: <Link2 size={18} />, label: 'Checkouts', path: '/checkouts' },
-        { id: 'checkout-builder', icon: <Palette size={18} />, label: 'Criar Checkout', path: '/checkout-builder' },
-        { id: 'produtos', icon: <Package size={18} />, label: 'Produtos', path: '/vendedor/produtos' },
-        { id: 'cupons',   icon: <Ticket size={18} />,  label: 'Cupons',   path: '/vendedor/cupons' },
-        { id: 'assinaturas', icon: <RefreshCw size={18} />, label: 'Assinaturas', path: '/vendedor/assinaturas' },
-        { id: 'loja', icon: <Store size={18} />, label: 'Minha Loja', path: '/vendedor/loja' },
-        { id: 'chat', icon: <MessageCircle size={18} />, label: 'Chat', path: '/chat' },
+        { id: 'checkouts',        icon: <Link2 size={17} />,       label: 'Checkouts',     path: '/checkouts' },
+        { id: 'checkout-builder', icon: <Palette size={17} />,     label: 'Criar Checkout',path: '/checkout-builder' },
+        { id: 'produtos',         icon: <Package size={17} />,     label: 'Produtos',      path: '/vendedor/produtos' },
+        { id: 'cupons',           icon: <Ticket size={17} />,      label: 'Cupons',        path: '/vendedor/cupons' },
+        { id: 'assinaturas',      icon: <RefreshCw size={17} />,   label: 'Assinaturas',   path: '/vendedor/assinaturas' },
+        { id: 'loja',             icon: <Store size={17} />,       label: 'Minha Loja',    path: '/vendedor/loja' },
+        { id: 'chat',             icon: <MessageCircle size={17} />,label: 'Chat',          path: '/chat' },
     ];
 
     const vitrineItems = [
-        { id: 'vitrine', icon: <Sparkles size={18} />, label: 'Explorar Vitrine', path: '/vitrine' },
+        { id: 'vitrine', icon: <Sparkles size={17} />, label: 'Explorar Vitrine', path: '/vitrine' },
     ];
 
     const contaItems = [
-        { id: 'settings', icon: <Settings size={18} />, label: 'Configurações', path: '/config' },
+        { id: 'settings', icon: <Settings size={17} />, label: 'Configurações', path: '/config' },
     ];
 
     const adminItems = [
-        { id: 'admin',          icon: <ShieldCheck size={18} />, label: 'Admin Geral',        path: '/admin',           accent: true },
-        { id: 'admin-usuarios', icon: <Users size={18} />,      label: 'Gestão de Usuários', path: '/admin/usuarios',   accent: true },
-        { id: 'admin-vendas',   icon: <ShoppingBag size={18} />, label: 'Todas as Vendas',   path: '/admin/vendas',     accent: true },
-        { id: 'admin-produtos', icon: <Package size={18} />,    label: 'Moderar Produtos',   path: '/admin/produtos',   accent: true },
-        { id: 'apis',           icon: <Settings size={18} />,   label: 'Gestão de APIs',     path: '/admin/apis',       accent: true },
-        { id: 'admin-banners',  icon: <Image size={18} />,      label: 'Banners da Loja',    path: '/admin/banners',    accent: true },
-        { id: 'admin-anuncios', icon: <Megaphone size={18} />,  label: 'Anúncios',           path: '/admin/anuncios',   accent: true },
-        { id: 'admin-chats',    icon: <MessageCircle size={18} />, label: 'Chats',            path: '/admin/chats',      accent: true },
-        { id: 'admin-gateways', icon: <Cpu size={18} />,        label: 'Gateways',           path: '/admin/gateways',   accent: true },
-        { id: 'admin-saques',   icon: <Wallet size={18} />,     label: 'Saques',             path: '/admin/saques',     accent: true },
+        { id: 'admin',          icon: <ShieldCheck size={17} />,   label: 'Admin Geral',       path: '/admin',           accent: true },
+        { id: 'admin-usuarios', icon: <Users size={17} />,         label: 'Usuários',          path: '/admin/usuarios',  accent: true },
+        { id: 'admin-vendas',   icon: <ShoppingBag size={17} />,   label: 'Todas as Vendas',   path: '/admin/vendas',    accent: true },
+        { id: 'admin-produtos', icon: <Package size={17} />,       label: 'Produtos',          path: '/admin/produtos',  accent: true },
+        { id: 'apis',           icon: <Settings size={17} />,      label: 'Gestão de APIs',    path: '/admin/apis',      accent: true },
+        { id: 'admin-banners',  icon: <Image size={17} />,         label: 'Banners',           path: '/admin/banners',   accent: true },
+        { id: 'admin-anuncios', icon: <Megaphone size={17} />,     label: 'Anúncios',          path: '/admin/anuncios',  accent: true },
+        { id: 'admin-chats',    icon: <MessageCircle size={17} />, label: 'Chats',             path: '/admin/chats',     accent: true },
+        { id: 'admin-gateways', icon: <Cpu size={17} />,           label: 'Gateways',          path: '/admin/gateways',  accent: true },
+        { id: 'admin-saques',   icon: <Wallet size={17} />,        label: 'Saques',            path: '/admin/saques',    accent: true },
     ];
 
     const linkProps = { location, onTabChange, onClose };
+    const sectionProps = { location, linkProps, isDark };
+
+    const bg     = isDark ? 'bg-[#111118]'      : 'bg-white';
+    const border = isDark ? 'border-white/[0.06]': 'border-gray-100';
+    const shadow = isDark ? 'shadow-[4px_0_24px_rgba(0,0,0,0.4)]' : 'shadow-[4px_0_24px_rgba(192,0,106,0.06)]';
 
     return (
         <>
-        {isOpen && (
-            <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onClose} />
-        )}
-        <aside className={`fixed z-50 top-0 left-0 h-full w-[280px] bg-white border-r border-gray-100 flex flex-col transform transition-transform duration-300 ease-out will-change-transform shadow-[4px_0_24px_rgba(192,0,106,0.06)] ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            {isOpen && (
+                <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden" onClick={onClose} />
+            )}
+            <aside className={`fixed z-50 top-0 left-0 h-full w-[272px] ${bg} border-r ${border} ${shadow} flex flex-col transform transition-transform duration-300 ease-out will-change-transform ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
 
-            {/* Header */}
-            <div className="p-6 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center border border-primary/20">
-                        <span className="text-primary font-bold text-xl">{userInitial}</span>
+                {/* Header — logo + user */}
+                <div className={`px-5 py-4 flex items-center justify-between border-b ${border}`}>
+                    <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-9 h-9 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center shrink-0">
+                            <span className="text-primary font-black text-base">{userInitial}</span>
+                        </div>
+                        <div className="min-w-0">
+                            <p className={`text-sm font-bold truncate ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>{userName}</p>
+                            <p className="text-xs text-primary font-semibold">LunarPay</p>
+                        </div>
                     </div>
-                    <span className="font-bold text-xl tracking-tight text-gray-900">Lunar<span className="text-primary italic">Pay</span></span>
+                    <button onClick={onClose} className={`p-1.5 rounded-lg transition-colors ${isDark ? 'text-gray-500 hover:text-gray-200 hover:bg-white/8' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'}`}>
+                        <X size={20} />
+                    </button>
                 </div>
-                <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-900 transition-colors">
-                    <X size={24} />
-                </button>
-            </div>
 
-            {/* Navigation */}
-            <nav className="flex-1 px-3 py-2 overflow-y-auto custom-scrollbar">
+                {/* Navigation */}
+                <nav className="flex-1 px-3 py-3 overflow-y-auto custom-scrollbar space-y-0.5">
+                    <SidebarSection label="Principal"       items={principalItems} defaultOpen={true} {...sectionProps} />
+                    <SidebarSection label="Vendedor"        items={vendedorItems}  {...sectionProps} />
+                    <SidebarSection label="Vitrine"         items={vitrineItems}   {...sectionProps} />
+                    <SidebarSection label="Conta"           items={contaItems}     {...sectionProps} />
+                    {userData?.is_admin && (
+                        <SidebarSection label="Administração" items={adminItems}   {...sectionProps} />
+                    )}
+                </nav>
 
-                <SidebarSection label="Principal" items={principalItems} location={location} linkProps={linkProps} defaultOpen={true} />
-                <SidebarSection label="Vendedor" items={vendedorItems} location={location} linkProps={linkProps} />
-                <SidebarSection label="Vitrine LunarPay" items={vitrineItems} location={location} linkProps={linkProps} />
-                <SidebarSection label="Conta" items={contaItems} location={location} linkProps={linkProps} />
+                {/* Ecossistema */}
+                <div className={`px-3 py-3 border-t ${border}`}>
+                    <p className={`text-[10px] font-bold uppercase tracking-widest px-2 mb-2 ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>Ecossistema</p>
+                    <a href="/sso_redirect.php"
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all group ${isDark ? 'text-violet-400 hover:bg-violet-500/10' : 'text-violet-600 hover:bg-violet-50'}`}
+                    >
+                        <MessageCircle size={17} className="shrink-0" />
+                        <span className="flex-1">7K Chat</span>
+                        <ExternalLink size={13} className="opacity-40 group-hover:opacity-80 transition-opacity" />
+                    </a>
+                </div>
 
-                {userData?.is_admin && (
-                    <SidebarSection label="Administração" items={adminItems} location={location} linkProps={linkProps} />
-                )}
-            </nav>
-
-            {/* Ecossistema */}
-            <div className="px-4 pt-4 border-t border-gray-100">
-                <p className="px-4 pb-2 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Ecossistema</p>
-                <a
-                    href="/sso_redirect.php"
-                    className="w-full flex items-center justify-between px-6 py-3 rounded-full text-violet-500 bg-violet-50 border border-violet-100 hover:bg-violet-100 transition-all duration-300 group mb-1"
-                >
-                    <div className="flex items-center gap-3">
-                        <MessageCircle size={20} className="text-violet-500" />
-                        <span className="text-[13px] font-bold uppercase tracking-widest">7K CHAT</span>
-                    </div>
-                    <ExternalLink size={14} className="opacity-40 group-hover:opacity-100 transition-opacity" />
-                </a>
-            </div>
-
-            {/* Logout */}
-            <div className="p-4 mt-auto border-t border-gray-100">
-                <button
-                    onClick={() => window.location.href = '../auth/logout.php'}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-all font-semibold"
-                >
-                    <LogOut size={20} />
-                    Sair da Conta
-                </button>
-            </div>
-        </aside>
+                {/* Logout */}
+                <div className={`px-3 py-3 border-t ${border}`}>
+                    <button
+                        onClick={() => window.location.href = '../auth/logout.php'}
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${isDark ? 'text-red-400 hover:bg-red-500/10' : 'text-red-500 hover:bg-red-50'}`}
+                    >
+                        <LogOut size={17} />
+                        Sair da Conta
+                    </button>
+                </div>
+            </aside>
         </>
     );
 }
