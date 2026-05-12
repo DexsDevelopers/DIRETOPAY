@@ -809,9 +809,10 @@ export default function LandingPage() {
                         <div className="space-y-4">
                             <p className="text-[11px] font-black text-gray-800 uppercase tracking-[0.2em]">Informação</p>
                             <ul className="space-y-3 text-sm text-gray-500">
-                                <li><a href="mailto:contato@lunarpay.site" className="hover:text-primary transition-colors">Suporte</a></li>
-                                <li><a href="#" className="hover:text-primary transition-colors">P. de Privacidade</a></li>
-                                <li><a href="#" className="hover:text-primary transition-colors">Termos de uso</a></li>
+                                <li><a href="/suporte.php" className="hover:text-primary transition-colors">Suporte</a></li>
+                                <li><a href="/privacidade.php" className="hover:text-primary transition-colors">Pol. de Privacidade</a></li>
+                                <li><a href="/termos.php" className="hover:text-primary transition-colors">Termos de Uso</a></li>
+                                <li><a href="/sobre.php" className="hover:text-primary transition-colors">Sobre Nós</a></li>
                                 <li><Link to="/docs" className="hover:text-primary transition-colors">API Docs</Link></li>
                             </ul>
                         </div>
@@ -837,7 +838,7 @@ export default function LandingPage() {
 
                     {/* Bottom bar */}
                     <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-100 pt-6 gap-3">
-                        <p className="text-gray-400 text-sm">© 2025 LunarPay.</p>
+                        <p className="text-gray-400 text-sm">© 2026 LunarPay · CNPJ [CNPJ]</p>
                         <Link to="/register" className="text-sm text-gray-400 hover:text-primary transition-colors font-medium">Criar Conta LunarPay →</Link>
                     </div>
                 </div>

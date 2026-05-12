@@ -15,7 +15,7 @@ $user = $stmt->fetch();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>Ghost Pix - Suporte & FAQ</title>
+    <title>Suporte & FAQ - LunarPay</title>
     <link rel="icon" type="image/png" href="logo_lunarpay.png">
     <link rel="stylesheet" href="style.css?v=125.0">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -58,43 +58,53 @@ $user = $stmt->fetch();
                         </div>
                     </div>
                     <p style="color: var(--text-2); line-height: 1.7; margin-bottom: 1rem; font-size: 0.95rem;">
-                        O **Ghost Pix** começou como uma solução de pagamentos focada 100% em **privacidade e segurança anti-rastreio**. Nossa plataforma foi originalmente projetada considerando o cenário atual onde muitas pessoas precisam **fugir de bloqueios judiciais, taxações abusivas ou apenas preservar seu patrimônio de forma totalmente anônima**.
+                        A <strong>LunarPay</strong> é uma plataforma de intermediação de pagamentos digitais que permite a vendedores e empreendedores gerenciar cobranças via Pix, criar checkouts personalizados, vender produtos digitais e físicos, e acompanhar suas finanças em tempo real.
                     </p>
                     <p style="color: var(--text-2); line-height: 1.7; font-size: 0.95rem;">
-                        Asseguramos proteção completa da sua identidade e movimentação sem rastros corporativos, garantindo que você tenha o **controle total do seu dinheiro**.
+                        Nossa missão é simplificar os recebimentos online, com tecnologia robusta, suporte humanizado e conformidade total com a legislação brasileira.
                     </p>
                 </div>
 
                 <h3>Perguntas Frequentes (FAQ)</h3>
                 
                 <div class="faq-item">
-                    <div class="faq-question">Como funciona a geração de Pix? <i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">Basta inserir o valor desejado no Dashboard e clicar em "Gerar QR Code". O sistema criará um Pix dinâmico com expiração de 20 minutos. Assim que o pagamento for concluído, o saldo cairá na sua conta Ghost Pix.</div>
+                    <div class="faq-question">Como funciona a geração de cobranças via Pix? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">Acesse o Dashboard e clique em "Gerar Cobrança". Defina o valor, e o sistema criará um QR Code Pix dinâmico com validade de 20 minutos. Assim que o pagamento for confirmado, o valor é creditado automaticamente no seu saldo LunarPay.</div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">O recebimento é realmente anônimo? <i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">Sim! Priorizamos o sigilo. Quem faz o pagamento do Pix gerado por você, não verá os seus dados pessoais diretos nem cruzamentos com seu CPF. Usamos contas de liquidação parceiras terceirizadas para garantir que o dinheiro chegue até você de forma limpa e sem amarras judiciais.</div>
+                    <div class="faq-question">Como criar um checkout de vendas? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">No menu lateral, acesse "Vendas" → "Criar Checkout". Você pode personalizar cores, imagens, textos, campos do comprador, pixel de rastreamento e muito mais. Após salvar, você receberá um link único para divulgar aos seus clientes.</div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">Posso usar a plataforma para fugir de problemas com fisco/bloqueios? <i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">O Ghost Pix foi construído pensando na blindagem de patrimônio e fluxos de caixa paralelos. Entendemos a necessidade de operar sem a supervisão do Banco Central ou congelamentos de BACENJUD. Nós provemos as ferramentas para você fazer isso com segurança.</div>
+                    <div class="faq-question">Qual o prazo para receber meu saque? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">Os saques são processados em até 2 dias úteis após a solicitação. O valor é transferido para a chave Pix cadastrada no seu perfil. Certifique-se de que sua chave está correta em Configurações → Dados Financeiros.</div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">Qual o prazo e como é feito o saque? <i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">O seu saldo Ghost Pix fica protegido conosco. Quando você solicitar o saque, a transferência será realizada por contas blindadas da nossa própria base de liquidez, em até 2 dias úteis, despistando qualquer análise na sua conta bancária de destino final.</div>
+                    <div class="faq-question">Por que meu Pix expirou ou foi rejeitado? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">Cada QR Code gerado tem validade de 20 minutos por segurança do sistema. Se o pagador demorar além desse prazo, basta gerar uma nova cobrança com o mesmo valor. Em caso de rejeição pelo banco, peça ao pagador que tente novamente ou use outro banco.</div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">Por que meu Pix foi rejeitado ou expirou? <i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">Para garantir que a liquidação não deixe rastros e funcione via nosso proxy, cada chave copia e cola tem validade rigorosa de 20 minutos. Passado esse tempo, o intermediário descarta a cobrança para evitar falhas de conciliação. Em caso de expiração, basta gerar um novo QR Code idêntico.</div>
+                    <div class="faq-question">Como configurar minha chave Pix para saques? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">Acesse o menu "Configurações" no painel lateral. Na seção "Dados Financeiros", insira sua chave Pix (CPF, e-mail, telefone ou chave aleatória). Essa chave será usada exclusivamente para o recebimento dos seus saques.</div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">Como configurar minha chave Pix? <i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">Acesse o menu "Perfil" no painel lateral. Lá você poderá atualizar seu nome e sua chave Pix para recebimento de saques. Certifique-se de que a chave está correta para evitar atrasos.</div>
+                    <div class="faq-question">Posso vender produtos físicos e digitais? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">Sim! A LunarPay suporta ambos os tipos. Para produtos digitais, você pode configurar entrega automática por e-mail ou link após o pagamento. Para produtos físicos, é possível coletar endereço de entrega no checkout.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">A plataforma tem integração com API? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">Sim! Disponibilizamos uma API REST completa para integrar cobranças, consultar transações e receber webhooks de pagamento em tempo real. Acesse a documentação completa em Configurações → API Docs.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Como funciona o programa de afiliados? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">No menu "Afiliado", você pode se cadastrar para promover produtos de outros vendedores e ganhar comissões por cada venda realizada através do seu link. As comissões são creditadas automaticamente no seu saldo.</div>
                 </div>
 
                 <div class="card" style="margin-top: 3rem; text-align: center;">
