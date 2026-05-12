@@ -152,6 +152,10 @@
                 <span class="info-value">https://lunarpay.site</span>
             </div>
             <div class="info-row">
+                <span class="info-label">Instagram</span>
+                <span class="info-value"><a href="https://instagram.com/user.lunarpay" target="_blank" style="color:#C0006A; text-decoration:none;">@user.lunarpay</a></span>
+            </div>
+            <div class="info-row">
                 <span class="info-label">Horário Suporte</span>
                 <span class="info-value">Segunda a Sexta, das 9h às 18h (horário de Brasília)</span>
             </div>
@@ -172,6 +176,13 @@
                 <div>
                     <div class="contact-title">E-mail Geral</div>
                     <div class="contact-sub">contato@lunarpay.site</div>
+                </div>
+            </a>
+            <a href="https://instagram.com/user.lunarpay" target="_blank" rel="noopener noreferrer" class="contact-card">
+                <div class="contact-icon">📸</div>
+                <div>
+                    <div class="contact-title">Instagram</div>
+                    <div class="contact-sub">@user.lunarpay</div>
                 </div>
             </a>
             <a href="mailto:privacidade@lunarpay.site" class="contact-card">
