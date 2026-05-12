@@ -139,13 +139,13 @@ if ($autoPassword) {
         $mail->SMTPAuth   = true;
         $mail->Username   = MAIL_USER;
         $mail->Password   = MAIL_PASS;
-        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->SMTPSecure = 'ssl';
         $mail->Port       = MAIL_PORT;
         $mail->CharSet    = 'UTF-8';
         $mail->setFrom(MAIL_USER, MAIL_FROM_NAME);
         $mail->addAddress($customerEmail, $customerName);
-        $mail->Subject = 'Seu acesso Ghost Pix está pronto!';
-        $mail->Body    = "Olá $customerName!\n\nSua compra foi confirmada. Acesse a plataforma:\n\n🌐 https://pixghost.site\n📧 E-mail: $customerEmail\n🔑 Senha: $autoPassword\n\nConfigure sua chave PIX e comece a usar!\n\nEquipe Ghost Pix";
+        $mail->Subject = 'Seu acesso LunarPay está pronto!';
+        $mail->Body    = "Olá $customerName!\n\nSua compra foi confirmada. Acesse a plataforma:\n\n🌐 https://lunarpay.site\n📧 E-mail: $customerEmail\n🔑 Senha: $autoPassword\n\nConfigure sua chave PIX e comece a usar!\n\nEquipe LunarPay";
         $mail->send();
     } catch (Exception $e) {
         error_log("cakto_webhook: email failed - " . $e->getMessage());
