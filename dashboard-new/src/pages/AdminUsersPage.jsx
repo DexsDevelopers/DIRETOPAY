@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     Users, Search, CreditCard, KeyRound, Eye, EyeOff,
     CheckCircle, XCircle, Zap, AlertTriangle, RefreshCw,
-    Wallet, Save, ShieldCheck, UserCheck, UserX, Clock
+    Wallet, Save, ShieldCheck, UserCheck, UserX, Clock, Copy, Check
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../lib/utils';
@@ -16,6 +16,30 @@ const WA_SVG = (
         <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.857L.057 23.857l6.164-1.616A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.364l-.359-.214-3.721.975.994-3.626-.234-.373A9.818 9.818 0 012.182 12C2.182 6.575 6.575 2.182 12 2.182S21.818 6.575 21.818 12 17.425 21.818 12 21.818z" />
     </svg>
 );
+
+function CopyWA({ number }) {
+    const [copied, setCopied] = useState(false);
+    const raw = (number || '').replace(/\D/g, '');
+    const handleCopy = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigator.clipboard.writeText(raw);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+    };
+    return (
+        <button
+            onClick={handleCopy}
+            title="Copiar número"
+            className={cn(
+                "shrink-0 p-1 rounded-md transition-all",
+                copied ? 'text-emerald-400' : 'text-gray-400 hover:text-green-400'
+            )}
+        >
+            {copied ? <Check size={11} /> : <Copy size={11} />}
+        </button>
+    );
+}
 
 function fmtWA(raw) {
     const n = (raw || '').replace(/\D/g, '');
@@ -223,9 +247,12 @@ export default function AdminUsersPage() {
                                     user.crypto_address && <span className="text-[11px] text-gray-500 font-mono bg-gray-50 px-2.5 py-1 rounded-lg truncate max-w-[60%]">{user.crypto_address}</span>
                                 )}
                                 {user.whatsapp && (
-                                    <a href={`https://wa.me/55${user.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[11px] font-bold text-green-400 bg-green-500/5 px-2.5 py-1 rounded-lg ml-auto shrink-0">
-                                        {WA_SVG} {fmtWA(user.whatsapp)}
-                                    </a>
+                                    <div className="flex items-center gap-1 ml-auto shrink-0">
+                                        <a href={`https://wa.me/55${user.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[11px] font-bold text-green-400 bg-green-500/5 px-2.5 py-1 rounded-lg">
+                                            {WA_SVG} {fmtWA(user.whatsapp)}
+                                        </a>
+                                        <CopyWA number={user.whatsapp} />
+                                    </div>
                                 )}
                             </div>
 
@@ -292,9 +319,12 @@ export default function AdminUsersPage() {
                                                 </span>
                                             )}
                                             {user.whatsapp ? (
-                                                <a href={`https://wa.me/55${user.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 w-fit text-[11px] font-bold text-green-400 hover:text-green-300 transition-colors">
-                                                    {WA_SVG} {fmtWA(user.whatsapp)}
-                                                </a>
+                                                <div className="flex items-center gap-1">
+                                                    <a href={`https://wa.me/55${user.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-[11px] font-bold text-green-400 hover:text-green-300 transition-colors">
+                                                        {WA_SVG} {fmtWA(user.whatsapp)}
+                                                    </a>
+                                                    <CopyWA number={user.whatsapp} />
+                                                </div>
                                             ) : (
                                                 <span className="text-[10px] text-gray-300 italic">sem whatsapp</span>
                                             )}
