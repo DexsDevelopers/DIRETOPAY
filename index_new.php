@@ -1542,7 +1542,7 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
                 <a href="auth/register.php" class="btn-final btn-final-primary">
                     <i class="fas fa-ghost"></i> Cadastrar-se Agora
                 </a>
-                <a href="https://wa.me/" class="btn-final btn-final-outline" target="_blank">
+                <a href="https://wa.me/5511998627674" class="btn-final btn-final-outline" target="_blank">
                     <i class="fab fa-whatsapp"></i> Falar com Gerente
                 </a>
             </div>

@@ -107,7 +107,7 @@ $user = $stmt->fetch();
                     <p style="color: var(--text-2); margin-bottom: 1.5rem; font-size: 0.95rem;">Fale diretamente com nossa equipe de suporte humano.</p>
                     
                     <div class="support-contact-grid">
-                        <a href="https://wa.me/5551996148568" target="_blank" class="contact-method">
+                        <a href="https://wa.me/5511998627674" target="_blank" class="contact-method">
                             <i class="fab fa-whatsapp"></i>
                             <h4 style="margin-bottom: 0.3rem;">WhatsApp</h4>
                             <p style="font-size: 0.8rem; color: var(--text-2);">Atendimento Instantâneo</p>
