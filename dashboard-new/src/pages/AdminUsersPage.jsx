@@ -110,7 +110,7 @@ export default function AdminUsersPage() {
                         <Users className="text-primary" size={36} />
                         Gestão de <span className="text-primary">Usuários</span>
                     </h1>
-                    <p className="text-gray-500 font-medium">Aprovações, saldos, taxas, permissões e saques.</p>
+                    <p className="text-gray-500 font-medium">Aprovações, saldos, permissões e saques.</p>
                 </div>
                 <button
                     onClick={fetchAdminData}
@@ -215,17 +215,6 @@ export default function AdminUsersPage() {
                                         />
                                     </div>
                                 </div>
-                                <div className="bg-gray-50 rounded-xl px-3 py-2 text-center">
-                                    <span className="text-[9px] text-gray-400 font-bold uppercase block mb-0.5">Taxa</span>
-                                    <div className="flex items-center justify-center gap-0.5">
-                                        <input
-                                            type="number" step="0.1" defaultValue={user.commission_rate}
-                                            onBlur={e => parseFloat(e.target.value) !== parseFloat(user.commission_rate) && handleAction('update_user_field', { user_id: user.id, field: 'commission_rate', value: e.target.value })}
-                                            className="bg-transparent text-sm font-black text-purple-500 w-10 text-center focus:outline-none"
-                                        />
-                                        <span className="text-[10px] text-purple-500/60 font-bold">%</span>
-                                    </div>
-                                </div>
                                 <div className="bg-gray-50 rounded-xl px-3 py-2 text-center flex flex-col items-center justify-center">
                                     <span className="text-[9px] text-gray-400 font-bold uppercase block mb-0.5">Método</span>
                                     <span className={cn(
@@ -276,7 +265,6 @@ export default function AdminUsersPage() {
                                 <th className="p-6 pl-10 text-[10px] font-black text-gray-400 uppercase tracking-widest">ID / Usuário</th>
                                 <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">E-mail / Pix / WhatsApp</th>
                                 <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Saldo</th>
-                                <th className="p-6 text-[10px] font-black text-purple-500 uppercase tracking-widest text-center">Taxa (%)</th>
                                 <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Status</th>
                                 <th className="p-6 pr-10 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Ações</th>
                             </tr>
@@ -340,15 +328,6 @@ export default function AdminUsersPage() {
                                                     className="bg-transparent border-none text-sm font-black text-gray-900 w-20 text-center focus:outline-none"
                                                 />
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td className="p-6">
-                                        <div className="flex justify-center">
-                                            <input
-                                                type="number" step="0.1" defaultValue={user.commission_rate}
-                                                onBlur={e => parseFloat(e.target.value) !== parseFloat(user.commission_rate) && handleAction('update_user_field', { user_id: user.id, field: 'commission_rate', value: e.target.value })}
-                                                className="bg-purple-500/5 border border-purple-500/20 rounded-xl px-2 py-2 text-purple-500 font-black text-center w-16 focus:outline-none focus:bg-purple-500/10 transition-all"
-                                            />
                                         </div>
                                     </td>
                                     <td className="p-6">
