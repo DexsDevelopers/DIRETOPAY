@@ -53,7 +53,7 @@ try {
 }
 
 // Montar link de reset
-$resetLink = "https://" . $_SERVER['HTTP_HOST'] . "/auth/reset_password.php?token=" . $token;
+$resetLink = get_trusted_base_url() . "/auth/reset_password.php?token=" . $token;
 
 // Enviar email
 $emailBody = "

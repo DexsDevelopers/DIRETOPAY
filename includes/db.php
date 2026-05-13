@@ -561,7 +561,7 @@ class Response {
  */
 function getFullUrl($path = '') {
     $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
-    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $host = $_SERVER['SERVER_NAME'] ?? ($_SERVER['HTTP_HOST'] ?? 'localhost');
     
     // dirname($_SERVER['PHP_SELF']) pode retornar '\' em Windows ou '/' em Linux no root.
     // Uniformizamos para '/' e removemos barras extras.

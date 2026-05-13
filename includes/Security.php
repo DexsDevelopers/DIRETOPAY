@@ -36,6 +36,59 @@ function send_security_headers(): void {
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
+// 1b. HOST HEADER INJECTION — usa SERVER_NAME (controlado pelo servidor) em vez
+//     de HTTP_HOST (controlado pelo cliente) para construir URLs em emails/links
+// ──────────────────────────────────────────────────────────────────────────────
+function get_trusted_host(): string {
+    // SERVER_NAME é definido pelo servidor web (nginx/apache), não pelo cliente
+    $host = $_SERVER['SERVER_NAME'] ?? '';
+    if (empty($host)) {
+        // Fallback: valida HTTP_HOST contra uma whitelist se SERVER_NAME não estiver disponível
+        $httpHost = strtolower(preg_replace('/[^a-zA-Z0-9.\-:]/', '', $_SERVER['HTTP_HOST'] ?? ''));
+        // Remove porta se presente
+        $httpHost = preg_replace('/:\d+$/', '', $httpHost);
+        $host = $httpHost ?: 'localhost';
+    }
+    return $host;
+}
+
+function get_trusted_base_url(): string {
+    $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+             || ($_SERVER['SERVER_PORT'] ?? 80) == 443;
+    return ($isSecure ? 'https' : 'http') . '://' . get_trusted_host();
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// 1c. IP REAL — usa REMOTE_ADDR (nunca X-Forwarded-For diretamente, spoofável)
+//     Só confia em X-Forwarded-For se vier de proxy reverso confiável
+// ──────────────────────────────────────────────────────────────────────────────
+function get_real_ip(): string {
+    // IPs de proxies reversos confiáveis (Cloudflare, servidor próprio, etc.)
+    // Ajuste conforme seu ambiente
+    $trustedProxies = ['127.0.0.1', '::1'];
+
+    $remoteAddr = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+
+    // Só processa X-Forwarded-For se a requisição vem de proxy confiável
+    if (in_array($remoteAddr, $trustedProxies, true)) {
+        $forwarded = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '';
+        if (!empty($forwarded)) {
+            $ips = array_map('trim', explode(',', $forwarded));
+            $clientIp = $ips[0]; // Primeiro IP = cliente real
+            if (filter_var($clientIp, FILTER_VALIDATE_IP)) {
+                return $clientIp;
+            }
+        }
+        $cfIp = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? ''; // Cloudflare
+        if (!empty($cfIp) && filter_var($cfIp, FILTER_VALIDATE_IP)) {
+            return $cfIp;
+        }
+    }
+
+    return $remoteAddr;
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
 // 2. SESSION FIXATION — regenera ID ao autenticar
 // ──────────────────────────────────────────────────────────────────────────────
 function secure_session_login(array $user): void {

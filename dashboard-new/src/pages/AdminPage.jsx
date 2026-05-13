@@ -18,8 +18,6 @@ import {
     Trash2,
     RefreshCw,
     KeyRound,
-    Eye,
-    EyeOff,
     UserCheck,
     UserX,
     Clock,
@@ -28,10 +26,7 @@ import {
     Activity,
     CalendarDays,
     CalendarRange,
-    BarChart3,
-    Plug,
-    Link2,
-    ShoppingCart
+    BarChart3
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -71,27 +66,6 @@ export default function AdminPage() {
         default_tax: 8
     });
 
-    const medusaFees = {
-        base: { percent: 8.99, fixed: 5.99 },
-        installments: { 2: 20, 3: 23, 4: 28, 5: 33, 6: 38, 7: 44, 8: 47, 9: 52, 10: 55, 11: 57, 12: 61 }
-    };
-    const [cardExtraFee, setCardExtraFee] = useState(0);
-    const [cardFeesSaving, setCardFeesSaving] = useState(false);
-
-    const [pixgoEnabled, setPixgoEnabled] = useState(true);
-    const [pixgoToggling, setPixgoToggling] = useState(false);
-
-    const [sigiloForm, setSigiloForm] = useState({ public_key: '', secret_key: '' });
-    const [sigiloEnabled, setSigiloEnabled] = useState(false);
-    const [sigiloSaving, setSigiloSaving] = useState(false);
-    const [sigiloStatus, setSigiloStatus] = useState(null);
-    const [showSigiloSecret, setShowSigiloSecret] = useState(false);
-
-    const [caktoForm, setCaktoForm] = useState({ client_id: '', client_secret: '' });
-    const [caktoStatus, setCaktoStatus] = useState(null);
-    const [caktoLoading, setCaktoLoading] = useState(false);
-    const [showCaktoSecret, setShowCaktoSecret] = useState(false);
-
     const [showDemoModal, setShowDemoModal]     = useState(false);
     const [showNormalModal, setShowNormalModal] = useState(false);
 
@@ -105,19 +79,6 @@ export default function AdminPage() {
                     affiliate_rate: data.stats.affiliate_rate,
                     default_tax: data.stats.default_tax
                 });
-                if (data.card_extra_fee !== undefined) setCardExtraFee(data.card_extra_fee);
-                if (data.pixgo_enabled !== undefined) setPixgoEnabled(data.pixgo_enabled === 1);
-                if (data.sigilopay) {
-                    setSigiloEnabled(data.sigilopay.enabled);
-                    setSigiloForm(f => ({ ...f, public_key: data.sigilopay.public_key || '' }));
-                    if (data.sigilopay.enabled) setSigiloStatus({ ok: true });
-                }
-                if (data.cakto) {
-                    setCaktoForm(f => ({ ...f, client_id: data.cakto.client_id || '' }));
-                    if (data.cakto.webhook_id) {
-                        setCaktoStatus({ ok: true, webhook_id: data.cakto.webhook_id, token_expiry: data.cakto.token_expiry });
-                    }
-                }
             } else {
                 setError(data.error || 'Erro ao carregar dados admin');
             }
@@ -285,7 +246,7 @@ export default function AdminPage() {
                         </div>
                         <div>
                             <p className="font-black text-sm text-gray-900">Gerencie todos os gateways</p>
-                            <p className="text-[11px] text-gray-400">SigiloPay · PixGo · Cakto</p>
+                            <p className="text-[11px] text-gray-400">SigiloPay</p>
                         </div>
                     </div>
                     <a href="/admin/gateways" className="bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 px-5 py-2.5 rounded-2xl font-black text-sm flex items-center gap-2 transition-all active:scale-95">
@@ -294,78 +255,6 @@ export default function AdminPage() {
                 </div>
             </div>
 
-            {/* ── Taxas Cartão de Crédito ── */}
-            <div className="bg-white border border-gray-100 shadow-sm rounded-3xl p-6">
-                <div className="flex items-center justify-between mb-5">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-blue-500/10 rounded-2xl flex items-center justify-center">
-                            <CreditCard size={20} className="text-blue-400" />
-                        </div>
-                        <div>
-                            <h2 className="font-black text-base">Taxas Cartão de Crédito</h2>
-                            <p className="text-[11px] text-gray-400 font-medium">MedusaPay (fixas) + Taxa extra da plataforma</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Taxa extra da plataforma - EDITÁVEL */}
-                <div className="bg-primary/5 border border-primary/20 rounded-2xl p-5 mb-5">
-                    <div className="flex flex-wrap items-center gap-4">
-                        <div>
-                            <label className="text-[10px] font-black text-primary uppercase tracking-widest block mb-1.5">Taxa Extra da Plataforma</label>
-                            <p className="text-[11px] text-gray-400">Cobrada acima das taxas MedusaPay em cada venda por cartão</p>
-                        </div>
-                        <div className="flex items-center gap-2 ml-auto">
-                            <div className="flex items-center gap-1 bg-gray-50 border border-primary/30 rounded-xl px-4 py-2.5">
-                                <input type="number" step="0.1" value={cardExtraFee}
-                                    onChange={e => setCardExtraFee(parseFloat(e.target.value) || 0)}
-                                    className="bg-transparent border-none text-primary font-black text-xl w-16 focus:outline-none" />
-                                <span className="text-primary/60 text-sm font-bold">%</span>
-                            </div>
-                            <button
-                                onClick={async () => {
-                                    setCardFeesSaving(true);
-                                    try {
-                                        const fd = new FormData();
-                                        fd.append('action', 'update_card_extra_fee');
-                                        fd.append('card_extra_fee', cardExtraFee);
-                                        const r = await fetch('../admin_actions.php', { method: 'POST', body: fd });
-                                        const d = await r.json();
-                                        if (!d.success) alert(d.error || 'Erro');
-                                    } catch { alert('Erro de conexão'); }
-                                    finally { setCardFeesSaving(false); }
-                                }}
-                                disabled={cardFeesSaving}
-                                className="bg-primary text-white px-4 py-2.5 rounded-xl font-black text-sm flex items-center gap-2 hover:opacity-90 transition-all active:scale-95 disabled:opacity-50"
-                            >
-                                <Save size={16} /> {cardFeesSaving ? '...' : 'Salvar'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Taxas MedusaPay - SOMENTE LEITURA */}
-                <div className="opacity-60">
-                    <div className="flex items-center gap-2 mb-3">
-                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Taxas MedusaPay (fixas)</label>
-                        <span className="text-[9px] bg-gray-100 text-gray-400 px-2 py-0.5 rounded-full font-bold">somente leitura</span>
-                    </div>
-                    <div className="flex flex-wrap gap-3 mb-4">
-                        <div className="bg-gray-50 border border-gray-100 rounded-xl px-4 py-2">
-                            <span className="text-[10px] text-gray-400 font-bold block">À vista</span>
-                            <span className="text-gray-600 font-bold text-sm">{medusaFees.base.percent}% + R$ {medusaFees.base.fixed.toFixed(2).replace('.', ',')}</span>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-11 gap-2">
-                        {Object.entries(medusaFees.installments).map(([n, rate]) => (
-                            <div key={n} className="bg-gray-50 border border-gray-100 rounded-xl p-2 text-center">
-                                <p className="text-[9px] font-black text-gray-400">{n}x</p>
-                                <p className="text-gray-600 font-black text-sm">{rate}%</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
 
             {/* ── Dashboard de Métricas ── */}
             {adminData && (() => {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Zap, ShoppingCart, Shield, Eye, EyeOff, RefreshCw,
-    CheckCircle, XCircle, Link2, ChevronDown, ChevronUp,
-    Wifi, WifiOff, AlertCircle, Copy, Check
+    Shield, Eye, EyeOff, RefreshCw,
+    CheckCircle, Link2, ChevronDown, ChevronUp,
+    Wifi, AlertCircle, Copy, Check
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -214,20 +214,18 @@ export default function AdminGatewaysPage() {
         </div>
     );
 
-    const pixgoEnabled  = gateways?.pixgo_enabled === 1;
     const sigiloEnabled = gateways?.sigilopay?.enabled === true;
-    const caktoEnabled  = !!(gateways?.cakto?.webhook_id);
-    const activeCount   = [pixgoEnabled, sigiloEnabled, caktoEnabled].filter(Boolean).length;
+    const activeCount   = sigiloEnabled ? 1 : 0;
 
     const gatewayDefs = [
         {
             id: 'sigilopay',
             name: 'SigiloPay',
-            description: 'Gateway PIX com saque D+0 automático e privacidade total',
+            description: 'Gateway PIX principal — recebimento instantâneo com webhook automático',
             color: 'blue',
             Icon: Shield,
             enabled: sigiloEnabled,
-            webhookUrl: 'pixghost.site/sigilopay_webhook.php',
+            webhookUrl: 'lunarpay.site/sigilopay_webhook.php',
             hasForm: true,
             saveAction: 'save_sigilopay',
             enabledKey: 'sigilopay_enabled',
@@ -236,43 +234,8 @@ export default function AdminGatewaysPage() {
                 sigilopay_secret_key: '',
             },
             fields: [
-                { key: 'sigilopay_public_key', label: 'Public Key (Client ID)', placeholder: 'empresatokio_...', secret: false },
+                { key: 'sigilopay_public_key', label: 'Public Key (Client ID)', placeholder: 'pk_...', secret: false },
                 { key: 'sigilopay_secret_key', label: 'Secret Key (Client Secret)', placeholder: '••••••••••••••••', secret: true },
-            ],
-        },
-        {
-            id: 'pixgo',
-            name: 'PixGo',
-            description: 'Gateway PIX original da plataforma',
-            color: 'primary',
-            Icon: Zap,
-            enabled: pixgoEnabled,
-            webhookUrl: 'pixghost.site/webhook.php',
-            hasForm: false,
-            toggleAction: 'toggle_pixgo',
-            saveAction: 'toggle_pixgo',
-            enabledKey: 'enabled',
-            initialForm: {},
-            fields: [],
-        },
-        {
-            id: 'cakto',
-            name: 'Cakto',
-            description: 'Marketplace externo — credita saldo ao receber purchase_approved',
-            color: 'green',
-            Icon: ShoppingCart,
-            enabled: caktoEnabled,
-            webhookUrl: 'pixghost.site/cakto_webhook.php',
-            hasForm: true,
-            saveAction: 'setup_cakto_webhook',
-            enabledKey: 'cakto_enabled',
-            initialForm: {
-                client_id: gateways?.cakto?.client_id || '',
-                client_secret: '',
-            },
-            fields: [
-                { key: 'client_id',     label: 'Client ID',     placeholder: 'GMNzed...', secret: false },
-                { key: 'client_secret', label: 'Client Secret', placeholder: '••••••••••••••••', secret: true },
             ],
         },
     ];
@@ -287,10 +250,9 @@ export default function AdminGatewaysPage() {
                     <p className="text-sm text-gray-500 font-medium mt-1">Configure e ative os gateways da plataforma</p>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2.5">
-                    <Wifi size={15} className={activeCount > 0 ? 'text-green-500' : 'text-gray-300'} />
-                    <span className="text-sm font-black">
-                        <span className={activeCount > 0 ? 'text-green-500' : 'text-gray-400'}>{activeCount}</span>
-                        <span className="text-gray-400"> / {gatewayDefs.length} ativos</span>
+                    <Wifi size={15} className={sigiloEnabled ? 'text-green-500' : 'text-gray-300'} />
+                    <span className={`text-sm font-black ${sigiloEnabled ? 'text-green-500' : 'text-gray-400'}`}>
+                        {sigiloEnabled ? '● ONLINE' : '○ OFFLINE'}
                     </span>
                 </div>
             </div>
@@ -299,8 +261,8 @@ export default function AdminGatewaysPage() {
             <div className="bg-blue-500/5 border border-blue-500/15 rounded-2xl px-4 py-3 flex items-start gap-3">
                 <AlertCircle size={15} className="text-blue-400 flex-shrink-0 mt-0.5" />
                 <p className="text-[12px] text-blue-300/70 font-medium leading-relaxed">
-                    Para gerar PIX: ative <strong>SigiloPay</strong> ou <strong>PixGo</strong> (SigiloPay tem prioridade quando ambos estão ativos e o PixGo está desativado).
-                    A <strong>Cakto</strong> é um marketplace externo — não gera PIX, apenas notifica quando há venda.
+                    Insira as credenciais da <strong>SigiloPay</strong> e ative o gateway para começar a receber pagamentos via PIX.
+                    O webhook de retorno é configurado automaticamente.
                 </p>
             </div>
 

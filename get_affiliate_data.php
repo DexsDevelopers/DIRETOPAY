@@ -22,7 +22,7 @@ if (!$user) {
 }
 
 $refToken = $user['referral_token'] ?? '';
-$refLink = "https://" . $_SERVER['HTTP_HOST'] . "/register?ref=" . $refToken;
+$refLink = get_trusted_base_url() . "/register?ref=" . $refToken;
 
 // Taxa de comissão de afiliado
 $affRateStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'affiliate_commission_rate'");

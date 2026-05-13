@@ -42,7 +42,7 @@ try {
     $stmt->execute([$userId]);
     $user = $stmt->fetch();
 } catch (PDOException $e) {
-    echo json_encode(['error' => 'Erro de Banco de Dados: Colunas faltando. Por favor, execute a migração acessando ' . (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]/migrate_v2.php"]);
+    echo json_encode(['error' => 'Erro interno do sistema. Contate o suporte.']);
     exit;
 }
 

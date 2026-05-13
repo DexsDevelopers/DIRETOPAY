@@ -18,8 +18,7 @@ if (!$sellerId || !in_array($event, ['store_visit', 'cart_abandoned'], true)) {
 }
 
 try {
-    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
-    $ip = explode(',', $ip)[0];
+    $ip = get_real_ip();
 
     if ($event === 'store_visit') {
         // Limitar: 1 notificação por IP por loja por hora

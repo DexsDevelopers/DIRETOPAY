@@ -315,13 +315,11 @@ try {
             break;
 
         case 'toggle_pixgo':
-            $enabled = (int)($data['enabled'] ?? 0);
-            $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES ('pixgo_enabled',?) ON DUPLICATE KEY UPDATE `value`=?")
-                ->execute([$enabled, $enabled]);
-            echo json_encode(['success' => true, 'pixgo_enabled' => $enabled]);
+        case 'setup_cakto_webhook':
+            echo json_encode(['success' => false, 'error' => 'Gateway removido. Apenas SigiloPay é suportado.']);
             break;
 
-        case 'setup_cakto_webhook':
+        case '_setup_cakto_webhook_DISABLED':
             $clientId     = trim($data['client_id'] ?? '');
             $clientSecret = trim($data['client_secret'] ?? '');
             if (!$clientId || !$clientSecret) {
@@ -385,7 +383,6 @@ try {
                 $upsert->execute(['cakto_webhook_secret',  $webhookSecret,     $webhookSecret]);
                 echo json_encode(['success' => true, 'webhook_id' => $webhookId, 'webhook_url' => $webhookUrl]);
             } else {
-                // Credentials valid but webhook registration may have already existed
                 $upsert->execute(['cakto_webhook_id',    '', '']);
                 echo json_encode(['success' => true, 'warning' => 'Credenciais salvas. Webhook: ' . ($whData['detail'] ?? $whResult), 'token_ok' => true]);
             }

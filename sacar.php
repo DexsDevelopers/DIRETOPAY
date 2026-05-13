@@ -18,7 +18,7 @@ try {
     $pendingTotal = (float)$stmtP->fetchColumn();
     $availableBalance = (float)$user['balance'] - $pendingTotal;
 } catch (PDOException $e) {
-    die("Erro no Banco de Dados: " . $e->getMessage() . " <br><br>Certifique-se de acessar <b>" . (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]/migrate_v2.php</b> para atualizar o sistema.");
+    die("Erro interno do sistema. Contate o suporte.");
 }
 ?>
 <!DOCTYPE html>

@@ -95,41 +95,16 @@ try {
         $val = $s->fetchColumn();
         return ($val === false) ? '' : (string)$val;
     };
-    $pixgoRaw        = $getSetting('pixgo_enabled');
-    $pixgoEnabled    = ($pixgoRaw === '') ? 1 : (int)$pixgoRaw;
     $sigiloEnabled   = $getSetting('sigilopay_enabled') === '1';
     $sigiloPublicKey = $getSetting('sigilopay_public_key');
     $sigiloSecretKey = $getSetting('sigilopay_secret_key');
-    $usePixGo        = ($pixgoEnabled === 1);
-    $useSigiloPay    = ($sigiloEnabled && $sigiloPublicKey && $sigiloSecretKey);
 
-    $currentPixGoKey = getActivePixGoKey();
-
-    // Simulation mode (sem gateway real configurado)
-    if (!$useSigiloPay && ($currentPixGoKey === 'SUA_API_KEY_AQUI' || empty($currentPixGoKey))) {
-        $pixId   = 'sim_prod_' . time();
-        $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=GHOSTPIX_PRODUCT';
-        $pixCode = '00020126360014br.gov.bcb.pix0114000000000000005204000053039865802BR5913GHOSTPIX6009SAOPAULO62070503***6304ABCD';
-
-        $pixgoFee    = $amount * 0.08 + 0.99;
-        $platformFee = $amount * ($product['commission_rate'] / 100);
-        $netAmount   = $amount - $pixgoFee - $platformFee;
-
-        saveTransaction($sellerId, $amount, $netAmount, $pixId, $pixCode, $qrImage, null, $customerName, $externalId, 'pix');
-        $txId = (int)$pdo->lastInsertId();
-        $buyerUserId = $_SESSION['user_id'] ?? null;
-        $pdo->prepare("INSERT INTO orders (product_id, seller_id, buyer_name, buyer_document, buyer_pix_key, buyer_user_id, amount, transaction_id, status, delivery_token, coupon_id, discount_amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)")
-            ->execute([$productId, $sellerId, $customerName, $customerDoc, $buyerPixKey, $buyerUserId, $amount, $txId, $deliveryToken, $couponId, $discountAmount]);
-        if ($couponId) { $pdo->prepare("UPDATE coupons SET uses_count = uses_count + 1 WHERE id = ?")->execute([$couponId]); }
-        try { TelegramService::notifyNewCharge($amount, $product['seller_name'], $txId); } catch (Throwable $e) {}
-        if (class_exists('PushService')) { try { PushService::notifyAdmins('⚡ Produto #' . $txId, 'R$ ' . number_format($amount, 2, ',', '.') . ' — ' . $product['seller_name'], 'info'); } catch (Throwable $e) {} }
-        ob_end_clean();
-        echo json_encode(['success' => true, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount, 'original_amount' => $originalAmount, 'discount_amount' => $discountAmount, 'delivery_token' => $deliveryToken]);
-        exit;
+    if (!$sigiloEnabled || !$sigiloPublicKey || !$sigiloSecretKey) {
+        throw new Exception('Gateway de pagamento não configurado. Contate o administrador.');
     }
 
     // ── GATEWAY: SigiloPay ───────────────────────────────────────────
-    if ($useSigiloPay && !$usePixGo) {
+    if (true) {
         $spPayload = [
             'identifier'  => $externalId,
             'amount'      => $amount,
@@ -188,56 +163,6 @@ try {
         }
     }
 
-    // ── GATEWAY: PixGo ───────────────────────────────────────────────
-    $data = [
-        'amount'      => $amount,
-        'description' => 'Compra: ' . mb_substr($product['name'], 0, 40),
-        'webhook_url' => getFullUrl('webhook.php'),
-        'external_id' => $externalId,
-        'payer'       => ['name' => $customerName]
-    ];
-    if ($customerDoc) $data['payer']['document'] = preg_replace('/[^0-9]/', '', $customerDoc);
-
-    $ch = curl_init('https://pixgo.org/api/v1/payment/create');
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST           => true,
-        CURLOPT_POSTFIELDS     => json_encode($data),
-        CURLOPT_HTTPHEADER     => ['x-api-key: ' . $currentPixGoKey, 'Content-Type: application/json'],
-        CURLOPT_TIMEOUT        => 30,
-    ]);
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    write_log('info', "buy_product PixGo Response: HTTP=$httpCode | " . substr($response ?: '(empty)', 0, 300));
-    if (!$response) throw new Exception('Falha na conexão com gateway.');
-
-    $res = json_decode($response, true);
-    if ($httpCode >= 200 && $httpCode < 300 && !empty($res['success'])) {
-        $pixData = $res['data'] ?? [];
-        $pixId   = $pixData['payment_id'] ?? '';
-        $qrImage = $pixData['qr_image_url'] ?? '';
-        $pixCode = $pixData['pix_code'] ?? ($pixData['payload'] ?? ($pixData['qr_code'] ?? ''));
-
-        $pixgoFee    = $amount * 0.08 + 0.99;
-        $platformFee = $amount * ($product['commission_rate'] / 100);
-        $netAmount   = $amount - $pixgoFee - $platformFee;
-
-        saveTransaction($sellerId, $amount, $netAmount, $pixId, $pixCode, $qrImage, null, $customerName, $externalId, 'pix');
-        $txId = (int)$pdo->lastInsertId();
-        $buyerUserId = $_SESSION['user_id'] ?? null;
-        $pdo->prepare("INSERT INTO orders (product_id, seller_id, buyer_name, buyer_document, buyer_pix_key, buyer_user_id, amount, transaction_id, status, delivery_token, coupon_id, discount_amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)")
-            ->execute([$productId, $sellerId, $customerName, $customerDoc, $buyerPixKey, $buyerUserId, $amount, $txId, $deliveryToken, $couponId, $discountAmount]);
-        if ($couponId) { $pdo->prepare("UPDATE coupons SET uses_count = uses_count + 1 WHERE id = ?")->execute([$couponId]); }
-        try { TelegramService::notifyNewCharge($amount, $product['seller_name'], $txId); } catch (Throwable $e) {}
-        if (class_exists('PushService')) { try { PushService::notifyAdmins('⚡ Produto #' . $txId, 'R$ ' . number_format($amount, 2, ',', '.') . ' — ' . $product['seller_name'], 'info'); } catch (Throwable $e) {} }
-        ob_end_clean();
-        echo json_encode(['success' => true, 'pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount, 'original_amount' => $originalAmount, 'discount_amount' => $discountAmount, 'delivery_token' => $deliveryToken]);
-        exit;
-    }
-
-    write_log('error', 'buy_product PixGo FALHA: HTTP=' . $httpCode . ' | ' . $response);
-    throw new Exception('Erro no gateway de pagamento.');
 
 } catch (Exception $e) {
     if (ob_get_level() > 0) ob_end_clean();

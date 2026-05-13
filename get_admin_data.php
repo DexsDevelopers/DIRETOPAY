@@ -13,9 +13,6 @@ $currentAffRate = (float)($affRateStmt->fetchColumn() ?: '10');
 $defTaxStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'default_user_tax'");
 $currentDefTax = (float)($defTaxStmt->fetchColumn() ?: '5.0');
 
-// Card extra fee (platform markup on top of MedusaPay fees)
-$cardExtraFeeStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'card_extra_fee'");
-$cardExtraFee = (float)($cardExtraFeeStmt->fetchColumn() ?: '0');
 
 $stmtProfitSales = $pdo->query("SELECT SUM((amount_brl - amount_net_brl) - (amount_brl * 0.08 + 0.99)) as total FROM transactions WHERE status = 'paid'");
 $salesProfit = (float)($stmtProfitSales->fetchColumn() ?: 0);
@@ -129,12 +126,6 @@ foreach ($rawTx as $t) {
     ];
 }
 
-// 4. APIs PixGo
-try {
-    $apis = $pdo->query("SELECT * FROM pixgo_apis ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $apis = [];
-}
 
 header('Content-Type: application/json');
 echo json_encode([
@@ -173,16 +164,8 @@ echo json_encode([
     'users'            => $users,
     'withdrawals'      => $withdrawals,
     'all_transactions' => $allTransactions,
-    'apis'             => $apis,
-    'card_extra_fee'   => $cardExtraFee,
-    'pixgo_enabled'      => (int)($pdo->query("SELECT `value` FROM settings WHERE `key`='pixgo_enabled'")->fetchColumn() ?? 1),
     'sigilopay'          => [
         'enabled'    => $pdo->query("SELECT `value` FROM settings WHERE `key`='sigilopay_enabled'")->fetchColumn() === '1',
         'public_key' => $pdo->query("SELECT `value` FROM settings WHERE `key`='sigilopay_public_key'")->fetchColumn() ?: '',
     ],
-    'cakto'            => [
-        'client_id'      => $pdo->query("SELECT `value` FROM settings WHERE `key`='cakto_client_id'")->fetchColumn() ?: '',
-        'webhook_id'     => $pdo->query("SELECT `value` FROM settings WHERE `key`='cakto_webhook_id'")->fetchColumn() ?: '',
-        'token_expiry'   => (int)($pdo->query("SELECT `value` FROM settings WHERE `key`='cakto_token_expiry'")->fetchColumn() ?: 0),
-    ]
 ]);

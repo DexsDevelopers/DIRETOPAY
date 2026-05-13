@@ -25,6 +25,19 @@ if (empty($email)) {
 try { $pdo->exec("ALTER TABLE users ADD COLUMN password_reset_token VARCHAR(64) DEFAULT NULL"); } catch (PDOException $e) {}
 try { $pdo->exec("ALTER TABLE users ADD COLUMN password_reset_expires DATETIME DEFAULT NULL"); } catch (PDOException $e) {}
 
+// ── Rate limit: máx 3 resets por IP por hora ─────────────────────
+$clientIp = get_real_ip();
+try {
+    $rlStmt = $pdo->prepare("SELECT COUNT(*) FROM login_attempts WHERE ip = ? AND email = 'pwd_reset' AND created_at >= DATE_SUB(NOW(), INTERVAL 1 HOUR)");
+    $rlStmt->execute([$clientIp]);
+    if ((int)$rlStmt->fetchColumn() >= 3) {
+        security_log('RESET_RATE_LIMIT', ['ip' => $clientIp, 'email' => $email]);
+        echo json_encode(['success' => true, 'message' => 'Se este e-mail estiver cadastrado, você receberá um link para redefinir sua senha.']);
+        exit;
+    }
+    $pdo->prepare("INSERT INTO login_attempts (ip, email) VALUES (?, 'pwd_reset')")->execute([$clientIp]);
+} catch (PDOException $e) {}
+
 // Buscar usuário
 $stmt = $pdo->prepare("SELECT id, email, full_name FROM users WHERE email = ?");
 $stmt->execute([$email]);
@@ -44,9 +57,8 @@ $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
 $pdo->prepare("UPDATE users SET password_reset_token = ?, password_reset_expires = ? WHERE id = ?")
     ->execute([$token, $expires, $user['id']]);
 
-// Montar link de reset
-$baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-$resetLink = $baseUrl . '/reset-password/' . $token;
+// Montar link de reset (get_trusted_base_url previne Host Header Injection)
+$resetLink = get_trusted_base_url() . '/reset-password/' . $token;
 
 // Enviar email
 $emailBody = "
