@@ -16,7 +16,7 @@ write_log('INFO', 'Webhook Hit Recebido', [
     'ip' => $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0'
 ]);
 
-// O PixGo V1 envia um campo 'event' e os dados em 'data'
+// Webhook de pagamento PIX
 if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['event'] === 'payment.paid')) {
     $pixData = $data['data'] ?? [];
     
@@ -26,7 +26,7 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
     // Suporte a diferentes nomes de status (completed ou paid)
     $status = $pixData['status'] ?? ($data['status'] ?? '');
     
-    // Also grab external_id sent back by PixGo (always reliable regardless of API account)
+    // external_id enviado pelo gateway
     $externalId = $pixData['external_id'] ?? ($data['external_id'] ?? '');
 
     if (($status === 'completed' || $status === 'paid' || $status === 'PAID') && (!empty($pixId) || !empty($externalId))) {
@@ -53,7 +53,7 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
     if ($transaction) {
         $pdo->beginTransaction();
         try {
-            // Tentar extrair o nome real do pagador enviado pelo PixGo
+            // Nome real do pagador
             $realPayerName = $pixData['payer']['name'] ?? ($pixData['payer_name'] ?? ($pixData['customer_name'] ?? null));
 
             // 1. Atualizar status da transação e nome do pagador (se disponível)
@@ -247,7 +247,7 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                 'timestamp' => date('Y-m-d H:i:s')
             ];
 
-            if (!empty($transaction['callback_url'])) {
+            if (!empty($transaction['callback_url']) && is_safe_external_url($transaction['callback_url'])) {
                 $ch = curl_init($transaction['callback_url']);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_POST, true);
@@ -306,7 +306,7 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
     }
 }
 
-// Retornar 200 para o PixGo não reenviar o webhook
+// Retornar 200 para o gateway não reenviar o webhook
 http_response_code(200);
 Response::json(['status' => 'received']);
 ?>

@@ -9,31 +9,31 @@ if ($isJsonRequest) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $clientIp = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+
     // Validação CSRF
     $csrfToken = $_POST['csrf_token'] ?? '';
     check_csrf($csrfToken);
 
-    $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
+    $email    = strtolower(trim(filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL)));
     $password = $_POST['password'] ?? '';
+
+    // ── Brute Force: verifica limite antes de qualquer query ──
+    if (!check_login_rate_limit($pdo, $clientIp, $email)) {
+        $wait = get_login_wait_seconds($pdo, $clientIp);
+        security_log('BRUTE_FORCE_BLOCKED', ['email' => $email]);
+        $msg = 'Muitas tentativas incorretas. Aguarde ' . ceil($wait / 60) . ' minuto(s) e tente novamente.';
+        if ($isJsonRequest) { echo json_encode(['success' => false, 'error' => $msg]); exit; }
+        header("Location: login.php?error=blocked"); exit;
+    }
 
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
-    // Debug log para diagnóstico de login
-    write_log('DEBUG', 'Tentativa de login', [
-        'email' => $email,
-        'user_found' => $user ? true : false,
-        'password_length' => strlen($password),
-        'hash_exists' => $user ? (!empty($user['password'])) : false,
-        'hash_prefix' => $user ? substr($user['password'], 0, 7) : 'N/A',
-        'verify_result' => $user ? password_verify($password, $user['password']) : false
-    ]);
-
-    // Verificar se precisa resetar a senha (antes de verificar senha)
+    // Verificar se precisa resetar a senha
     if ($user && ($user['must_reset_password'] ?? 0)) {
         if ($isJsonRequest) {
-            // Gerar token temporário para o reset
             $resetToken = bin2hex(random_bytes(16));
             $pdo->prepare("UPDATE users SET remember_token = ? WHERE id = ?")->execute([$resetToken, $user['id']]);
             echo json_encode(['success' => false, 'must_reset_password' => true, 'reset_token' => $resetToken, 'error' => 'Sua senha foi resetada. Crie uma nova senha.']);
@@ -41,55 +41,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    if ($user && password_verify($password, $user['password'])) {
-        if ($user['status'] == 'blocked') {
-            if ($isJsonRequest) {
-                echo json_encode(['success' => false, 'error' => 'Sua conta está bloqueada.']);
-                exit;
-            }
-            die("Sua conta está bloqueada.");
-        }
-        
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['email'] = $user['email'];
-        $_SESSION['full_name'] = $user['full_name'];
-        $_SESSION['is_admin'] = $user['is_admin'];
+    $passwordOk = $user && password_verify($password, $user['password']);
 
-        // Gerar token de "Lembrar-me" (Cookie de 30 dias)
+    if ($passwordOk) {
+        if ($user['status'] == 'blocked') {
+            record_login_attempt($pdo, $clientIp, $email, false);
+            if ($isJsonRequest) { echo json_encode(['success' => false, 'error' => 'Sua conta está bloqueada. Entre em contato com o suporte.']); exit; }
+            header("Location: login.php?error=blocked_account"); exit;
+        }
+
+        record_login_attempt($pdo, $clientIp, $email, true);
+
+        // ── Session Fixation: regenera o ID ANTES de gravar dados ──
+        secure_session_login($user);
+
+        // Token "Lembrar-me" (30 dias)
         $token = bin2hex(random_bytes(32));
-        $updateToken = $pdo->prepare("UPDATE users SET remember_token = ? WHERE id = ?");
-        $updateToken->execute([$token, $user['id']]);
+        $pdo->prepare("UPDATE users SET remember_token = ? WHERE id = ?")->execute([$token, $user['id']]);
         $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
         setcookie('remember_token', $token, [
-            'expires' => time() + (30 * 24 * 60 * 60),
-            'path' => '/',
-            'secure' => $isSecure,
+            'expires'  => time() + (30 * 24 * 60 * 60),
+            'path'     => '/',
+            'secure'   => $isSecure,
             'httponly' => true,
-            'samesite' => 'Lax'
+            'samesite' => 'Lax',
         ]);
-        
-        if ($isJsonRequest) {
-            echo json_encode(['success' => true]);
-            exit;
-        }
+
+        write_log('INFO', 'Login bem-sucedido', ['user_id' => $user['id'], 'ip' => $clientIp]);
+
+        if ($isJsonRequest) { echo json_encode(['success' => true]); exit; }
         redirect('../dashboard.php');
     } else {
-        // Log detalhado para diagnóstico
-        write_log('WARN', 'Login falhou', [
-            'email' => $email,
-            'user_found' => $user ? true : false,
-            'password_length' => strlen($password),
-            'stored_hash_length' => $user ? strlen($user['password']) : 0,
-            'stored_hash_prefix' => $user ? substr($user['password'], 0, 10) : 'N/A',
-            'password_verify' => $user ? password_verify($password, $user['password']) : false
-        ]);
-        if ($isJsonRequest) {
-            $errorMsg = !$user ? 'E-mail não encontrado. Verifique se digitou corretamente.' : 'Senha incorreta.';
-            echo json_encode(['success' => false, 'error' => $errorMsg]);
-            exit;
-        }
-        header("Location: login.php?error=1");
-        exit;
+        record_login_attempt($pdo, $clientIp, $email, false);
+        // Mensagem genérica: não revela se e-mail existe (anti user-enumeration)
+        write_log('WARN', 'Login falhou', ['email' => $email, 'ip' => $clientIp, 'user_found' => (bool)$user]);
+        $msg = 'E-mail ou senha incorretos.';
+        if ($isJsonRequest) { echo json_encode(['success' => false, 'error' => $msg]); exit; }
+        header("Location: login.php?error=1"); exit;
     }
 }
 ?>

@@ -1,4 +1,11 @@
 <?php
+require_once __DIR__ . '/Security.php';
+
+// Protections que rodam em TODA requisição
+send_security_headers();
+block_if_bad_ip();
+block_suspicious_agents();
+
 if (session_status() === PHP_SESSION_NONE) {
     // Configuração de Sessão Persistente (30 dias)
     $sessionLifetime = 30 * 24 * 60 * 60;
@@ -35,6 +42,9 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     $pdo->exec("SET time_zone = '-03:00'");
+
+    // Tabela de brute-force
+    setup_login_attempts_table($pdo);
 
     // Auto-Migração: Adicionar coluna is_demo se não existir
     try {
@@ -199,15 +209,6 @@ try {
         $pdo->exec("ALTER TABLE users ADD COLUMN telegram_link_expires DATETIME NULL");
     } catch (PDOException $e) {}
 
-    // MedusaPay secret key
-    try {
-        $pdo->exec("INSERT IGNORE INTO settings (`key`, `value`) VALUES ('medusapay_secret_key', '')");
-    } catch (PDOException $e) {}
-
-    // Card extra fee (platform markup on top of MedusaPay)
-    try {
-        $pdo->exec("INSERT IGNORE INTO settings (`key`, `value`) VALUES ('card_extra_fee', '0')");
-    } catch (PDOException $e) {}
 
     // Auto-Migração: Tabela de variantes de produto
     try {
@@ -467,34 +468,6 @@ function adjustBalance(int $userId, float $amount, string $origin, string $refer
         ]);
         return ['success' => false, 'error' => $e->getMessage()];
     }
-}
-
-/**
- * Retorna uma chave de API PixGo ativa aleatoriamente do banco de dados.
- */
-function getActivePixGoKey($adminOnly = false) {
-    global $pdo;
-    try {
-        if ($adminOnly) {
-            // Prefer admin-only APIs; fall back to any active API if none exist
-            $stmt = $pdo->query("SELECT api_key FROM pixgo_apis WHERE status = 'active' AND is_admin_only = 1 ORDER BY RAND() LIMIT 1");
-            $key = $stmt->fetchColumn();
-            if ($key) return $key;
-        }
-        // For users: only non-admin-only APIs
-        $stmt = $pdo->query("SELECT api_key FROM pixgo_apis WHERE status = 'active' AND is_admin_only = 0 ORDER BY RAND() LIMIT 1");
-        $key = $stmt->fetchColumn();
-        if ($key) return $key;
-
-        // Final fallback: any active API
-        $stmt = $pdo->query("SELECT api_key FROM pixgo_apis WHERE status = 'active' ORDER BY RAND() LIMIT 1");
-        $key = $stmt->fetchColumn();
-        if ($key) return $key;
-    } catch (PDOException $e) {
-        write_log('error', 'Erro ao buscar chaves de API: ' . $e->getMessage());
-    }
-    
-    return defined('PIXGO_API_KEY') ? PIXGO_API_KEY : '';
 }
 
 /**

@@ -63,6 +63,12 @@ switch ($action) {
             exit;
         }
 
+        if (!is_safe_external_url($url)) {
+            security_log('SSRF_BLOCKED', ['url' => $url, 'user_id' => $userId]);
+            echo json_encode(['error' => 'URL não permitida. IPs internos e redes privadas são bloqueados.']);
+            exit;
+        }
+
         // Limite de 10 webhooks por usuário
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM user_webhooks WHERE user_id = ?");
         $stmt->execute([$userId]);
@@ -135,6 +141,12 @@ switch ($action) {
             'status' => 'paid',
             'timestamp' => date('Y-m-d H:i:s')
         ];
+
+        if (!is_safe_external_url($whUrl)) {
+            security_log('SSRF_BLOCKED_TEST', ['url' => $whUrl, 'user_id' => $userId]);
+            echo json_encode(['error' => 'URL bloqueada por política de segurança.']);
+            exit;
+        }
 
         $ch = curl_init($whUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
