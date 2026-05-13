@@ -22,10 +22,49 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $csrfToken = $_POST['csrf_token'] ?? '';
     check_csrf($csrfToken);
 
+    // ── Bloqueio de IPs maliciosos ────────────────────────────────────
+    $clientIp = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+    $blockedIps = ['103.139.178.103'];
+    if (in_array($clientIp, $blockedIps)) {
+        write_log('SECURITY', 'Registro bloqueado por IP banido', ['ip' => $clientIp]);
+        if ($isJsonRequest) { echo json_encode(['success' => false, 'error' => 'Acesso negado.']); exit; }
+        header('HTTP/1.1 403 Forbidden'); exit;
+    }
+
+    // ── Rate limit: máx 3 cadastros por IP por hora ───────────────────
+    $rlStmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 HOUR) AND registration_ip = ?");
+    try {
+        $rlStmt->execute([$clientIp]);
+        $regCount = (int)$rlStmt->fetchColumn();
+    } catch (PDOException $e) {
+        // Coluna registration_ip ainda não existe — cria e ignora
+        try { $pdo->exec("ALTER TABLE users ADD COLUMN registration_ip VARCHAR(45) NULL"); } catch (PDOException $e2) {}
+        $regCount = 0;
+    }
+    if ($regCount >= 3) {
+        write_log('SECURITY', 'Rate limit de registro por IP', ['ip' => $clientIp, 'count' => $regCount]);
+        if ($isJsonRequest) { echo json_encode(['success' => false, 'error' => 'Muitos cadastros deste endereço. Tente novamente mais tarde.']); exit; }
+        header("Location: register.php?error=rate_limit"); exit;
+    }
+
     $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'] ?? '';
     $full_name = strip_tags(trim($_POST['full_name'] ?? ''));
     $pix_key = strip_tags(trim($_POST['pix_key'] ?? ''));
+
+    // ── Validação de nome contra injeção ─────────────────────────────
+    $injectionPatterns = ["'", '"', '--', ';', 'SLEEP', 'SELECT', 'DROP', 'INSERT', 'UPDATE', 'DELETE', 'UNION', 'EXEC', '<script', '0x'];
+    foreach ($injectionPatterns as $pattern) {
+        if (stripos($full_name, $pattern) !== false) {
+            write_log('SECURITY', 'Tentativa de injection no nome', ['ip' => $clientIp, 'name' => $full_name]);
+            if ($isJsonRequest) { echo json_encode(['success' => false, 'error' => 'Nome inválido. Use apenas letras e espaços.']); exit; }
+            header("Location: register.php?error=invalid_name"); exit;
+        }
+    }
+    if (!preg_match('/^[\p{L}\s\.\-]{2,80}$/u', $full_name)) {
+        if ($isJsonRequest) { echo json_encode(['success' => false, 'error' => 'Nome deve conter apenas letras (2–80 caracteres).']); exit; }
+        header("Location: register.php?error=invalid_name"); exit;
+    }
 
     // Validar provedor de e-mail (bloquear e-mails temporários)
     $allowedDomains = [
@@ -89,8 +128,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $defaultTax = (float)($defTaxStmt->fetchColumn() ?: '5.0');
 
     try {
-        $stmt = $pdo->prepare("INSERT INTO users (email, password, full_name, pix_key, status, affiliate_id, referral_token, commission_rate) VALUES (?, ?, ?, ?, 'approved', ?, ?, ?)");
-        $stmt->execute([$email, $hash, $full_name, $pix_key, $affiliateId, bin2hex(random_bytes(8)), $defaultTax]);
+        $stmt = $pdo->prepare("INSERT INTO users (email, password, full_name, pix_key, status, affiliate_id, referral_token, commission_rate, registration_ip) VALUES (?, ?, ?, ?, 'approved', ?, ?, ?, ?)");
+        $stmt->execute([$email, $hash, $full_name, $pix_key, $affiliateId, bin2hex(random_bytes(8)), $defaultTax, $clientIp]);
         $newUserId = $pdo->lastInsertId();
 
         // Verificar se o hash foi salvo corretamente (detectar truncamento)

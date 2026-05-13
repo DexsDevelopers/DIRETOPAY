@@ -51,6 +51,20 @@ if ($amount < 20) {
     exit;
 }
 
+// ── Exigir ao menos 1 transação paga real (não simulação) ──────────
+$txCheck = $pdo->prepare("
+    SELECT COUNT(*) FROM transactions 
+    WHERE user_id = ? AND status = 'paid' 
+      AND pix_id NOT LIKE 'sim_%'
+      AND amount_brl >= 10
+");
+$txCheck->execute([$userId]);
+if ((int)$txCheck->fetchColumn() === 0) {
+    write_log('SECURITY', 'Saque negado: sem transações pagas reais', ['user_id' => $userId, 'amount' => $amount]);
+    echo json_encode(['error' => 'Não é possível sacar sem ter recebido pagamentos reais confirmados.']);
+    exit;
+}
+
 if ($amount > $user['balance']) {
     echo json_encode(['error' => 'Saldo insuficiente. Seu saldo é R$ ' . number_format($user['balance'], 2, ',', '.') . '.']);
     exit;
