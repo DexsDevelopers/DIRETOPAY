@@ -106,6 +106,36 @@ $user = $stmt->fetch();
                             <i class="fas fa-sync"></i> Gerar Nova Chave
                         </button>
 
+                        <div class="card-header" style="margin-top: 3rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+                            <div class="card-title-group">
+                                <div class="card-icon" style="background: rgba(99,102,241,0.15); color: #818cf8;"><i class="fas fa-users"></i></div>
+                                <div>
+                                    <h3 class="card-title">Comunidade 7K</h3>
+                                    <p style="font-size:0.75rem; color: var(--text-3); margin-top:0.2rem;">Receba DMs automáticas no 7kchat.site a cada venda aprovada.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1.2rem;">
+                            <label class="stat-label" style="display:block; margin-bottom: 0.5rem;">Seu ID na Comunidade 7K <span style="color:var(--text-3); font-weight:400;">(opcional)</span></label>
+                            <div style="display:flex; gap: 0.5rem; align-items: center;">
+                                <input type="number" name="seven_k_id" id="seven-k-id-input"
+                                       value="<?php echo htmlspecialchars((string)($user['seven_k_id'] ?? '')); ?>"
+                                       placeholder="Ex: 12345"
+                                       min="1" step="1"
+                                       style="flex:1; background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 0.8rem 1rem; border-radius: 10px; color: var(--text); font-family: 'SF Mono', monospace; transition: border-color 0.2s;">
+                                <a href="https://7kchat.site" target="_blank" rel="noopener noreferrer"
+                                   style="display:inline-flex; align-items:center; gap:0.4rem; padding: 0.8rem 1rem; background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.25); border-radius: 10px; color: #818cf8; font-size:0.8rem; font-weight:600; text-decoration:none; white-space:nowrap;">
+                                    <i class="fas fa-external-link-alt"></i> Ir para 7K
+                                </a>
+                            </div>
+                            <p style="font-size: 0.72rem; color: var(--text-3); margin-top: 0.5rem; line-height: 1.5;">
+                                <i class="fas fa-info-circle" style="color:#818cf8;"></i>
+                                Para encontrar seu ID, acesse <strong style="color:var(--text-2);">7kchat.site</strong>, vá no seu perfil e copie o número no final da URL.
+                                Preencha este campo se o seu e-mail na Comunidade 7K for diferente do cadastrado aqui.
+                            </p>
+                        </div>
+
                         <button type="submit" class="btn-primary" id="btn-save-profile" style="margin-top: 2rem;">
                             <i class="fas fa-save"></i> Salvar Alterações
                         </button>

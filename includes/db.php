@@ -198,6 +198,11 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
     } catch (PDOException $e) {}
 
+    // Auto-Migração: ID do usuário na Comunidade 7K
+    try {
+        $pdo->exec("ALTER TABLE users ADD COLUMN seven_k_id INT NULL DEFAULT NULL");
+    } catch (PDOException $e) {}
+
     // Auto-Migração: Colunas para vincular conta Telegram do usuário
     try {
         $pdo->exec("ALTER TABLE users ADD COLUMN telegram_chat_id VARCHAR(50) NULL");

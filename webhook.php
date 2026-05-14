@@ -280,9 +280,21 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                     if ($prdRow) $prodName = $prdRow['name'];
                 } catch (\Throwable $e) {}
 
+                // Busca seven_k_id do vendedor para localização direta no bot
+                $sevenKUserId = null;
+                try {
+                    $skStmt = $pdo->prepare("SELECT seven_k_id FROM users WHERE id = ? LIMIT 1");
+                    $skStmt->execute([$transaction['user_id']]);
+                    $skRow = $skStmt->fetch();
+                    if ($skRow && !empty($skRow['seven_k_id'])) {
+                        $sevenKUserId = (int)$skRow['seven_k_id'];
+                    }
+                } catch (\Throwable $e) {}
+
                 $sevenKPayload = array_merge($webhookPayload, [
                     'product_name'   => $prodName,
                     'payment_method' => 'PIX',
+                    'seller_id_7k'   => $sevenKUserId, // null se não cadastrado → bot busca por e-mail
                 ]);
 
                 $ch7k = curl_init($sevenKUrl);

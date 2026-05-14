@@ -23,7 +23,8 @@ $withdrawMethod = strip_tags(trim($input['withdraw_method'] ?? 'pix'));
 $cryptoAddress = strip_tags(trim($input['crypto_address'] ?? ''));
 $cryptoNetwork = strip_tags(trim($input['crypto_network'] ?? ''));
 $currentPassword = $input['current_password'] ?? '';
-$newPassword = $input['new_password'] ?? '';
+$newPassword     = $input['new_password'] ?? '';
+$sevenKId        = isset($input['seven_k_id']) && $input['seven_k_id'] !== '' ? (int)$input['seven_k_id'] : null;
 
 // Validar método
 if (!in_array($withdrawMethod, ['pix', 'btc', 'usdt'])) {
@@ -49,7 +50,10 @@ if (($withdrawMethod === 'btc' || $withdrawMethod === 'usdt') && empty($cryptoNe
     exit;
 }
 
-// Auto-criar colunas de crypto se não existirem
+// Auto-criar colunas se não existirem
+try {
+    $pdo->exec("ALTER TABLE users ADD COLUMN seven_k_id INT NULL DEFAULT NULL");
+} catch (PDOException $e) {}
 try {
     $pdo->exec("ALTER TABLE users ADD COLUMN withdraw_method VARCHAR(10) DEFAULT 'pix'");
 } catch (PDOException $e) {}
@@ -83,9 +87,9 @@ if (!empty($newPassword)) {
 }
 
 try {
-    // Atualizar dados básicos + método de saque
-    $updateStmt = $pdo->prepare("UPDATE users SET full_name = ?, pix_key = ?, withdraw_method = ?, crypto_address = ?, crypto_network = ? WHERE id = ?");
-    $updateStmt->execute([$fullName, $pixKey, $withdrawMethod, $cryptoAddress, $cryptoNetwork, $userId]);
+    // Atualizar dados básicos + método de saque + ID 7K
+    $updateStmt = $pdo->prepare("UPDATE users SET full_name = ?, pix_key = ?, withdraw_method = ?, crypto_address = ?, crypto_network = ?, seven_k_id = ? WHERE id = ?");
+    $updateStmt->execute([$fullName, $pixKey, $withdrawMethod, $cryptoAddress, $cryptoNetwork, $sevenKId, $userId]);
 
     // Atualizar senha se fornecida
     if (!empty($newPassword)) {
