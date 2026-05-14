@@ -8,8 +8,8 @@ export default function GeneratePixCard({ onGenerate, disabled = false }) {
 
     const handleGenerate = async () => {
         const val = amount.toString().replace(',', '.');
-        if (!val || parseFloat(val) < 1) {
-            alert('Valor mínimo: R$ 1,00');
+        if (!val || parseFloat(val) < 2) {
+            alert('Valor mínimo: R$ 2,00');
             return;
         }
 
@@ -80,13 +80,13 @@ export default function GeneratePixCard({ onGenerate, disabled = false }) {
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="0,00"
                     step="0.01"
-                    min="1"
+                    min="2"
                     disabled={disabled || loading}
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl py-4 pl-12 pr-4 text-gray-900 font-bold text-2xl focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-200"
                 />
             </div>
 
-            <p className="text-gray-400 text-xs mb-6 px-1">Valor mínimo sugerido: R$ 1,00</p>
+            <p className="text-gray-400 text-xs mb-6 px-1">Valor mínimo: R$ 2,00</p>
 
             <button
                 onClick={handleGenerate}

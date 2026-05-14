@@ -87,7 +87,7 @@ try {
         throw new Exception('Limite de geração excedido. Tente novamente em 1 minuto.');
     }
 
-    if ($amount < 1) throw new Exception('Mínimo R$ 1,00.');
+    if ($amount < 2) throw new Exception('Mínimo R$ 2,00.');
 
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
     $stmt->execute([$userId]);

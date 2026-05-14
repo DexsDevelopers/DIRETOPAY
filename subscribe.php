@@ -48,7 +48,7 @@ try {
         if ($v) $amount = (float)$v['price'];
     }
 
-    if ($amount < 1) throw new Exception('Valor mínimo é R$ 1,00.');
+    if ($amount < 2) throw new Exception('Valor mínimo é R$ 2,00.');
 
     $sellerId   = (int)$product['user_id'];
     $externalId = 'sub_new_' . $productId . '_' . time();

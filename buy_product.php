@@ -72,12 +72,12 @@ try {
                     ? round($amount * ((float)$coupon['value'] / 100), 2)
                     : min((float)$coupon['value'], $amount);
                 $couponId = $coupon['id'];
-                $amount   = max(1, $amount - $discountAmount);
+                $amount   = max(2, $amount - $discountAmount);
             }
         }
     }
 
-    if ($amount < 1) throw new Exception('Valor mínimo é R$ 1,00.');
+    if ($amount < 2) throw new Exception('Valor mínimo é R$ 2,00.');
 
     // Check if product has stock items (for auto-delivery)
     if ($product['stock'] !== -1 && $product['stock'] <= 0) {
@@ -145,7 +145,7 @@ try {
             }
             $gatewayFee  = (float)($spRes['fee'] ?? round($amount * 0.08 + 0.99, 2));
             $platformFee = $amount * ($product['commission_rate'] / 100);
-            $netAmount   = $amount - $gatewayFee - $platformFee;
+            $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
             saveTransaction($sellerId, $amount, $netAmount, $pixId, $pixCode, $qrImage, null, $customerName, $externalId, 'pix', $utmParams ?? []);
             $txId = (int)$pdo->lastInsertId();
             $buyerUserId = $_SESSION['user_id'] ?? null;

@@ -36,8 +36,8 @@ try {
     $stmt->execute([$checkoutId]);
     $totalAmount = (float)$stmt->fetchColumn();
 
-    if ($totalAmount < 1) {
-        throw new Exception('O valor mínimo de transação é R$ 1,00.');
+    if ($totalAmount < 2) {
+        throw new Exception('O valor mínimo de transação é R$ 2,00.');
     }
 
     // Buscar User / Lojista
@@ -132,7 +132,7 @@ try {
 
         $gatewayFee  = (float)($spRes['fee'] ?? round($totalAmount * 0.08 + 0.99, 2));
         $platformFee = $totalAmount * ($user['commission_rate'] / 100);
-        $netAmount   = $totalAmount - $gatewayFee - $platformFee;
+        $netAmount   = max(0, $totalAmount - $gatewayFee - $platformFee);
 
         saveTransaction($userId, $totalAmount, $netAmount, $pixId, $pixCode, $qrImage, null, $customerName, $externalId, 'pix');
         $txId = (int)$pdo->lastInsertId();
