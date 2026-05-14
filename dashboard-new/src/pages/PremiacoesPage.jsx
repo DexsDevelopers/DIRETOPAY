@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Lock, CheckCircle2, ExternalLink, Loader2, Star, Gift, Zap, ChevronRight, MessageCircle } from 'lucide-react';
 
-const SUPPORT_WHATSAPP = '5511998627674';
+const SUPPORT_WHATSAPP = '5511988627674';
 
 const AWARDS = [
     {
