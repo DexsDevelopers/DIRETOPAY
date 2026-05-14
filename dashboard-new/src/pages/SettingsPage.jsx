@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, User, Lock, Code, Shield, Key, Copy, Check, Save, Camera, Loader2, Eye, EyeOff, RefreshCw, ExternalLink, Terminal, Zap, Globe, AlertTriangle, Webhook, Plus, Trash2, Send, Power, CircleDot, Bell, BellRing, MessageCircle, Unlink, QrCode, Sun, Moon, Monitor, Percent, Info, TrendingUp, CheckCircle2 } from 'lucide-react';
+import { Settings, User, Lock, Code, Shield, Key, Copy, Check, Save, Camera, Loader2, Eye, EyeOff, RefreshCw, ExternalLink, Terminal, Zap, Globe, AlertTriangle, Webhook, Plus, Trash2, Send, Power, CircleDot, Bell, BellRing, MessageCircle, Unlink, QrCode, Sun, Moon, Monitor, Percent, Info, TrendingUp, CheckCircle2, BarChart2, Users } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
@@ -19,6 +19,9 @@ export default function SettingsPage({ userData, onProfileSaved }) {
     const [withdrawMethod, setWithdrawMethod] = useState(userData?.withdraw_method || 'pix');
     const [cryptoAddress, setCryptoAddress] = useState(userData?.crypto_address || '');
     const [cryptoNetwork, setCryptoNetwork] = useState(userData?.crypto_network || '');
+    const [utmifyToken, setUtmifyToken] = useState(userData?.utmify_api_token || '');
+    const [sevenKId, setSevenKId] = useState(userData?.seven_k_id || '');
+    const [showUtmToken, setShowUtmToken] = useState(false);
     const fileInputRef = useRef(null);
     const [testingPush, setTestingPush] = useState(false);
     const [pushResult, setPushResult] = useState(null);
@@ -31,6 +34,8 @@ export default function SettingsPage({ userData, onProfileSaved }) {
         if (userData?.withdraw_method) setWithdrawMethod(userData.withdraw_method);
         if (userData?.crypto_address) setCryptoAddress(userData.crypto_address);
         if (userData?.crypto_network) setCryptoNetwork(userData.crypto_network);
+        if (userData?.utmify_api_token) setUtmifyToken(userData.utmify_api_token);
+        if (userData?.seven_k_id) setSevenKId(String(userData.seven_k_id));
     }, [userData]);
 
     const handleCopyToken = () => {
@@ -131,7 +136,9 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                     pix_key: pixKey,
                     withdraw_method: withdrawMethod,
                     crypto_address: cryptoAddress,
-                    crypto_network: cryptoNetwork
+                    crypto_network: cryptoNetwork,
+                    utmify_api_token: utmifyToken,
+                    seven_k_id: sevenKId || null
                 })
             });
             const data = await res.json();
@@ -262,6 +269,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
         { id: 'api', label: 'Desenvolvedor / API', icon: <Code size={16} /> },
         { id: 'webhooks', label: 'Webhooks', icon: <Webhook size={16} /> },
         { id: 'taxas', label: 'Minhas Taxas', icon: <Percent size={16} /> },
+        { id: 'integracoes', label: 'Integrações', icon: <BarChart2 size={16} /> },
     ];
 
     return (
@@ -893,6 +901,103 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                         ))}
                                     </div>
                                 </div>
+                            </div>
+                        )}
+
+                        {activeSubTab === 'integracoes' && (
+                            <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+                                <div>
+                                    <h3 className="text-2xl font-black text-gray-900 mb-1">Integrações</h3>
+                                    <p className="text-gray-500 text-sm">Conecte suas ferramentas de rastreamento e comunidade.</p>
+                                </div>
+
+                                {/* UTMify */}
+                                <div className="rounded-3xl border border-amber-200 bg-amber-50/50 p-6 space-y-5">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center border border-amber-200">
+                                            <BarChart2 size={22} className="text-amber-500" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-black text-gray-900">UTMify</h4>
+                                            <p className="text-xs text-gray-500">Rastreamento de conversão — cada venda aprovada é enviada automaticamente.</p>
+                                        </div>
+                                        <a href="https://app.utmify.com.br/integracoes" target="_blank" rel="noopener noreferrer"
+                                           className="ml-auto flex items-center gap-1.5 text-xs font-black text-amber-600 hover:text-amber-700 transition-colors">
+                                            <ExternalLink size={13} /> Painel UTMify
+                                        </a>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Token de API UTMify</label>
+                                        <div className="flex gap-2">
+                                            <input
+                                                type={showUtmToken ? 'text' : 'password'}
+                                                value={utmifyToken}
+                                                onChange={e => setUtmifyToken(e.target.value)}
+                                                placeholder="Cole aqui sua Credencial API"
+                                                autoComplete="off"
+                                                className="flex-1 bg-white border border-amber-200 rounded-2xl px-4 py-3 font-mono text-sm text-gray-700 focus:outline-none focus:border-amber-400 transition-all"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowUtmToken(v => !v)}
+                                                className="px-4 bg-amber-100 border border-amber-200 rounded-2xl text-amber-500 hover:bg-amber-200 transition-all"
+                                            >
+                                                {showUtmToken ? <EyeOff size={16} /> : <Eye size={16} />}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-amber-100/60 border border-amber-200 rounded-2xl p-4 space-y-1">
+                                        <p className="text-[11px] font-black text-amber-700">Como obter o token:</p>
+                                        <p className="text-[11px] text-amber-600 leading-relaxed">
+                                            No painel UTMify → <strong>Integrações → Webhooks → Credenciais API → Criar Credencial</strong>. Copie o token gerado e cole aqui.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* 7K Community */}
+                                <div className="rounded-3xl border border-indigo-200 bg-indigo-50/50 p-6 space-y-5">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-2xl bg-indigo-100 flex items-center justify-center border border-indigo-200">
+                                            <Users size={22} className="text-indigo-500" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-black text-gray-900">Comunidade 7K</h4>
+                                            <p className="text-xs text-gray-500">Receba DMs automáticas no 7kchat.site a cada venda aprovada.</p>
+                                        </div>
+                                        <a href="https://7kchat.site" target="_blank" rel="noopener noreferrer"
+                                           className="ml-auto flex items-center gap-1.5 text-xs font-black text-indigo-500 hover:text-indigo-700 transition-colors">
+                                            <ExternalLink size={13} /> 7kchat.site
+                                        </a>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Seu ID na Comunidade 7K <span className="normal-case font-normal">(opcional)</span></label>
+                                        <input
+                                            type="number"
+                                            value={sevenKId}
+                                            onChange={e => setSevenKId(e.target.value)}
+                                            placeholder="Ex: 12345"
+                                            min="1"
+                                            className="w-full bg-white border border-indigo-200 rounded-2xl px-4 py-3 font-mono text-sm text-gray-700 focus:outline-none focus:border-indigo-400 transition-all"
+                                        />
+                                    </div>
+
+                                    <div className="bg-indigo-100/60 border border-indigo-200 rounded-2xl p-4">
+                                        <p className="text-[11px] text-indigo-600 leading-relaxed">
+                                            Preencha se seu e-mail na Comunidade 7K for diferente do cadastrado aqui. Para encontrar seu ID, acesse <strong>7kchat.site</strong>, vá no perfil e copie o número no final da URL.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={handleSaveProfile}
+                                    disabled={saving}
+                                    className="w-full flex items-center justify-center gap-2 bg-primary text-white font-black text-xs uppercase tracking-widest py-4 rounded-2xl hover:brightness-110 active:scale-95 transition-all disabled:opacity-50"
+                                >
+                                    {saving ? <><Loader2 size={16} className="animate-spin" /> Salvando...</> : <><Save size={16} /> Salvar Integrações</>}
+                                </button>
                             </div>
                         )}
 
