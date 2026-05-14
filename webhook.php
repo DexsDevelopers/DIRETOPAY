@@ -266,7 +266,44 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                 ]);
             }
 
-            // 5. Disparar TODOS os webhooks configurados pelo usuário
+            // 5. Notificar bot 7K Community (DM automática ao vendedor)
+            try {
+                $sevenKSecret = defined('SEVEN_K_WEBHOOK_SECRET') ? SEVEN_K_WEBHOOK_SECRET : 'lunarpay_7kchat_webhook_2026';
+                $sevenKUrl    = 'https://7kchat.site/api/webhook_lunarpay.php?token=' . urlencode($sevenKSecret);
+
+                // Busca nome do produto vinculado à transação (se houver)
+                $prodName = 'Produto LunarPay';
+                try {
+                    $prd = $pdo->prepare("SELECT p.name FROM orders o JOIN products p ON p.id = o.product_id WHERE o.transaction_id = ? LIMIT 1");
+                    $prd->execute([$transaction['id']]);
+                    $prdRow = $prd->fetch();
+                    if ($prdRow) $prodName = $prdRow['name'];
+                } catch (\Throwable $e) {}
+
+                $sevenKPayload = array_merge($webhookPayload, [
+                    'product_name'   => $prodName,
+                    'payment_method' => 'PIX',
+                ]);
+
+                $ch7k = curl_init($sevenKUrl);
+                curl_setopt_array($ch7k, [
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_POST           => true,
+                    CURLOPT_POSTFIELDS     => json_encode($sevenKPayload),
+                    CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'User-Agent: LunarPay-Bot/1.0'],
+                    CURLOPT_TIMEOUT        => 8,
+                    CURLOPT_CONNECTTIMEOUT => 4,
+                    CURLOPT_SSL_VERIFYPEER => true,
+                ]);
+                $out7k  = curl_exec($ch7k);
+                $code7k = curl_getinfo($ch7k, CURLINFO_HTTP_CODE);
+                curl_close($ch7k);
+                write_log('INFO', '7K Bot Notificado', ['http_code' => $code7k, 'response' => $out7k]);
+            } catch (\Throwable $e) {
+                write_log('WARNING', '7K Bot Falhou', ['error' => $e->getMessage()]);
+            }
+
+            // 6. Disparar TODOS os webhooks configurados pelo usuário
             try {
                 $whStmt = $pdo->prepare("SELECT id, url FROM user_webhooks WHERE user_id = ? AND active = 1");
                 $whStmt->execute([$transaction['user_id']]);
