@@ -64,7 +64,7 @@ class UtmifyService
 
         $payload = [
             'isTest'        => $isTest,
-            'status'        => 'approved',
+            'status'        => 'paid',
             'orderId'       => (string)($transaction['pix_id'] ?? $transaction['id']),
             'platform'      => 'LunarPay',
             'createdAt'     => $createdAt,
