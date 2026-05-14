@@ -906,88 +906,146 @@ export default function SettingsPage({ userData, onProfileSaved }) {
 
                         {activeSubTab === 'integracoes' && (
                             <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-                                <div>
-                                    <h3 className="text-2xl font-black text-gray-900 mb-1">Integrações</h3>
-                                    <p className="text-gray-500 text-sm">Conecte suas ferramentas de rastreamento e comunidade.</p>
+
+                                {/* Header banner */}
+                                <div className="bg-primary/10 border border-primary/20 p-6 rounded-3xl flex gap-4">
+                                    <BarChart2 className="text-primary shrink-0 mt-0.5" size={24} />
+                                    <div>
+                                        <h4 className="font-bold text-primary italic text-lg">Integrações Externas</h4>
+                                        <p className="text-xs text-primary/70 font-medium mt-1">Conecte ferramentas de rastreamento e comunidade para maximizar seus resultados.</p>
+                                    </div>
                                 </div>
 
                                 {/* UTMify */}
-                                <div className="rounded-3xl border border-amber-200 bg-amber-50/50 p-6 space-y-5">
+                                <div className="rounded-3xl border border-gray-200 bg-white p-6 space-y-5 shadow-sm">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center border border-amber-200">
+                                        <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-gray-200 flex items-center justify-center">
                                             <BarChart2 size={22} className="text-amber-500" />
                                         </div>
-                                        <div>
-                                            <h4 className="font-black text-gray-900">UTMify</h4>
-                                            <p className="text-xs text-gray-500">Rastreamento de conversão — cada venda aprovada é enviada automaticamente.</p>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                <h4 className="font-black text-gray-900">UTMify</h4>
+                                                {utmifyToken ? (
+                                                    <span className="flex items-center gap-1 text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full uppercase tracking-widest">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
+                                                        Ativo
+                                                    </span>
+                                                ) : (
+                                                    <span className="flex items-center gap-1 text-[10px] font-black text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full uppercase tracking-widest">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-gray-400 inline-block" />
+                                                        Não configurado
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="text-xs text-gray-500 mt-0.5">Rastreamento de conversão — cada venda aprovada é enviada automaticamente.</p>
                                         </div>
                                         <a href="https://app.utmify.com.br/integracoes" target="_blank" rel="noopener noreferrer"
-                                           className="ml-auto flex items-center gap-1.5 text-xs font-black text-amber-600 hover:text-amber-700 transition-colors">
-                                            <ExternalLink size={13} /> Painel UTMify
+                                           className="shrink-0 flex items-center gap-1.5 text-xs font-black text-amber-500 hover:text-amber-600 transition-colors">
+                                            <ExternalLink size={13} /> Painel
                                         </a>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Token de API UTMify</label>
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4 flex items-center gap-1.5">
+                                            <Key size={10} /> Token de API UTMify
+                                        </label>
                                         <div className="flex gap-2">
-                                            <input
-                                                type={showUtmToken ? 'text' : 'password'}
-                                                value={utmifyToken}
-                                                onChange={e => setUtmifyToken(e.target.value)}
-                                                placeholder="Cole aqui sua Credencial API"
-                                                autoComplete="off"
-                                                className="flex-1 bg-white border border-amber-200 rounded-2xl px-4 py-3 font-mono text-sm text-gray-700 focus:outline-none focus:border-amber-400 transition-all"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowUtmToken(v => !v)}
-                                                className="px-4 bg-amber-100 border border-amber-200 rounded-2xl text-amber-500 hover:bg-amber-200 transition-all"
-                                            >
-                                                {showUtmToken ? <EyeOff size={16} /> : <Eye size={16} />}
-                                            </button>
+                                            <div className="flex-1 relative">
+                                                <input
+                                                    type={showUtmToken ? 'text' : 'password'}
+                                                    value={utmifyToken}
+                                                    onChange={e => setUtmifyToken(e.target.value)}
+                                                    placeholder="Cole aqui sua Credencial API"
+                                                    autoComplete="off"
+                                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 font-mono text-sm text-gray-700 focus:outline-none focus:border-primary/30 transition-all pr-14"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowUtmToken(v => !v)}
+                                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors"
+                                                >
+                                                    {showUtmToken ? <EyeOff size={18} /> : <Eye size={18} />}
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div className="bg-amber-100/60 border border-amber-200 rounded-2xl p-4 space-y-1">
-                                        <p className="text-[11px] font-black text-amber-700">Como obter o token:</p>
-                                        <p className="text-[11px] text-amber-600 leading-relaxed">
-                                            No painel UTMify → <strong>Integrações → Webhooks → Credenciais API → Criar Credencial</strong>. Copie o token gerado e cole aqui.
-                                        </p>
+                                    <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+                                        <div className="flex items-center gap-2 px-5 py-3 border-b border-gray-800">
+                                            <Terminal size={13} className="text-amber-500" />
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Como obter o token</span>
+                                        </div>
+                                        <div className="px-5 py-4 space-y-1">
+                                            <p className="text-xs text-white/60 font-mono leading-relaxed">
+                                                Painel UTMify <span className="text-white/30 mx-1">→</span>
+                                                <span className="text-amber-400/90">Integrações</span><span className="text-white/30 mx-1">→</span>
+                                                <span className="text-amber-400/90">Webhooks</span><span className="text-white/30 mx-1">→</span>
+                                                <span className="text-amber-400/90">Credenciais API</span><span className="text-white/30 mx-1">→</span>
+                                                <span className="text-emerald-400/90">Criar Credencial</span>
+                                            </p>
+                                            <p className="text-[11px] text-white/30">Copie o token gerado e cole no campo acima.</p>
+                                        </div>
                                     </div>
                                 </div>
 
                                 {/* 7K Community */}
-                                <div className="rounded-3xl border border-indigo-200 bg-indigo-50/50 p-6 space-y-5">
+                                <div className="rounded-3xl border border-gray-200 bg-white p-6 space-y-5 shadow-sm">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-2xl bg-indigo-100 flex items-center justify-center border border-indigo-200">
-                                            <Users size={22} className="text-indigo-500" />
+                                        <div className="w-12 h-12 rounded-2xl bg-violet-500/10 border border-gray-200 flex items-center justify-center">
+                                            <Users size={22} className="text-violet-500" />
                                         </div>
-                                        <div>
-                                            <h4 className="font-black text-gray-900">Comunidade 7K</h4>
-                                            <p className="text-xs text-gray-500">Receba DMs automáticas no 7kchat.site a cada venda aprovada.</p>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                <h4 className="font-black text-gray-900">Comunidade 7K</h4>
+                                                {sevenKId ? (
+                                                    <span className="flex items-center gap-1 text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full uppercase tracking-widest">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
+                                                        Ativo
+                                                    </span>
+                                                ) : (
+                                                    <span className="flex items-center gap-1 text-[10px] font-black text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full uppercase tracking-widest">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-gray-400 inline-block" />
+                                                        Opcional
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="text-xs text-gray-500 mt-0.5">Receba DMs automáticas no 7kchat.site a cada venda aprovada.</p>
                                         </div>
                                         <a href="https://7kchat.site" target="_blank" rel="noopener noreferrer"
-                                           className="ml-auto flex items-center gap-1.5 text-xs font-black text-indigo-500 hover:text-indigo-700 transition-colors">
+                                           className="shrink-0 flex items-center gap-1.5 text-xs font-black text-violet-500 hover:text-violet-600 transition-colors">
                                             <ExternalLink size={13} /> 7kchat.site
                                         </a>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Seu ID na Comunidade 7K <span className="normal-case font-normal">(opcional)</span></label>
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4 flex items-center gap-1.5">
+                                            <Key size={10} /> ID na Comunidade 7K
+                                            <span className="normal-case font-normal text-gray-400">(opcional)</span>
+                                        </label>
                                         <input
                                             type="number"
                                             value={sevenKId}
                                             onChange={e => setSevenKId(e.target.value)}
                                             placeholder="Ex: 12345"
                                             min="1"
-                                            className="w-full bg-white border border-indigo-200 rounded-2xl px-4 py-3 font-mono text-sm text-gray-700 focus:outline-none focus:border-indigo-400 transition-all"
+                                            className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 font-mono text-sm text-gray-700 focus:outline-none focus:border-primary/30 transition-all"
                                         />
                                     </div>
 
-                                    <div className="bg-indigo-100/60 border border-indigo-200 rounded-2xl p-4">
-                                        <p className="text-[11px] text-indigo-600 leading-relaxed">
-                                            Preencha se seu e-mail na Comunidade 7K for diferente do cadastrado aqui. Para encontrar seu ID, acesse <strong>7kchat.site</strong>, vá no perfil e copie o número no final da URL.
-                                        </p>
+                                    <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+                                        <div className="flex items-center gap-2 px-5 py-3 border-b border-gray-800">
+                                            <Terminal size={13} className="text-violet-400" />
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Como encontrar seu ID</span>
+                                        </div>
+                                        <div className="px-5 py-4 space-y-1">
+                                            <p className="text-xs text-white/60 font-mono leading-relaxed">
+                                                <span className="text-violet-400/90">7kchat.site</span>
+                                                <span className="text-white/30 mx-1">→</span> Perfil
+                                                <span className="text-white/30 mx-1">→</span>
+                                                <span className="text-emerald-400/90">copie o número no final da URL</span>
+                                            </p>
+                                            <p className="text-[11px] text-white/30">Preencha apenas se seu e-mail na 7K for diferente do cadastrado aqui.</p>
+                                        </div>
                                     </div>
                                 </div>
 

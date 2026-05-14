@@ -54,6 +54,7 @@ import AdminSaquesPage from './pages/AdminSaquesPage';
 import AdminGatewaysPage from './pages/AdminGatewaysPage';
 import BuyerChatPage from './pages/BuyerChatPage';
 import ParceirosPage from './pages/ParceirosPage';
+import PremiacoesPage from './pages/PremiacoesPage';
 import AnnouncementModal from './components/AnnouncementModal';
 
 // Proteção de Rota Admin
@@ -556,6 +557,14 @@ export default function App() {
           <PrivateRoute>
             <DashboardLayout {...commonProps} activeTab="parceiros">
               <ParceirosPage />
+            </DashboardLayout>
+          </PrivateRoute>
+        } />
+
+        <Route path="/premiacoes" element={
+          <PrivateRoute>
+            <DashboardLayout {...commonProps} activeTab="premiacoes">
+              <PremiacoesPage dashboardData={dashboardData} />
             </DashboardLayout>
           </PrivateRoute>
         } />

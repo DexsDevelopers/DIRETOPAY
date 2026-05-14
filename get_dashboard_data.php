@@ -78,7 +78,9 @@ if ($user['is_demo'] == 1) {
 
     $stmtTotal = $pdo->prepare("SELECT SUM(amount_brl) as vol FROM transactions WHERE user_id = ? AND status = 'paid'");
     $stmtTotal->execute([$userId]);
-    $stats['total_paid'] = number_format($stmtTotal->fetch()['vol'] ?? 0, 2, ',', '.');
+    $totalPaidRaw = (float)($stmtTotal->fetch()['vol'] ?? 0);
+    $stats['total_paid'] = number_format($totalPaidRaw, 2, ',', '.');
+    $stats['total_paid_raw'] = $totalPaidRaw;
 
     $stmtPending = $pdo->prepare("SELECT COUNT(*) as qtd FROM transactions WHERE user_id = ? AND status = 'pending' AND created_at >= DATE_SUB(NOW(), INTERVAL 20 MINUTE)");
     $stmtPending->execute([$userId]);

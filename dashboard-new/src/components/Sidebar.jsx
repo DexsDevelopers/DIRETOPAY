@@ -3,7 +3,7 @@ import {
     LayoutDashboard, History, BarChart3, Wallet, Settings, LogOut,
     ChevronRight, X, Gift, ExternalLink, ShoppingBag,
     Package, Store, Sparkles, Link2, Palette, ShieldCheck, Image,
-    Users, Ticket, Megaphone, MessageCircle, RefreshCw, Cpu, Handshake,
+    Users, Ticket, Megaphone, MessageCircle, RefreshCw, Cpu, Handshake, Trophy,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../lib/utils';
@@ -144,8 +144,9 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
             ],
         },
         { type: 'item', id: 'afiliado',   icon: <Gift size={18} />,       label: 'Afiliado',      path: '/afiliado' },
-        { type: 'item', id: 'parceiros',  icon: <Handshake size={18} />,  label: 'Parceiros',     path: '/parceiros' },
-        { type: 'item', id: 'settings',   icon: <Settings size={18} />,   label: 'Configurações', path: '/config' },
+        { type: 'item', id: 'parceiros',    icon: <Handshake size={18} />,  label: 'Parceiros',     path: '/parceiros' },
+        { type: 'item', id: 'premiacoes',   icon: <Trophy size={18} />,     label: 'Premiações',    path: '/premiacoes' },
+        { type: 'item', id: 'settings',     icon: <Settings size={18} />,   label: 'Configurações', path: '/config' },
     ];
 
     if (userData?.is_admin) {
