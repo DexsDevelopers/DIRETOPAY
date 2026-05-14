@@ -171,7 +171,7 @@ try {
 
             $gatewayFee  = (float)($spRes['fee'] ?? (round($amount * (8 / 100) + 0.99, 2)));
             $platformFee = $amount * ($user['commission_rate'] / 100);
-            $netAmount   = $amount - $gatewayFee - $platformFee;
+            $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
 
             saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Recarga Ghost Pix', $externalId, 'pix', $utmParams);
 
