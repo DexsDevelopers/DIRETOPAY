@@ -266,7 +266,34 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                 ]);
             }
 
-            // 5. Notificar bot 7K Community (DM automática ao vendedor)
+            // 5. Notificar UTMify (rastreamento de conversão)
+            try {
+                require_once __DIR__ . '/includes/UtmifyService.php';
+                $utmTokenStmt = $pdo->prepare("SELECT utmify_api_token FROM users WHERE id = ? LIMIT 1");
+                $utmTokenStmt->execute([$transaction['user_id']]);
+                $utmToken = (string)($utmTokenStmt->fetchColumn() ?: '');
+
+                if (!empty($utmToken)) {
+                    // Busca dados do produto se houver pedido vinculado
+                    $utmProduct = [];
+                    try {
+                        $upStmt = $pdo->prepare("SELECT p.id, p.name FROM orders o JOIN products p ON p.id = o.product_id WHERE o.transaction_id = ? LIMIT 1");
+                        $upStmt->execute([$transaction['id']]);
+                        $upRow = $upStmt->fetch();
+                        if ($upRow) $utmProduct = ['id' => $upRow['id'], 'name' => $upRow['name']];
+                    } catch (\Throwable $e) {}
+
+                    $utmCustomer = [
+                        'name'  => $realPayerName ?: ($transaction['customer_name'] ?? ''),
+                        'email' => $userData['email'] ?? '',
+                    ];
+                    UtmifyService::notifySale($utmToken, $transaction, $utmProduct, $utmCustomer);
+                }
+            } catch (\Throwable $e) {
+                write_log('WARNING', 'UTMify notify falhou', ['error' => $e->getMessage()]);
+            }
+
+            // 6. Notificar bot 7K Community (DM automática ao vendedor)
             try {
                 $sevenKSecret = defined('SEVEN_K_WEBHOOK_SECRET') ? SEVEN_K_WEBHOOK_SECRET : 'lunarpay_7kchat_webhook_2026';
                 $sevenKUrl    = 'https://7kchat.site/api/webhook_lunarpay.php?token=' . urlencode($sevenKSecret);

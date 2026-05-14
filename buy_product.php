@@ -14,7 +14,8 @@ try {
     $customerName = trim($input['customer_name'] ?? '');
     $customerDoc  = trim($input['customer_document'] ?? '');
     $couponCode   = strtoupper(trim($input['coupon_code'] ?? ''));
-    $buyerPixKey  = trim($input['buyer_pix_key'] ?? '');
+    $buyerPixKey    = trim($input['buyer_pix_key'] ?? '');
+    $utmParams      = sanitize_utm_params($input['tracking_params'] ?? []);
 
     if (!$productId || !$customerName) {
         throw new Exception('Produto e nome são obrigatórios.');
@@ -145,7 +146,7 @@ try {
             $gatewayFee  = (float)($spRes['fee'] ?? round($amount * 0.08 + 0.99, 2));
             $platformFee = $amount * ($product['commission_rate'] / 100);
             $netAmount   = $amount - $gatewayFee - $platformFee;
-            saveTransaction($sellerId, $amount, $netAmount, $pixId, $pixCode, $qrImage, null, $customerName, $externalId, 'pix');
+            saveTransaction($sellerId, $amount, $netAmount, $pixId, $pixCode, $qrImage, null, $customerName, $externalId, 'pix', $utmParams ?? []);
             $txId = (int)$pdo->lastInsertId();
             $buyerUserId = $_SESSION['user_id'] ?? null;
             $pdo->prepare("INSERT INTO orders (product_id, seller_id, buyer_name, buyer_document, buyer_pix_key, buyer_user_id, amount, transaction_id, status, delivery_token, coupon_id, discount_amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)")

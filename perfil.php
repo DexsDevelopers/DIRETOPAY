@@ -108,6 +108,38 @@ $user = $stmt->fetch();
 
                         <div class="card-header" style="margin-top: 3rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
                             <div class="card-title-group">
+                                <div class="card-icon" style="background: rgba(251,191,36,0.15); color: #fbbf24;"><i class="fas fa-chart-line"></i></div>
+                                <div>
+                                    <h3 class="card-title">UTMify — Rastreamento de Conversão</h3>
+                                    <p style="font-size:0.75rem; color: var(--text-3); margin-top:0.2rem;">Cada venda aprovada envia automaticamente o evento de conversão para sua conta UTMify.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1.2rem;">
+                            <label class="stat-label" style="display:block; margin-bottom: 0.5rem;">Seu Token de API UTMify <span style="color:var(--text-3); font-weight:400;">(opcional)</span></label>
+                            <div style="display:flex; gap: 0.5rem; align-items: center;">
+                                <input type="password" name="utmify_api_token" id="utmify-token-input"
+                                       value="<?php echo htmlspecialchars((string)($user['utmify_api_token'] ?? '')); ?>"
+                                       placeholder="Cole aqui sua credencial API"
+                                       autocomplete="off"
+                                       style="flex:1; background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 0.8rem 1rem; border-radius: 10px; color: var(--text); font-family: 'SF Mono', monospace; transition: border-color 0.2s;">
+                                <button type="button" onclick="toggleUtmKey()" class="btn-icon-sm" style="min-height: 44px; width: 44px;" title="Mostrar/Ocultar">
+                                    <i class="fas fa-eye" id="utmify-eye-icon"></i>
+                                </button>
+                                <a href="https://app.utmify.com.br/integracoes" target="_blank" rel="noopener noreferrer"
+                                   style="display:inline-flex; align-items:center; gap:0.4rem; padding: 0.8rem 1rem; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.25); border-radius: 10px; color: #fbbf24; font-size:0.8rem; font-weight:600; text-decoration:none; white-space:nowrap;">
+                                    <i class="fas fa-external-link-alt"></i> UTMify
+                                </a>
+                            </div>
+                            <p style="font-size: 0.72rem; color: var(--text-3); margin-top: 0.5rem; line-height: 1.5;">
+                                <i class="fas fa-info-circle" style="color:#fbbf24;"></i>
+                                No painel UTMify: <strong style="color:var(--text-2);">Integrações → Webhooks → Credenciais API → Criar Credencial</strong>. Cole o token gerado aqui.
+                            </p>
+                        </div>
+
+                        <div class="card-header" style="margin-top: 3rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+                            <div class="card-title-group">
                                 <div class="card-icon" style="background: rgba(99,102,241,0.15); color: #818cf8;"><i class="fas fa-users"></i></div>
                                 <div>
                                     <h3 class="card-title">Comunidade 7K</h3>
@@ -147,6 +179,18 @@ $user = $stmt->fetch();
 
     <script src="script.js?v=124.0"></script>
     <script>
+    function toggleUtmKey() {
+        const input = document.getElementById('utmify-token-input');
+        const icon  = document.getElementById('utmify-eye-icon');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+
     // Toggle visibility of API Key
     document.getElementById('btn-toggle-key').addEventListener('click', function() {
         const input = document.getElementById('api-key-input');

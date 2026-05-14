@@ -80,6 +80,7 @@ try {
     if ($rawCallback && !$callbackUrl) {
         security_log('SSRF_BLOCKED_API', ['callback_url' => $rawCallback]);
     }
+    $utmParams = sanitize_utm_params($input['tracking_params'] ?? []);
     $amount = (float)($input['amount'] ?? 0);
 
     if (!checkRateLimit($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0')) {
@@ -172,7 +173,7 @@ try {
             $platformFee = $amount * ($user['commission_rate'] / 100);
             $netAmount   = $amount - $gatewayFee - $platformFee;
 
-            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Recarga Ghost Pix', $externalId, 'pix');
+            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Recarga Ghost Pix', $externalId, 'pix', $utmParams);
 
             if (class_exists('PushService')) {
                 try { PushService::notifyUser($userId, '⚡ PIX Gerado!', 'Cobrança de R$ ' . number_format($amount, 2, ',', '.') . ' gerada.', 'sale_generated'); } catch (Throwable $e) {}

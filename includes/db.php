@@ -203,6 +203,16 @@ try {
         $pdo->exec("ALTER TABLE users ADD COLUMN seven_k_id INT NULL DEFAULT NULL");
     } catch (PDOException $e) {}
 
+    // Auto-Migração: Token UTMify por vendedor
+    try {
+        $pdo->exec("ALTER TABLE users ADD COLUMN utmify_api_token VARCHAR(120) NULL DEFAULT NULL");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: Parâmetros UTM nas transações
+    foreach (['utm_source','utm_medium','utm_campaign','utm_content','utm_term','utm_sck','utm_src'] as $_utmCol) {
+        try { $pdo->exec("ALTER TABLE transactions ADD COLUMN `$_utmCol` VARCHAR(255) NULL DEFAULT NULL"); } catch (PDOException $e) {}
+    }
+
     // Auto-Migração: Colunas para vincular conta Telegram do usuário
     try {
         $pdo->exec("ALTER TABLE users ADD COLUMN telegram_chat_id VARCHAR(50) NULL");
@@ -494,44 +504,60 @@ function checkRateLimit($ip) {
 }
 
 /**
+ * Sanitiza e extrai parâmetros UTM de um array de entrada.
+ */
+function sanitize_utm_params(array $raw): array {
+    $allowed = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','sck','src'];
+    $result  = [];
+    foreach ($allowed as $key) {
+        $val = isset($raw[$key]) ? strip_tags(trim((string)$raw[$key])) : null;
+        $result[$key] = ($val !== '' && $val !== null) ? substr($val, 0, 255) : null;
+    }
+    return $result;
+}
+
+/**
  * Salva transação de forma resiliente e performática.
  */
-function saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl = null, $customerName = null, $externalId = null, $type = 'pix') {
+function saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl = null, $customerName = null, $externalId = null, $type = 'pix', array $utmParams = []) {
     global $pdo;
     $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
-    
-    // Log da tentativa
+
     write_log('info', "Gerando PIX R$ $amount para User $userId (IP: $ip)");
 
-    // Tenta o insert completo primeiro (padrão atual com IP, Name e ExternalID)
+    $utmSource   = $utmParams['utm_source']   ?? null;
+    $utmMedium   = $utmParams['utm_medium']   ?? null;
+    $utmCampaign = $utmParams['utm_campaign'] ?? null;
+    $utmContent  = $utmParams['utm_content']  ?? null;
+    $utmTerm     = $utmParams['utm_term']     ?? null;
+    $utmSck      = $utmParams['sck']          ?? null;
+    $utmSrc      = $utmParams['src']          ?? null;
+
+    // Tenta insert completo com UTMs
     try {
-        $sql = "INSERT INTO transactions (user_id, customer_ip, customer_name, external_id, amount_brl, amount_net_brl, pix_id, status, pix_code, qr_image, callback_url) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO transactions (user_id, customer_ip, customer_name, external_id, amount_brl, amount_net_brl, pix_id, status, pix_code, qr_image, callback_url, utm_source, utm_medium, utm_campaign, utm_content, utm_term, utm_sck, utm_src)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $pdo->prepare($sql);
-        return $stmt->execute([$userId, $ip, $customerName, $externalId, $amount, $netAmount, $pixId, 'pending', $pixCode, $qrImage, $callbackUrl]);
+        return $stmt->execute([$userId, $ip, $customerName, $externalId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, $utmSource, $utmMedium, $utmCampaign, $utmContent, $utmTerm, $utmSck, $utmSrc]);
     } catch (PDOException $e) {
-        // Fallback sem o campo de external_id se der erro
+        // Fallback sem colunas UTM (banco ainda não migrado)
         try {
-            $sql = "INSERT INTO transactions (user_id, customer_ip, customer_name, amount_brl, amount_net_brl, pix_id, status, pix_code, qr_image, callback_url) 
-                    VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)";
+            $sql = "INSERT INTO transactions (user_id, customer_ip, customer_name, external_id, amount_brl, amount_net_brl, pix_id, status, pix_code, qr_image, callback_url)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)";
             $stmt = $pdo->prepare($sql);
-            return $stmt->execute([$userId, $ip, $customerName, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl]);
-        } catch (PDOException $e_orig) {
-            // Se falhar (provavelmente coluna callback_url ausente), tenta o fallback v2
+            return $stmt->execute([$userId, $ip, $customerName, $externalId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl]);
+        } catch (PDOException $e2) {
             try {
-                $sql = "INSERT INTO transactions (user_id, amount_brl, amount_net_brl, pix_id, status, pix_code, qr_image) 
+                $sql = "INSERT INTO transactions (user_id, amount_brl, amount_net_brl, pix_id, status, pix_code, qr_image)
                         VALUES (?, ?, ?, ?, 'pending', ?, ?)";
                 $stmt = $pdo->prepare($sql);
                 return $stmt->execute([$userId, $amount, $netAmount, $pixId, $pixCode, $qrImage]);
-            } catch (PDOException $e2) {
-                // Se falhar de novo (provavelmente colunas pix_code/qr_image ausentes no legado extremo)
+            } catch (PDOException $e3) {
                 try {
-                    $sql = "INSERT INTO transactions (user_id, amount_brl, amount_net_brl, pix_id, status) 
-                            VALUES (?, ?, ?, ?, 'pending')";
-                    $stmt = $pdo->prepare($sql);
+                    $stmt = $pdo->prepare("INSERT INTO transactions (user_id, amount_brl, amount_net_brl, pix_id, status) VALUES (?, ?, ?, ?, 'pending')");
                     return $stmt->execute([$userId, $amount, $netAmount, $pixId]);
-                } catch (PDOException $e3) {
-                    write_log('error', 'Falha crítica ao salvar transação: ' . $e3->getMessage());
+                } catch (PDOException $e4) {
+                    write_log('error', 'Falha crítica ao salvar transação: ' . $e4->getMessage());
                     return false;
                 }
             }
