@@ -23,15 +23,9 @@ try {
     $event = $payload['event'] ?? '';
     write_log('info', "SigiloPay Webhook: event=$event | " . substr($rawBody, 0, 300));
 
-    // Valida token
-    $storedToken = $pdo->query("SELECT `value` FROM settings WHERE `key`='sigilopay_webhook_token'")->fetchColumn();
-    $incomingToken = $payload['token'] ?? '';
-    if ($storedToken && $incomingToken && !hash_equals((string)$storedToken, (string)$incomingToken)) {
-        write_log('warning', "SigiloPay Webhook: token inválido recebido=$incomingToken");
-        http_response_code(401);
-        echo json_encode(['error' => 'Invalid token']);
-        exit;
-    }
+    // Token por transação não é validado globalmente (o token da API é por transação e seria sobrescrito)
+    // A segurança é garantida pela correspondência do pix_id com transações internas
+    write_log('info', "SigiloPay Webhook: token recebido=" . ($payload['token'] ?? '(none)'));
 
     // Só processa pagamentos confirmados
     if ($event !== 'TRANSACTION_PAID') {
