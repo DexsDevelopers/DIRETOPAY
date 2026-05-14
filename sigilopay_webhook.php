@@ -118,6 +118,28 @@ try {
             } catch (Throwable $e) {}
 
             write_log('info', "SigiloPay Webhook: pagamento processado tx={$txRow['id']} user=$userId net=$netAmount");
+
+            // UTMify — rastreamento de conversão
+            try {
+                require_once __DIR__ . '/includes/UtmifyService.php';
+                $utmStmt = $pdo->prepare("SELECT utmify_api_token FROM users WHERE id = ? LIMIT 1");
+                $utmStmt->execute([$userId]);
+                $utmToken = (string)($utmStmt->fetchColumn() ?: '');
+                if (!empty($utmToken)) {
+                    $utmCustomer = [
+                        'name'  => $clientName,
+                        'email' => $clientEmail,
+                    ];
+                    $utmResult = UtmifyService::notifySale($utmToken, $txRow, [], $utmCustomer);
+                    write_log($utmResult['success'] ? 'info' : 'warning', 'UTMify sigilopay resultado', [
+                        'http_code' => $utmResult['http_code'],
+                        'response'  => substr($utmResult['response'] ?? '', 0, 300),
+                        'tx_id'     => $txRow['id'],
+                    ]);
+                }
+            } catch (Throwable $e) {
+                write_log('warning', 'UTMify sigilopay falhou: ' . $e->getMessage());
+            }
         }
     } else {
         // Transação não encontrada via pix_id — pode ter sido criada externamente (checkout Sigilopay)
