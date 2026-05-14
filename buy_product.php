@@ -72,12 +72,12 @@ try {
                     ? round($amount * ((float)$coupon['value'] / 100), 2)
                     : min((float)$coupon['value'], $amount);
                 $couponId = $coupon['id'];
-                $amount   = max(10, $amount - $discountAmount);
+                $amount   = max(1, $amount - $discountAmount);
             }
         }
     }
 
-    if ($amount < 10) throw new Exception('Valor mínimo é R$ 10,00.');
+    if ($amount < 1) throw new Exception('Valor mínimo é R$ 1,00.');
 
     // Check if product has stock items (for auto-delivery)
     if ($product['stock'] !== -1 && $product['stock'] <= 0) {

@@ -36,8 +36,8 @@ try {
     $stmt->execute([$checkoutId]);
     $totalAmount = (float)$stmt->fetchColumn();
 
-    if ($totalAmount < 10) {
-        throw new Exception('O valor mínimo de transação é R$ 10,00.');
+    if ($totalAmount < 1) {
+        throw new Exception('O valor mínimo de transação é R$ 1,00.');
     }
 
     // Buscar User / Lojista
