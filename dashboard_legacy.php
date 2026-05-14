@@ -411,10 +411,10 @@ elseif ($approvalRate >= 50) $approvalBadgeClass = 'ghost-yellow';
                     </div>
                     <div class="amount-input-wrap">
                         <span class="amount-prefix">R$</span>
-                        <input type="number" id="amount" class="amount-input" placeholder="0,00" step="0.01" min="10"
+                        <input type="number" id="amount" class="amount-input" placeholder="0,00" step="0.01" min="1"
                                <?php echo $user['status'] != 'approved' ? 'disabled' : ''; ?>>
                     </div>
-                    <p class="card-hint" style="margin-bottom:.75rem;">Mínimo: R$ 10,00</p>
+                    <p class="card-hint" style="margin-bottom:.75rem;">Mínimo: R$ 1,00</p>
                     <button id="btn-generate" class="btn-primary"
                             <?php echo $user['status'] != 'approved' ? 'disabled' : ''; ?>>
                         <i class="fas fa-bolt"></i>
