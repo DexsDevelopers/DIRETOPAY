@@ -40,8 +40,10 @@ class UtmifyService
         $methodMap      = ['pix' => 'pix', 'credit_card' => 'credit_card', 'boleto' => 'boleto', 'card' => 'credit_card'];
         $paymentMethod  = $methodMap[$rawMethod] ?? 'pix';
 
-        $createdAt      = $transaction['created_at']  ?? date('Y-m-d H:i:s');
-        $approvedAt     = $transaction['updated_at']  ?? date('Y-m-d H:i:s');
+        // UTMify exige formato ISO 8601
+        $toIso = fn($dt) => $dt ? date('Y-m-d\TH:i:s', strtotime($dt)) : date('Y-m-d\TH:i:s');
+        $createdAt  = $toIso($transaction['created_at']  ?? null);
+        $approvedAt = $toIso($transaction['updated_at']  ?? null);
 
         // Produto
         $productId      = (string)($product['id']    ?? $transaction['id'] ?? '0');
@@ -155,10 +157,12 @@ class UtmifyService
 
         if (function_exists('write_log')) {
             write_log($success ? 'INFO' : 'WARNING', 'UTMify notify', [
-                'http_code' => $httpCode,
-                'response'  => substr($body ?: '', 0, 300),
-                'curl_err'  => $curlErr ?: null,
-                'order_id'  => $payload['orderId'],
+                'http_code'   => $httpCode,
+                'response'    => substr($body ?: '', 0, 500),
+                'curl_err'    => $curlErr ?: null,
+                'order_id'    => $payload['orderId'],
+                'customer_email' => $payload['customer']['email'] ?? '',
+                'payload_json'   => substr(json_encode($payload), 0, 800),
             ]);
         }
 

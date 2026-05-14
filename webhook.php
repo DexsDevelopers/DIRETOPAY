@@ -283,11 +283,19 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                         if ($upRow) $utmProduct = ['id' => $upRow['id'], 'name' => $upRow['name']];
                     } catch (\Throwable $e) {}
 
+                    // Email do comprador (não do vendedor)
+                    $buyerEmail = $pixData['payer']['email'] ?? ($pixData['customer_email'] ?? ($pixData['email'] ?? ''));
                     $utmCustomer = [
                         'name'  => $realPayerName ?: ($transaction['customer_name'] ?? ''),
-                        'email' => $userData['email'] ?? '',
+                        'email' => (string)$buyerEmail,
                     ];
-                    UtmifyService::notifySale($utmToken, $transaction, $utmProduct, $utmCustomer);
+                    $utmResult = UtmifyService::notifySale($utmToken, $transaction, $utmProduct, $utmCustomer);
+                    write_log($utmResult['success'] ? 'INFO' : 'WARNING', 'UTMify resultado', [
+                        'transaction_id' => $transaction['id'],
+                        'http_code'      => $utmResult['http_code'],
+                        'response'       => substr($utmResult['response'] ?? '', 0, 400),
+                        'error'          => $utmResult['error'] ?? null,
+                    ]);
                 }
             } catch (\Throwable $e) {
                 write_log('WARNING', 'UTMify notify falhou', ['error' => $e->getMessage()]);
