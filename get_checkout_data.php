@@ -31,8 +31,18 @@ try {
         $total += (float)$it['price'];
     }
 
+    // Verificar se o vendedor tem token UTMify ativo
+    $hasUtmify = false;
+    try {
+        $uStmt = $pdo->prepare("SELECT utmify_api_token FROM users WHERE id = ? LIMIT 1");
+        $uStmt->execute([$checkout['user_id']]);
+        $utmToken = $uStmt->fetchColumn();
+        $hasUtmify = !empty($utmToken);
+    } catch (\Throwable $e) {}
+
     echo json_encode([
         'success' => true,
+        'has_utmify' => $hasUtmify,
         'checkout' => [
             'id' => $checkout['id'],
             'user_id' => $checkout['user_id'],

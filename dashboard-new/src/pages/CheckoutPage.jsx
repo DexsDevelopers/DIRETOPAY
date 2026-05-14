@@ -107,6 +107,22 @@ export default function CheckoutPage() {
         return () => document.getElementById('ck-font')?.remove();
     }, [data]);
 
+    // Inject UTMify script if seller has token configured
+    useEffect(() => {
+        if (!data?.has_utmify) return;
+        const id = 'utmify-script';
+        if (document.getElementById(id)) return;
+        const s = document.createElement('script');
+        s.id = id;
+        s.src = 'https://cdn.utmify.com.br/scripts/utms/latest.js';
+        s.setAttribute('data-utmify-prevent-xcod-sck', '');
+        s.setAttribute('data-utmify-prevent-subids', '');
+        s.async = true;
+        s.defer = true;
+        document.head.appendChild(s);
+        return () => document.getElementById(id)?.remove();
+    }, [data]);
+
     const fetchCheckout = async () => {
         try {
             const res  = await fetch(`/get_checkout_data.php?slug=${slug}`);
