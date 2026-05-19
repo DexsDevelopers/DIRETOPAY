@@ -4,6 +4,12 @@ require_once 'includes/auth.php';
 
 header('Content-Type: application/json');
 
+// Captura qualquer erro PHP e retorna JSON em vez de HTML
+set_exception_handler(function($e) {
+    echo json_encode(['success' => false, 'message' => 'Erro interno: ' . $e->getMessage()]);
+    exit;
+});
+
 $user = requireAuth();
 if (!$user) {
     echo json_encode(['success' => false, 'message' => 'Não autorizado.']);
@@ -26,9 +32,9 @@ if (!$key || $amount < 0.01) {
     exit;
 }
 
-// Verificar saldo disponível
+// Verificar saldo disponível (amount_net_brl = valor já descontado da taxa)
 $balanceRow = $pdo->prepare("
-    SELECT COALESCE(SUM(amount * 0.9), 0) AS balance
+    SELECT COALESCE(SUM(amount_net_brl), 0) AS balance
     FROM transactions
     WHERE user_id = ? AND status = 'paid'
 ");
