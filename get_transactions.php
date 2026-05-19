@@ -54,7 +54,10 @@ foreach ($rows as $t) {
         'amount_net_brl' => number_format($t['amount_net_brl'], 2, ',', '.'),
         'status'         => $displayStatus,
         'badge'          => $badgeClass,
-        'customer_name'  => $t['customer_name'] ?? 'Sem nome',
+        'customer_name'  => (function($n) {
+            $legacy = ['Recarga Ghost Pix', 'Ghost Pix', 'Recarga GhostPay', 'GhostPay'];
+            return in_array($n, $legacy) ? 'Cobrança LunarPay' : ($n ?: 'Sem nome');
+        })($t['customer_name'] ?? ''),
         'qr_image'       => $t['qr_image'] ?? '',
         'pix_code'       => $t['pix_code'] ?? '',
         'seconds_old'    => (int)$t['seconds_old'],

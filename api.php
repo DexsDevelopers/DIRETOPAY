@@ -189,6 +189,9 @@ try {
             $errMsg     = $spRes['message'] ?? ($spRes['errorCode'] ?? 'Erro de comunicação com SigiloPay');
             $errDetails = isset($spRes['details']) ? json_encode($spRes['details']) : '';
             write_log('error', "SigiloPay FALHA: HTTP=$spHttpCode | $errMsg | details=$errDetails | payload=" . json_encode($spPayload) . " | response=$spResponse");
+            if ($spHttpCode === 403) {
+                throw new Exception("Credenciais SigiloPay inválidas ou expiradas. Acesse Admin → Gateways e atualize as chaves public/secret do SigiloPay. (HTTP 403)");
+            }
             throw new Exception("Erro SigiloPay: $errMsg (HTTP $spHttpCode)");
         }
     }
