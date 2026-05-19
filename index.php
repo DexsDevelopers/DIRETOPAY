@@ -46,8 +46,8 @@ if ($isAuth && $requestPath === '/') {
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-charts-He-U0hDw.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-react-CIFpnPib.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-motion-BKEh_tME.js">
-    <script type="module" crossorigin src="/assets/dashboard-react/assets/index-CBDJ6WQK.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/assets/index-3GNrKW3j.css">
+    <script type="module" crossorigin src="/assets/dashboard-react/assets/index-K7cKmP14.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/assets/index-DrjdNHHI.css">
     
     <!-- Preload fonts to avoid layout shift -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">

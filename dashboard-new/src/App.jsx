@@ -262,91 +262,92 @@ export default function App() {
     const balance = dashboardData?.balance || '0,00';
     const stats = dashboardData?.stats || {};
 
-    const quickActions = [
-      { icon: QrCode,        label: 'PIX',     action: () => navigate('/pix'),       color: 'text-violet-500', bg: 'bg-violet-500/10' },
-      { icon: Link2,         label: 'Links',   action: () => navigate('/checkouts'), color: 'text-pink-500',   bg: 'bg-pink-500/10'   },
-      { icon: ArrowUpRight,  label: 'Saques',  action: () => navigate('/saques'),    color: 'text-emerald-500',bg: 'bg-emerald-500/10'},
-      { icon: ShoppingCart,  label: 'Vendas',  action: () => navigate('/vendas'),    color: 'text-amber-500',  bg: 'bg-amber-500/10'  },
-    ];
-
     const miniStats = [
-      { label: 'Saldo Total',     value: `R$ ${stats.total_paid   || '0,00'}`, icon: Banknote,      up: true  },
-      { label: 'Volume Mensal',   value: `R$ ${stats.month_volume || '0,00'}`, icon: TrendingUp,    up: true  },
-      { label: 'Vendas Hoje',     value: `R$ ${stats.today_volume || '0,00'}`, icon: TrendingUp,    up: true  },
-      { label: 'Pendentes',       value: stats.pending_count || '0',           icon: TrendingDown,  up: false },
+      { label: 'Saldo Total',   value: `R$ ${stats.total_paid   || '0,00'}`, icon: Banknote,     accent: '#7c3aed', accentBg: '#f5f3ff' },
+      { label: 'Volume Mensal', value: `R$ ${stats.month_volume || '0,00'}`, icon: TrendingUp,   accent: '#0891b2', accentBg: '#ecfeff' },
+      { label: 'Vendas Hoje',   value: `R$ ${stats.today_volume || '0,00'}`, icon: TrendingUp,   accent: '#16a34a', accentBg: '#f0fdf4' },
+      { label: 'Pendentes',     value: stats.pending_count || '0',           icon: TrendingDown, accent: '#d97706', accentBg: '#fffbeb' },
     ];
 
-    /* ── shared sub-components ── */
-    const BalanceCard = ({ compact }) => (
-      <div className={`relative rounded-[28px] overflow-hidden ${compact ? 'p-6 h-full' : 'p-7'}`}
-        style={{ background: 'linear-gradient(135deg, #13011f 0%, #0d0818 60%, #020010 100%)' }}>
-        <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(ellipse at 80% 20%, #a78bfa, transparent 60%), radial-gradient(ellipse at 20% 80%, #ec4899, transparent 60%)' }} />
-        <div className="relative z-10 flex flex-col h-full">
-          <div className="flex items-start justify-between mb-auto">
-            <div>
-              <p className="text-white/40 text-[11px] font-black uppercase tracking-[0.2em]">Saldo Disponível</p>
-              <h1 className={`font-black text-white mt-2 tracking-tight ${compact ? 'text-3xl' : 'text-4xl'}`}>R$ {balance}</h1>
-            </div>
-            <button onClick={fetchDashboard} className="w-9 h-9 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all active:scale-95 shrink-0">
-              <RefreshCw size={15} className="text-white/40" />
-            </button>
-          </div>
-          <span className="text-[11px] font-black text-white/30 uppercase tracking-widest mt-5">Olá, {userData?.name?.split(' ')[0] || 'Usuário'} 👋</span>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 h-[3px]" style={{ background: 'linear-gradient(90deg, #a78bfa, #ec4899, #38bdf8, #34d399, #a78bfa)' }} />
-      </div>
-    );
+    const quickActions = [
+      { icon: QrCode,       label: 'PIX',    sub: 'Gerar e receber',   action: () => navigate('/pix'),       hex: '#7c3aed', bg: '#f5f3ff' },
+      { icon: Link2,        label: 'Links',  sub: 'Checkouts',         action: () => navigate('/checkouts'), hex: '#db2777', bg: '#fdf2f8' },
+      { icon: ArrowUpRight, label: 'Saques', sub: 'Transferir saldo',  action: () => navigate('/saques'),    hex: '#059669', bg: '#f0fdf4' },
+      { icon: ShoppingCart, label: 'Vendas', sub: 'Ver transações',    action: () => navigate('/vendas'),    hex: '#d97706', bg: '#fffbeb' },
+    ];
 
     return (
       <div className="space-y-4 animate-in fade-in duration-500 pb-10">
 
-        {/* ══════════════════════════════════════════
-            MOBILE  (< lg): stacked column
-            DESKTOP (≥ lg): 2-col grid full-width
-        ══════════════════════════════════════════ */}
-
-        {/* ── TOP ROW ── */}
+        {/* ── TOP ROW: balance + stats ── */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
-          {/* Balance — ocupa 2/5 no desktop */}
+          {/* Balance Card */}
           <div className="lg:col-span-2">
-            <BalanceCard compact />
+            <div className="relative rounded-[24px] overflow-hidden p-7 h-full min-h-[160px]"
+              style={{ background: 'linear-gradient(135deg, #13011f 0%, #0d0818 60%, #020010 100%)' }}>
+              <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'radial-gradient(ellipse at 80% 10%, #a78bfa, transparent 55%), radial-gradient(ellipse at 10% 90%, #ec4899, transparent 55%)' }} />
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.25em] mb-2">Saldo Disponível</p>
+                    <h1 className="text-4xl font-black text-white tracking-tight leading-none">R$ {balance}</h1>
+                  </div>
+                  <button onClick={fetchDashboard} className="w-9 h-9 rounded-xl bg-white/8 hover:bg-white/15 flex items-center justify-center transition-all active:scale-95 shrink-0 border border-white/10">
+                    <RefreshCw size={14} className="text-white/50" />
+                  </button>
+                </div>
+                <div className="mt-auto pt-6 flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-[11px] font-black text-white/30 uppercase tracking-widest">Olá, {userData?.name?.split(' ')[0] || 'Usuário'} 👋</span>
+                </div>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-[3px]" style={{ background: 'linear-gradient(90deg, #a78bfa, #ec4899, #38bdf8, #34d399, #a78bfa)' }} />
+            </div>
           </div>
 
-          {/* Stats — ocupa 3/5 no desktop */}
-          <div className="lg:col-span-3 grid grid-cols-2 gap-3 content-start">
-            {miniStats.map(({ label, value, icon: Icon, up }) => (
-              <div key={label} className="bg-white border border-gray-100 rounded-2xl p-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-tight">{label}</span>
-                  <div className={`w-7 h-7 rounded-xl flex items-center justify-center ${up ? 'bg-emerald-50' : 'bg-amber-50'}`}>
-                    <Icon size={14} className={up ? 'text-emerald-500' : 'text-amber-500'} />
+          {/* Stats grid */}
+          <div className="lg:col-span-3 grid grid-cols-2 gap-3">
+            {miniStats.map(({ label, value, icon: Icon, accent, accentBg }) => (
+              <div key={label} className="bg-white rounded-[20px] p-5 shadow-[0_1px_8px_rgba(0,0,0,0.06)] border border-gray-100/80 hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] transition-shadow group">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] leading-tight">{label}</span>
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110" style={{ background: accentBg }}>
+                    <Icon size={15} style={{ color: accent }} />
                   </div>
                 </div>
-                <p className="text-xl font-black text-gray-900 leading-none">{value}</p>
+                <p className="text-2xl font-black text-gray-900 leading-none tracking-tight">{value}</p>
+                <div className="mt-2 h-1 rounded-full opacity-20" style={{ background: accent }} />
               </div>
             ))}
           </div>
         </div>
 
-        {/* ── QUICK ACTIONS — full width ── */}
-        <div className="grid grid-cols-4 gap-3">
-          {quickActions.map(({ icon: Icon, label, action, color, bg }) => (
+        {/* ── QUICK ACTIONS ── */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {quickActions.map(({ icon: Icon, label, sub, action, hex, bg }) => (
             <button key={label} onClick={action}
-              className="flex flex-col items-center gap-2.5 bg-white border border-gray-100 hover:border-primary/20 hover:shadow-md rounded-2xl py-4 px-2 transition-all active:scale-95 group lg:flex-row lg:justify-center lg:gap-3 lg:py-5 lg:px-6">
-              <div className={`w-11 h-11 rounded-xl ${bg} flex items-center justify-center group-hover:scale-110 transition-transform shrink-0`}>
-                <Icon size={20} className={color} />
+              className="group relative flex items-center gap-4 bg-white rounded-[20px] px-5 py-4 shadow-[0_1px_8px_rgba(0,0,0,0.06)] border border-gray-100/80 hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all active:scale-[0.98] text-left overflow-hidden">
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: `linear-gradient(135deg, ${bg}, transparent 70%)` }} />
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 relative z-10" style={{ background: bg }}>
+                <Icon size={20} style={{ color: hex }} />
               </div>
-              <span className="text-[11px] lg:text-sm font-black text-gray-600 uppercase tracking-wide">{label}</span>
+              <div className="relative z-10">
+                <p className="font-black text-gray-900 text-sm leading-tight">{label}</p>
+                <p className="text-[11px] text-gray-400 font-medium mt-0.5">{sub}</p>
+              </div>
             </button>
           ))}
         </div>
 
-        {/* ── RECENT TRANSACTIONS — full width ── */}
-        <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
-            <h2 className="text-sm font-black text-gray-900 flex items-center gap-2">
-              <History size={16} className="text-primary" /> Últimas transações
+        {/* ── RECENT TRANSACTIONS ── */}
+        <div className="bg-white rounded-[20px] shadow-[0_1px_8px_rgba(0,0,0,0.06)] border border-gray-100/80 overflow-hidden">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-50">
+            <h2 className="text-sm font-black text-gray-900 flex items-center gap-2.5">
+              <span className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
+                <History size={13} className="text-primary" />
+              </span>
+              Últimas transações
             </h2>
             <button onClick={() => navigate('/vendas')} className="text-[11px] font-black text-primary flex items-center gap-1 hover:opacity-70 transition-opacity">
               ver tudo <ArrowRight size={12} />
