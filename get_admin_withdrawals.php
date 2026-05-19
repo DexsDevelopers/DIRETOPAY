@@ -9,6 +9,15 @@ if (!isAdmin()) {
 }
 
 try {
+    // Garantir colunas extras existem antes de consultar
+    foreach ([
+        "ALTER TABLE withdrawals ADD COLUMN type VARCHAR(30) DEFAULT 'withdrawal'",
+        "ALTER TABLE withdrawals ADD COLUMN pix_key_type VARCHAR(20) DEFAULT NULL",
+        "ALTER TABLE withdrawals ADD COLUMN description TEXT DEFAULT NULL",
+    ] as $ddl) {
+        try { $pdo->exec($ddl); } catch (Exception $e) { /* já existe */ }
+    }
+
     $status = $_GET['status'] ?? 'all';
     $search = trim($_GET['search'] ?? '');
 
