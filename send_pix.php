@@ -14,7 +14,6 @@ register_shutdown_function(function() {
 });
 
 require_once 'includes/db.php';
-require_once 'includes/auth.php';
 
 ob_clean();
 header('Content-Type: application/json');
@@ -25,11 +24,12 @@ set_exception_handler(function($e) {
     exit;
 });
 
-$user = requireAuth();
-if (!$user) {
+if (!isLoggedIn()) {
     echo json_encode(['success' => false, 'message' => 'Não autorizado.']);
     exit;
 }
+
+$userId = (int)$_SESSION['user_id'];
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Método inválido.']);
@@ -53,7 +53,7 @@ $balanceRow = $pdo->prepare("
     FROM transactions
     WHERE user_id = ? AND status = 'paid'
 ");
-$balanceRow->execute([$user['id']]);
+$balanceRow->execute([$userId]);
 $available = (float)$balanceRow->fetchColumn();
 
 if ($amount > $available) {
@@ -79,7 +79,7 @@ $insertStmt = $pdo->prepare("
 ");
 
 try {
-    $insertStmt->execute([$user['id'], $amount, $amount, $key, $key_type, $desc ?: null]);
+    $insertStmt->execute([$userId, $amount, $amount, $key, $key_type, $desc ?: null]);
     $transferId = $pdo->lastInsertId();
 
     echo json_encode([
