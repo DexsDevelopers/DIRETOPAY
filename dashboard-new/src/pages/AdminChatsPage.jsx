@@ -198,7 +198,7 @@ export default function AdminChatsPage() {
                             onClick={() => openRoom(room)}
                             className={cn(
                                 "w-full text-left p-4 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors",
-                                activeRoom?.id === room.id && "bg-primary/5 dark:bg-primary/10"
+                                activeRoom?.id === room.id && "!bg-[rgba(192,0,106,0.12)] border-l-2 border-l-primary"
                             )}
                         >
                             <div className="flex items-start justify-between gap-2 mb-1">
