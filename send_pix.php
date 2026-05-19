@@ -1,11 +1,15 @@
 <?php
+ob_start();
+error_reporting(0);
+
 require_once 'includes/db.php';
 require_once 'includes/auth.php';
 
+ob_clean();
 header('Content-Type: application/json');
 
-// Captura qualquer erro PHP e retorna JSON em vez de HTML
 set_exception_handler(function($e) {
+    ob_clean();
     echo json_encode(['success' => false, 'message' => 'Erro interno: ' . $e->getMessage()]);
     exit;
 });
@@ -73,5 +77,6 @@ try {
         'message'     => 'Solicitação de PIX registrada. Será processada em breve.',
     ]);
 } catch (Exception $e) {
+    write_log('error', 'send_pix falhou: ' . $e->getMessage());
     echo json_encode(['success' => false, 'message' => 'Erro ao registrar transferência: ' . $e->getMessage()]);
 }
