@@ -138,7 +138,7 @@ try {
         $spCurlError = curl_error($ch);
         curl_close($ch);
 
-        write_log('info', "SigiloPay Response: HTTP=$spHttpCode | " . substr($spResponse ?: '(empty)', 0, 500));
+        write_log('info', "SigiloPay Response: HTTP=$spHttpCode | body=" . substr($spResponse ?: '(empty)', 0, 1000));
 
         if ($spResponse === false) {
             throw new Exception("Falha na conexão com SigiloPay: $spCurlError");
