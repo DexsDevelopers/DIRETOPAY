@@ -173,7 +173,7 @@ try {
             $platformFee = $amount * ($user['commission_rate'] / 100);
             $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
 
-            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Recarga Ghost Pix', $externalId, 'pix', $utmParams);
+            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança LunarPay', $externalId, 'pix', $utmParams);
 
             if (class_exists('PushService')) {
                 try { PushService::notifyUser($userId, '⚡ PIX Gerado!', 'Cobrança de R$ ' . number_format($amount, 2, ',', '.') . ' gerada.', 'sale_generated'); } catch (Throwable $e) {}
