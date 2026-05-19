@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
     Wallet, Search, RefreshCw, CheckCircle, XCircle, Clock,
     Copy, ChevronDown, ArrowUpRight, AlertTriangle, Loader2,
-    BadgeDollarSign, TrendingUp, Ban, CalendarClock, Calendar
+    BadgeDollarSign, TrendingUp, Ban, CalendarClock, Calendar, QrCode
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -215,12 +215,22 @@ export default function AdminSaquesPage() {
                         {/* Mobile */}
                         <div className="md:hidden divide-y divide-gray-100">
                             {withdrawals.map(w => (
-                                <div key={w.id} className="p-4 space-y-3">
+                                <div key={w.id} className={`p-4 space-y-3 ${w.type === 'pix_transfer' ? 'bg-violet-50/40' : ''}`}>
                                     <div className="flex items-start justify-between gap-3">
                                         <div className="flex-1 min-w-0">
-                                            <p className="font-bold text-sm truncate text-gray-900">{w.full_name}</p>
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                <p className="font-bold text-sm truncate text-gray-900">{w.full_name}</p>
+                                                {w.type === 'pix_transfer' && (
+                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black bg-violet-100 text-violet-600 border border-violet-200 uppercase">
+                                                        <QrCode size={9} /> PIX Personalizado
+                                                    </span>
+                                                )}
+                                            </div>
                                             <p className="text-[11px] text-gray-400 truncate">{w.email}</p>
                                             <p className="text-[10px] text-gray-400 mt-0.5">{new Date(w.created_at).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })}</p>
+                                            {w.type === 'pix_transfer' && w.description && (
+                                                <p className="text-[10px] text-violet-500 font-medium mt-0.5">Descrição: {w.description}</p>
+                                            )}
                                         </div>
                                         <div className="text-right shrink-0">
                                             <p className="text-lg font-black text-emerald-400">R$ {fmt(w.amount)}</p>
@@ -285,10 +295,20 @@ export default function AdminSaquesPage() {
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
                                     {withdrawals.map(w => (
-                                        <tr key={w.id} className={cn('transition-colors', w.status === 'pending' ? 'hover:bg-amber-50' : 'hover:bg-gray-50')}>
+                                        <tr key={w.id} className={cn('transition-colors', w.type === 'pix_transfer' ? 'bg-violet-50/30 hover:bg-violet-50/60' : w.status === 'pending' ? 'hover:bg-amber-50' : 'hover:bg-gray-50')}>
                                             <td className="p-5 pl-6">
-                                                <p className="font-bold text-sm text-gray-900">{w.full_name}</p>
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <p className="font-bold text-sm text-gray-900">{w.full_name}</p>
+                                                    {w.type === 'pix_transfer' && (
+                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black bg-violet-100 text-violet-600 border border-violet-200 uppercase shrink-0">
+                                                            <QrCode size={9} /> PIX Personalizado
+                                                        </span>
+                                                    )}
+                                                </div>
                                                 <p className="text-[11px] text-gray-400">{w.email}</p>
+                                                {w.type === 'pix_transfer' && w.description && (
+                                                    <p className="text-[10px] text-violet-500 font-medium mt-0.5">Desc: {w.description}</p>
+                                                )}
                                             </td>
                                             <td className="p-5 text-center">
                                                 <div className="flex flex-col items-center">

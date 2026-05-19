@@ -40,42 +40,32 @@ if ($amount > $available) {
     exit;
 }
 
-// Registrar transferência pendente na base
-$stmt = $pdo->prepare("
-    INSERT INTO pix_transfers (user_id, key_type, pix_key, amount, description, status, created_at)
-    VALUES (?, ?, ?, ?, ?, 'pending', NOW())
+// Garantir que a coluna type existe em withdrawals
+try {
+    $pdo->exec("ALTER TABLE withdrawals ADD COLUMN type VARCHAR(30) DEFAULT 'withdrawal' AFTER status");
+} catch (Exception $e) { /* coluna já existe */ }
+try {
+    $pdo->exec("ALTER TABLE withdrawals ADD COLUMN pix_key_type VARCHAR(20) DEFAULT NULL AFTER pix_key");
+} catch (Exception $e) { /* coluna já existe */ }
+try {
+    $pdo->exec("ALTER TABLE withdrawals ADD COLUMN description TEXT DEFAULT NULL AFTER pix_key_type");
+} catch (Exception $e) { /* coluna já existe */ }
+
+// Registrar como saque especial do tipo pix_transfer na tabela withdrawals
+$insertStmt = $pdo->prepare("
+    INSERT INTO withdrawals (user_id, amount, amount_gross, fee_platform, fee_gateway, pix_key, pix_key_type, description, status, type, created_at)
+    VALUES (?, ?, ?, 0, 0, ?, ?, ?, 'pending', 'pix_transfer', NOW())
 ");
 
 try {
-    $stmt->execute([$user['id'], $key_type, $key, $amount, $desc]);
+    $insertStmt->execute([$user['id'], $amount, $amount, $key, $key_type, $desc ?: null]);
     $transferId = $pdo->lastInsertId();
 
     echo json_encode([
         'success'     => true,
         'transfer_id' => $transferId,
-        'message'     => 'Solicitação de transferência registrada. Será processada em breve.',
+        'message'     => 'Solicitação de PIX registrada. Será processada em breve.',
     ]);
 } catch (Exception $e) {
-    // Se tabela não existir, criar e tentar novamente
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS pix_transfers (
-            id          INT AUTO_INCREMENT PRIMARY KEY,
-            user_id     INT NOT NULL,
-            key_type    VARCHAR(20) NOT NULL,
-            pix_key     VARCHAR(255) NOT NULL,
-            amount      DECIMAL(10,2) NOT NULL,
-            description TEXT,
-            status      ENUM('pending','processing','completed','failed') DEFAULT 'pending',
-            created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at  DATETIME DEFAULT NULL
-        )
-    ");
-    $stmt->execute([$user['id'], $key_type, $key, $amount, $desc]);
-    $transferId = $pdo->lastInsertId();
-
-    echo json_encode([
-        'success'     => true,
-        'transfer_id' => $transferId,
-        'message'     => 'Solicitação de transferência registrada.',
-    ]);
+    echo json_encode(['success' => false, 'message' => 'Erro ao registrar transferência: ' . $e->getMessage()]);
 }

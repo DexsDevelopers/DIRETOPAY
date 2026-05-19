@@ -24,7 +24,11 @@ try {
     $pendingGross  = (float)($pdo->query("SELECT COALESCE(SUM(amount_gross),0) FROM withdrawals WHERE status = 'pending'")->fetchColumn() ?: 0);
 
     // Main query - use w.* like get_admin_data.php does
-    $sql = "SELECT w.id, w.user_id, w.amount, w.amount_gross, w.fee_platform, w.fee_gateway, w.pix_key, w.status, w.tx_hash, w.created_at, 
+    $sql = "SELECT w.id, w.user_id, w.amount, w.amount_gross, w.fee_platform, w.fee_gateway, w.pix_key,
+                   COALESCE(w.type,'withdrawal') AS type,
+                   COALESCE(w.pix_key_type,'') AS pix_key_type,
+                   COALESCE(w.description,'') AS description,
+                   w.status, w.tx_hash, w.created_at,
                    u.email, u.full_name AS user_full_name, u.pix_key AS user_pix_key
             FROM withdrawals w
             JOIN users u ON w.user_id = u.id
