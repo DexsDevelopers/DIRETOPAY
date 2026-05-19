@@ -3,7 +3,8 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Menu, Bell, Search, User, X, Info, CheckCircle, AlertTriangle, AlertCircle,
-    Zap, DollarSign, ShoppingCart, Eye, TrendingUp, RefreshCw, Sun, Moon
+    Zap, DollarSign, ShoppingCart, Eye, TrendingUp, RefreshCw, Sun, Moon,
+    BellOff, Sparkles
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -13,16 +14,18 @@ function reativarNotificacoes() {
     window.location.reload();
 }
 
+const P = '#C0006A';
+
 const NOTIF_TYPES = {
-    info:           { icon: Info,          color: 'text-blue-500',    bg: 'bg-blue-50',    border: 'border-blue-100',    label: 'Info' },
-    success:        { icon: CheckCircle,   color: 'text-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-100', label: 'Sistema' },
-    warning:        { icon: AlertTriangle, color: 'text-amber-500',   bg: 'bg-amber-50',   border: 'border-amber-100',   label: 'Aviso' },
-    danger:         { icon: AlertCircle,   color: 'text-red-500',     bg: 'bg-red-50',     border: 'border-red-100',     label: 'Alerta' },
-    sale_generated: { icon: Zap,           color: 'text-violet-500',  bg: 'bg-violet-50',  border: 'border-violet-100',  label: 'PIX Gerado' },
-    sale_paid:      { icon: DollarSign,    color: 'text-green-500',   bg: 'bg-green-50',   border: 'border-green-100',   label: 'Venda Paga' },
-    cart_abandoned: { icon: ShoppingCart,  color: 'text-orange-500',  bg: 'bg-orange-50',  border: 'border-orange-100',  label: 'Abandono' },
-    store_visit:    { icon: Eye,           color: 'text-sky-500',     bg: 'bg-sky-50',     border: 'border-sky-100',     label: 'Visita' },
-    sale:           { icon: TrendingUp,    color: 'text-green-500',   bg: 'bg-green-50',   border: 'border-green-100',   label: 'Venda' },
+    info:           { icon: Info,          hex: '#3b82f6', label: 'Info' },
+    success:        { icon: CheckCircle,   hex: '#10b981', label: 'Sistema' },
+    warning:        { icon: AlertTriangle, hex: '#f59e0b', label: 'Aviso' },
+    danger:         { icon: AlertCircle,   hex: '#ef4444', label: 'Alerta' },
+    sale_generated: { icon: Zap,           hex: P,         label: 'PIX Gerado' },
+    sale_paid:      { icon: DollarSign,    hex: '#10b981', label: 'Venda Paga' },
+    cart_abandoned: { icon: ShoppingCart,  hex: '#f97316', label: 'Abandono' },
+    store_visit:    { icon: Eye,           hex: '#0ea5e9', label: 'Visita' },
+    sale:           { icon: TrendingUp,    hex: '#10b981', label: 'Venda' },
 };
 
 const TABS = [
@@ -58,7 +61,7 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
     const { isDark, toggleTheme } = useTheme();
 
     return (
-        <header className="h-20 border-b border-gray-100 flex items-center justify-between px-6 lg:px-8 shrink-0 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-[0_1px_12px_rgba(124,58,237,0.06)]">
+        <header className="h-20 border-b border-gray-100 flex items-center justify-between px-6 lg:px-8 shrink-0 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-[0_1px_12px_rgba(192,0,106,0.06)]">
             {/* Left */}
             <div className="flex items-center gap-4">
                 <button onClick={onMenuClick} className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-600">
@@ -104,124 +107,168 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
                         <div className="fixed inset-0 z-[9999]">
                             <div className="absolute inset-0" onClick={() => setShow(false)} />
                             <motion.div
-                                initial={{ opacity: 0, y: -10, scale: 0.97 }}
+                                initial={{ opacity: 0, y: -8, scale: 0.96 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: -10, scale: 0.97 }}
-                                transition={{ duration: 0.18, ease: 'easeOut' }}
-                                className="absolute inset-0 bg-white flex flex-col md:inset-auto md:top-[76px] md:right-4 md:bottom-auto md:left-auto md:w-[390px] md:max-h-[580px] md:rounded-[28px] md:border md:border-gray-100 md:shadow-[0_24px_80px_rgba(124,58,237,0.16)]"
+                                exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                                transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                                className="absolute inset-0 flex flex-col md:inset-auto md:top-[72px] md:right-4 md:bottom-auto md:left-auto md:w-[400px] md:max-h-[600px] md:rounded-[24px] overflow-hidden"
+                                style={{ boxShadow: '0 32px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(192,0,106,0.1)' }}
                             >
-                                {/* Panel Header */}
-                                <div className="p-5 pb-3 border-b border-gray-50 shrink-0">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className="flex items-center gap-2.5">
-                                            <button onClick={() => setShow(false)} className="p-1 hover:bg-gray-100 rounded-lg md:hidden">
-                                                <X size={18} className="text-gray-400" />
-                                            </button>
-                                            <div className="w-8 h-8 rounded-xl overflow-hidden border border-purple-100 shadow-sm shrink-0">
-                                                <img src="/logo_premium.png?v=3" alt="LunarPay"
-                                                    className="w-full h-full object-cover"
-                                                    onError={e => { e.target.style.display = 'none'; e.target.parentElement.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-pink-600 to-rose-700 flex items-center justify-center"><span class="text-white font-black text-xs">L</span></div>'; }} />
+                                {/* ── HEADER GRADIENTE ── */}
+                                <div className="relative shrink-0 overflow-hidden"
+                                    style={{ background: 'linear-gradient(135deg, #1a000e 0%, #3d0020 60%, #1a000e 100%)' }}>
+                                    {/* glow orb */}
+                                    <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full pointer-events-none"
+                                        style={{ background: 'radial-gradient(circle, rgba(192,0,106,0.35) 0%, transparent 70%)' }} />
+
+                                    <div className="relative z-10 px-5 pt-5 pb-4">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div className="flex items-center gap-3">
+                                                <button onClick={() => setShow(false)} className="p-1.5 hover:bg-white/10 rounded-xl transition-colors md:hidden">
+                                                    <X size={16} className="text-white/60" />
+                                                </button>
+                                                <div className="flex items-center gap-2.5">
+                                                    <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0"
+                                                        style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                                                        <Bell size={16} className="text-white" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-black text-sm text-white leading-none tracking-tight">Notificações</p>
+                                                        <p className="text-[10px] font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>LunarPay</p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <p className="font-black text-sm text-gray-900 leading-none">Notificações</p>
-                                                <p className="text-[10px] text-gray-400 font-medium mt-0.5">LunarPay</p>
+                                            <div className="flex items-center gap-2">
+                                                {unreadCount > 0 && (
+                                                    <motion.button whileTap={{ scale: 0.95 }} onClick={onMarkAllRead}
+                                                        className="text-[10px] font-black px-3 py-1.5 rounded-xl transition-all"
+                                                        style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                                                        Ler todas
+                                                    </motion.button>
+                                                )}
+                                                <span className="text-[10px] font-black px-2.5 py-1 rounded-full"
+                                                    style={unreadCount > 0
+                                                        ? { background: P, color: '#fff', boxShadow: `0 4px 14px ${P}60` }
+                                                        : { background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.4)' }}>
+                                                    {unreadCount > 0 ? `${unreadCount} nova${unreadCount !== 1 ? 's' : ''}` : 'Tudo lido'}
+                                                </span>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            {unreadCount > 0 && (
-                                                <button onClick={onMarkAllRead}
-                                                    className="text-[9px] font-black text-primary/60 hover:text-primary uppercase tracking-wider transition-colors px-2 py-1 hover:bg-primary/5 rounded-lg">
-                                                    Ler todas
-                                                </button>
-                                            )}
-                                            <span className={`text-[10px] font-black px-2.5 py-1 rounded-full ${unreadCount > 0 ? 'bg-primary text-white shadow-sm shadow-primary/30' : 'bg-gray-100 text-gray-400'}`}>
-                                                {unreadCount > 0 ? `${unreadCount} nova${unreadCount > 1 ? 's' : ''}` : 'zero'}
-                                            </span>
+
+                                        {/* Tabs pill */}
+                                        <div className="flex gap-1 p-1 rounded-2xl" style={{ background: 'rgba(0,0,0,0.25)' }}>
+                                            {TABS.map(t => {
+                                                const tabUnread = (t.types
+                                                    ? notifications.filter(n => t.types.includes(n.type) && !n.is_read)
+                                                    : notifications.filter(n => !n.is_read)
+                                                ).length;
+                                                const active = tab === t.id;
+                                                return (
+                                                    <button key={t.id} onClick={() => setTab(t.id)}
+                                                        className="flex-1 py-1.5 rounded-xl text-[10px] font-black transition-all relative"
+                                                        style={active
+                                                            ? { background: P, color: '#fff', boxShadow: `0 4px 12px ${P}50` }
+                                                            : { color: 'rgba(255,255,255,0.4)' }}>
+                                                        {t.label}
+                                                        {tabUnread > 0 && (
+                                                            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[7px] text-white font-black flex items-center justify-center"
+                                                                style={{ background: active ? '#fff' : P, color: active ? P : '#fff' }}>
+                                                                {tabUnread > 9 ? '9+' : tabUnread}
+                                                            </span>
+                                                        )}
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
-                                    </div>
-                                    {/* Tabs */}
-                                    <div className="flex gap-1 bg-gray-50 p-1 rounded-2xl">
-                                        {TABS.map(t => {
-                                            const tabUnread = (t.types
-                                                ? notifications.filter(n => t.types.includes(n.type) && !n.is_read)
-                                                : notifications.filter(n => !n.is_read)
-                                            ).length;
-                                            return (
-                                                <button key={t.id} onClick={() => setTab(t.id)}
-                                                    className={`flex-1 py-1.5 rounded-xl text-[10px] font-black transition-all relative ${tab === t.id ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-700'}`}>
-                                                    {t.label}
-                                                    {tabUnread > 0 && (
-                                                        <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-primary rounded-full text-[7px] text-white font-black flex items-center justify-center">
-                                                            {tabUnread > 9 ? '9+' : tabUnread}
-                                                        </span>
-                                                    )}
-                                                </button>
-                                            );
-                                        })}
                                     </div>
                                 </div>
 
-                                {/* List */}
-                                <div className="flex-1 overflow-y-auto custom-scrollbar">
+                                {/* ── LIST ── */}
+                                <div className="flex-1 overflow-y-auto bg-white dark:bg-[#0f0f14] custom-scrollbar">
                                     {filtered.length > 0 ? (
-                                        <div className="divide-y divide-gray-50/80">
-                                            {filtered.map(n => {
+                                        <div className="p-3 space-y-1.5">
+                                            {filtered.map((n, i) => {
                                                 const cfg = NOTIF_TYPES[n.type] || NOTIF_TYPES.info;
                                                 const Icon = cfg.icon;
                                                 return (
-                                                    <div key={n.id}
+                                                    <motion.div key={n.id}
+                                                        initial={{ opacity: 0, x: -6 }}
+                                                        animate={{ opacity: 1, x: 0 }}
+                                                        transition={{ duration: 0.18, delay: i * 0.03 }}
                                                         onClick={() => !n.is_read && onMarkRead?.(n.id)}
-                                                        className={`flex gap-3.5 px-5 py-4 cursor-pointer transition-all hover:bg-gray-50/80 ${!n.is_read ? 'bg-violet-50/30' : ''}`}>
-                                                        {/* Icon */}
-                                                        <div className={`w-10 h-10 rounded-2xl ${cfg.bg} border ${cfg.border} flex items-center justify-center shrink-0 mt-0.5`}>
-                                                            <Icon size={16} className={cfg.color} />
+                                                        className="flex gap-3 p-3.5 rounded-2xl cursor-pointer transition-all group relative overflow-hidden"
+                                                        style={!n.is_read
+                                                            ? { background: `${cfg.hex}08`, border: `1px solid ${cfg.hex}22` }
+                                                            : { background: 'transparent', border: '1px solid transparent' }}
+                                                        onMouseEnter={e => e.currentTarget.style.background = `${cfg.hex}12`}
+                                                        onMouseLeave={e => e.currentTarget.style.background = n.is_read ? 'transparent' : `${cfg.hex}08`}
+                                                    >
+                                                        {/* left accent bar */}
+                                                        {!n.is_read && (
+                                                            <div className="absolute left-0 top-3 bottom-3 w-[3px] rounded-full"
+                                                                style={{ background: `linear-gradient(180deg, ${cfg.hex}, ${cfg.hex}60)` }} />
+                                                        )}
+
+                                                        {/* icon */}
+                                                        <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
+                                                            style={{ background: `${cfg.hex}18`, border: `1px solid ${cfg.hex}30` }}>
+                                                            <Icon size={16} style={{ color: cfg.hex }} />
                                                         </div>
-                                                        {/* Content */}
+
+                                                        {/* content */}
                                                         <div className="flex-1 min-w-0">
-                                                            <div className="flex items-center justify-between gap-2 mb-1">
-                                                                <div className="flex items-center gap-1.5">
-                                                                    <span className={`text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-lg ${cfg.bg} ${cfg.color}`}>
-                                                                        {cfg.label}
-                                                                    </span>
-                                                                    {!n.is_read && <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse shrink-0" />}
-                                                                </div>
-                                                                <span className="text-[9px] text-gray-300 font-bold shrink-0">
+                                                            <div className="flex items-center justify-between gap-2 mb-0.5">
+                                                                <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg"
+                                                                    style={{ background: `${cfg.hex}15`, color: cfg.hex }}>
+                                                                    {cfg.label}
+                                                                </span>
+                                                                <span className="text-[9px] font-bold text-gray-400 shrink-0">
                                                                     {timeAgo(n.created_at || n.time)}
                                                                 </span>
                                                             </div>
-                                                            <p className="text-xs font-bold text-gray-900 leading-snug">{n.title}</p>
+                                                            <p className="text-[12px] font-bold text-gray-900 dark:text-white leading-snug mt-1">{n.title}</p>
                                                             <p className="text-[11px] text-gray-400 mt-0.5 leading-relaxed line-clamp-2">{n.message}</p>
                                                         </div>
-                                                    </div>
+
+                                                        {/* unread dot */}
+                                                        {!n.is_read && (
+                                                            <div className="w-2 h-2 rounded-full shrink-0 mt-1 animate-pulse"
+                                                                style={{ background: cfg.hex, boxShadow: `0 0 6px ${cfg.hex}` }} />
+                                                        )}
+                                                    </motion.div>
                                                 );
                                             })}
                                         </div>
                                     ) : (
                                         <div className="flex flex-col items-center justify-center h-full py-16 gap-4">
-                                            <div className="w-16 h-16 bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl flex items-center justify-center shadow-inner">
-                                                <Bell size={22} className="text-gray-300" />
+                                            <div className="w-16 h-16 rounded-3xl flex items-center justify-center"
+                                                style={{ background: `${P}12`, border: `1px solid ${P}20` }}>
+                                                <BellOff size={22} style={{ color: P }} />
                                             </div>
                                             <div className="text-center">
-                                                <p className="text-sm font-black text-gray-400">Tudo em dia!</p>
-                                                <p className="text-[11px] text-gray-300 mt-1">Nenhuma notificação aqui</p>
+                                                <p className="text-sm font-black text-gray-500">Tudo em dia!</p>
+                                                <p className="text-[11px] text-gray-400 mt-1">Nenhuma notificação aqui</p>
                                             </div>
                                         </div>
                                     )}
                                 </div>
 
-                                {/* Footer */}
-                                <div className="px-5 py-3 border-t border-gray-50 shrink-0">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <p className="text-[10px] text-gray-300 font-bold">{notifications.length} no total</p>
-                                        <div className="flex items-center gap-1">
-                                            <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                                            <span className="text-[9px] text-gray-300 font-bold">Atualiza a cada 30s</span>
+                                {/* ── FOOTER ── */}
+                                <div className="px-4 py-3 shrink-0 bg-white dark:bg-[#0f0f14]"
+                                    style={{ borderTop: '1px solid rgba(192,0,106,0.08)' }}>
+                                    <div className="flex items-center justify-between mb-2.5">
+                                        <p className="text-[10px] text-gray-400 font-bold">{notifications.length} no total</p>
+                                        <div className="flex items-center gap-1.5">
+                                            <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+                                            <span className="text-[9px] text-gray-400 font-bold">Atualiza a cada 30s</span>
                                         </div>
                                     </div>
-                                    <button
-                                        onClick={reativarNotificacoes}
-                                        className="w-full py-2 rounded-xl border border-dashed border-gray-200 text-[10px] font-black text-gray-400 hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-all flex items-center justify-center gap-1.5">
-                                        <RefreshCw size={10} /> Reativar Notificações Push
+                                    <button onClick={reativarNotificacoes}
+                                        className="w-full py-2.5 rounded-xl text-[10px] font-black transition-all flex items-center justify-center gap-1.5"
+                                        style={{ border: `1.5px dashed ${P}30`, color: P, background: `${P}06` }}
+                                        onMouseEnter={e => e.currentTarget.style.background = `${P}12`}
+                                        onMouseLeave={e => e.currentTarget.style.background = `${P}06`}>
+                                        <RefreshCw size={11} /> Reativar Notificações Push
                                     </button>
                                 </div>
                             </motion.div>
@@ -237,9 +284,10 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
                         <p className="text-sm font-semibold leading-none text-gray-900">{userData?.name || 'Usuário'}</p>
                         <p className="text-[10px] text-gray-400 uppercase tracking-tighter mt-1 font-bold">Plano Classic</p>
                     </div>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-violet-600 p-[1.5px] cursor-pointer hover:rotate-12 transition-transform">
-                        <div className="w-full h-full rounded-full bg-white flex items-center justify-center font-black text-sm italic text-primary">
-                            {userData?.name ? userData.name.charAt(0).toUpperCase() : <User size={18} className="text-primary" />}
+                    <div className="w-10 h-10 rounded-full p-[1.5px] cursor-pointer hover:rotate-12 transition-transform"
+                        style={{ background: `linear-gradient(135deg, ${P}, #8B0045)` }}>
+                        <div className="w-full h-full rounded-full bg-white flex items-center justify-center font-black text-sm" style={{ color: P }}>
+                            {userData?.name ? userData.name.charAt(0).toUpperCase() : <User size={18} />}
                         </div>
                     </div>
                 </div>
