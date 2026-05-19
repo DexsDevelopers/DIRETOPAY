@@ -1,6 +1,17 @@
 <?php
 ob_start();
-error_reporting(0);
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+
+// Captura fatal errors (E_ERROR) que set_exception_handler não captura
+register_shutdown_function(function() {
+    $err = error_get_last();
+    if ($err && in_array($err['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        ob_clean();
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Fatal: ' . $err['message'] . ' in ' . basename($err['file']) . ':' . $err['line']]);
+    }
+});
 
 require_once 'includes/db.php';
 require_once 'includes/auth.php';
@@ -10,7 +21,7 @@ header('Content-Type: application/json');
 
 set_exception_handler(function($e) {
     ob_clean();
-    echo json_encode(['success' => false, 'message' => 'Erro interno: ' . $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => 'Excecao: ' . $e->getMessage()]);
     exit;
 });
 
