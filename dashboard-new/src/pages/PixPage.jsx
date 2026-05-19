@@ -430,7 +430,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                             <p className="text-sm font-black">Nenhuma transação ainda</p>
                         </div>
                     ) : (
-                        <div className="divide-y divide-gray-100 dark:divide-gray-800">
+                        <div className="divide-y divide-gray-100 dark:divide-transparent">
                             {txList.map((tx, i) => (
                                 <div key={tx.id || i} className="flex items-center gap-4 px-5 py-3.5 hover:bg-gray-100 dark:hover:bg-gray-800/50 transition-colors">
                                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${tx.badge === 'approved' ? 'bg-emerald-100' : 'bg-gray-100'}`}>
