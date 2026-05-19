@@ -51,6 +51,7 @@ import EntregaPage from './pages/EntregaPage';
 import ChatPage from './pages/ChatPage';
 import AdminChatsPage from './pages/AdminChatsPage';
 import AdminSaquesPage from './pages/AdminSaquesPage';
+import PixPage from './pages/PixPage';
 import AdminGatewaysPage from './pages/AdminGatewaysPage';
 import BuyerChatPage from './pages/BuyerChatPage';
 import ParceirosPage from './pages/ParceirosPage';
@@ -380,6 +381,14 @@ export default function App() {
           </PrivateRoute>
         } />
 
+
+        <Route path="/pix" element={
+          <PrivateRoute>
+            <DashboardLayout {...commonProps} activeTab="pix">
+              <PixPage handleManualPix={handleManualPix} activePix={activePix} setActivePix={setActivePix} balance={commonProps.balance} />
+            </DashboardLayout>
+          </PrivateRoute>
+        } />
 
         <Route path="/vendas" element={
           <PrivateRoute>
