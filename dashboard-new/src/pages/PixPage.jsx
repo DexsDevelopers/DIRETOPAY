@@ -340,9 +340,10 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                             </div>
 
                                             {/* Aviso chave incorreta */}
-                                            <div className="flex items-start gap-2.5 bg-amber-50 border border-amber-200 rounded-xl p-3">
-                                                <AlertCircle size={14} className="text-amber-500 shrink-0 mt-0.5" />
-                                                <p className="text-[11px] text-amber-700 font-medium leading-relaxed">
+                                            <div className="flex items-start gap-2.5 rounded-xl p-3 border"
+                                                style={{ background: 'rgba(245,158,11,0.1)', borderColor: 'rgba(245,158,11,0.35)' }}>
+                                                <AlertCircle size={14} className="text-amber-400 shrink-0 mt-0.5" />
+                                                <p className="text-[11px] font-medium leading-relaxed" style={{ color: '#fcd34d' }}>
                                                     <span className="font-black">Atenção:</span> certifique-se de que a chave está correta antes de continuar. Transferências para chaves incorretas <span className="font-black">não serão reembolsadas.</span>
                                                 </p>
                                             </div>
