@@ -106,16 +106,10 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf || '' },
                 body: JSON.stringify({ key_type: keyType, key: pixKey, amount: sendAmt, description: sendDesc }),
             });
+            const rawText = await res.text();
             let data;
-            try {
-                data = await res.json();
-            } catch {
-                const raw = await res.text().catch(() => 'resposta inválida');
-                setSendError('Erro do servidor: ' + raw.slice(0, 120));
-                setSendStep(1);
-                setSendLoading(false);
-                return;
-            }
+            try { data = JSON.parse(rawText); }
+            catch { setSendError('Servidor: ' + rawText.replace(/<[^>]+>/g,'').trim().slice(0, 150)); setSendStep(1); setSendLoading(false); return; }
             if (data.success) { setSendStep(3); }
             else { setSendError(data.message || 'Erro ao enviar PIX.'); setSendStep(1); }
         } catch (e) { setSendError('Falha: ' + (e?.message || 'conexão')); setSendStep(1); }
