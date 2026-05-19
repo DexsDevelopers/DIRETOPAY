@@ -514,7 +514,7 @@ export default function App() {
         <Route path="/pix" element={
           <PrivateRoute>
             <DashboardLayout {...commonProps} activeTab="pix">
-              <PixPage handleManualPix={handleManualPix} activePix={activePix} setActivePix={setActivePix} balance={commonProps.balance} />
+              <PixPage handleManualPix={handleManualPix} activePix={activePix} setActivePix={setActivePix} balance={commonProps.balance} userData={commonProps.userData} />
             </DashboardLayout>
           </PrivateRoute>
         } />

@@ -32,7 +32,7 @@ function StatusBadge({ status }) {
     return <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${s.cls}`}>{s.label}</span>;
 }
 
-export default function PixPage({ handleManualPix, activePix, setActivePix, balance }) {
+export default function PixPage({ handleManualPix, activePix, setActivePix, balance, userData }) {
     const [tab, setTab]               = useState('cobrar');
 
     /* ── Cobrar ── */
@@ -50,12 +50,13 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
     const [showKeys, setShowKeys]     = useState(false);
     const [chargeRecipient, setChargeRecipient] = useState(false);
 
-    /* ── Cálculo de taxa de saque: R$4,00 + 0,2% ── */
-    const FEE_FIXED = 4.00;
-    const FEE_PCT   = 0.002;
-    const sendAmtNum = parseFloat(sendAmt) || 0;
-    const sendFee    = sendAmtNum > 0 ? (FEE_FIXED + sendAmtNum * FEE_PCT) : 0;
-    const recipientGets = chargeRecipient ? Math.max(0, sendAmtNum - sendFee) : sendAmtNum;
+    /* ── Cálculo de taxa: R$4,00 + 0,2% (gateway) + commission_rate% (plataforma) ── */
+    const FEE_FIXED      = 4.00;
+    const FEE_GATEWAY    = 0.002;                                          // 0,2%
+    const platformRate   = parseFloat(userData?.commission_rate || 0) / 100; // ex: 4% → 0.04
+    const sendAmtNum     = parseFloat(sendAmt) || 0;
+    const sendFee        = sendAmtNum > 0 ? (FEE_FIXED + sendAmtNum * (FEE_GATEWAY + platformRate)) : 0;
+    const recipientGets  = chargeRecipient ? Math.max(0, sendAmtNum - sendFee) : sendAmtNum;
 
     /* ── History ── */
     const [txList, setTxList]         = useState([]);
