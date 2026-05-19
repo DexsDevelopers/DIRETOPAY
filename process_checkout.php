@@ -95,6 +95,7 @@ try {
             'x-secret-key: ' . $sigiloSecretKey,
             'Content-Type: application/json',
             'Accept: application/json',
+            'User-Agent: Mozilla/5.0 (compatible; LunarPay/2.0; +https://lunarpay.site)',
         ],
         CURLOPT_TIMEOUT        => 30,
         CURLOPT_SSL_VERIFYPEER => true,

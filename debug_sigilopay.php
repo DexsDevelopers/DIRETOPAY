@@ -53,7 +53,9 @@ curl_setopt_array($ch, [
         'x-secret-key: ' . $secKey,
         'Content-Type: application/json',
         'Accept: application/json',
+        'User-Agent: Mozilla/5.0 (compatible; LunarPay/2.0; +https://lunarpay.site)',
     ],
+    CURLOPT_USERAGENT => 'Mozilla/5.0 (compatible; LunarPay/2.0; +https://lunarpay.site)',
     CURLOPT_TIMEOUT        => 15,
     CURLOPT_SSL_VERIFYPEER => true,
 ]);
