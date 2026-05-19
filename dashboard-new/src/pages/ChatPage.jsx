@@ -144,14 +144,14 @@ export default function ChatPage() {
     const showChat = !!activeRoom;
 
     return (
-        <div className="-m-4 lg:-m-8 h-[calc(100%+2rem)] lg:h-[calc(100%+4rem)] flex flex-col md:flex-row gap-0 overflow-hidden animate-in fade-in duration-500 bg-gray-50">
+        <div className="-m-4 lg:-m-8 h-[calc(100%+2rem)] lg:h-[calc(100%+4rem)] flex flex-col md:flex-row gap-0 overflow-hidden animate-in fade-in duration-500 bg-gray-50 dark:bg-gray-950">
             {/* ── Room List ── */}
             <div className={cn(
-                "w-full md:w-[340px] lg:w-[380px] flex-shrink-0 border-r border-gray-100 flex flex-col bg-white",
+                "w-full md:w-[340px] lg:w-[380px] flex-shrink-0 border-r border-gray-100 dark:border-gray-800 flex flex-col bg-white dark:bg-gray-900",
                 showChat ? "hidden md:flex" : "flex"
             )}>
                 {/* Header */}
-                <div className="p-4 md:p-5 border-b border-gray-100">
+                <div className="p-4 md:p-5 border-b border-gray-100 dark:border-gray-800">
                     <div className="flex items-center justify-between mb-3">
                         <h2 className="text-lg font-black flex items-center gap-2">
                             <MessageCircle size={20} className="text-primary" /> Chats
@@ -166,7 +166,7 @@ export default function ChatPage() {
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             placeholder="Buscar por cliente ou produto..."
-                            className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2 pl-9 pr-3 text-xs text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/40 transition-colors"
+                            className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2 pl-9 pr-3 text-xs text-gray-900 dark:text-gray-100 placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/40 transition-colors"
                         />
                     </div>
                     <div className="flex gap-1.5 mt-3">
@@ -176,7 +176,7 @@ export default function ChatPage() {
                                 onClick={() => setFilter(key)}
                                 className={cn(
                                     "px-3 py-1 rounded-lg text-[10px] font-bold transition-all",
-                                    filter === key ? "bg-primary/15 text-primary" : "bg-gray-50 text-gray-400 hover:text-gray-900 border border-gray-100"
+                                    filter === key ? "bg-primary/15 text-primary" : "bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-gray-900 dark:hover:text-white border border-gray-100 dark:border-gray-700"
                                 )}
                             >{label}</button>
                         ))}
@@ -201,7 +201,7 @@ export default function ChatPage() {
                             <div className="flex items-start justify-between gap-2 mb-1">
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2">
-                                        <span className="text-sm font-bold truncate text-gray-900">{room.buyer_name}</span>
+                                        <span className="text-sm font-bold truncate text-gray-900 dark:text-white">{room.buyer_name}</span>
                                         {room.unread > 0 && (
                                             <span className="bg-primary text-black text-[9px] font-black px-1.5 py-0.5 rounded-full">{room.unread}</span>
                                         )}
@@ -212,15 +212,15 @@ export default function ChatPage() {
                                     </p>
                                 </div>
                                 <div className="text-right shrink-0">
-                                    <span className="text-[10px] text-gray-400">{room.last_message_at ? timeAgo(room.last_message_at) : ''}</span>
+                                    <span className="text-[10px] text-gray-500">{room.last_message_at ? timeAgo(room.last_message_at) : ''}</span>
                                     <div className={cn(
                                         "text-[8px] font-black uppercase mt-1",
-                                        room.status === 'open' ? 'text-purple-500' : 'text-gray-300'
+                                        room.status === 'open' ? 'text-primary' : 'text-gray-500'
                                     )}>{room.status === 'open' ? 'aberto' : 'fechado'}</div>
                                 </div>
                             </div>
                             {room.seller_name && (
-                                <p className="text-[10px] text-gray-300 mt-1">Vendedor: {room.seller_name}</p>
+                                <p className="text-[10px] text-gray-500 mt-1">Vendedor: {room.seller_name}</p>
                             )}
                         </button>
                     ))}
@@ -229,27 +229,27 @@ export default function ChatPage() {
 
             {/* ── Chat Area ── */}
             <div className={cn(
-                "flex-1 flex flex-col min-h-0 bg-white",
+                "flex-1 flex flex-col min-h-0 bg-gray-900",
                 showChat ? "flex" : "hidden md:flex"
             )}>
                 {activeRoom ? (
                     <>
                         {/* Chat Header */}
-                        <div className="p-4 border-b border-gray-100 flex items-center gap-3 bg-white">
+                        <div className="p-4 border-b border-gray-700 flex items-center gap-3 bg-gray-800">
                             <button
                                 onClick={() => { setActiveRoom(null); if (pollRef.current) clearInterval(pollRef.current); }}
-                                className="md:hidden p-1.5 text-gray-400 hover:text-gray-900"
+                                className="md:hidden p-1.5 text-gray-400 hover:text-gray-100"
                             >
                                 <ArrowLeft size={18} />
                             </button>
                             <div className="flex-1 min-w-0">
-                                <h3 className="text-sm font-bold truncate text-gray-900">{activeRoom.buyer_name}</h3>
-                                <p className="text-[11px] text-gray-400 truncate">{activeRoom.product_name || `Pedido #${activeRoom.order_id}`}</p>
+                                <h3 className="text-sm font-bold truncate text-gray-100">{activeRoom.buyer_name}</h3>
+                                <p className="text-[11px] text-gray-500 truncate">{activeRoom.product_name || `Pedido #${activeRoom.order_id}`}</p>
                             </div>
                             <div className="flex items-center gap-2">
                                 <span className={cn(
                                     "px-2 py-0.5 rounded-full text-[9px] font-black uppercase",
-                                    activeRoom.status === 'open' ? 'bg-purple-500/15 text-purple-400' : 'bg-gray-100 text-gray-400'
+                                    activeRoom.status === 'open' ? 'bg-primary/15 text-primary' : 'bg-gray-700 text-gray-500'
                                 )}>{activeRoom.status === 'open' ? 'aberto' : 'fechado'}</span>
                                 <button
                                     onClick={toggleStatus}
@@ -257,7 +257,7 @@ export default function ChatPage() {
                                         "p-1.5 rounded-lg transition-colors text-xs",
                                         activeRoom.status === 'open'
                                             ? "text-red-400 hover:bg-red-500/10"
-                                            : "text-purple-400 hover:bg-purple-500/10"
+                                            : "text-primary/70 hover:bg-primary/10"
                                     )}
                                     title={activeRoom.status === 'open' ? 'Fechar chat' : 'Reabrir chat'}
                                 >
@@ -280,7 +280,7 @@ export default function ChatPage() {
                                     <React.Fragment key={msg.id}>
                                         {showDate && (
                                             <div className="text-center py-2">
-                                                <span className="text-[10px] bg-gray-100 text-gray-400 px-3 py-1 rounded-full font-bold">{formatDate(msg.created_at)}</span>
+                                                <span className="text-[10px] bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 px-3 py-1 rounded-full font-bold">{formatDate(msg.created_at)}</span>
                                             </div>
                                         )}
                                         <div className={cn("flex", isMe ? "justify-end" : "justify-start")}>
@@ -290,7 +290,7 @@ export default function ChatPage() {
                                                     ? msg.sender_type === 'admin'
                                                         ? "bg-amber-500/15 border border-amber-500/20"
                                                         : "bg-purple-500/15 border border-purple-500/20"
-                                                    : "bg-white border border-gray-200"
+                                                    : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
                                             )}>
                                                 <div className="flex items-center gap-2 mb-0.5">
                                                     <span className={cn(
@@ -300,7 +300,7 @@ export default function ChatPage() {
                                                             : 'text-gray-400'
                                                     )}>{msg.sender_name}</span>
                                                 </div>
-                                                <p className="text-[13px] text-gray-800 leading-relaxed whitespace-pre-wrap break-words">{msg.message}</p>
+                                                <p className="text-[13px] text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap break-words">{msg.message}</p>
                                                 <div className={cn("flex items-center gap-1 mt-1", isMe ? "justify-end" : "justify-start")}>
                                                     <span className="text-[9px] text-gray-400">{formatTime(msg.created_at)}</span>
                                                     {isMe && <CheckCheck size={10} className={msg.read_at ? "text-purple-500" : "text-gray-300"} />}
@@ -315,14 +315,14 @@ export default function ChatPage() {
 
                         {/* Input */}
                         {activeRoom.status === 'open' ? (
-                            <div className="p-3 md:p-4 border-t border-gray-100 bg-white">
+                            <div className="p-3 md:p-4 border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900">
                                 <form onSubmit={e => { e.preventDefault(); sendMessage(); }} className="flex gap-2">
                                     <input
                                         value={msgInput}
                                         onChange={e => setMsgInput(e.target.value)}
                                         placeholder="Digite sua mensagem..."
                                         maxLength={2000}
-                                        className="flex-1 bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/40 transition-colors"
+                                        className="flex-1 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-3 px-4 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/40 transition-colors"
                                     />
                                     <button
                                         type="submit"
@@ -334,7 +334,7 @@ export default function ChatPage() {
                                 </form>
                             </div>
                         ) : (
-                            <div className="p-4 border-t border-gray-100 text-center text-gray-400 text-xs font-bold bg-white">
+                            <div className="p-4 border-t border-gray-100 dark:border-gray-800 text-center text-gray-400 text-xs font-bold bg-white dark:bg-gray-900">
                                 Este chat foi encerrado.
                                 <button onClick={toggleStatus} className="text-primary ml-2 hover:underline">Reabrir</button>
                             </div>
