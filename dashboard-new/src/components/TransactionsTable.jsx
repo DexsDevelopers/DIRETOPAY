@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { History, QrCode, Trash2, Copy, Check, Clock, AlertTriangle } from 'lucide-react';
+import { History, QrCode, Trash2, Copy, Check, Clock, AlertTriangle, ChevronRight } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 function CountdownTimer({ secondsOld }) {
@@ -27,7 +27,7 @@ function CountdownTimer({ secondsOld }) {
     );
 }
 
-export default function TransactionsTable({ transactions = [], loading = false, onViewQr, onDelete, showSeller = false }) {
+export default function TransactionsTable({ transactions = [], loading = false, onViewQr, onDelete, onViewDetail, showSeller = false }) {
     const [copiedId, setCopiedId] = useState(null);
 
     const handleCopy = (code, id) => {
@@ -65,7 +65,7 @@ export default function TransactionsTable({ transactions = [], loading = false, 
             {/* Mobile Cards */}
             <div className="md:hidden space-y-2">
                 {transactions.map((tx) => (
-                    <div key={tx.id} className="bg-white border border-gray-100 rounded-2xl p-4 space-y-3 shadow-sm">
+                    <div key={tx.id} onClick={() => onViewDetail && onViewDetail(tx)} className={`bg-white border border-gray-100 rounded-2xl p-4 space-y-3 shadow-sm ${onViewDetail ? 'cursor-pointer active:scale-[0.99]' : ''}`}>
                         <div className="flex items-center justify-between gap-3">
                             <div className="flex-1 min-w-0">
                                 <span className="text-gray-900 font-bold text-sm block truncate">{tx.customer_name || 'Sem nome'}</span>
@@ -151,7 +151,7 @@ export default function TransactionsTable({ transactions = [], loading = false, 
                     </thead>
                     <tbody>
                         {transactions.map((tx) => (
-                            <tr key={tx.id} className="group transition-all duration-500">
+                            <tr key={tx.id} onClick={() => onViewDetail && onViewDetail(tx)} className={`group transition-all duration-500 ${onViewDetail ? 'cursor-pointer' : ''}`}>
                                 <td className="px-6 py-5 bg-white group-hover:bg-gray-50/70 rounded-l-[24px] border-y border-l border-gray-100">
                                     <div className="flex flex-col gap-1">
                                         <span className="text-gray-900 font-bold text-sm tracking-tight">{tx.customer_name || 'Sem nome'}</span>
@@ -193,14 +193,14 @@ export default function TransactionsTable({ transactions = [], loading = false, 
                                     <div className="flex items-center justify-end gap-2.5">
                                         {tx.badge === 'pending' && (
                                             <button
-                                                onClick={() => onViewQr && onViewQr({
+                                                onClick={(e) => { e.stopPropagation(); onViewQr && onViewQr({
                                                     id: tx.pix_id || tx.id,
                                                     amount: tx.amount_brl ? tx.amount_brl.replace(/\./g, '').replace(',', '.') : 0,
                                                     code: tx.pix_code || '',
                                                     image: tx.qr_image || '',
                                                     secondsOld: tx.seconds_old || 0,
                                                     createdAt: Date.now() - ((tx.seconds_old || 0) * 1000)
-                                                })}
+                                                }); }}
                                                 className="p-2.5 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all duration-300 border border-primary/20 hover:border-primary active:scale-95"
                                                 title="Ver QR Code"
                                             >
@@ -208,14 +208,14 @@ export default function TransactionsTable({ transactions = [], loading = false, 
                                             </button>
                                         )}
                                         <button
-                                            onClick={() => handleCopy(tx.pix_code, tx.id)}
+                                            onClick={(e) => { e.stopPropagation(); handleCopy(tx.pix_code, tx.id); }}
                                             className="p-2.5 rounded-full bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-gray-900 transition-all duration-300 border border-gray-200 active:scale-95"
                                             title="Copiar Código"
                                         >
                                             {copiedId === tx.id ? <Check size={18} className="text-primary" /> : <Copy size={18} />}
                                         </button>
                                         <button
-                                            onClick={() => onDelete && onDelete(tx.id)}
+                                            onClick={(e) => { e.stopPropagation(); onDelete && onDelete(tx.id); }}
                                             className="p-2.5 rounded-full bg-red-500/5 text-red-500/40 hover:bg-red-500 hover:text-white transition-all duration-300 border border-white/5 hover:border-red-500 active:scale-95"
                                             title="Excluir Transação"
                                         >

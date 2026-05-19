@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { History, Search, Download, CheckCircle, Clock, XCircle, AlertCircle, LayoutGrid, RefreshCw } from 'lucide-react';
+import { History, Search, Download, CheckCircle, Clock, XCircle, AlertCircle, LayoutGrid, RefreshCw, ArrowLeft, QrCode, User } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import TransactionsTable from '../components/TransactionsTable';
 
 const STATUS_FILTERS = [
@@ -10,11 +11,85 @@ const STATUS_FILTERS = [
     { key: 'rejected', label: 'Rejeitados',icon: AlertCircle,  active: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20', inactive: 'text-gray-400' },
 ];
 
+function statusLabel(badge) {
+    return { approved: 'Concluído', paid: 'Pago', pending: 'Pendente', expired: 'Expirado', rejected: 'Rejeitado' }[badge] || badge;
+}
+
+function DetailView({ tx, onBack }) {
+    const isPaid = tx.badge === 'approved' || tx.badge === 'paid';
+    const statusColor = isPaid ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+        : tx.badge === 'pending' ? 'bg-amber-500/10 text-amber-600 border-amber-500/20'
+        : 'bg-red-500/10 text-red-500 border-red-500/20';
+    return (
+        <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 30 }} className="space-y-5">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-xl font-black text-gray-900 truncate max-w-[320px] md:max-w-[600px]">Venda #{tx.id}</h1>
+                </div>
+                <button onClick={onBack} className="flex items-center gap-1.5 font-black text-sm text-gray-500 hover:text-primary transition-colors">
+                    <ArrowLeft size={16} /> Voltar
+                </button>
+            </div>
+
+            {/* Status | Valor | Datas */}
+            <div className="bg-white border border-gray-100 rounded-3xl p-6 grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">Status</p>
+                    <span className={`px-3 py-1.5 rounded-full text-xs font-black border ${statusColor}`}>{statusLabel(tx.badge)}</span>
+                </div>
+                <div>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">Valor</p>
+                    <p className="font-black text-gray-900 text-xl">R$ {tx.amount_brl}</p>
+                </div>
+                <div>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">Data da venda</p>
+                    <p className="font-bold text-gray-700 text-sm">{tx.date || '—'}</p>
+                </div>
+                <div>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">Data de liberação</p>
+                    <p className="font-bold text-gray-700 text-sm">{tx.date || '—'}</p>
+                    {isPaid && <p className="text-[11px] text-emerald-500 font-black mt-0.5">(Disponível)</p>}
+                </div>
+            </div>
+
+            {/* Método */}
+            <div className="bg-white border border-gray-100 rounded-3xl p-6">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-3">Método de pagamento</p>
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#C0006A,#8B0045)' }}>
+                        <QrCode size={16} className="text-white" />
+                    </div>
+                    <span className="font-black text-gray-900">Pix</span>
+                </div>
+            </div>
+
+            {/* Comprador */}
+            {(tx.customer_name || tx.customer_email || tx.customer_document) && (
+                <div className="bg-white border border-gray-100 rounded-3xl p-6">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-4">Informações do comprador</p>
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-black text-white shrink-0" style={{ background: 'linear-gradient(135deg,#C0006A,#8B0045)' }}>
+                            {(tx.customer_name || 'C')[0].toUpperCase()}
+                        </div>
+                        <div>
+                            <p className="font-black text-gray-900">{tx.customer_name || '—'}</p>
+                            {tx.customer_email && <p className="text-sm text-gray-400">{tx.customer_email}</p>}
+                            {tx.customer_document && <p className="text-sm text-gray-400">Doc: {tx.customer_document}</p>}
+                        </div>
+                    </div>
+                </div>
+            )}
+        </motion.div>
+    );
+}
+
 export default function SalesPage({ onViewQr, onDelete }) {
     const [allTransactions, setAllTransactions] = useState([]);
     const [loadingTx, setLoadingTx] = useState(true);
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [selectedTx, setSelectedTx] = useState(null);
 
     const fetchTransactions = useCallback(async () => {
         setLoadingTx(true);
@@ -60,6 +135,10 @@ export default function SalesPage({ onViewQr, onDelete }) {
 
     return (
         <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
+            <AnimatePresence mode="wait">
+            {selectedTx && <DetailView key="detail" tx={selectedTx} onBack={() => setSelectedTx(null)} />}
+            </AnimatePresence>
+            {selectedTx ? null : <>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
                     <h1 className="text-3xl font-black tracking-tight text-gray-900 flex items-center gap-3">
@@ -127,8 +206,10 @@ export default function SalesPage({ onViewQr, onDelete }) {
                     loading={loadingTx}
                     onViewQr={onViewQr}
                     onDelete={handleDelete}
+                    onViewDetail={setSelectedTx}
                 />
             </div>
+            </>}
         </div>
     );
 }
