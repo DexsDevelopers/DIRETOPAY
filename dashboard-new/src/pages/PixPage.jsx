@@ -369,8 +369,8 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                 </div>
 
                 {/* HISTORY — 3/5 */}
-                <div className="lg:col-span-3 bg-white border border-gray-100 rounded-2xl overflow-hidden">
-                    <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
+                <div className="lg:col-span-3 bg-white dark:bg-gray-900/50 border border-gray-100 dark:border-white/5 rounded-2xl overflow-hidden">
+                    <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/5">
                         <h2 className="text-sm font-black text-gray-900 flex items-center gap-2">
                             <Clock size={15} className="text-primary" /> Histórico PIX
                         </h2>
@@ -386,7 +386,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                             <p className="text-sm font-black">Nenhuma transação ainda</p>
                         </div>
                     ) : (
-                        <div className="divide-y divide-gray-50">
+                        <div className="divide-y divide-gray-100 dark:divide-white/5">
                             {txList.map((tx, i) => (
                                 <div key={tx.id || i} className="flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50/50 transition-colors">
                                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${tx.badge === 'approved' ? 'bg-emerald-100' : 'bg-gray-100'}`}>
