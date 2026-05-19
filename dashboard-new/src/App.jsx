@@ -1,9 +1,9 @@
 // LunarPay SPA v2.1 - Build for Auth & Checkout
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, History, Wallet, Settings, Menu, Loader2, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, History, Wallet, Settings, Menu, Loader2, Sun, Moon, QrCode, Link2, ArrowUpRight, Plus, RefreshCw, TrendingUp, TrendingDown, ArrowRight, Banknote, ShoppingCart } from 'lucide-react';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 
 // Components
@@ -257,50 +257,89 @@ export default function App() {
   const { userData, balance, notifications } = commonProps;
 
   function DashboardHome({ userData, fetchDashboard, dashboardData, loading, activePix, setActivePix, handleManualPix, handleDeleteTransaction }) {
-    const { isDark, toggleTheme } = useTheme();
+    const navigate = useNavigate();
+    const balance = dashboardData?.balance || '0,00';
+    const stats = dashboardData?.stats || {};
+
+    const quickActions = [
+      { icon: QrCode,        label: 'PIX',     action: () => navigate('/pix'),       color: 'text-violet-500', bg: 'bg-violet-500/10' },
+      { icon: Link2,         label: 'Links',   action: () => navigate('/checkouts'), color: 'text-pink-500',   bg: 'bg-pink-500/10'   },
+      { icon: ArrowUpRight,  label: 'Saques',  action: () => navigate('/saques'),    color: 'text-emerald-500',bg: 'bg-emerald-500/10'},
+      { icon: ShoppingCart,  label: 'Vendas',  action: () => navigate('/vendas'),    color: 'text-amber-500',  bg: 'bg-amber-500/10'  },
+    ];
+
+    const miniStats = [
+      { label: 'Saldo Total',     value: `R$ ${stats.total_paid   || '0,00'}`, icon: Banknote,      up: true  },
+      { label: 'Volume Mensal',   value: `R$ ${stats.month_volume || '0,00'}`, icon: TrendingUp,    up: true  },
+      { label: 'Vendas Hoje',     value: `R$ ${stats.today_volume || '0,00'}`, icon: TrendingUp,    up: true  },
+      { label: 'Pendentes',       value: stats.pending_count || '0',           icon: TrendingDown,  up: false },
+    ];
+
     return (
-      <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-black tracking-tight text-gray-900">Olá, <span className="text-primary italic">{userData?.name?.split(' ')[0] || 'Lunar'}</span> 👋</h1>
-            <p className="text-gray-500 font-medium">Aqui está o resumo do seu império hoje.</p>
+      <div className="max-w-2xl mx-auto space-y-5 animate-in fade-in duration-500 pb-10">
+
+        {/* ── BALANCE CARD ── */}
+        <div className="relative rounded-[28px] overflow-hidden p-7" style={{ background: 'linear-gradient(135deg, #13011f 0%, #0d0818 60%, #020010 100%)' }}>
+          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(ellipse at 80% 20%, #a78bfa, transparent 60%), radial-gradient(ellipse at 20% 80%, #ec4899, transparent 60%)' }} />
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <p className="text-white/40 text-[11px] font-black uppercase tracking-[0.2em]">Saldo Disponível</p>
+                <h1 className="text-4xl font-black text-white mt-1 tracking-tight">R$ {balance}</h1>
+              </div>
+              <button onClick={fetchDashboard} className="w-10 h-10 rounded-2xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all active:scale-95">
+                <RefreshCw size={16} className="text-white/40" />
+              </button>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-black text-white/30 uppercase tracking-widest">Olá, {userData?.name?.split(' ')[0] || 'Usuário'} 👋</span>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={toggleTheme}
-              title={isDark ? 'Mudar para Claro' : 'Mudar para Escuro'}
-              className={`group flex items-center gap-2 px-4 py-2.5 rounded-full border font-black text-xs uppercase tracking-widest transition-all ${
-                isDark
-                  ? 'bg-amber-400/10 border-amber-400/30 text-amber-400 hover:bg-amber-400/20'
-                  : 'bg-gray-900/5 border-gray-300 text-gray-600 hover:bg-gray-900/10'
-              }`}
-            >
-              {isDark
-                ? <><Sun size={14} className="group-hover:rotate-45 transition-transform" /> Modo Claro</>
-                : <><Moon size={14} className="group-hover:-rotate-12 transition-transform" /> Modo Escuro</>}
+          {/* Rainbow bottom line */}
+          <div className="absolute bottom-0 left-0 right-0 h-[3px] rounded-b-[28px]" style={{ background: 'linear-gradient(90deg, #a78bfa, #ec4899, #38bdf8, #34d399, #a78bfa)' }} />
+        </div>
+
+        {/* ── QUICK ACTIONS ── */}
+        <div className="grid grid-cols-4 gap-3">
+          {quickActions.map(({ icon: Icon, label, action, color, bg }) => (
+            <button key={label} onClick={action}
+              className="flex flex-col items-center gap-2.5 bg-white border border-gray-100 hover:border-primary/20 hover:shadow-md rounded-2xl py-4 px-2 transition-all active:scale-95 group">
+              <div className={`w-11 h-11 rounded-xl ${bg} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                <Icon size={20} className={color} />
+              </div>
+              <span className="text-[11px] font-black text-gray-600 uppercase tracking-wide">{label}</span>
             </button>
-            <button onClick={fetchDashboard} className="lp-btn-primary py-2 px-6 text-sm">ATUALIZAR</button>
-          </div>
+          ))}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-          <StatCard label="Total de Vendas" value={`R$ ${dashboardData?.stats?.total_paid || '0,00'}`} icon={<Wallet size={24} />} />
-          <StatCard label="Vendas Hoje" value={`R$ ${dashboardData?.stats?.today_volume || '0,00'}`} icon={<History size={24} />} />
-          <StatCard label="Volume Mensal" value={`R$ ${dashboardData?.stats?.month_volume || '0,00'}`} icon={<LayoutDashboard size={24} />} />
-          <StatCard label="Pendentes" value={dashboardData?.stats?.pending_count || '0'} icon={<History size={24} />} trend="Aguardando" />
+        {/* ── STATS GRID ── */}
+        <div className="grid grid-cols-2 gap-3">
+          {miniStats.map(({ label, value, icon: Icon, up }) => (
+            <div key={label} className="bg-white border border-gray-100 rounded-2xl p-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-tight">{label}</span>
+                <div className={`w-7 h-7 rounded-xl flex items-center justify-center ${up ? 'bg-emerald-50' : 'bg-amber-50'}`}>
+                  <Icon size={14} className={up ? 'text-emerald-500' : 'text-amber-500'} />
+                </div>
+              </div>
+              <p className="text-xl font-black text-gray-900 leading-none">{value}</p>
+            </div>
+          ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="space-y-8 order-first lg:order-last">
-            <GeneratePixCard onGenerate={handleManualPix} />
-          </div>
-          <div className="lg:col-span-2 space-y-6">
-            <h2 className="text-xl font-black flex items-center gap-2 border-b border-gray-100 pb-4 text-gray-900">
-              <History className="text-primary" size={20} /> Minhas Vendas Recentes
+        {/* ── RECENT TRANSACTIONS ── */}
+        <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
+            <h2 className="text-sm font-black text-gray-900 flex items-center gap-2">
+              <History size={16} className="text-primary" /> Últimas transações
             </h2>
-            <TransactionsTable transactions={dashboardData?.transactions} loading={loading} onViewQr={setActivePix} onDelete={handleDeleteTransaction} />
+            <button onClick={() => navigate('/vendas')} className="text-[11px] font-black text-primary flex items-center gap-1 hover:opacity-70 transition-opacity">
+              ver tudo <ArrowRight size={12} />
+            </button>
           </div>
+          <TransactionsTable transactions={dashboardData?.transactions?.slice(0, 6)} loading={loading} onViewQr={setActivePix} onDelete={handleDeleteTransaction} />
         </div>
+
       </div>
     );
   }
