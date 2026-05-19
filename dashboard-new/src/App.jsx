@@ -275,59 +275,73 @@ export default function App() {
       { label: 'Pendentes',       value: stats.pending_count || '0',           icon: TrendingDown,  up: false },
     ];
 
-    return (
-      <div className="max-w-2xl mx-auto space-y-5 animate-in fade-in duration-500 pb-10">
-
-        {/* ── BALANCE CARD ── */}
-        <div className="relative rounded-[28px] overflow-hidden p-7" style={{ background: 'linear-gradient(135deg, #13011f 0%, #0d0818 60%, #020010 100%)' }}>
-          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(ellipse at 80% 20%, #a78bfa, transparent 60%), radial-gradient(ellipse at 20% 80%, #ec4899, transparent 60%)' }} />
-          <div className="relative z-10">
-            <div className="flex items-center justify-between mb-5">
-              <div>
-                <p className="text-white/40 text-[11px] font-black uppercase tracking-[0.2em]">Saldo Disponível</p>
-                <h1 className="text-4xl font-black text-white mt-1 tracking-tight">R$ {balance}</h1>
-              </div>
-              <button onClick={fetchDashboard} className="w-10 h-10 rounded-2xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all active:scale-95">
-                <RefreshCw size={16} className="text-white/40" />
-              </button>
+    /* ── shared sub-components ── */
+    const BalanceCard = ({ compact }) => (
+      <div className={`relative rounded-[28px] overflow-hidden ${compact ? 'p-6 h-full' : 'p-7'}`}
+        style={{ background: 'linear-gradient(135deg, #13011f 0%, #0d0818 60%, #020010 100%)' }}>
+        <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(ellipse at 80% 20%, #a78bfa, transparent 60%), radial-gradient(ellipse at 20% 80%, #ec4899, transparent 60%)' }} />
+        <div className="relative z-10 flex flex-col h-full">
+          <div className="flex items-start justify-between mb-auto">
+            <div>
+              <p className="text-white/40 text-[11px] font-black uppercase tracking-[0.2em]">Saldo Disponível</p>
+              <h1 className={`font-black text-white mt-2 tracking-tight ${compact ? 'text-3xl' : 'text-4xl'}`}>R$ {balance}</h1>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] font-black text-white/30 uppercase tracking-widest">Olá, {userData?.name?.split(' ')[0] || 'Usuário'} 👋</span>
-            </div>
+            <button onClick={fetchDashboard} className="w-9 h-9 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all active:scale-95 shrink-0">
+              <RefreshCw size={15} className="text-white/40" />
+            </button>
           </div>
-          {/* Rainbow bottom line */}
-          <div className="absolute bottom-0 left-0 right-0 h-[3px] rounded-b-[28px]" style={{ background: 'linear-gradient(90deg, #a78bfa, #ec4899, #38bdf8, #34d399, #a78bfa)' }} />
+          <span className="text-[11px] font-black text-white/30 uppercase tracking-widest mt-5">Olá, {userData?.name?.split(' ')[0] || 'Usuário'} 👋</span>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-[3px]" style={{ background: 'linear-gradient(90deg, #a78bfa, #ec4899, #38bdf8, #34d399, #a78bfa)' }} />
+      </div>
+    );
+
+    return (
+      <div className="space-y-4 animate-in fade-in duration-500 pb-10">
+
+        {/* ══════════════════════════════════════════
+            MOBILE  (< lg): stacked column
+            DESKTOP (≥ lg): 2-col grid full-width
+        ══════════════════════════════════════════ */}
+
+        {/* ── TOP ROW ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+
+          {/* Balance — ocupa 2/5 no desktop */}
+          <div className="lg:col-span-2">
+            <BalanceCard compact />
+          </div>
+
+          {/* Stats — ocupa 3/5 no desktop */}
+          <div className="lg:col-span-3 grid grid-cols-2 gap-3 content-start">
+            {miniStats.map(({ label, value, icon: Icon, up }) => (
+              <div key={label} className="bg-white border border-gray-100 rounded-2xl p-4 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-tight">{label}</span>
+                  <div className={`w-7 h-7 rounded-xl flex items-center justify-center ${up ? 'bg-emerald-50' : 'bg-amber-50'}`}>
+                    <Icon size={14} className={up ? 'text-emerald-500' : 'text-amber-500'} />
+                  </div>
+                </div>
+                <p className="text-xl font-black text-gray-900 leading-none">{value}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* ── QUICK ACTIONS ── */}
+        {/* ── QUICK ACTIONS — full width ── */}
         <div className="grid grid-cols-4 gap-3">
           {quickActions.map(({ icon: Icon, label, action, color, bg }) => (
             <button key={label} onClick={action}
-              className="flex flex-col items-center gap-2.5 bg-white border border-gray-100 hover:border-primary/20 hover:shadow-md rounded-2xl py-4 px-2 transition-all active:scale-95 group">
-              <div className={`w-11 h-11 rounded-xl ${bg} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+              className="flex flex-col items-center gap-2.5 bg-white border border-gray-100 hover:border-primary/20 hover:shadow-md rounded-2xl py-4 px-2 transition-all active:scale-95 group lg:flex-row lg:justify-center lg:gap-3 lg:py-5 lg:px-6">
+              <div className={`w-11 h-11 rounded-xl ${bg} flex items-center justify-center group-hover:scale-110 transition-transform shrink-0`}>
                 <Icon size={20} className={color} />
               </div>
-              <span className="text-[11px] font-black text-gray-600 uppercase tracking-wide">{label}</span>
+              <span className="text-[11px] lg:text-sm font-black text-gray-600 uppercase tracking-wide">{label}</span>
             </button>
           ))}
         </div>
 
-        {/* ── STATS GRID ── */}
-        <div className="grid grid-cols-2 gap-3">
-          {miniStats.map(({ label, value, icon: Icon, up }) => (
-            <div key={label} className="bg-white border border-gray-100 rounded-2xl p-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-tight">{label}</span>
-                <div className={`w-7 h-7 rounded-xl flex items-center justify-center ${up ? 'bg-emerald-50' : 'bg-amber-50'}`}>
-                  <Icon size={14} className={up ? 'text-emerald-500' : 'text-amber-500'} />
-                </div>
-              </div>
-              <p className="text-xl font-black text-gray-900 leading-none">{value}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* ── RECENT TRANSACTIONS ── */}
+        {/* ── RECENT TRANSACTIONS — full width ── */}
         <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
             <h2 className="text-sm font-black text-gray-900 flex items-center gap-2">
@@ -337,7 +351,7 @@ export default function App() {
               ver tudo <ArrowRight size={12} />
             </button>
           </div>
-          <TransactionsTable transactions={dashboardData?.transactions?.slice(0, 6)} loading={loading} onViewQr={setActivePix} onDelete={handleDeleteTransaction} />
+          <TransactionsTable transactions={dashboardData?.transactions?.slice(0, 8)} loading={loading} onViewQr={setActivePix} onDelete={handleDeleteTransaction} />
         </div>
 
       </div>
