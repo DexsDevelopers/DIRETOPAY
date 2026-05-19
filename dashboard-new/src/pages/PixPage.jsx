@@ -50,6 +50,13 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
     const [showKeys, setShowKeys]     = useState(false);
     const [chargeRecipient, setChargeRecipient] = useState(false);
 
+    /* ── Cálculo de taxa de saque: R$4,00 + 0,2% ── */
+    const FEE_FIXED = 4.00;
+    const FEE_PCT   = 0.002;
+    const sendAmtNum = parseFloat(sendAmt) || 0;
+    const sendFee    = sendAmtNum > 0 ? (FEE_FIXED + sendAmtNum * FEE_PCT) : 0;
+    const recipientGets = chargeRecipient ? Math.max(0, sendAmtNum - sendFee) : sendAmtNum;
+
     /* ── History ── */
     const [txList, setTxList]         = useState([]);
     const [txLoading, setTxLoading]   = useState(true);
@@ -351,8 +358,8 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                             </div>
 
                                             {/* Cobrar taxa do destinatário */}
-                                            <label className="flex items-center gap-2.5 cursor-pointer select-none group">
-                                                <div onClick={() => setChargeRecipient(v => !v)}
+                                            <label className="flex items-center gap-2.5 cursor-pointer select-none group" onClick={() => setChargeRecipient(v => !v)}>
+                                                <div
                                                     className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-all ${
                                                         chargeRecipient
                                                             ? 'border-primary bg-primary'
@@ -364,6 +371,20 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                                     Cobrar taxa do destinatário
                                                 </span>
                                             </label>
+
+                                            {/* Preview de taxa */}
+                                            {sendAmtNum > 0 && (
+                                                <div className="rounded-xl px-4 py-3 text-sm border border-white/5" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                                                    <span className="text-gray-400">O destinatário irá receber </span>
+                                                    <span className="font-black text-emerald-400">R$ {fmtBRL(recipientGets)}</span>
+                                                    <span className="text-gray-400">
+                                                        {chargeRecipient
+                                                            ? ` (taxa de R$ ${fmtBRL(sendFee)} descontada do valor)`
+                                                            : ` (taxa de R$ ${fmtBRL(sendFee)} paga por você)`
+                                                        }
+                                                    </span>
+                                                </div>
+                                            )}
 
                                             {/* Aviso chave incorreta */}
                                             <div className="flex items-start gap-2.5 rounded-xl p-3 border"
