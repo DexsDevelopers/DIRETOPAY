@@ -184,7 +184,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                             type="number" min="2" step="0.01"
                                             value={amount} onChange={e => setAmount(e.target.value)}
                                             placeholder="0,00"
-                                            className="w-full bg-gray-50 border border-gray-200 rounded-xl py-4 pl-10 pr-4 font-black text-2xl text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-200"
+                                            className="w-full bg-gray-50 border border-gray-300 rounded-xl py-4 pl-10 pr-4 font-black text-2xl text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-400"
                                         />
                                     </div>
                                     <p className="text-[11px] text-gray-400 px-1">Mínimo: R$ 2,00</p>
@@ -286,7 +286,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tipo de chave</label>
                                                 <div className="relative">
                                                     <button onClick={() => setShowKeys(v => !v)}
-                                                        className="w-full flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 transition-all hover:border-gray-300">
+                                                        className="w-full flex items-center justify-between bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 transition-all hover:border-gray-400">
                                                         <div className="flex items-center gap-2">
                                                             <SelectedKey.icon size={16} className="text-primary" />
                                                             <span className="font-black text-gray-900 text-sm">{SelectedKey.label}</span>
@@ -317,7 +317,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                                 <input type={keyType === 'email' ? 'email' : 'text'}
                                                     placeholder={{ cpf: '000.000.000-00', cnpj: '00.000.000/0000-00', email: 'exemplo@email.com', phone: '(11) 9 0000-0000', random: 'Chave aleatória (UUID)' }[keyType]}
                                                     value={pixKey} onChange={e => setPixKey(e.target.value)}
-                                                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-bold text-sm text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-300" />
+                                                    className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 font-bold text-sm text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-400" />
                                             </div>
 
                                             {/* Amount */}
@@ -328,7 +328,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                                     <input type="number" min="0.01" step="0.01"
                                                         value={sendAmt} onChange={e => setSendAmt(e.target.value)}
                                                         placeholder="0,00"
-                                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-4 font-black text-xl text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-200" />
+                                                        className="w-full bg-gray-50 border border-gray-300 rounded-xl py-3 pl-10 pr-4 font-black text-xl text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-400" />
                                                 </div>
                                             </div>
 
@@ -337,14 +337,14 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Descrição <span className="normal-case font-medium">(opcional)</span></label>
                                                 <input type="text" placeholder="Ex: pagamento serviço"
                                                     value={sendDesc} onChange={e => setSendDesc(e.target.value)}
-                                                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-bold text-sm text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-300" />
+                                                    className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 font-bold text-sm text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-400" />
                                             </div>
 
                                             {/* Aviso chave incorreta */}
                                             <div className="flex items-start gap-2.5 rounded-xl p-3 border"
                                                 style={{ background: 'rgba(245,158,11,0.1)', borderColor: 'rgba(245,158,11,0.35)' }}>
-                                                <AlertCircle size={14} className="text-amber-400 shrink-0 mt-0.5" />
-                                                <p className="text-[11px] font-medium leading-relaxed" style={{ color: '#fcd34d' }}>
+                                                <AlertCircle size={14} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                                                <p className="text-[11px] font-medium leading-relaxed text-amber-700 dark:text-yellow-300">
                                                     <span className="font-black">Atenção:</span> certifique-se de que a chave está correta antes de continuar. Transferências para chaves incorretas <span className="font-black">não serão reembolsadas.</span>
                                                 </p>
                                             </div>
