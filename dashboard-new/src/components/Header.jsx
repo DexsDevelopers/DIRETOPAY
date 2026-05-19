@@ -111,7 +111,7 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: -8, scale: 0.96 }}
                                 transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                                className="absolute inset-0 flex flex-col md:inset-auto md:top-[72px] md:right-4 md:bottom-auto md:left-auto md:w-[400px] md:rounded-[24px] overflow-hidden z-10"
+                                className="absolute inset-0 flex flex-col md:inset-auto md:top-[72px] md:right-4 md:bottom-auto md:left-auto md:w-[400px] md:h-[580px] md:rounded-[24px] overflow-hidden z-10"
                                 style={{ boxShadow: '0 32px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(192,0,106,0.1)' }}
                             >
                                 {/* ── HEADER GRADIENTE ── */}
@@ -184,8 +184,8 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
                                 </div>
 
                                 {/* ── LIST ── */}
-                                <div className="overflow-y-auto bg-white dark:bg-[#0f0f14] custom-scrollbar overscroll-contain"
-                                    style={{ touchAction: 'pan-y', WebkitOverflowScrolling: 'touch', maxHeight: 'calc(100vh - 280px)', flex: '1 1 0' }}>
+                                <div className="overflow-y-auto bg-white dark:bg-[#0f0f14] custom-scrollbar overscroll-contain flex-1"
+                                    style={{ touchAction: 'pan-y', WebkitOverflowScrolling: 'touch' }}>
                                     {filtered.length > 0 ? (
                                         <div className="p-3 space-y-1.5">
                                             {filtered.map((n, i) => {
