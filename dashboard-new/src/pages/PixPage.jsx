@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     QrCode, SendHorizonal, Zap, CheckCircle, Loader2, AlertCircle,
-    Phone, Mail, Hash, User, CreditCard, ArrowRight, Clock,
-    ChevronDown, RefreshCw, Check, X
+    Phone, Mail, Hash, User, CreditCard, ArrowRight, ArrowLeft, Clock,
+    ChevronDown, RefreshCw, Check, X, ChevronRight
 } from 'lucide-react';
 import PixModal from '../components/PixModal';
 
@@ -61,6 +61,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
     /* ── History ── */
     const [txList, setTxList]         = useState([]);
     const [txLoading, setTxLoading]   = useState(true);
+    const [selectedTx, setSelectedTx] = useState(null);
 
     useEffect(() => {
         fetch('/get_transactions.php?limit=15')
@@ -414,45 +415,122 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
 
                 {/* HISTORY — 3/5 */}
                 <div className="lg:col-span-3 bg-white dark:bg-gray-900/50 border border-gray-100 dark:border-white/5 rounded-2xl overflow-hidden">
-                    <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/5">
-                        <h2 className="text-sm font-black text-gray-900 flex items-center gap-2">
-                            <Clock size={15} className="text-primary" /> Histórico PIX
-                        </h2>
-                    </div>
+                    <AnimatePresence mode="wait">
 
-                    {txLoading ? (
-                        <div className="flex items-center justify-center py-16">
-                            <Loader2 size={22} className="animate-spin text-gray-300" />
-                        </div>
-                    ) : txList.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-16 text-gray-300">
-                            <QrCode size={36} className="mb-3 opacity-40" />
-                            <p className="text-sm font-black">Nenhuma transação ainda</p>
-                        </div>
-                    ) : (
-                        <div className="divide-y divide-gray-100 dark:divide-transparent">
-                            {txList.map((tx, i) => (
-                                <div key={tx.id || i} className="flex items-center gap-4 px-5 py-3.5 hover:bg-gray-100 dark:hover:bg-gray-800/50 transition-colors">
-                                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${tx.badge === 'approved' ? 'bg-emerald-100' : 'bg-gray-100'}`}>
-                                        {tx.badge === 'approved'
-                                            ? <CheckCircle size={16} className="text-emerald-600" />
-                                            : <Clock size={16} className="text-gray-400" />
-                                        }
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="font-black text-gray-900 text-sm truncate">{tx.customer_name || 'Cobrança PIX'}</p>
-                                        <p className="text-[11px] text-gray-400 font-medium">{tx.date || '—'}</p>
-                                    </div>
-                                    <div className="flex flex-col items-end gap-1 shrink-0">
-                                        <span className={`font-black text-sm ${tx.badge === 'approved' ? 'text-emerald-600' : 'text-gray-500'}`}>
-                                            R$ {tx.amount_brl}
-                                        </span>
-                                        <StatusBadge status={tx.badge} />
-                                    </div>
+                    {/* ── Detalhe da transação ── */}
+                    {selectedTx ? (
+                        <motion.div key="detail" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="p-5 space-y-4">
+                            {/* Header */}
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Transação</p>
+                                    <p className="text-xs font-black text-gray-600 dark:text-gray-300 truncate max-w-[220px]">#{selectedTx.id}</p>
                                 </div>
-                            ))}
-                        </div>
+                                <button onClick={() => setSelectedTx(null)}
+                                    className="flex items-center gap-1.5 text-sm font-black text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">
+                                    <ArrowLeft size={14} /> Voltar
+                                </button>
+                            </div>
+
+                            {/* Status card */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-gray-50 dark:bg-gray-800/40 rounded-2xl p-4">
+                                <div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Status</p>
+                                    <StatusBadge status={selectedTx.badge} />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Valor</p>
+                                    <p className="font-black text-gray-900 dark:text-white text-base">R$ {selectedTx.amount_brl}</p>
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Data da venda</p>
+                                    <p className="font-black text-gray-900 dark:text-white text-xs">{selectedTx.date || '—'}</p>
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Liberação</p>
+                                    <p className="font-black text-gray-900 dark:text-white text-xs">{selectedTx.date || '—'}</p>
+                                    {selectedTx.badge === 'approved' && <p className="text-[10px] text-emerald-500 font-black">(Disponível)</p>}
+                                </div>
+                            </div>
+
+                            {/* Método */}
+                            <div className="bg-gray-50 dark:bg-gray-800/40 rounded-2xl p-4">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">Método de pagamento</p>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#C0006A,#8B0045)' }}>
+                                        <QrCode size={14} className="text-white" />
+                                    </div>
+                                    <span className="font-black text-gray-900 dark:text-white text-sm">PIX</span>
+                                </div>
+                            </div>
+
+                            {/* Comprador */}
+                            {(selectedTx.customer_name || selectedTx.customer_email || selectedTx.customer_document) && (
+                                <div className="bg-gray-50 dark:bg-gray-800/40 rounded-2xl p-4">
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-3">Informações do comprador</p>
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black text-white" style={{ background: 'linear-gradient(135deg,#C0006A,#8B0045)' }}>
+                                            {(selectedTx.customer_name || 'C')[0].toUpperCase()}
+                                        </div>
+                                        <div>
+                                            <p className="font-black text-gray-900 dark:text-white text-sm">{selectedTx.customer_name || '—'}</p>
+                                            {selectedTx.customer_email && <p className="text-[11px] text-gray-400">{selectedTx.customer_email}</p>}
+                                        </div>
+                                    </div>
+                                    {selectedTx.customer_document && (
+                                        <p className="text-[11px] text-gray-400 font-medium">Doc: {selectedTx.customer_document}</p>
+                                    )}
+                                </div>
+                            )}
+                        </motion.div>
+                    ) : (
+                        <motion.div key="list" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/5">
+                                <h2 className="text-sm font-black text-gray-900 dark:text-white flex items-center gap-2">
+                                    <Clock size={15} className="text-primary" /> Histórico PIX
+                                </h2>
+                            </div>
+
+                            {txLoading ? (
+                                <div className="flex items-center justify-center py-16">
+                                    <Loader2 size={22} className="animate-spin text-gray-300" />
+                                </div>
+                            ) : txList.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center py-16 text-gray-300">
+                                    <QrCode size={36} className="mb-3 opacity-40" />
+                                    <p className="text-sm font-black">Nenhuma transação ainda</p>
+                                </div>
+                            ) : (
+                                <div className="divide-y divide-gray-100 dark:divide-transparent">
+                                    {txList.map((tx, i) => (
+                                        <button key={tx.id || i} onClick={() => setSelectedTx(tx)}
+                                            className="w-full flex items-center gap-4 px-5 py-3.5 hover:bg-gray-100 dark:hover:bg-gray-800/50 transition-colors text-left">
+                                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${tx.badge === 'approved' ? 'bg-emerald-100' : 'bg-gray-100'}`}>
+                                                {tx.badge === 'approved'
+                                                    ? <CheckCircle size={16} className="text-emerald-600" />
+                                                    : <Clock size={16} className="text-gray-400" />
+                                                }
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-black text-gray-900 dark:text-white text-sm truncate">{tx.customer_name || 'Cobrança PIX'}</p>
+                                                <p className="text-[11px] text-gray-400 font-medium">{tx.date || '—'}</p>
+                                            </div>
+                                            <div className="flex items-center gap-3 shrink-0">
+                                                <div className="flex flex-col items-end gap-1">
+                                                    <span className={`font-black text-sm ${tx.badge === 'approved' ? 'text-emerald-600' : 'text-gray-500'}`}>
+                                                        R$ {tx.amount_brl}
+                                                    </span>
+                                                    <StatusBadge status={tx.badge} />
+                                                </div>
+                                                <ChevronRight size={14} className="text-gray-300" />
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </motion.div>
                     )}
+                    </AnimatePresence>
                 </div>
             </div>
 
