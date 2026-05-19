@@ -123,8 +123,8 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
             {/* ── HEADER ── */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-2xl bg-violet-500/10 flex items-center justify-center">
-                        <QrCode size={21} className="text-violet-500" />
+                    <div className="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center">
+                        <QrCode size={21} className="text-primary" />
                     </div>
                     <div>
                         <h1 className="text-xl font-black text-gray-900">PIX</h1>
@@ -148,15 +148,15 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                     <button key={t.id} onClick={() => setTab(t.id)}
                         className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all text-left ${
                             tab === t.id
-                                ? 'border-violet-500 bg-violet-500/5'
+                                ? 'border-primary bg-primary/5'
                                 : 'border-gray-100 bg-white hover:border-gray-200'
                         }`}
                     >
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${tab === t.id ? 'bg-violet-500 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${tab === t.id ? 'bg-primary text-white' : 'bg-gray-100 text-gray-400'}`}>
                             <t.icon size={18} />
                         </div>
                         <div>
-                            <p className={`font-black text-sm ${tab === t.id ? 'text-violet-600' : 'text-gray-700'}`}>{t.label}</p>
+                            <p className={`font-black text-sm ${tab === t.id ? 'text-primary' : 'text-gray-700'}`}>{t.label}</p>
                             <p className="text-[11px] text-gray-400 font-medium">{t.sub}</p>
                         </div>
                     </button>
@@ -184,15 +184,15 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                             type="number" min="2" step="0.01"
                                             value={amount} onChange={e => setAmount(e.target.value)}
                                             placeholder="0,00"
-                                            className="w-full bg-gray-50 border border-gray-200 rounded-xl py-4 pl-10 pr-4 font-black text-2xl text-gray-900 focus:outline-none focus:border-violet-400 focus:bg-white transition-all placeholder:text-gray-200"
+                                            className="w-full bg-gray-50 border border-gray-200 rounded-xl py-4 pl-10 pr-4 font-black text-2xl text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-200"
                                         />
                                     </div>
                                     <p className="text-[11px] text-gray-400 px-1">Mínimo: R$ 2,00</p>
                                 </div>
 
                                 <button onClick={handleGerar} disabled={genLoading || !amount}
-                                    className="w-full py-4 rounded-xl font-black text-white flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 shadow-[0_8px_24px_rgba(139,92,246,0.3)]"
-                                    style={{ background: 'linear-gradient(135deg, #7c3aed, #a78bfa)' }}
+                                    className="w-full py-4 rounded-xl font-black text-white flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 shadow-[0_8px_24px_rgba(192,0,106,0.3)]"
+                                    style={{ background: 'linear-gradient(135deg, #C0006A, #8B0045)' }}
                                 >
                                     {genLoading
                                         ? <><Loader2 size={18} className="animate-spin" /> Gerando...</>
@@ -222,7 +222,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                             </div>
                                             <h3 className="font-black text-gray-900 text-lg">PIX enviado!</h3>
                                             <p className="text-gray-400 text-sm">Transferência realizada com sucesso.</p>
-                                            <button onClick={resetEnviar} className="mt-2 text-violet-600 font-black text-sm flex items-center gap-1 hover:opacity-70 transition-opacity">
+                                            <button onClick={resetEnviar} className="mt-2 text-primary font-black text-sm flex items-center gap-1 hover:opacity-70 transition-opacity">
                                                 <RefreshCw size={14} /> Nova transferência
                                             </button>
                                         </motion.div>
@@ -249,7 +249,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                                 </div>
                                                 <div className="flex justify-between text-sm">
                                                     <span className="text-gray-400 font-medium">Valor</span>
-                                                    <span className="font-black text-violet-600 text-base">R$ {fmtBRL(sendAmt)}</span>
+                                                    <span className="font-black text-primary text-base">R$ {fmtBRL(sendAmt)}</span>
                                                 </div>
                                                 {sendDesc && (
                                                     <div className="flex justify-between text-sm">
@@ -266,7 +266,8 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                             )}
 
                                             <button onClick={handleEnviar} disabled={sendLoading}
-                                                className="w-full py-4 rounded-xl font-black text-white flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 bg-violet-600 hover:bg-violet-700">
+                                                className="w-full py-4 rounded-xl font-black text-white flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50"
+                                                style={{ background: 'linear-gradient(135deg, #C0006A, #8B0045)', boxShadow: '0 8px 24px rgba(192,0,106,0.3)' }}>
                                                 {sendLoading
                                                     ? <><Loader2 size={18} className="animate-spin" /> Enviando...</>
                                                     : <><SendHorizonal size={18} /> Confirmar envio</>
@@ -287,7 +288,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                                     <button onClick={() => setShowKeys(v => !v)}
                                                         className="w-full flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 transition-all hover:border-gray-300">
                                                         <div className="flex items-center gap-2">
-                                                            <SelectedKey.icon size={16} className="text-violet-500" />
+                                                            <SelectedKey.icon size={16} className="text-primary" />
                                                             <span className="font-black text-gray-900 text-sm">{SelectedKey.label}</span>
                                                         </div>
                                                         <ChevronDown size={16} className={`text-gray-400 transition-transform ${showKeys ? 'rotate-180' : ''}`} />
@@ -298,10 +299,10 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                                                 className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-100 rounded-xl shadow-xl z-10 overflow-hidden">
                                                                 {KEY_TYPES.map(k => (
                                                                     <button key={k.value} onClick={() => { setKeyType(k.value); setPixKey(''); setShowKeys(false); }}
-                                                                        className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left ${keyType === k.value ? 'bg-violet-50' : ''}`}>
-                                                                        <k.icon size={15} className={keyType === k.value ? 'text-violet-500' : 'text-gray-400'} />
-                                                                        <span className={`text-sm font-black ${keyType === k.value ? 'text-violet-600' : 'text-gray-700'}`}>{k.label}</span>
-                                                                        {keyType === k.value && <Check size={14} className="text-violet-500 ml-auto" />}
+                                                                        className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left ${keyType === k.value ? 'bg-primary/5' : ''}`}>
+                                                                        <k.icon size={15} className={keyType === k.value ? 'text-primary' : 'text-gray-400'} />
+                                                                        <span className={`text-sm font-black ${keyType === k.value ? 'text-primary' : 'text-gray-700'}`}>{k.label}</span>
+                                                                        {keyType === k.value && <Check size={14} className="text-primary ml-auto" />}
                                                                     </button>
                                                                 ))}
                                                             </motion.div>
@@ -316,7 +317,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                                 <input type={keyType === 'email' ? 'email' : 'text'}
                                                     placeholder={{ cpf: '000.000.000-00', cnpj: '00.000.000/0000-00', email: 'exemplo@email.com', phone: '(11) 9 0000-0000', random: 'Chave aleatória (UUID)' }[keyType]}
                                                     value={pixKey} onChange={e => setPixKey(e.target.value)}
-                                                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-bold text-sm text-gray-900 focus:outline-none focus:border-violet-400 focus:bg-white transition-all placeholder:text-gray-300" />
+                                                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-bold text-sm text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-300" />
                                             </div>
 
                                             {/* Amount */}
@@ -327,7 +328,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                                     <input type="number" min="0.01" step="0.01"
                                                         value={sendAmt} onChange={e => setSendAmt(e.target.value)}
                                                         placeholder="0,00"
-                                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-4 font-black text-xl text-gray-900 focus:outline-none focus:border-violet-400 focus:bg-white transition-all placeholder:text-gray-200" />
+                                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-4 font-black text-xl text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-200" />
                                                 </div>
                                             </div>
 
@@ -336,7 +337,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Descrição <span className="normal-case font-medium">(opcional)</span></label>
                                                 <input type="text" placeholder="Ex: pagamento serviço"
                                                     value={sendDesc} onChange={e => setSendDesc(e.target.value)}
-                                                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-bold text-sm text-gray-900 focus:outline-none focus:border-violet-400 focus:bg-white transition-all placeholder:text-gray-300" />
+                                                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-bold text-sm text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-300" />
                                             </div>
 
                                             {/* Aviso chave incorreta */}
@@ -355,7 +356,8 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                             )}
 
                                             <button onClick={handleEnviar}
-                                                className="w-full py-4 rounded-xl font-black text-white flex items-center justify-center gap-2 transition-all active:scale-[0.98] bg-violet-600 hover:bg-violet-700 shadow-[0_8px_24px_rgba(139,92,246,0.3)]">
+                                                className="w-full py-4 rounded-xl font-black text-white flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-[0_8px_24px_rgba(192,0,106,0.3)]"
+                                                style={{ background: 'linear-gradient(135deg, #C0006A, #8B0045)' }}>
                                                 <ArrowRight size={18} /> Continuar
                                             </button>
                                         </motion.div>
@@ -370,7 +372,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                 <div className="lg:col-span-3 bg-white border border-gray-100 rounded-2xl overflow-hidden">
                     <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
                         <h2 className="text-sm font-black text-gray-900 flex items-center gap-2">
-                            <Clock size={15} className="text-violet-400" /> Histórico PIX
+                            <Clock size={15} className="text-primary" /> Histórico PIX
                         </h2>
                     </div>
 
