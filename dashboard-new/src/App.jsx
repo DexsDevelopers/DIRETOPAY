@@ -293,7 +293,7 @@ export default function App() {
     const statCards = [
       { label: 'Saldo Total',   value: `R$ ${stats.total_paid   || '0,00'}`, sub: 'acumulado',           icon: Banknote,    color: P,       spark: spark.up,   trend: '+' },
       { label: 'Volume Mensal', value: `R$ ${stats.month_volume || '0,00'}`, sub: 'este mês',             icon: TrendingUp,  color: '#0ea5e9', spark: spark.flat, trend: '+' },
-      { label: 'Vendas Hoje',   value: `R$ ${stats.today_volume || '0,00'}`, sub: '0 vendas realizadas',  icon: ShoppingCart,color: '#10b981', spark: spark.up,   trend: null },
+      { label: 'Vendas Hoje',   value: `R$ ${stats.today_volume || '0,00'}`, sub: `${stats.today_count ?? 0} venda${(stats.today_count ?? 0) !== 1 ? 's' : ''} realizada${(stats.today_count ?? 0) !== 1 ? 's' : ''}`,  icon: ShoppingCart,color: '#10b981', spark: spark.up,   trend: null },
       { label: 'Pendentes',     value: stats.pending_count || '0',           sub: 'aguardando pagamento', icon: TrendingDown, color: '#f59e0b', spark: spark.down, trend: null },
     ];
 

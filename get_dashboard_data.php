@@ -68,9 +68,11 @@ if ($user['is_demo'] == 1) {
 } else {
     // Usuário comum
     $todayStart = date('Y-m-d 00:00:00');
-    $stmtToday = $pdo->prepare("SELECT SUM(amount_brl) as vol FROM transactions WHERE user_id = ? AND status = 'paid' AND created_at >= ?");
+    $stmtToday = $pdo->prepare("SELECT SUM(amount_brl) as vol, COUNT(*) as cnt FROM transactions WHERE user_id = ? AND status = 'paid' AND created_at >= ?");
     $stmtToday->execute([$userId, $todayStart]);
-    $stats['today_volume'] = number_format($stmtToday->fetch()['vol'] ?? 0, 2, ',', '.');
+    $todayRow = $stmtToday->fetch();
+    $stats['today_volume'] = number_format($todayRow['vol'] ?? 0, 2, ',', '.');
+    $stats['today_count']  = (int)($todayRow['cnt'] ?? 0);
 
     $stmtMonth = $pdo->prepare("SELECT SUM(amount_brl) as vol FROM transactions WHERE user_id = ? AND status = 'paid'" . $periodSQL);
     $stmtMonth->execute([$userId]);
