@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/Security.php';
 
+// Domínio base para links públicos de checkout
+define('APP_CHECKOUT_URL', 'https://lunarpay.site');
+
 // Protections que rodam em TODA requisição
 send_security_headers();
 block_if_bad_ip();

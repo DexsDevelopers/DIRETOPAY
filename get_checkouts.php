@@ -19,10 +19,7 @@ try {
         $stmtItems->execute([$checkout['id']]);
         $checkout['items'] = $stmtItems->fetchAll(PDO::FETCH_ASSOC);
         
-        // Gerar URL do Checkout
-        $serverName = $_SERVER['HTTP_HOST'];
-        $baseUri = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$serverName" . rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-        $checkout['url'] = $baseUri . "/p/" . $checkout['slug']; // Note: usamos /p/ no SPA
+        $checkout['url'] = rtrim(APP_CHECKOUT_URL, '/') . '/p/' . $checkout['slug'];
     }
 
     header('Content-Type: application/json');

@@ -76,7 +76,7 @@ try {
         'amount'      => $totalAmount,
         'client'      => [
             'name'     => empty($customerName) ? 'Cliente Checkout' : $customerName,
-            'email'    => (!empty($user['email'])) ? $user['email'] : 'comprador@pixghost.site',
+            'email'    => (!empty($user['email'])) ? $user['email'] : 'comprador@lunarpay.site',
             'phone'    => '(11) 9 0000-0000',
             'document' => !empty($customerDocument) ? preg_replace('/[^0-9]/', '', $customerDocument) : '147.143.016-24',
         ],
