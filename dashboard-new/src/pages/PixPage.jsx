@@ -185,7 +185,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                         {/* ═══ COBRAR ═══ */}
                         {tab === 'cobrar' && (
                             <motion.div key="cobrar" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                                className="bg-white border border-gray-100 rounded-2xl p-6 space-y-5">
+                                className="bg-white dark:bg-gray-900/60 border border-gray-100 dark:border-white/5 rounded-2xl p-6 space-y-5">
                                 <h2 className="font-black text-gray-900 text-base">Gerar cobrança PIX</h2>
 
                                 <div className="space-y-1.5">
@@ -222,7 +222,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                         {/* ═══ ENVIAR ═══ */}
                         {tab === 'enviar' && (
                             <motion.div key="enviar" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                                className="bg-white border border-gray-100 rounded-2xl p-6 space-y-5">
+                                className="bg-white dark:bg-gray-900/60 border border-gray-100 dark:border-white/5 rounded-2xl p-6 space-y-5">
 
                                 <AnimatePresence mode="wait">
 
@@ -359,16 +359,13 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                             </div>
 
                                             {/* Cobrar taxa do destinatário */}
-                                            <label className="flex items-center gap-2.5 cursor-pointer select-none group" onClick={() => setChargeRecipient(v => !v)}>
-                                                <div
-                                                    className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-all ${
-                                                        chargeRecipient
-                                                            ? 'border-primary bg-primary'
-                                                            : 'border-gray-400 dark:border-gray-600 bg-transparent'
-                                                    }`}>
-                                                    {chargeRecipient && <Check size={10} className="text-white" strokeWidth={3} />}
+                                            <label className="flex items-center gap-3 cursor-pointer select-none" onClick={() => setChargeRecipient(v => !v)}>
+                                                <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${
+                                                    chargeRecipient ? 'border-primary bg-primary' : 'border-gray-400 dark:border-gray-500'
+                                                }`}>
+                                                    {chargeRecipient && <Check size={11} className="text-white" strokeWidth={3} />}
                                                 </div>
-                                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                                                <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
                                                     Cobrar taxa do destinatário
                                                 </span>
                                             </label>
