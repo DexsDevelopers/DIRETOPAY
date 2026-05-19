@@ -48,6 +48,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
     const [sendLoading, setSendLoading] = useState(false);
     const [sendError, setSendError]   = useState('');
     const [showKeys, setShowKeys]     = useState(false);
+    const [chargeRecipient, setChargeRecipient] = useState(false);
 
     /* ── History ── */
     const [txList, setTxList]         = useState([]);
@@ -104,7 +105,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
             const res  = await fetch('/send_pix.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf || '' },
-                body: JSON.stringify({ key_type: keyType, key: pixKey, amount: sendAmt, description: sendDesc }),
+                body: JSON.stringify({ key_type: keyType, key: pixKey, amount: sendAmt, description: sendDesc, charge_recipient: chargeRecipient }),
             });
             const rawText = await res.text();
             let data;
@@ -260,6 +261,12 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                                         <span className="font-black text-gray-900">{sendDesc}</span>
                                                     </div>
                                                 )}
+                                                <div className="flex justify-between text-sm">
+                                                    <span className="text-gray-400 font-medium">Taxa</span>
+                                                    <span className={`font-black text-sm ${chargeRecipient ? 'text-amber-600' : 'text-emerald-600'}`}>
+                                                        {chargeRecipient ? 'Cobrada do destinatário' : 'Paga por mim'}
+                                                    </span>
+                                                </div>
                                             </div>
 
                                             {sendError && (
@@ -342,6 +349,21 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                                     value={sendDesc} onChange={e => setSendDesc(e.target.value)}
                                                     className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 font-bold text-sm text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-400" />
                                             </div>
+
+                                            {/* Cobrar taxa do destinatário */}
+                                            <label className="flex items-center gap-2.5 cursor-pointer select-none group">
+                                                <div onClick={() => setChargeRecipient(v => !v)}
+                                                    className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-all ${
+                                                        chargeRecipient
+                                                            ? 'border-primary bg-primary'
+                                                            : 'border-gray-400 dark:border-gray-600 bg-transparent'
+                                                    }`}>
+                                                    {chargeRecipient && <Check size={10} className="text-white" strokeWidth={3} />}
+                                                </div>
+                                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                                                    Cobrar taxa do destinatário
+                                                </span>
+                                            </label>
 
                                             {/* Aviso chave incorreta */}
                                             <div className="flex items-start gap-2.5 rounded-xl p-3 border"

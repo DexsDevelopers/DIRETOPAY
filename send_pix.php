@@ -37,10 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $body     = json_decode(file_get_contents('php://input'), true);
-$key_type = trim($body['key_type']   ?? '');
-$key      = trim($body['key']        ?? '');
-$amount   = floatval($body['amount'] ?? 0);
-$desc     = trim($body['description'] ?? '');
+$key_type         = trim($body['key_type']        ?? '');
+$key              = trim($body['key']             ?? '');
+$amount           = floatval($body['amount']      ?? 0);
+$desc             = trim($body['description']     ?? '');
+$charge_recipient = !empty($body['charge_recipient']) ? 1 : 0;
 
 if (!$key || $amount < 0.01) {
     echo json_encode(['success' => false, 'message' => 'Chave e valor são obrigatórios.']);
@@ -71,15 +72,18 @@ try {
 try {
     $pdo->exec("ALTER TABLE withdrawals ADD COLUMN description TEXT DEFAULT NULL AFTER pix_key_type");
 } catch (Exception $e) { /* coluna já existe */ }
+try {
+    $pdo->exec("ALTER TABLE withdrawals ADD COLUMN charge_recipient TINYINT(1) DEFAULT 0 AFTER description");
+} catch (Exception $e) { /* coluna já existe */ }
 
 // Registrar como saque especial do tipo pix_transfer na tabela withdrawals
 $insertStmt = $pdo->prepare("
-    INSERT INTO withdrawals (user_id, amount, amount_gross, fee_platform, fee_gateway, pix_key, pix_key_type, description, status, type, created_at)
-    VALUES (?, ?, ?, 0, 0, ?, ?, ?, 'pending', 'pix_transfer', NOW())
+    INSERT INTO withdrawals (user_id, amount, amount_gross, fee_platform, fee_gateway, pix_key, pix_key_type, description, charge_recipient, status, type, created_at)
+    VALUES (?, ?, ?, 0, 0, ?, ?, ?, ?, 'pending', 'pix_transfer', NOW())
 ");
 
 try {
-    $insertStmt->execute([$userId, $amount, $amount, $key, $key_type, $desc ?: null]);
+    $insertStmt->execute([$userId, $amount, $amount, $key, $key_type, $desc ?: null, $charge_recipient]);
     $transferId = $pdo->lastInsertId();
 
     echo json_encode([
