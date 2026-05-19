@@ -21,10 +21,12 @@ function fmtBRL(v) {
 
 function StatusBadge({ status }) {
     const map = {
-        paid:    { label: 'Pago',       cls: 'bg-emerald-50 text-emerald-600' },
-        pending: { label: 'Pendente',   cls: 'bg-amber-50 text-amber-600'     },
-        expired: { label: 'Expirado',   cls: 'bg-gray-100 text-gray-400'      },
-        sent:    { label: 'Enviado',    cls: 'bg-blue-50 text-blue-600'       },
+        approved: { label: 'Pago',       cls: 'bg-emerald-50 text-emerald-600' },
+        paid:     { label: 'Pago',       cls: 'bg-emerald-50 text-emerald-600' },
+        pending:  { label: 'Pendente',   cls: 'bg-amber-50 text-amber-600'     },
+        expired:  { label: 'Expirado',   cls: 'bg-gray-100 text-gray-400'      },
+        rejected: { label: 'Rejeitado',  cls: 'bg-red-50 text-red-500'         },
+        sent:     { label: 'Enviado',    cls: 'bg-blue-50 text-blue-600'       },
     };
     const s = map[status] || map.pending;
     return <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${s.cls}`}>{s.label}</span>;
@@ -376,21 +378,21 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                         <div className="divide-y divide-gray-50">
                             {txList.map((tx, i) => (
                                 <div key={tx.id || i} className="flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50/50 transition-colors">
-                                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${tx.status === 'paid' ? 'bg-emerald-100' : 'bg-gray-100'}`}>
-                                        {tx.status === 'paid'
+                                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${tx.badge === 'approved' ? 'bg-emerald-100' : 'bg-gray-100'}`}>
+                                        {tx.badge === 'approved'
                                             ? <CheckCircle size={16} className="text-emerald-600" />
                                             : <Clock size={16} className="text-gray-400" />
                                         }
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="font-black text-gray-900 text-sm truncate">{tx.customer_name || tx.description || 'Cobrança PIX'}</p>
-                                        <p className="text-[11px] text-gray-400 font-medium">{tx.created_at ? new Date(tx.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—'}</p>
+                                        <p className="font-black text-gray-900 text-sm truncate">{tx.customer_name || 'Cobrança PIX'}</p>
+                                        <p className="text-[11px] text-gray-400 font-medium">{tx.date || '—'}</p>
                                     </div>
                                     <div className="flex flex-col items-end gap-1 shrink-0">
-                                        <span className={`font-black text-sm ${tx.status === 'paid' ? 'text-emerald-600' : 'text-gray-500'}`}>
-                                            R$ {fmtBRL(tx.amount)}
+                                        <span className={`font-black text-sm ${tx.badge === 'approved' ? 'text-emerald-600' : 'text-gray-500'}`}>
+                                            R$ {tx.amount_brl}
                                         </span>
-                                        <StatusBadge status={tx.status} />
+                                        <StatusBadge status={tx.badge} />
                                     </div>
                                 </div>
                             ))}
