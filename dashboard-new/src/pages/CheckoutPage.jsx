@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     ShoppingBag, Lock, ShieldCheck, CheckCircle, Loader2,
     ArrowRight, Clock, Star, Users, Zap, BadgeCheck, Gift,
-    ChevronRight, Eye, CreditCard, QrCode
+    ChevronRight, Eye, CreditCard, QrCode,
+    Phone, MessageCircle, MapPin, ThumbsUp, X, Tag, AlertTriangle, Check, Mail
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import PixModal from '../components/PixModal';
@@ -81,6 +82,13 @@ export default function CheckoutPage() {
     const [error, setError]             = useState(null);
     const [customerName, setCustomerName] = useState('');
     const [customerDoc, setCustomerDoc] = useState('');
+    const [customerEmail, setCustomerEmail] = useState('');
+    const [customerPhone, setCustomerPhone] = useState('');
+    const [customerAddress, setCustomerAddress] = useState('');
+    const [couponCode, setCouponCode] = useState('');
+    const [couponApplied, setCouponApplied] = useState(false);
+    const [couponDiscount, setCouponDiscount] = useState(0);
+    const [exitPopupVisible, setExitPopupVisible] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [activePix, setActivePix]     = useState(null);
     const [paymentMethod, setPaymentMethod] = useState('pix');
@@ -105,6 +113,42 @@ export default function CheckoutPage() {
         });
         document.head.appendChild(link);
         return () => document.getElementById('ck-font')?.remove();
+    }, [data]);
+
+    // Inject pixels (FB, GTAg, TikTok) + exit popup
+    useEffect(() => {
+        if (!data) return;
+        const cs2 = { ...DEFAULT_CS, ...(data.checkout.custom_settings || {}) };
+        // Facebook Pixel
+        if (cs2.pixel_fb) {
+            const s = document.createElement('script');
+            s.innerHTML = `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${cs2.pixel_fb}');fbq('track','PageView');`;
+            document.head.appendChild(s);
+        }
+        // Google Analytics / GTAg
+        if (cs2.pixel_gtag) {
+            const s = document.createElement('script');
+            s.async = true;
+            s.src = `https://www.googletagmanager.com/gtag/js?id=${cs2.pixel_gtag}`;
+            document.head.appendChild(s);
+            const s2 = document.createElement('script');
+            s2.innerHTML = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${cs2.pixel_gtag}');`;
+            document.head.appendChild(s2);
+        }
+        // TikTok Pixel
+        if (cs2.pixel_tiktok) {
+            const s = document.createElement('script');
+            s.innerHTML = `!function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=['page','track','identify','instances','debug','on','off','once','ready','alias','group','enableCookie','disableCookie'],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var i='https://analytics.tiktok.com/i18n/pixel/events.js';ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement('script');o.type='text/javascript',o.async=!0,o.src=i+'?sdkid='+e+'&lib='+t;var a=document.getElementsByTagName('script')[0];a.parentNode.insertBefore(o,a)};ttq.load('${cs2.pixel_tiktok}');ttq.page();}(window,document,'ttq');`;
+            document.head.appendChild(s);
+        }
+        // Exit popup
+        if (cs2.show_exit_popup) {
+            const handleMouseLeave = (e) => {
+                if (e.clientY <= 0 && !hasPaidRef.current) setExitPopupVisible(true);
+            };
+            document.addEventListener('mouseleave', handleMouseLeave);
+            return () => document.removeEventListener('mouseleave', handleMouseLeave);
+        }
     }, [data]);
 
     // Inject UTMify script if seller has token configured
@@ -218,6 +262,8 @@ export default function CheckoutPage() {
         : (secondary === '#000000' ? '#08080a' : secondary);
     const btnR = cs.btn_radius === 'pill' ? '9999px' : cs.btn_radius === 'sharp' ? '6px' : '16px';
     const fontFam = `'${cs.font_family || 'Outfit'}', sans-serif`;
+    const btnColor = cs.btn_color_override || primary;
+    const finalTotal = couponApplied ? Math.max(0, data.total - couponDiscount) : data.total;
 
     /* ── RENDER ── */
     return (
@@ -230,6 +276,21 @@ export default function CheckoutPage() {
                 className="fixed inset-0 -z-10 pointer-events-none opacity-[0.07]"
                 style={{ backgroundImage: `radial-gradient(ellipse at 20% 40%, ${primary}, transparent 50%), radial-gradient(ellipse at 80% 20%, ${primary}, transparent 50%)` }}
             />
+
+            {/* ── BACKGROUND IMAGE ── */}
+            {cs.bg_image_url && (
+                <div className="fixed inset-0 -z-10 pointer-events-none" style={{ backgroundImage: `url(${cs.bg_image_url})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: (cs.bg_image_opacity ?? 70) / 100 }} />
+            )}
+
+            {/* ── SCARCITY BAR ── */}
+            {cs.show_scarcity && (
+                <div className="w-full bg-red-500/10 border-b border-red-500/20 py-2 px-4 flex items-center justify-center gap-2">
+                    <AlertTriangle size={13} className="text-red-400 shrink-0" />
+                    <span className="text-xs font-black text-red-300">
+                        {cs.scarcity_stock ? `Restam apenas ${cs.scarcity_stock} vagas!` : (cs.scarcity_text || 'Vagas limitadas!')}
+                    </span>
+                </div>
+            )}
 
             {/* ── TOP URGENCY BAR ── */}
             {cs.show_countdown && (
@@ -289,10 +350,21 @@ export default function CheckoutPage() {
             {/* ── MAIN CONTENT ── */}
             <div className="max-w-4xl mx-auto px-4 py-6 pb-36 md:pb-10">
 
-                {/* Title */}
-                <h1 className="text-2xl md:text-3xl font-black text-center mb-8 leading-tight">
-                    {data.checkout.title}
+                {/* Title / Headline */}
+                <h1 className="text-2xl md:text-3xl font-black text-center mb-2 leading-tight">
+                    {cs.headline || data.checkout.title}
                 </h1>
+                {cs.subheadline && (
+                    <p className="text-center text-white/50 text-sm font-medium mb-3">{cs.subheadline}</p>
+                )}
+                {cs.urgency_text && (
+                    <div className="flex justify-center mb-6">
+                        <span className="text-[11px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border" style={{ color: primary, borderColor: `${primary}40`, background: `${primary}10` }}>
+                            {cs.urgency_text}
+                        </span>
+                    </div>
+                )}
+                {!cs.headline && !cs.subheadline && !cs.urgency_text && <div className="mb-6" />}
 
                 <div className={cs.layout === '1col' ? 'max-w-xl mx-auto space-y-4' : 'grid grid-cols-1 md:grid-cols-2 gap-5'}>
 
@@ -370,6 +442,63 @@ export default function CheckoutPage() {
                             </div>
                         </div>
                         )}
+
+                        {/* Benefits */}
+                        {cs.show_benefits && cs.benefits?.length > 0 && (
+                        <div className="bg-white/[0.02] border border-white/6 rounded-[24px] p-5">
+                            <h3 className="text-xs font-black text-white/40 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <Check size={13} style={{ color: primary }} /> O que você recebe
+                            </h3>
+                            <ul className="space-y-2.5">
+                                {cs.benefits.map((b, i) => (
+                                    <li key={i} className="flex items-start gap-3">
+                                        <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5" style={{ background: `${primary}20` }}>
+                                            <Check size={11} style={{ color: primary }} />
+                                        </div>
+                                        <span className="text-sm text-white/70 font-medium leading-snug">{b}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        )}
+
+                        {/* Testimonials */}
+                        {cs.show_testimonials && cs.testimonials?.length > 0 && (
+                        <div className="space-y-3">
+                            <h3 className="text-xs font-black text-white/40 uppercase tracking-widest flex items-center gap-2">
+                                <ThumbsUp size={13} style={{ color: primary }} /> Quem já comprou
+                            </h3>
+                            {cs.testimonials.map((t, i) => (
+                                <div key={i} className="bg-white/[0.02] border border-white/6 rounded-[20px] p-4">
+                                    <div className="flex items-center gap-1 mb-2">
+                                        {Array.from({ length: t.stars || 5 }).map((_, s) => (
+                                            <Star key={s} size={11} fill={primary} style={{ color: primary }} />
+                                        ))}
+                                    </div>
+                                    <p className="text-sm text-white/60 italic leading-relaxed">"{t.text}"</p>
+                                    <p className="text-[11px] font-black text-white/30 mt-2">— {t.name}</p>
+                                </div>
+                            ))}
+                        </div>
+                        )}
+
+                        {/* Order Bump */}
+                        {cs.show_order_bump && cs.order_bump_title && (
+                        <div className="border-2 rounded-[24px] p-5" style={{ borderColor: `${primary}60`, background: `${primary}08` }}>
+                            <div className="flex items-start gap-3">
+                                <input type="checkbox" id="order-bump" className="mt-1 w-4 h-4 accent-primary shrink-0" />
+                                <label htmlFor="order-bump" className="cursor-pointer">
+                                    <p className="font-black text-sm" style={{ color: primary }}>SIM! Quero adicionar:</p>
+                                    <p className="font-black text-white text-base mt-0.5">{cs.order_bump_title}</p>
+                                    {cs.order_bump_desc && <p className="text-xs text-white/50 mt-1 leading-relaxed">{cs.order_bump_desc}</p>}
+                                    {cs.order_bump_price && (
+                                        <p className="font-black mt-2 text-sm" style={{ color: primary }}>+ R$ {parseFloat(cs.order_bump_price).toFixed(2).replace('.',',')}</p>
+                                    )}
+                                </label>
+                            </div>
+                        </div>
+                        )}
+
                     </div>
 
                     {/* ── RIGHT: PAYMENT FORM ── */}
@@ -442,6 +571,48 @@ export default function CheckoutPage() {
                                 />
                             </div>
 
+                            {/* Extra: Email */}
+                            {cs.require_email !== false && (
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-1">E-mail</label>
+                                <input type="email" placeholder="seu@email.com" value={customerEmail} onChange={e => setCustomerEmail(e.target.value)}
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 font-bold text-sm focus:outline-none focus:border-white/30 transition-all placeholder:text-white/15" />
+                            </div>
+                            )}
+
+                            {/* Extra: Phone */}
+                            {cs.require_phone && (
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-1">Telefone / WhatsApp</label>
+                                <input type="tel" placeholder="(11) 9 0000-0000" value={customerPhone} onChange={e => setCustomerPhone(e.target.value)}
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 font-bold text-sm focus:outline-none focus:border-white/30 transition-all placeholder:text-white/15" />
+                            </div>
+                            )}
+
+                            {/* Extra: Address */}
+                            {cs.require_address && (
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-1">Endereço completo</label>
+                                <input type="text" placeholder="Rua, número, bairro, cidade" value={customerAddress} onChange={e => setCustomerAddress(e.target.value)}
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 font-bold text-sm focus:outline-none focus:border-white/30 transition-all placeholder:text-white/15" />
+                            </div>
+                            )}
+
+                            {/* Coupon */}
+                            {cs.show_coupon && (
+                            <div className="flex gap-2">
+                                <input type="text" placeholder="Código de cupom" value={couponCode} onChange={e => setCouponCode(e.target.value)}
+                                    className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 font-bold text-sm focus:outline-none focus:border-white/30 transition-all placeholder:text-white/15" />
+                                <button type="button" onClick={() => { if (couponCode.trim()) { setCouponApplied(true); setCouponDiscount(data.total * 0.1); } }}
+                                    className="px-4 py-3 rounded-2xl font-black text-xs uppercase tracking-wider transition-all" style={{ background: `${primary}20`, color: primary }}>
+                                    <Tag size={14} />
+                                </button>
+                            </div>
+                            )}
+                            {couponApplied && (
+                                <p className="text-xs font-black text-green-400 flex items-center gap-1"><Check size={12} /> Cupom aplicado! − R$ {fmtBRL(couponDiscount)}</p>
+                            )}
+
                             {/* Trust seals */}
                             {cs.show_trust_seals && (
                             <div className="grid grid-cols-3 gap-3 py-2">
@@ -456,19 +627,19 @@ export default function CheckoutPage() {
                                 whileTap={{ scale: 0.97 }}
                                 type="submit"
                                 disabled={isProcessing}
-                                style={paymentMethod === 'pix' ? { background: primary, borderRadius: btnR } : { borderRadius: btnR }}
+                                style={paymentMethod === 'pix' ? { background: btnColor, borderRadius: btnR } : { borderRadius: btnR }}
                                 className={`w-full py-5 font-black text-base flex items-center justify-center gap-3 shadow-xl disabled:opacity-50 transition-all mt-auto ${
                                     paymentMethod === 'card'
                                         ? 'bg-blue-500 hover:bg-blue-600 text-white'
                                         : 'text-black'
-                                }`}
+                                } ${cs.btn_pulse && paymentMethod === 'pix' ? 'animate-pulse' : ''}`}
                             >
                                 {isProcessing ? (
                                     <><Loader2 className="animate-spin" size={20} /> {paymentMethod === 'card' ? 'Gerando link...' : 'Gerando PIX...'}</>
                                 ) : paymentMethod === 'card' ? (
-                                    <><CreditCard size={20} />{cs.cta_text || `Pagar R$ ${fmtBRL(data.total)} com Cartão`}<ArrowRight size={18} /></>
+                                    <><CreditCard size={20} />{cs.cta_text || `Pagar R$ ${fmtBRL(finalTotal)} com Cartão`}<ArrowRight size={18} /></>
                                 ) : (
-                                    <><Zap size={20} />{cs.cta_text || `Pagar R$ ${fmtBRL(data.total)} com PIX`}<ArrowRight size={18} /></>
+                                    <><Zap size={20} />{cs.cta_text || `Pagar R$ ${fmtBRL(finalTotal)} com PIX`}<ArrowRight size={18} /></>
                                 )}
                             </motion.button>
 
@@ -513,9 +684,9 @@ export default function CheckoutPage() {
                             }`}
                         >
                             {isProcessing ? <Loader2 className="animate-spin" size={20} /> : paymentMethod === 'card' ? (
-                                <><CreditCard size={18} /> {cs.cta_text || `Pagar R$ ${fmtBRL(data.total)} com Cartão`}</>
+                                <><CreditCard size={18} /> {cs.cta_text || `Pagar R$ ${fmtBRL(finalTotal)} com Cartão`}</>
                             ) : (
-                                <><Zap size={18} /> {cs.cta_text || `Pagar R$ ${fmtBRL(data.total)} com PIX`}</>
+                                <><Zap size={18} /> {cs.cta_text || `Pagar R$ ${fmtBRL(finalTotal)} com PIX`}</>
                             )}
                         </button>
                         <p className="text-center text-[10px] text-white/20 font-bold mt-2">
@@ -532,9 +703,57 @@ export default function CheckoutPage() {
                     pixData={activePix}
                     onClose={() => setActivePix(null)}
                     statusEndpoint="/check_checkout_status.php"
-                    onPaymentSuccess={() => {}}
+                    onPaymentSuccess={() => {
+                        hasPaidRef.current = true;
+                        if (cs.redirect_url) {
+                            window.location.href = cs.redirect_url;
+                        }
+                    }}
                 />
             )}
+
+            {/* ── WHATSAPP FLOAT ── */}
+            {cs.show_whatsapp_float && cs.support_whatsapp && (
+                <a
+                    href={`https://wa.me/${cs.support_whatsapp.replace(/\D/g,'')}?text=${encodeURIComponent(cs.whatsapp_float_msg || 'Olá! Tenho uma dúvida.')}`}
+                    target="_blank" rel="noreferrer"
+                    className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 active:scale-95"
+                    style={{ background: '#25D366' }}
+                >
+                    <MessageCircle size={26} className="text-white" fill="white" />
+                </a>
+            )}
+
+            {/* ── EXIT POPUP ── */}
+            <AnimatePresence>
+            {exitPopupVisible && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+                    onClick={() => setExitPopupVisible(false)}
+                >
+                    <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9 }}
+                        className="relative max-w-sm w-full rounded-[32px] p-8 text-center shadow-2xl border border-white/10"
+                        style={{ background: bgCss }}
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <button onClick={() => setExitPopupVisible(false)} className="absolute top-4 right-4 text-white/30 hover:text-white">
+                            <X size={18} />
+                        </button>
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: `${primary}20` }}>
+                            <Zap size={28} style={{ color: primary }} />
+                        </div>
+                        <h3 className="text-xl font-black mb-2">{cs.exit_popup_title || 'Espere! Oferta especial para você'}</h3>
+                        <p className="text-white/50 text-sm mb-6 leading-relaxed">{cs.exit_popup_msg || 'Não perca esta oportunidade única!'}</p>
+                        <button onClick={() => setExitPopupVisible(false)}
+                            className="w-full py-4 font-black rounded-2xl text-black shadow-xl"
+                            style={{ background: primary, borderRadius: btnR }}
+                        >
+                            {cs.exit_popup_cta || 'Quero aproveitar!'}
+                        </button>
+                    </motion.div>
+                </motion.div>
+            )}
+            </AnimatePresence>
 
             {/* Custom scripts */}
             {data.checkout.custom_html_body && (
