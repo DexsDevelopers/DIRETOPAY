@@ -26,34 +26,17 @@ $results = [];
 
 // ── Bot de USUÁRIOS ───────────────────────────────────────────────────────────
 if ($userToken) {
-    $results['user_name'] = tgSet($userToken, 'setMyName', [
-        'name'        => 'LunarPay Assistente',
-        'language_code' => 'pt',
-    ]);
-    $results['user_description'] = tgSet($userToken, 'setMyDescription', [
-        'description'   => "🌙 LunarPay — Seu assistente de vendas no Telegram.\nConsulte saldo, gere PIX, acompanhe vendas e muito mais.",
-        'language_code' => 'pt',
-    ]);
-    $results['user_short'] = tgSet($userToken, 'setMyShortDescription', [
-        'short_description' => '🌙 LunarPay — Assistente de vendas. Saldo, PIX, relatórios e saques.',
-        'language_code'     => 'pt',
-    ]);
+    // setMyName sem language_code = altera o nome padrão global
+    $results['user_name']        = tgSet($userToken, 'setMyName',             ['name'              => 'LunarPay Assistente']);
+    $results['user_description'] = tgSet($userToken, 'setMyDescription',      ['description'       => "🌙 LunarPay — Seu assistente de vendas no Telegram.\nConsulte saldo, gere PIX, acompanhe vendas e muito mais."]);
+    $results['user_short']       = tgSet($userToken, 'setMyShortDescription', ['short_description' => '🌙 LunarPay — Assistente de vendas. Saldo, PIX, relatórios e saques.']);
 }
 
 // ── Bot de ADMIN ──────────────────────────────────────────────────────────────
 if ($adminToken) {
-    $results['admin_name'] = tgSet($adminToken, 'setMyName', [
-        'name'        => 'LunarPay Admin',
-        'language_code' => 'pt',
-    ]);
-    $results['admin_description'] = tgSet($adminToken, 'setMyDescription', [
-        'description'   => "🌙 LunarPay — Painel administrativo via Telegram.\nEstatísticas, saques, produtos e relatórios em tempo real.",
-        'language_code' => 'pt',
-    ]);
-    $results['admin_short'] = tgSet($adminToken, 'setMyShortDescription', [
-        'short_description' => '🌙 LunarPay Admin — Gestão da plataforma pelo Telegram.',
-        'language_code'     => 'pt',
-    ]);
+    $results['admin_name']        = tgSet($adminToken, 'setMyName',             ['name'              => 'LunarPay Admin']);
+    $results['admin_description'] = tgSet($adminToken, 'setMyDescription',      ['description'       => "🌙 LunarPay — Painel administrativo via Telegram.\nEstatísticas, saques, produtos e relatórios em tempo real."]);
+    $results['admin_short']       = tgSet($adminToken, 'setMyShortDescription', ['short_description' => '🌙 LunarPay Admin — Gestão da plataforma pelo Telegram.']);
 }
 
 echo '<pre>';
