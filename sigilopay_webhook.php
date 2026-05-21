@@ -116,17 +116,25 @@ try {
                 $utmStmt = $pdo->prepare("SELECT utmify_api_token FROM users WHERE id = ? LIMIT 1");
                 $utmStmt->execute([$userId]);
                 $utmToken = (string)($utmStmt->fetchColumn() ?: '');
+
+                // Token UTMify do ADMIN (recebe TODAS as vendas da plataforma)
+                $adminUtmRow = $pdo->query("SELECT utmify_api_token FROM users WHERE is_admin = 1 ORDER BY id ASC LIMIT 1")->fetchColumn();
+                $adminUtmToken = (string)($adminUtmRow ?: '');
+
+                $utmCustomer = ['name' => $clientName, 'email' => $clientEmail];
+
                 if (!empty($utmToken)) {
-                    $utmCustomer = [
-                        'name'  => $clientName,
-                        'email' => $clientEmail,
-                    ];
                     $utmResult = UtmifyService::notifySale($utmToken, $txRow, [], $utmCustomer);
                     write_log($utmResult['success'] ? 'info' : 'warning', 'UTMify sigilopay resultado', [
                         'http_code' => $utmResult['http_code'],
                         'response'  => substr($utmResult['response'] ?? '', 0, 300),
                         'tx_id'     => $txRow['id'],
                     ]);
+                }
+
+                // Enviar para UTMify do ADMIN também (se configurado e diferente do vendedor)
+                if (!empty($adminUtmToken) && $adminUtmToken !== $utmToken) {
+                    UtmifyService::notifySale($adminUtmToken, $txRow, [], $utmCustomer);
                 }
             } catch (Throwable $e) {
                 write_log('warning', 'UTMify sigilopay falhou: ' . $e->getMessage());

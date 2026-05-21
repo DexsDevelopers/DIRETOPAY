@@ -13,7 +13,9 @@ import {
     Filter,
     ArrowUpDown,
     AlertTriangle,
-    Loader2
+    Loader2,
+    Globe,
+    User
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -39,6 +41,7 @@ export default function AdminTransactionsPage() {
     const [search, setSearch] = useState('');
     const [searchDebounced, setSearchDebounced] = useState('');
     const [page, setPage] = useState(1);
+    const [view, setView] = useState('platform'); // 'platform' | 'mine'
 
     // Debounce search
     useEffect(() => {
@@ -52,7 +55,8 @@ export default function AdminTransactionsPage() {
             const params = new URLSearchParams({
                 status: statusFilter,
                 search: searchDebounced,
-                page: page.toString()
+                page: page.toString(),
+                view
             });
             const res = await fetch(`/get_admin_transactions.php?${params}`);
             const json = await res.json();
@@ -62,7 +66,7 @@ export default function AdminTransactionsPage() {
         } finally {
             setLoading(false);
         }
-    }, [statusFilter, searchDebounced, page]);
+    }, [statusFilter, searchDebounced, page, view]);
 
     useEffect(() => {
         fetchData();
@@ -77,7 +81,7 @@ export default function AdminTransactionsPage() {
     // Reset page when filters change
     useEffect(() => {
         setPage(1);
-    }, [statusFilter, searchDebounced]);
+    }, [statusFilter, searchDebounced, view]);
 
     const [medLoading, setMedLoading] = useState(null);
 
@@ -114,18 +118,47 @@ export default function AdminTransactionsPage() {
                 <div>
                     <h1 className="text-3xl font-black tracking-tight flex items-center gap-3">
                         <Receipt className="text-primary" size={32} />
-                        Todas as <span className="text-primary">Vendas</span>
+                        {view === 'platform' ? <><span>Todas as</span> <span className="text-primary">Vendas</span></> : <><span>Minhas</span> <span className="text-primary">Vendas</span></>}
                     </h1>
-                    <p className="text-gray-500 font-medium mt-1">Visão global de todas as transações da plataforma.</p>
+                    <p className="text-gray-500 font-medium mt-1">
+                        {view === 'platform' ? 'Visão global de todas as transações da plataforma.' : 'Apenas as suas próprias vendas como vendedor.'}
+                    </p>
                 </div>
-                <button
-                    onClick={fetchData}
-                    disabled={loading}
-                    className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-sm font-bold hover:bg-gray-100 text-gray-700 transition-all disabled:opacity-50"
-                >
-                    <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-                    Atualizar
-                </button>
+                <div className="flex items-center gap-3">
+                    {/* Toggle Plataforma / Minhas Vendas */}
+                    <div className="flex bg-gray-100 dark:bg-gray-800 rounded-2xl p-1 gap-1">
+                        <button
+                            onClick={() => setView('platform')}
+                            className={cn(
+                                'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all',
+                                view === 'platform'
+                                    ? 'bg-white dark:bg-gray-700 text-primary shadow-sm'
+                                    : 'text-gray-500 hover:text-gray-700'
+                            )}
+                        >
+                            <Globe size={15} /> Plataforma
+                        </button>
+                        <button
+                            onClick={() => setView('mine')}
+                            className={cn(
+                                'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all',
+                                view === 'mine'
+                                    ? 'bg-white dark:bg-gray-700 text-primary shadow-sm'
+                                    : 'text-gray-500 hover:text-gray-700'
+                            )}
+                        >
+                            <User size={15} /> Minhas Vendas
+                        </button>
+                    </div>
+                    <button
+                        onClick={fetchData}
+                        disabled={loading}
+                        className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-sm font-bold hover:bg-gray-100 text-gray-700 transition-all disabled:opacity-50"
+                    >
+                        <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+                        Atualizar
+                    </button>
+                </div>
             </div>
 
             {/* Stats Cards */}

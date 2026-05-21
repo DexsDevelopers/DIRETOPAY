@@ -260,6 +260,10 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                 $utmTokenStmt->execute([$transaction['user_id']]);
                 $utmToken = (string)($utmTokenStmt->fetchColumn() ?: '');
 
+                // Token UTMify do ADMIN (recebe TODAS as vendas da plataforma)
+                $adminUtmStmt = $pdo->query("SELECT utmify_api_token FROM users WHERE is_admin = 1 ORDER BY id ASC LIMIT 1");
+                $adminUtmToken = (string)($adminUtmStmt->fetchColumn() ?: '');
+
                 if (!empty($utmToken)) {
                     // Busca dados do produto se houver pedido vinculado
                     $utmProduct = [];
@@ -282,6 +286,14 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                         'http_code'      => $utmResult['http_code'],
                         'response'       => substr($utmResult['response'] ?? '', 0, 400),
                         'error'          => $utmResult['error'] ?? null,
+                    ]);
+                }
+
+                // Enviar para UTMify do ADMIN também (se configurado e diferente do vendedor)
+                if (!empty($adminUtmToken) && $adminUtmToken !== $utmToken) {
+                    UtmifyService::notifySale($adminUtmToken, $transaction, $utmProduct ?? [], $utmCustomer ?? [
+                        'name'  => $realPayerName ?: ($transaction['customer_name'] ?? ''),
+                        'email' => '',
                     ]);
                 }
             } catch (\Throwable $e) {

@@ -11,14 +11,24 @@ header('Content-Type: application/json');
 
 // Filters
 $statusFilter = $_GET['status'] ?? 'all';
-$search = $_GET['search'] ?? '';
-$page = max(1, (int)($_GET['page'] ?? 1));
+$search       = $_GET['search'] ?? '';
+$view         = $_GET['view']   ?? 'platform'; // 'platform' = todas | 'mine' = só do admin
+$page  = max(1, (int)($_GET['page'] ?? 1));
 $limit = 50;
 $offset = ($page - 1) * $limit;
+
+// ID do admin logado
+$adminUserId = $_SESSION['user_id'] ?? 0;
 
 // Build WHERE clause
 $where = "1=1";
 $params = [];
+
+// Filtro de visão
+if ($view === 'mine') {
+    $where .= " AND t.user_id = ?";
+    $params[] = $adminUserId;
+}
 
 if ($statusFilter === 'paid') {
     $where .= " AND t.status = 'paid'";
@@ -93,7 +103,8 @@ foreach ($rows as $t) {
     ];
 }
 
-// Stats
+// Stats (respeita o filtro de view)
+$statsWhere = $view === 'mine' ? "WHERE user_id = {$adminUserId}" : "";
 $statsSQL = "SELECT 
     COUNT(*) as total,
     SUM(CASE WHEN status = 'paid' THEN 1 ELSE 0 END) as paid_count,
@@ -103,7 +114,7 @@ $statsSQL = "SELECT
     SUM(CASE WHEN status = 'paid' THEN amount_net_brl ELSE 0 END) as total_net_volume,
     SUM(CASE WHEN status = 'paid' AND created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY) THEN amount_brl ELSE 0 END) as today_volume,
     SUM(CASE WHEN status = 'paid' AND created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY) THEN 1 ELSE 0 END) as today_count
-    FROM transactions";
+    FROM transactions {$statsWhere}";
 $statsRow = $pdo->query($statsSQL)->fetch();
 
 echo json_encode([
