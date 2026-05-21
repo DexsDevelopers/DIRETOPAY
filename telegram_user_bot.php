@@ -105,7 +105,7 @@ function div(): string { return "\n━━━━━━━━━━━━━━━
 function divLight(): string { return "\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈"; }
 
 function footer(): string {
-    return "\n\n<i>👻 LunarPay • " . date('H:i') . "</i>";
+    return "\n\n<i>🌙 LunarPay • " . date('H:i') . "</i>";
 }
 
 function greeting(): string {
@@ -325,7 +325,7 @@ if (isset($input['callback_query'])) {
         answerCallback($cbId);
         $today = getUserTodayStats((int)$user['id']);
         uEditMessage($cbChatId, $cbMsgId,
-            "👻 <b>LunarPay — Menu Principal</b>" . div() . "\n\n"
+            "🌙 <b>LunarPay — Menu Principal</b>" . div() . "\n\n"
             . greeting() . ", <b>{$user['full_name']}</b>!\n\n"
             . "💰 Saldo: <b>" . formatBRL(getFreshBalance((int)$user['id'])) . "</b>\n"
             . "📊 Vendas hoje: <b>{$today['cnt']}</b> — " . formatBRL((float)$today['vol']) . "\n\n"
@@ -588,7 +588,7 @@ if ($command === 'start') {
         } catch (Throwable $e) {}
 
         uReply($chatId,
-            "👻 <b>LunarPay Bot</b>" . div() . "\n\n"
+            "🌙 <b>LunarPay Bot</b>" . div() . "\n\n"
             . "Seu assistente de vendas no Telegram!\n"
             . "Consulte saldo, gere PIX, acompanhe vendas e muito mais.\n\n"
             . "<b>Como conectar:</b>\n\n"
@@ -1450,7 +1450,7 @@ switch ($command) {
     case 'inicio':
         $today = getUserTodayStats($userId);
         uReply($chatId,
-            "👻 <b>LunarPay — Menu Principal</b>" . div() . "\n\n"
+            "🌙 <b>LunarPay — Menu Principal</b>" . div() . "\n\n"
             . greeting() . ", <b>{$userName}</b>!\n\n"
             . "💰 Saldo: <b>" . formatBRL(getFreshBalance($userId)) . "</b>\n"
             . "📊 Vendas hoje: <b>{$today['cnt']}</b> — " . formatBRL((float)$today['vol']) . "\n\n"
@@ -1462,7 +1462,7 @@ switch ($command) {
     case 'ajuda':
     case 'help':
         uReply($chatId,
-            "👻 <b>LunarPay Bot — Comandos</b>" . div() . "\n\n"
+            "🌙 <b>LunarPay Bot — Comandos</b>" . div() . "\n\n"
             . "<b>💰 Financeiro</b>\n"
             . "/saldo — Saldo, vendas, meta\n"
             . "/pix {valor} — Gerar cobrança PIX\n"
@@ -1649,7 +1649,7 @@ if (!$handled) {
             case 'menu':
                 $today = getUserTodayStats($userId);
                 uReply($chatId,
-                    "👻 <b>LunarPay — Menu Principal</b>" . div() . "\n\n"
+                    "🌙 <b>LunarPay — Menu Principal</b>" . div() . "\n\n"
                     . greeting() . ", <b>{$userName}</b>!\n\n"
                     . "💰 Saldo: <b>" . formatBRL(getFreshBalance($userId)) . "</b>\n"
                     . "📊 Vendas hoje: <b>{$today['cnt']}</b> — " . formatBRL((float)$today['vol']) . "\n\n"
