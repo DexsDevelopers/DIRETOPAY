@@ -98,22 +98,13 @@ try {
 
             // Telegram usuário (bot)
             try {
-                if (!empty($merchantRow['telegram_chat_id']) && defined('TELEGRAM_USER_BOT_TOKEN') && TELEGRAM_USER_BOT_TOKEN) {
-                    $tgMsg = "💰 <b>Venda Confirmada!</b>\n━━━━━━━━━━━━━━━━━━━━\n\n"
-                           . "💵 Valor: <b>R$ " . number_format($amount, 2, ',', '.') . "</b>\n"
-                           . "💎 Líquido: R$ " . number_format($netAmount, 2, ',', '.') . "\n"
-                           . "👤 Pagador: " . ($txRow['customer_name'] ?? 'N/A') . "\n"
-                           . "🆔 TX: <code>#" . $txRow['id'] . "</code>\n\n"
-                           . "✅ Valor creditado no seu saldo!";
-                    $tgCh = curl_init("https://api.telegram.org/bot" . TELEGRAM_USER_BOT_TOKEN . "/sendMessage");
-                    curl_setopt_array($tgCh, [
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_POST           => true,
-                        CURLOPT_POSTFIELDS     => json_encode(['chat_id' => $merchantRow['telegram_chat_id'], 'text' => $tgMsg, 'parse_mode' => 'HTML']),
-                        CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
-                        CURLOPT_TIMEOUT        => 10,
-                    ]);
-                    curl_exec($tgCh); curl_close($tgCh);
+                if (!empty($merchantRow['telegram_chat_id'])) {
+                    $tgMsg = TelegramService::getSaleCelebrationMsg(
+                        $amount, $netAmount,
+                        $txRow['customer_name'] ?? 'N/A',
+                        (int)$txRow['id']
+                    );
+                    TelegramService::sendToUser($merchantRow['telegram_chat_id'], $tgMsg);
                 }
             } catch (Throwable $e) {}
 

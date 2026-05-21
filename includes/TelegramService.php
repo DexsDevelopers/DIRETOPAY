@@ -348,4 +348,143 @@ class TelegramService
           . self::footer();
         return self::send($msg);
     }
+
+    // ─── ENVIAR MENSAGEM VIA USER BOT (para vendedor específico) ─────────────
+    public static function sendToUser(string $chatId, string $message): bool
+    {
+        $token = defined('TELEGRAM_USER_BOT_TOKEN') ? TELEGRAM_USER_BOT_TOKEN : '';
+        if (!$token || !$chatId) return false;
+        $ch = curl_init("https://api.telegram.org/bot{$token}/sendMessage");
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => json_encode([
+                'chat_id'                  => $chatId,
+                'text'                     => $message,
+                'parse_mode'               => 'HTML',
+                'disable_web_page_preview' => true,
+            ]),
+            CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+            CURLOPT_TIMEOUT        => 10,
+        ]);
+        $raw = curl_exec($ch);
+        curl_close($ch);
+        $res = json_decode($raw ?: '{}', true) ?: [];
+        return !empty($res['ok']);
+    }
+
+    // ─── PIX GERADO NO PRODUTO DO VENDEDOR ───────────────────────────────────
+    public static function notifyPixGenerated(string $userChatId, float $amount, string $customerName, string $checkoutName, int $txId): bool
+    {
+        $amtFmt = number_format($amount, 2, ',', '.');
+        $h = (int)date('H');
+        $tips = [
+            "💡 <i>Dica: responda rápido se o cliente precisar de suporte!</i>",
+            "💡 <i>Enquanto aguarda, que tal compartilhar seu link de vendas?</i>",
+            "💡 <i>Confirmação chega em segundos após o pagamento!</i>",
+        ];
+        $tip = $tips[array_rand($tips)];
+        $msg =
+            "⚡ <b>PIX GERADO!</b>\n" . self::divider() . "\n\n"
+          . "💵 <b>Valor:</b> R$ {$amtFmt}\n"
+          . "👤 <b>Cliente:</b> " . htmlspecialchars($customerName ?: 'Não informado') . "\n"
+          . "🛍 <b>Produto:</b> " . htmlspecialchars($checkoutName) . "\n"
+          . "🆔 <b>TX:</b> <code>#{$txId}</code>\n\n"
+          . "⏳ <i>Aguardando pagamento...</i>\n\n"
+          . $tip
+          . "\n\n🌙 <i>LunarPay • " . date('H:i') . "</i>";
+        return self::sendToUser($userChatId, $msg);
+    }
+
+    // ─── VISITA NO CHECKOUT DO VENDEDOR ──────────────────────────────────────
+    public static function notifyCheckoutVisit(string $userChatId, string $checkoutName, string $ip = ''): bool
+    {
+        $phrases = [
+            "👀 Alguém está olhando seu produto com interesse! Dedos cruzados! 🤞",
+            "🔔 Visita no seu checkout! Pode ser uma venda chegando!",
+            "👁️ Um potencial cliente está no seu checkout agora!",
+            "🛒 Alguém abriu seu produto! A conversão pode estar perto!",
+            "🎯 Visitante no seu checkout! Tudo pronto para a venda?",
+        ];
+        $phrase = $phrases[array_rand($phrases)];
+        $msg =
+            "👁️ <b>VISITA NO CHECKOUT</b>\n" . self::divider() . "\n\n"
+          . $phrase . "\n\n"
+          . "🛍 <b>Produto:</b> " . htmlspecialchars($checkoutName) . "\n\n"
+          . "<i>Nenhuma ação necessária — só acompanhe!</i>"
+          . "\n\n🌙 <i>LunarPay • " . date('H:i') . "</i>";
+        return self::sendToUser($userChatId, $msg);
+    }
+
+    // ─── MENSAGEM DE VENDA COMEMORATIVA (variada por hora/dia) ───────────────
+    public static function getSaleCelebrationMsg(float $amount, float $netAmount, string $customerName, int $txId, string $checkoutName = ''): string
+    {
+        $gross = number_format($amount,    2, ',', '.');
+        $net   = number_format($netAmount, 2, ',', '.');
+        $fee   = number_format($amount - $netAmount, 2, ',', '.');
+        $h   = (int)date('H');
+        $dow = (int)date('w'); // 0=Dom, 5=Sex, 6=Sab
+
+        // Frases por horário
+        if ($h >= 5 && $h < 12) {
+            $celebs = [
+                "☀️ <b>Manhã que começa com venda é dia abençoado!</b> Bom dia! 🎉",
+                "🌅 <b>Primeira venda do dia!</b> O café da manhã está pago! ☕",
+                "🚀 <b>Arrancou forte hoje!</b> A manhã promete! 💪",
+                "⚡ <b>Nem 12h e já está no lucro!</b> Continue assim! 🔥",
+                "🌄 <b>Manhã dourada!</b> Venda confirmada antes do almoço! 🍳",
+            ];
+        } elseif ($h >= 12 && $h < 15) {
+            $celebs = [
+                "🍽️ <b>O almoço de hoje vai ser especial!</b> Venda confirmada! 😋",
+                "🌤 <b>Venda na hora do almoço!</b> Já vale o dia! 🎯",
+                "🍕 <b>Tá pagando o almoço!</b> Continue vendendo! 💰",
+                "🥗 <b>Hora de almoçar e comemorar!</b> Mais uma venda! 🎉",
+                "☀️ <b>Meio-dia chegando com venda!</b> O dia ficou bonito! ✨",
+            ];
+        } elseif ($h >= 15 && $h < 18) {
+            $celebs = [
+                "☕ <b>Cafézinho da tarde está pago!</b> Venda confirmada! 🎉",
+                "💪 <b>Tarde produtiva!</b> Mais uma conversão! 🔥",
+                "🎯 <b>Acertou de novo!</b> Tarde rendendo muito! 💰",
+                "⚡ <b>Tarde com energia boa!</b> Venda no bolso! 😎",
+                "🌤 <b>Tarde linda e lucrativa!</b> Continue o ritmo! 🚀",
+            ];
+        } elseif ($h >= 18 && $h < 22) {
+            $celebs = [
+                "🌙 <b>Noite de lucro!</b> O jantar ficou por conta da LunarPay! 🍽️",
+                "🌆 <b>Venda no fim do dia!</b> Fechou o dia no positivo! 🎉",
+                "🌃 <b>Noite chegando com dinheiro no bolso!</b> 💰",
+                "🥂 <b>Brinde ao final do dia!</b> Mais uma venda confirmada! ✨",
+                "🌟 <b>Dia finalizado com chave de ouro!</b> Venda confirmada! 🔑",
+            ];
+        } else {
+            $celebs = [
+                "🦉 <b>Madrugada produtiva!</b> O dinheiro não dorme! 💰",
+                "🌙 <b>Venda de madrugada!</b> Enquanto o mundo dorme, você fatura! 🚀",
+                "⭐ <b>Noite funda com venda!</b> Dedicação máxima! 💪",
+                "🌌 <b>As estrelas piscaram e veio uma venda!</b> 🎉",
+            ];
+        }
+
+        // Extra por dia da semana
+        $dayExtra = '';
+        if ($dow === 5) $dayExtra = "\n\n🎉 <i>Sexta com venda! Bora comemorar hoje à noite!</i>";
+        elseif ($dow === 6) $dayExtra = "\n\n📅 <i>Sábado de trabalho e lucro! Dedicação total!</i>";
+        elseif ($dow === 0) $dayExtra = "\n\n🌟 <i>Domingo de vendas! Você é diferente!</i>";
+        elseif ($dow === 1) $dayExtra = "\n\n💪 <i>Segunda com venda já é vitória na semana!</i>";
+
+        $celeb = $celebs[array_rand($celebs)];
+        $prodLine = $checkoutName ? "\n🛍 <b>Produto:</b> " . htmlspecialchars($checkoutName) : '';
+
+        return
+            "💰 {$celeb}\n" . self::divider() . "\n\n"
+          . "💵 <b>Valor Bruto:</b>   R$ {$gross}\n"
+          . "💎 <b>Você recebe:</b>   R$ {$net}\n"
+          . "📉 <b>Taxa:</b>          R$ {$fee}\n"
+          . "👤 <b>Cliente:</b> " . htmlspecialchars($customerName ?: 'N/A') . $prodLine . "\n"
+          . "🆔 <b>TX:</b> <code>#{$txId}</code>"
+          . $dayExtra
+          . "\n\n🌙 <i>LunarPay • " . date('H:i') . "</i>";
+    }
 }

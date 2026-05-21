@@ -140,6 +140,12 @@ try {
         try { TelegramService::notifyNewCharge($totalAmount, $user['full_name'] ?? 'N/A', $txId); } catch (Throwable $e) {}
         if (class_exists('PushService')) { try { PushService::notifyAdmins('⚡ Checkout #' . $txId, 'R$ ' . number_format($totalAmount, 2, ',', '.') . ' — ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {} }
 
+        // Notificar VENDEDOR via User Bot que PIX foi gerado no produto dele
+        if (!empty($user['telegram_chat_id'])) {
+            $checkoutName = $checkout['name'] ?? $checkout['title'] ?? ('Checkout #' . $checkoutId);
+            try { TelegramService::notifyPixGenerated($user['telegram_chat_id'], $totalAmount, $customerName, $checkoutName, $txId); } catch (Throwable $e) {}
+        }
+
         ob_end_clean();
         echo json_encode(['success' => true, 'pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $totalAmount]);
         exit;

@@ -209,27 +209,14 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
 
             // Notificar Usuário via Telegram User Bot (se vinculado)
             try {
-                if (!empty($userData['telegram_chat_id']) && defined('TELEGRAM_USER_BOT_TOKEN') && TELEGRAM_USER_BOT_TOKEN) {
-                    $tgMsg = "💰 <b>Venda Confirmada!</b>\n━━━━━━━━━━━━━━━━━━━━\n\n"
-                           . "💵 Valor: <b>R$ " . number_format($transaction['amount_brl'], 2, ',', '.') . "</b>\n"
-                           . "💎 Líquido: R$ " . number_format($transaction['amount_net_brl'], 2, ',', '.') . "\n"
-                           . "👤 Pagador: " . ($realPayerName ?: ($transaction['customer_name'] ?? 'N/A')) . "\n"
-                           . "🆔 TX: <code>#" . $transaction['id'] . "</code>\n\n"
-                           . "✅ Valor creditado no seu saldo!";
-                    $tgCh = curl_init("https://api.telegram.org/bot" . TELEGRAM_USER_BOT_TOKEN . "/sendMessage");
-                    curl_setopt_array($tgCh, [
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_POST => true,
-                        CURLOPT_POSTFIELDS => json_encode([
-                            'chat_id' => $userData['telegram_chat_id'],
-                            'text' => $tgMsg,
-                            'parse_mode' => 'HTML'
-                        ]),
-                        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-                        CURLOPT_TIMEOUT => 5,
-                    ]);
-                    curl_exec($tgCh);
-                    curl_close($tgCh);
+                if (!empty($userData['telegram_chat_id'])) {
+                    $tgMsg = TelegramService::getSaleCelebrationMsg(
+                        (float)$transaction['amount_brl'],
+                        (float)$transaction['amount_net_brl'],
+                        $realPayerName ?: ($transaction['customer_name'] ?? 'N/A'),
+                        (int)$transaction['id']
+                    );
+                    TelegramService::sendToUser($userData['telegram_chat_id'], $tgMsg);
                 }
             } catch (Throwable $e) {}
 
