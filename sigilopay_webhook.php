@@ -110,6 +110,38 @@ try {
 
             write_log('info', "SigiloPay Webhook: pagamento processado tx={$txRow['id']} user=$userId net=$netAmount");
 
+            // Disparar callback_url do site externo (se fornecido na criação da cobrança)
+            if (!empty($txRow['callback_url']) && is_safe_external_url($txRow['callback_url'])) {
+                $cbPayload = [
+                    'event'          => 'payment.completed',
+                    'transaction_id' => $txRow['id'],
+                    'pix_id'         => $sigiloTxId,
+                    'amount'         => $amount,
+                    'amount_net'     => $netAmount,
+                    'customer_name'  => $clientName,
+                    'status'         => 'paid',
+                    'external_id'    => $txRow['external_id'] ?? '',
+                    'timestamp'      => date('Y-m-d H:i:s'),
+                ];
+                try {
+                    $cbCh = curl_init($txRow['callback_url']);
+                    curl_setopt_array($cbCh, [
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_POST           => true,
+                        CURLOPT_POSTFIELDS     => json_encode($cbPayload),
+                        CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'User-Agent: LunarPay-Webhook/1.0', 'X-LunarPay-Event: payment.completed'],
+                        CURLOPT_TIMEOUT        => 10,
+                        CURLOPT_CONNECTTIMEOUT => 5,
+                    ]);
+                    $cbOut  = curl_exec($cbCh);
+                    $cbCode = curl_getinfo($cbCh, CURLINFO_HTTP_CODE);
+                    curl_close($cbCh);
+                    write_log('info', "SigiloPay callback_url disparado", ['url' => $txRow['callback_url'], 'http_code' => $cbCode, 'response' => substr($cbOut ?: '', 0, 300)]);
+                } catch (Throwable $e) {
+                    write_log('warning', 'SigiloPay callback_url falhou: ' . $e->getMessage());
+                }
+            }
+
             // UTMify — rastreamento de conversão
             try {
                 require_once __DIR__ . '/includes/UtmifyService.php';
