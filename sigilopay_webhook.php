@@ -41,7 +41,7 @@ try {
     $status      = $transaction['status'] ?? '';
     $amount      = (float)($transaction['amount'] ?? 0);
     $clientEmail = strtolower(trim($client['email'] ?? ''));
-    $clientName  = $client['name'] ?? 'Cliente SigiloPay';
+    $clientName  = $client['name'] ?? 'Cliente';
 
     if (!$sigiloTxId) {
         http_response_code(400);
@@ -78,7 +78,7 @@ try {
             // Log de saldo
             try {
                 $pdo->prepare("INSERT INTO balance_log (user_id, type, amount, description, created_at) VALUES (?,?,?,?,NOW())")
-                    ->execute([$userId, 'credit', $amount, 'Pagamento PIX via SigiloPay #' . $sigiloTxId]);
+                    ->execute([$userId, 'credit', $amount, 'Pagamento PIX #' . $sigiloTxId]);
             } catch (Throwable $e) {}
 
             // Notificação in-app
@@ -208,7 +208,7 @@ try {
 
             try {
                 $pdo->prepare("INSERT INTO balance_log (user_id, type, amount, description, created_at) VALUES (?,?,?,?,NOW())")
-                    ->execute([$userId, 'credit', $amount, 'SigiloPay checkout #' . $sigiloTxId]);
+                    ->execute([$userId, 'credit', $amount, 'Pagamento PIX #' . $sigiloTxId]);
             } catch (Throwable $e) {}
 
             try {
@@ -217,7 +217,7 @@ try {
             } catch (Throwable $e) {}
 
             // Telegram admin
-            try { TelegramService::notifySale($amount, $netAmount, $clientName, $user['full_name'] ?? 'N/A', 0, 'SigiloPay Checkout'); } catch (Throwable $e) {}
+            try { TelegramService::notifySale($amount, $netAmount, $clientName, $user['full_name'] ?? 'N/A', 0); } catch (Throwable $e) {}
 
             // Telegram usuário (bot)
             try {

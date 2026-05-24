@@ -65,7 +65,7 @@ try {
     write_log('info', "Gateway: sigiloEnabled=$sigiloEnabled useSigiloPay=$useSigiloPay");
 
     if (!$useSigiloPay) {
-        throw new Exception('Gateway SigiloPay não configurado. Contate o administrador.', 503);
+        throw new Exception('Gateway de pagamento não configurado. Contate o administrador.', 503);
     }
 
     $inputRaw = file_get_contents('php://input');
@@ -143,7 +143,7 @@ try {
         write_log('info', "SigiloPay Response: HTTP=$spHttpCode | body=" . substr($spResponse ?: '(empty)', 0, 1000));
 
         if ($spResponse === false) {
-            throw new Exception("Falha na conexão com SigiloPay: $spCurlError");
+            throw new Exception("Falha na conexão com o gateway de pagamento. Tente novamente.");
         }
 
         $spRes = json_decode($spResponse, true);
@@ -188,13 +188,13 @@ try {
 
             Response::success(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
         } else {
-            $errMsg     = $spRes['message'] ?? ($spRes['errorCode'] ?? 'Erro de comunicação com SigiloPay');
+            $errMsg     = $spRes['message'] ?? ($spRes['errorCode'] ?? 'Erro de comunicação com o gateway');
             $errDetails = isset($spRes['details']) ? json_encode($spRes['details']) : '';
             write_log('error', "SigiloPay FALHA: HTTP=$spHttpCode | $errMsg | details=$errDetails | payload=" . json_encode($spPayload) . " | response=$spResponse");
             if ($spHttpCode === 403) {
-                throw new Exception("Credenciais SigiloPay inválidas ou expiradas. Acesse Admin → Gateways e atualize as chaves public/secret do SigiloPay. (HTTP 403)");
+                throw new Exception('Credenciais do gateway inválidas ou expiradas. Contate o administrador.');
             }
-            throw new Exception("Erro SigiloPay: $errMsg (HTTP $spHttpCode)");
+            throw new Exception('Erro ao processar pagamento: ' . $errMsg);
         }
     }
 
