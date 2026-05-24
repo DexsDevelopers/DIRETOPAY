@@ -96,9 +96,9 @@ export default function AdminUsersPage() {
     const withdrawals = adminData?.withdrawals || [];
 
     /* ── Summary mini-stats ── */
-    const pending  = users.filter(u => u.status === 'pending').length;
-    const approved = users.filter(u => u.status === 'approved').length;
-    const blocked  = users.filter(u => u.status === 'blocked').length;
+    const pending  = adminData?.stats?.pending_users  ?? users.filter(u => u.status === 'pending').length;
+    const approved = adminData?.stats?.approved_users ?? users.filter(u => u.status === 'approved').length;
+    const blocked  = adminData?.stats?.blocked_users  ?? users.filter(u => u.status === 'blocked').length;
 
     return (
         <div className="space-y-8 p-6 lg:p-10 max-w-[1600px] mx-auto animate-in fade-in duration-700">
@@ -123,7 +123,7 @@ export default function AdminUsersPage() {
             {/* Mini summary */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[
-                    { label: 'Total',      value: fmtN(users.length),  color: 'text-gray-900',     icon: <Users size={16} /> },
+                    { label: 'Total',      value: fmtN(adminData?.stats?.total_users ?? users.length),  color: 'text-gray-900',     icon: <Users size={16} /> },
                     { label: 'Aprovados',  value: fmtN(approved),       color: 'text-green-400',    icon: <UserCheck size={16} /> },
                     { label: 'Pendentes',  value: fmtN(pending),        color: 'text-yellow-400',   icon: <Clock size={16} /> },
                     { label: 'Bloqueados', value: fmtN(blocked),        color: 'text-red-400',      icon: <UserX size={16} /> },
