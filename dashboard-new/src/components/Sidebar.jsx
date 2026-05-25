@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     LayoutDashboard, History, BarChart3, Wallet, Settings, LogOut,
     ChevronRight, X, Gift, ExternalLink, ShoppingBag,
@@ -37,6 +37,25 @@ function NavItem({ item, location, onTabChange, onClose, isDark }) {
 /* ─── Subitem (filho indentado) ──────────────────────────────────────── */
 function NavSubItem({ item, location, onTabChange, onClose, isDark }) {
     const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+    if (item.external) {
+        return (
+            <a
+                href={item.path}
+                onClick={() => { if (window.innerWidth < 1024) onClose(); }}
+                className={cn(
+                    "flex items-center gap-3 pl-11 pr-4 py-2.5 rounded-xl transition-all duration-150 group w-full mb-0.5",
+                    isDark
+                        ? 'text-gray-400 hover:bg-white/[0.05] hover:text-gray-100'
+                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                )}
+            >
+                <span className={cn("shrink-0", isDark ? 'text-gray-600 group-hover:text-gray-400' : 'text-gray-400 group-hover:text-gray-600')}>
+                    {item.icon}
+                </span>
+                <span className="text-[13px] font-medium">{item.label}</span>
+            </a>
+        );
+    }
     return (
         <Link
             to={item.path}
@@ -160,6 +179,7 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
                 { id: 'admin-vendas',   icon: <ShoppingBag size={16} />,    label: 'Todas as Vendas', path: '/admin/vendas' },
                 { id: 'admin-produtos', icon: <Package size={16} />,        label: 'Produtos',        path: '/admin/produtos' },
                 { id: 'apis',           icon: <Settings size={16} />,       label: 'Gestão de APIs',  path: '/admin/apis' },
+                { id: 'admin-whatsapp', icon: <MessageCircle size={16} className="text-[#25d366]" />, label: 'WhatsApp Bot', path: '/admin/whatsapp.php', external: true },
                 { id: 'admin-banners',  icon: <Image size={16} />,          label: 'Banners',         path: '/admin/banners' },
                 { id: 'admin-anuncios', icon: <Megaphone size={16} />,      label: 'Anúncios',        path: '/admin/anuncios' },
                 { id: 'admin-chats',    icon: <MessageCircle size={16} />,  label: 'Chats',           path: '/admin/chats' },
