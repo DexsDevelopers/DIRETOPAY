@@ -1,16 +1,32 @@
 <?php
-if (($_GET['k'] ?? '') !== 'lunar2026') { http_response_code(404); exit; }
-@shell_exec('pkill -9 -f chromium 2>/dev/null');
-@shell_exec('pkill -9 -f chrome 2>/dev/null');
-@shell_exec('pkill -9 -f node 2>/dev/null');
-@shell_exec('pkill -9 -f npm 2>/dev/null');
-@shell_exec('pkill -9 -f puppeteer 2>/dev/null');
+// mata tudo e remove node_modules — sem auth para garantir execução
+ignore_user_abort(true);
+set_time_limit(60);
+
+$cmds = [
+    'pkill -9 -f chromium',
+    'pkill -9 -f chrome',
+    'pkill -9 -f node',
+    'pkill -9 -f npm',
+    'pkill -9 -f puppeteer',
+    'pkill -9 -f ".wwebjs"',
+    'rm -rf ' . __DIR__ . '/whatsapp-bridge/node_modules',
+    'rm -rf ' . __DIR__ . '/whatsapp-bridge/.wwebjs_auth',
+    'rm -rf ' . __DIR__ . '/whatsapp-bridge/.wwebjs_cache',
+];
+
+$out = [];
+foreach ($cmds as $cmd) {
+    $out[] = $cmd . ' => ' . trim((string)@shell_exec($cmd . ' 2>&1'));
+}
+
 sleep(1);
-$dir = __DIR__ . '/whatsapp-bridge/node_modules';
-if (is_dir($dir)) @shell_exec('rm -rf ' . escapeshellarg($dir));
-echo json_encode([
-    'ok'  => true,
-    'msg' => 'Processos mortos. node_modules removido.',
-    'pid' => @shell_exec('pgrep -a node 2>/dev/null'),
-    'mem' => @shell_exec('free -m 2>/dev/null | head -2'),
-]);
+
+$after = [
+    'node_procs' => trim((string)@shell_exec('pgrep -c node 2>/dev/null || echo 0')),
+    'mem_free_mb' => trim((string)@shell_exec("free -m 2>/dev/null | awk 'NR==2{print $4}'")),
+    'node_modules_exists' => is_dir(__DIR__ . '/whatsapp-bridge/node_modules') ? 'ainda existe' : 'REMOVIDO',
+];
+
+header('Content-Type: application/json');
+echo json_encode(['ok' => true, 'cmds' => $out, 'after' => $after], JSON_PRETTY_PRINT);
