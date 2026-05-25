@@ -62,11 +62,64 @@ class BRPixService
         $curlErr  = curl_error($ch);
         curl_close($ch);
 
-        return [
+        $result = [
             'raw'        => $raw,
             'http_code'  => $httpCode,
             'curl_error' => $curlErr,
             'data'       => json_decode($raw ?: '{}', true) ?: [],
+        ];
+
+        // HTTP 202 = processamento assíncrono — faz polling até QR code ficar pronto
+        if ($httpCode === 202) {
+            $txid = $result['data']['txid'] ?? ($result['data']['id'] ?? null);
+            if ($txid) {
+                for ($i = 0; $i < 6; $i++) {
+                    sleep(2);
+                    $poll = self::getCharge($txid);
+                    $pd   = $poll['data'];
+                    if (!empty($pd['pix']['qr_code']) || !empty($pd['pix']['qr_code_image'])) {
+                        return [
+                            'raw'        => $poll['raw'],
+                            'http_code'  => 200,
+                            'curl_error' => '',
+                            'data'       => $pd,
+                        ];
+                    }
+                }
+                // Retorna último resultado do poll mesmo sem QR (status PENDING)
+                $last = self::getCharge($txid);
+                return [
+                    'raw'        => $last['raw'],
+                    'http_code'  => $last['http_code'],
+                    'curl_error' => '',
+                    'data'       => $last['data'],
+                ];
+            }
+        }
+
+        return $result;
+    }
+
+    // ── Buscar cobrança por txid (polling para async 202) ────────────────────
+    public static function getCharge(string $txid): array
+    {
+        $path = '/pix/charge/' . $txid;
+        $ch   = curl_init(self::BASE_URL . $path);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => self::buildHeaders('GET', $path, ''),
+            CURLOPT_TIMEOUT        => 15,
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_IPRESOLVE      => CURL_IPRESOLVE_V4,
+        ]);
+        $raw      = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        return [
+            'raw'       => $raw,
+            'http_code' => $httpCode,
+            'data'      => json_decode($raw ?: '{}', true) ?: [],
         ];
     }
 
