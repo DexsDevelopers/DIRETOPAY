@@ -4,6 +4,7 @@ import {
     ChevronRight, X, Gift, ExternalLink, ShoppingBag,
     Package, Store, Sparkles, Link2, Palette, ShieldCheck, Image,
     Users, Ticket, Megaphone, MessageCircle, RefreshCw, Cpu, Handshake, Trophy,
+    Building2,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../lib/utils';
@@ -131,8 +132,9 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
         {
             type: 'group', id: 'financeiro-group', icon: <BarChart3 size={18} />, label: 'Financeiro',
             children: [
-                { id: 'relatorios', icon: <BarChart3 size={16} />, label: 'Relatórios', path: '/relatorios' },
-                { id: 'saques',     icon: <Wallet size={16} />,    label: 'Saques',     path: '/saques' },
+                { id: 'relatorios',     icon: <BarChart3 size={16} />,   label: 'Relatórios',      path: '/relatorios' },
+                { id: 'saques',         icon: <Wallet size={16} />,      label: 'Saques',           path: '/saques' },
+                { id: 'contas-bancarias', icon: <Building2 size={16} />, label: 'Contas Bancárias', path: '/financeiro/contas' },
             ],
         },
         {

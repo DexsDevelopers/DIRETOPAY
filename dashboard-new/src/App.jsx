@@ -57,6 +57,7 @@ import AdminGatewaysPage from './pages/AdminGatewaysPage';
 import BuyerChatPage from './pages/BuyerChatPage';
 import ParceirosPage from './pages/ParceirosPage';
 import PremiacoesPage from './pages/PremiacoesPage';
+import BankAccountsPage from './pages/BankAccountsPage';
 import AnnouncementModal from './components/AnnouncementModal';
 
 // Proteção de Rota Admin
@@ -539,6 +540,14 @@ export default function App() {
           <PrivateRoute>
             <DashboardLayout {...commonProps} activeTab="saques">
               <WithdrawalsPage balance={commonProps.balance} availableForWithdraw={dashboardData?.available_for_withdraw} pendingWithdrawals={dashboardData?.pending_withdrawals} transactions={dashboardData?.transactions} />
+            </DashboardLayout>
+          </PrivateRoute>
+        } />
+
+        <Route path="/financeiro/contas" element={
+          <PrivateRoute>
+            <DashboardLayout {...commonProps} activeTab="contas-bancarias">
+              <BankAccountsPage />
             </DashboardLayout>
           </PrivateRoute>
         } />
