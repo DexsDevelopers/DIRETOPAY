@@ -55,6 +55,7 @@ class BRPixService
             CURLOPT_TIMEOUT        => 30,
             CURLOPT_CONNECTTIMEOUT => 10,
             CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_IPRESOLVE      => CURL_IPRESOLVE_V4,
         ]);
         $raw      = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
