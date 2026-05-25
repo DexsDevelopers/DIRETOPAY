@@ -22,11 +22,15 @@ const accounts = [
     {
         id: 'nominal2',
         name: 'Nominal 2',
-        subtitle: '',
-        badge: 'Disponível',
-        badgeColor: 'bg-green-100 text-green-700',
-        description: 'Em breve...',
-        fees: [],
+        subtitle: 'Em Testes',
+        badge: 'Beta',
+        badgeColor: 'bg-yellow-100 text-yellow-700',
+        description: 'Conta nominal atualmente em fase de testes. Apresenta taxa mais competitiva, porém com risco elevado de reembolso e MED (Mecanismo Especial de Devolução do Banco Central) no período de homologação. Utilize com cautela.',
+        warning: '⚠️ Risco de reembolso e MED ativo durante os testes.',
+        fees: [
+            { icon: <Percent size={12} />,   label: '2,99% + R$1,00 por transação' },
+            { icon: <Zap size={12} />,        label: 'Saque disponível' },
+        ],
         highlight: false,
     },
     {
@@ -143,6 +147,16 @@ export default function BankAccountsPage() {
                                     <p className={cn("text-sm leading-relaxed", isDark ? 'text-gray-400' : 'text-gray-500')}>
                                         {acc.description}
                                     </p>
+
+                                    {/* Warning */}
+                                    {acc.warning && (
+                                        <div className={cn(
+                                            "flex items-start gap-1.5 mt-2.5 text-xs font-semibold px-3 py-2 rounded-lg",
+                                            isDark ? 'bg-yellow-500/10 text-yellow-400' : 'bg-yellow-50 text-yellow-700 border border-yellow-200'
+                                        )}>
+                                            {acc.warning}
+                                        </div>
+                                    )}
 
                                     {/* Fees */}
                                     {acc.fees.length > 0 && (
