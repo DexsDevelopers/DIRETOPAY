@@ -73,61 +73,50 @@ function getUserTotalBalance(PDO $pdo, int $userId): float {
 
 function getMorningPhrase(): string {
     $dow = (int)date('w');
-    $dayPhrases = [
-        0 => [ // Domingo
-            "☀️ <b>Bom dia!</b> Domingo também é dia de vender! Os seus concorrentes estão descansando — você não precisa! 💪",
-            "🌅 <b>Domingo chegou!</b> Enquanto o mundo dorme até tarde, seus links de vendas trabalham por você. Bora! 🚀",
-        ],
-        1 => [ // Segunda
-            "💪 <b>Segunda-feira, bora!</b> A semana começou e as oportunidades também. Que hoje seja o melhor dia da semana! 🔥",
-            "☀️ <b>Bom dia, campeão!</b> Segunda é dia de recomeçar com tudo. A semana passada foi só o aquecimento! 🚀",
-            "🌅 <b>Segunda com energia!</b> Cada semana é uma nova chance. Hoje você define o tom da semana toda! 💰",
-        ],
-        2 => [ // Terça
-            "⚡ <b>Bom dia!</b> Terça-feira, o motor já está quente. Hora de acelerar as vendas! 🔥",
-            "☀️ <b>Terça animada!</b> Segunda foi só aquecimento, hoje é pra valer! Compartilhe seus links agora! 💪",
-        ],
-        3 => [ // Quarta
-            "🎯 <b>Bom dia!</b> Quarta-feira, metade da semana! Você já chegou até aqui, agora é só continuar! 💪",
-            "⚡ <b>Quarta-feira!</b> Meio da semana e muita energia ainda! Bora fechar boas vendas hoje! 🔥",
-        ],
-        4 => [ // Quinta
-            "🚀 <b>Bom dia!</b> Quinta-feira! Um dia só para a sexta... Aproveita e já garante suas vendas! 💰",
-            "🎯 <b>Quinta poderosa!</b> Amanhã é sexta mas hoje ainda tem muito pra ganhar! Foco total! 💪",
-        ],
-        5 => [ // Sexta
-            "🎉 <b>SEXTA-FEIRA!</b> Bom dia! O fim de semana chegou — que tal terminar a semana no lucro máximo? 🔥",
-            "🥳 <b>Sextou!</b> Mas antes de comemorar, que tal garantir mais algumas vendas pela manhã? 💰",
-            "🎊 <b>Bom dia, sexta!</b> A semana está finalizando e você ainda pode bater um recorde hoje! 🏆",
-        ],
-        6 => [ // Sábado
-            "🌟 <b>Bom dia!</b> Sábado de produtividade! Enquanto outros dormem até tarde, você já está no lucro! 💪",
-            "⚡ <b>Sábado chegou!</b> Fim de semana não para os campeões. Suas vendas não têm folga! 🚀",
-        ],
+    $general = [
+        "☀️ <b>Bom dia!</b> Seu concorrente ainda está dormindo. Você já está aqui. Diferença de mentalidade. 🧠",
+        "🐓 <b>Bom dia!</b> O galo cantou, o café esfriou, mas o PIX não espera ninguém. Bora! ☕�",
+        "🌅 <b>Bom dia!</b> Hoje pode ser o dia que você vai contar pra família no jantar. Ou não. Depende de você. 😂",
+        "� <b>Bom dia!</b> O universo não garante nada, mas a LunarPay garante o PIX instantâneo. Foca no que importa! �",
+        "🧠 <b>Bom dia!</b> Estatística: 100% das pessoas que desistiram cedo não venderam naquele dia. Não seja estatística! �",
+        "☀️ <b>Bom dia!</b> Você acordou. O mercado também. Quem chega primeiro, fica com a venda. Bora! 🎯",
+        "🌞 <b>Bom dia!</b> Hoje o sol nasceu. Suas vendas também podem nascer — basta divulgar! �",
+        "😂 <b>Bom dia!</b> Relatório científico confirma: pessoas que vendem de manhã ficam de bom humor o dia todo. Coincidência? �",
     ];
-    $phrases = $dayPhrases[$dow] ?? $dayPhrases[1];
-    return $phrases[array_rand($phrases)];
+    $dayExtra = [
+        0 => "� <i>Domingo vendendo? Você é de outro nível. Seus concorrentes estão vendo Netflix.</i> 🎬",
+        1 => "💪 <i>Segunda-feira: o dia que separa quem vai crescer essa semana de quem vai só reclamar dela.</i>",
+        2 => "⚡ <i>Terça: segunda já passou, agora é sprint. Tudo que não saiu ontem, sai hoje!</i>",
+        3 => "⛰️ <i>Quarta = topo da semana. Daqui pra sexta é descida. Aproveita o embalo!</i>",
+        4 => "� <i>Quinta: último dia sério da semana. Amanhã é sexta e todo mundo fica animado. Vende agora!</i>",
+        5 => "🎉 <i>SEXTOU! Mas calma — primeiro vende, depois comemora. Ordem dos fatores importa!</i> 🥳",
+        6 => "😎 <i>Sábado de manhã vendendo? Isso não é trabalho — é vocação. Respeito total!</i>",
+    ];
+    $phrase = $general[array_rand($general)];
+    $extra  = $dayExtra[$dow] ?? '';
+    return $extra ? $phrase . "\n\n" . $extra : $phrase;
 }
 
 function getAfternoonPhrase(array $stats): string {
     $sales = (int)$stats['sales'];
     if ($sales === 0) {
         $phrases = [
-            "🌤 <b>Boa tarde!</b> A manhã passou mas a tarde chegou cheia de oportunidades! Hora de turbinar as vendas! 💪",
-            "☀️ <b>Tarde chegando!</b> Ainda não teve venda hoje? A tarde é sua chance de virar o jogo! 🎯",
-            "🎯 <b>Boa tarde!</b> O almoço está sendo pago hoje? Corre e compartilha seu link! 🚀",
+            "🌤 <b>Boa tarde!</b> A manhã foi tranquila? Ótimo — a tarde é onde os fortes viram o jogo! 🎯",
+            "😴 <b>Boa tarde!</b> A manhã foi embora sem venda. Mas o dia ainda é jovem. Diferente do boleto de 2019 que nunca veio. 😂",
+            "� <b>Boa tarde!</b> O almoço foi gostoso? Agora paga ele com uma venda! Vai lá! 💸",
+            "🎯 <b>Boa tarde!</b> Relatório: 0 vendas pela manhã. Previsão do tempo: tempestade de PIX na tarde. Prepare-se! ⛈️�",
         ];
     } elseif ($sales < 3) {
         $phrases = [
-            "🌤 <b>Boa tarde!</b> Já tem " . $sales . " venda(s) hoje! A tarde promete mais! Continue assim! 🔥",
-            "☀️ <b>Tarde produtiva!</b> " . $sales . " venda(s) até agora — o almoço foi pago! Bora mais! 💰",
-            "💪 <b>Boa tarde!</b> Manhã boa, tarde vai ser melhor! Já bateu " . $sales . " venda(s)! 🎯",
+            "🌤 <b>Boa tarde!</b> {$sales} venda(s) pela manhã! O almoço foi pago. Agora paga o jantar também! 🍽️🔥",
+            "😏 <b>Boa tarde!</b> {$sales} venda(s) no bolso e a tarde inteira pela frente. Isso chama potencial! �",
+            "☕ <b>Boa tarde!</b> {$sales} venda(s) de manhã é bom começo. Agora dobra. Simples assim! 💪",
         ];
     } else {
         $phrases = [
-            "🔥 <b>Boa tarde!</b> " . $sales . " vendas e contando! Você está BOMBANDO hoje! 🚀",
-            "💰 <b>Tarde milionária!</b> " . $sales . " vendas no bolso! Continue que hoje pode ser recorde! 🏆",
-            "🎊 <b>Boa tarde, top vendedor!</b> " . $sales . " vendas hoje! O jantar vai ser especial! 🍽️",
+            "🔥 <b>Boa tarde!</b> {$sales} VENDAS já?! Isso não é ritmo — isso é FRENESI! Continue! 🚀",
+            "🏆 <b>Boa tarde, monstro!</b> {$sales} vendas até agora. Seus concorrentes estão em reunião sobre como vender. 😂",
+            "💰 <b>Boa tarde!</b> {$sales} vendas e a tarde nem começou direito. Hoje vai ter record! Eu sinto! 📈",
         ];
     }
     return $phrases[array_rand($phrases)];
@@ -136,40 +125,43 @@ function getAfternoonPhrase(array $stats): string {
 function getEveningPhrase(array $stats): string {
     $sales = (int)$stats['sales'];
     $dow   = (int)date('w');
-    if ($dow === 5) { // Sexta
-        $base = $sales > 0
-            ? "🎉 <b>Boa noite!</b> Sexta com {$sales} venda(s)! O fim de semana pode começar com o bolso cheio! 🥂"
-            : "🌙 <b>Boa noite!</b> Sexta chegou! Ainda dá tempo de uma venda antes de aproveitar o finde! 💪";
-        return $base;
+    if ($dow === 5 && $sales > 0) {
+        return "🎉 <b>Boa noite!</b> Sexta com {$sales} venda(s)! Pode comemorar — você GANHOU hoje! 🥂😂";
     }
     if ($sales === 0) {
         $phrases = [
-            "🌙 <b>Boa noite!</b> O dia passou mas amanhã é uma nova chance! Prepare seus produtos e links agora! 🚀",
-            "🌆 <b>Boa noite!</b> Hoje foi um dia tranquilo. Amanhã você vai arrasar! Já planejou as vendas? 💡",
+            "🌙 <b>Boa noite!</b> Hoje foi o dia de descanso mental. Amanhã o PIX vai trabalhar dobrado! 💪",
+            "🌆 <b>Boa noite!</b> 0 vendas hoje. Mas 100% de presença. Amanhã é outro dia — e você vai arrasar! 🚀",
+            "😂 <b>Boa noite!</b> Hoje o mercado descansou. Pelo menos foi o que você disse pra si mesmo. Amanhã, sem desculpa! 🎯",
+            "🦉 <b>Boa noite!</b> Dia zero. Isso acontece. O que não pode é virar rotina. Amanhã você muda o placar! �",
         ];
     } else {
+        $net = fBRL((float)$stats['net_volume']);
         $phrases = [
-            "🌙 <b>Boa noite!</b> Fechando o dia com {$sales} venda(s)! " . fBRL((float)$stats['net_volume']) . " no bolso! 🎉",
-            "🌆 <b>Boa noite!</b> Dia produtivo! {$sales} venda(s) e " . fBRL((float)$stats['net_volume']) . " líquido. Descanse com merecimento! 💤",
-            "⭐ <b>Boa noite, campeão!</b> {$sales} venda(s) hoje! O jantar foi garantido! 🍽️",
+            "🌙 <b>Boa noite!</b> Fechou o dia com {$sales} venda(s) e {$net} no bolso. Dorme com esse sorriso! 😁",
+            "🌆 <b>Boa noite!</b> {$sales} venda(s) hoje! O jantar foi garantido e ainda sobrou pro café amanhã! ☕�",
+            "⭐ <b>Boa noite!</b> {$sales} venda(s) — o dia prestou. Descansa que amanhã você faz mais! 💤🔥",
+            "🛋️ <b>Boa noite!</b> Pode deitar tranquilo — o PIX já caiu, o dinheiro já tá guardado. Missão cumprida! 😌",
         ];
     }
-    $phrases = $phrases ?? [$base];
     return $phrases[array_rand($phrases)];
 }
 
 function getRandomMotivationalTip(): string {
     $tips = [
-        "💡 <b>Dica do dia:</b> Compartilhe seu link de vendas no seu status do WhatsApp — alcança mais pessoas!",
-        "💡 <b>Dica do dia:</b> Fotos de qualidade vendem mais. Já atualizou as imagens dos seus produtos?",
-        "💡 <b>Dica do dia:</b> Um cliente satisfeito indica dois. Trate bem quem comprou!",
-        "💡 <b>Dica do dia:</b> Crie urgência na sua oferta. \"Apenas hoje\" ou \"Últimas unidades\" convertem mais!",
-        "💡 <b>Dica do dia:</b> Responda rápido as mensagens. Velocidade de resposta aumenta muito a conversão!",
-        "💡 <b>Dica do dia:</b> Peça avaliações para seus clientes. Prova social é poderosa!",
-        "💡 <b>Dica do dia:</b> Diversifique: crie mais de um produto para aumentar seu ticket médio!",
-        "💡 <b>Dica do dia:</b> Use as redes sociais a seu favor. Poste resultados e depoimentos!",
-        "💡 <b>Dica do dia:</b> Defina uma meta diária. Quem tem meta, tem foco!",
-        "💡 <b>Dica do dia:</b> O PIX é instantâneo — aproveite para vender a qualquer hora do dia!",
+        // Dicas engraçadas/irônicas
+        "� <b>Fato científico:</b> 9 entre 10 vendedores que compartilharam o link venderam mais. O décimo não compartilhou.",
+        "🤔 <b>Reflexão do dia:</b> Seu link de vendas no status do WhatsApp custa R$ 0,00. Não colocar pode custar muito mais.",
+        "🧠 <b>Psicologia reversa:</b> Não divulgue seu produto. Deixa os outros venderem enquanto você descansa. Brincadeira — VAI DIVULGAR! 😂",
+        "� <b>Dica:</b> Status do WhatsApp = vitrine grátis para 200+ pessoas. Está usando essa vitrine ou deixando ela fechada?",
+        "🎯 <b>Verdade inconveniente:</b> Produto que ninguém conhece = produto que ninguém compra. Resolve isso hoje!",
+        "⚡ <b>Dica rápida:</b> Resposta demorada = cliente perdido. O PIX é instantâneo — sua resposta também deveria ser!",
+        "� <b>Previsão:</b> Você vai vender mais esta semana do que na semana passada. Mas só se divulgar mais. Simples assim!",
+        "💀 <b>R.I.P.:</b> às vendas que não aconteceram porque o link não foi compartilhado. Não deixa acontecer hoje!",
+        "🤑 <b>Matemática básica:</b> Mais divulgação = mais visitas = mais vendas = mais PIX. Qual parte ainda não ficou clara? 😂",
+        "🦅 <b>Mentalidade de águia:</b> Enquanto outros estão no grupo do zap reclamando, você está divulgando. Diferença de resultado!",
+        "� <b>Dica visual:</b> Foto boa vende. Foto ruim afasta. Já olhou como está a imagem do seu produto hoje?",
+        "🏆 <b>Segredo dos top vendedores:</b> Eles não têm superpoderes. Só divulgam mais e respondem mais rápido. Tá liberado copiar!",
     ];
     return $tips[array_rand($tips)];
 }
