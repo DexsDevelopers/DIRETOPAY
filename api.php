@@ -25,6 +25,7 @@ try {
         write_log('WARNING', 'PushService desativado devido a erro no vendor: ' . $e->getMessage());
     }
     require_once 'includes/TelegramService.php';
+    require_once 'includes/BRPixService.php';
 
     // Autenticação Híbrida 
     $userId = null;
@@ -62,9 +63,14 @@ try {
     $sigiloSecretKey = $getSetting('sigilopay_secret_key');
     $useSigiloPay    = ($sigiloEnabled && $sigiloPublicKey && $sigiloSecretKey);
 
-    write_log('info', "Gateway: sigiloEnabled=$sigiloEnabled useSigiloPay=$useSigiloPay");
+    $brpixEnabled      = $getSetting('brpix_enabled') === '1';
+    $brpixClientId     = $getSetting('brpix_client_id');
+    $brpixClientSecret = $getSetting('brpix_client_secret');
+    $useBRPix          = ($brpixEnabled && $brpixClientId && $brpixClientSecret);
 
-    if (!$useSigiloPay) {
+    write_log('info', "Gateway: sigiloEnabled=$sigiloEnabled useSigiloPay=$useSigiloPay | brpixEnabled=$brpixEnabled useBRPix=$useBRPix");
+
+    if (!$useSigiloPay && !$useBRPix) {
         throw new Exception('Gateway de pagamento não configurado. Contate o administrador.', 503);
     }
 
@@ -98,6 +104,62 @@ try {
     }
 
     $externalId = !empty($input['external_id']) ? (string)$input['external_id'] : ('user_' . $userId . '_' . time());
+
+    // ── GATEWAY: BRPix Solutions ─────────────────────────────────────
+    if ($useBRPix) {
+        if (!defined('BRPIX_CLIENT_ID'))     define('BRPIX_CLIENT_ID',     $brpixClientId);
+        if (!defined('BRPIX_CLIENT_SECRET')) define('BRPIX_CLIENT_SECRET', $brpixClientSecret);
+
+        $feePercent = (float)($getSetting('brpix_fee_percent') ?: '8');
+        $feeFixed   = (float)($getSetting('brpix_fee_fixed')   ?: '0.99');
+
+        write_log('info', "BRPix Request: amount=$amount | externalId=$externalId");
+        $bpResult = BRPixService::createCharge($amount, $externalId, 'Pagamento LunarPay');
+        write_log('info', "BRPix Response: HTTP={$bpResult['http_code']} | " . substr($bpResult['raw'] ?: '(empty)', 0, 500));
+
+        if ($bpResult['curl_error']) {
+            throw new Exception('Falha na conexão com o gateway de pagamento. Tente novamente.');
+        }
+
+        $bpData = $bpResult['data'];
+        $bpCode = $bpResult['http_code'];
+
+        if (($bpCode === 200 || $bpCode === 201) && !empty($bpData['txid'])) {
+            $pixId   = $bpData['txid'];
+            $pixInfo = $bpData['pix'] ?? [];
+            $pixCode = $pixInfo['qr_code'] ?? '';
+            $b64raw  = $pixInfo['qr_code_image'] ?? '';
+
+            if (!empty($b64raw)) {
+                $qrImage = strpos($b64raw, 'data:') === 0 ? $b64raw : 'data:image/png;base64,' . $b64raw;
+            } elseif (!empty($pixCode)) {
+                $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($pixCode);
+            } else {
+                $qrImage = '';
+            }
+
+            $gatewayFee  = BRPixService::calculateFee($amount, $feePercent, $feeFixed);
+            $platformFee = $amount * ($user['commission_rate'] / 100);
+            $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
+
+            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança LunarPay', $externalId, 'pix', $utmParams);
+
+            if (class_exists('PushService')) {
+                try { PushService::notifyUser($userId, '⚡ PIX Gerado!', 'Cobrança de R$ ' . number_format($amount, 2, ',', '.') . ' gerada.', 'sale_generated'); } catch (Throwable $e) {}
+            }
+            $txId = (int)$pdo->lastInsertId();
+            try { TelegramService::notifyNewCharge($amount, $user['full_name'] ?? 'N/A', $txId); } catch (Throwable $e) {}
+            if (class_exists('PushService')) {
+                try { PushService::notifyAdmins('⚡ Nova Cobrança #' . $txId, 'R$ ' . number_format($amount, 2, ',', '.') . ' — ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {}
+            }
+
+            Response::success(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
+        } else {
+            $errMsg = $bpData['message'] ?? ($bpData['error'] ?? 'Erro de comunicação com o gateway');
+            write_log('error', "BRPix FALHA: HTTP={$bpResult['http_code']} | $errMsg | response={$bpResult['raw']}");
+            throw new Exception('Erro ao processar pagamento: ' . $errMsg);
+        }
+    }
 
     // ── GATEWAY: SigiloPay ───────────────────────────────────────────
     if ($useSigiloPay) {
