@@ -166,6 +166,18 @@ function getRandomMotivationalTip(): string {
     return $tips[array_rand($tips)];
 }
 
+// ── Títulos para notificações do site ────────────────────────────────────────
+$siteMorningTitles   = ['☀️ Bom dia! Bora vender!', '🚀 A manhã é sua!', '🔥 Acorda e fatura!', '🐓 O galo cantou. PIX também!'];
+$siteAfternoonTitles = ['🌤 Boa tarde, monstro!', '⚡ A tarde é sua!', '🎯 Virou o jogo hoje?', '💸 O almoço foi pago?'];
+$siteEveningTitles   = ['🌙 Como foi hoje?', '🌆 Fechou no positivo?', '⭐ Resumo do dia!', '🛋️ Descansa — você merece!'];
+$siteTips = [
+    'Compartilhou seu link hoje? Produto que não é visto, não é comprado! 💡',
+    'Status do WhatsApp = vitrine grátis. Usa ou não usa? 🤔',
+    'Resposta rápida = mais conversão. O PIX não espera. ⚡',
+    'Foto boa vende. Foto ruim afasta. Já verificou seu produto? 📸',
+    '9 em 10 vendedores que divulgaram, venderam. O outro não divulgou. 😂',
+];
+
 // ── MODO: MANHÃ ───────────────────────────────────────────────────────────────
 if ($mode === 'morning') {
     foreach ($users as $user) {
@@ -176,7 +188,9 @@ if ($mode === 'morning') {
         try {
             if (TelegramService::sendToUser($user['telegram_chat_id'], $msg)) $sent++;
             else $skip++;
-            usleep(100000); // 0.1s entre mensagens para não dar flood
+            $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, created_at) VALUES (?,?,?,?,NOW())")
+                ->execute([$user['id'], 'info', $siteMorningTitles[array_rand($siteMorningTitles)], $siteTips[array_rand($siteTips)]]);
+            usleep(100000);
         } catch (Throwable $e) { $skip++; }
     }
 }
@@ -194,9 +208,12 @@ elseif ($mode === 'afternoon') {
         $msg = $phrase . $statsLine . $div . "\n\n"
              . getRandomMotivationalTip() . "\n\n"
              . "🌙 <i>LunarPay • " . date('H:i') . "</i>";
+        $siteMsg = $sales > 0 ? "{$sales} venda(s) até agora — " . fBRL((float)$stats['net_volume']) . " no bolso! Bora mais! 🔥" : "Nenhuma venda ainda. A tarde é onde os fortes viram o jogo! 🎯";
         try {
             if (TelegramService::sendToUser($user['telegram_chat_id'], $msg)) $sent++;
             else $skip++;
+            $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, created_at) VALUES (?,?,?,?,NOW())")
+                ->execute([$user['id'], 'info', $siteAfternoonTitles[array_rand($siteAfternoonTitles)], $siteMsg]);
             usleep(100000);
         } catch (Throwable $e) { $skip++; }
     }
@@ -216,9 +233,12 @@ elseif ($mode === 'evening') {
         $msg = $phrase . $statsLine . "\n\n"
              . getRandomMotivationalTip() . $div . "\n\n"
              . "🌙 <i>LunarPay • " . date('H:i') . "</i>";
+        $siteMsg = $sales > 0 ? "{$sales} venda(s) hoje — " . fBRL((float)$stats['net_volume']) . " líquido. Dorme com esse sorriso! 😁" : "Hoje foi tranquilo. Amanhã você muda o placar! 💪";
         try {
             if (TelegramService::sendToUser($user['telegram_chat_id'], $msg)) $sent++;
             else $skip++;
+            $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, created_at) VALUES (?,?,?,?,NOW())")
+                ->execute([$user['id'], 'info', $siteEveningTitles[array_rand($siteEveningTitles)], $siteMsg]);
             usleep(100000);
         } catch (Throwable $e) { $skip++; }
     }

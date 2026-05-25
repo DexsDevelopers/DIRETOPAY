@@ -81,10 +81,22 @@ try {
                     ->execute([$userId, 'credit', $amount, 'Pagamento PIX #' . $sigiloTxId]);
             } catch (Throwable $e) {}
 
-            // Notificação in-app
+            // Notificação in-app com frase engraçada
             try {
+                $saleTitles = [
+                    '💸 PIX CAIU! Corre ver!',
+                    '🔥 Venda confirmada, monstro!',
+                    '🤑 Dinheiro no bolso!',
+                    '🚀 Mais uma! Bora!',
+                    '💰 PIX aprovado! É isso!',
+                    '🏆 Vendeu! Merece!',
+                    '⚡ Ka-ching! Chegou!',
+                    '🎯 Acertou em cheio!',
+                ];
+                $saleTitle = $saleTitles[array_rand($saleTitles)];
+                $saleMsg   = 'R$ ' . number_format($amount, 2, ',', '.') . ' creditado — mais um passo! 💪';
                 $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, created_at) VALUES (?,?,?,?,NOW())")
-                    ->execute([$userId, 'payment', '✅ Pagamento Confirmado', 'R$ ' . number_format($amount, 2, ',', '.') . ' creditado na sua conta.']);
+                    ->execute([$userId, 'payment', $saleTitle, $saleMsg]);
             } catch (Throwable $e) {}
 
             // Busca dados do vendedor
