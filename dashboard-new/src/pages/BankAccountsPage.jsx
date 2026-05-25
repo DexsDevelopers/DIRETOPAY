@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Building2, CheckCircle2, ChevronRight, Info, Zap, TrendingUp, Clock, Percent, BadgeCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Building2, CheckCircle2, ChevronRight, Info, Zap, TrendingUp, Percent, BadgeCheck, Loader2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { cn } from '../lib/utils';
 
@@ -33,33 +33,54 @@ const accounts = [
         ],
         highlight: false,
     },
-    {
-        id: 'nominal3',
-        name: 'Nominal 3',
-        subtitle: '',
-        badge: 'Disponível',
-        badgeColor: 'bg-green-100 text-green-700',
-        description: 'Em breve...',
-        fees: [],
-        highlight: false,
-    },
 ];
 
 export default function BankAccountsPage() {
     const { isDark } = useTheme();
-    const [selected, setSelected] = useState(null);
-    const [saved, setSaved] = useState(false);
+    const [selected, setSelected] = useState('nominal1');
+    const [saved, setSaved]       = useState(false);
+    const [saving, setSaving]     = useState(false);
+    const [loading, setLoading]   = useState(true);
+
+    useEffect(() => {
+        fetch('/get_dashboard_data.php')
+            .then(r => r.json())
+            .then(d => {
+                const nominal = d?.user?.preferred_nominal || 'nominal1';
+                setSelected(nominal);
+            })
+            .catch(() => {})
+            .finally(() => setLoading(false));
+    }, []);
 
     const handleSelect = (id) => {
         setSelected(id);
         setSaved(false);
     };
 
-    const handleSave = () => {
-        if (!selected) return;
-        setSaved(true);
-        setTimeout(() => setSaved(false), 3000);
+    const handleSave = async () => {
+        if (!selected || saving) return;
+        setSaving(true);
+        try {
+            const res = await fetch('/save_nominal.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nominal: selected }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setSaved(true);
+                setTimeout(() => setSaved(false), 3000);
+            }
+        } catch {}
+        setSaving(false);
     };
+
+    if (loading) return (
+        <div className="flex items-center justify-center h-64">
+            <Loader2 size={24} className="animate-spin text-gray-300" />
+        </div>
+    );
 
     return (
         <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
@@ -190,25 +211,26 @@ export default function BankAccountsPage() {
             </div>
 
             {/* Save Button */}
-            {selected && (
-                <div className="flex justify-end pt-2">
-                    <button
-                        onClick={handleSave}
-                        className={cn(
-                            "flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all",
-                            saved
-                                ? 'bg-green-500 text-white'
-                                : 'bg-primary text-white hover:bg-primary/90 shadow-[0_4px_14px_rgba(192,0,106,0.35)]'
-                        )}
-                    >
-                        {saved ? (
-                            <><CheckCircle2 size={16} /> Conta selecionada!</>
-                        ) : (
-                            <><ChevronRight size={16} /> Confirmar seleção</>
-                        )}
-                    </button>
-                </div>
-            )}
+            <div className="flex justify-end pt-2">
+                <button
+                    onClick={handleSave}
+                    disabled={saving}
+                    className={cn(
+                        "flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all",
+                        saved
+                            ? 'bg-green-500 text-white'
+                            : 'bg-primary text-white hover:bg-primary/90 shadow-[0_4px_14px_rgba(192,0,106,0.35)] disabled:opacity-60'
+                    )}
+                >
+                    {saving ? (
+                        <><Loader2 size={16} className="animate-spin" /> Salvando...</>
+                    ) : saved ? (
+                        <><CheckCircle2 size={16} /> Conta confirmada!</>
+                    ) : (
+                        <><ChevronRight size={16} /> Confirmar seleção</>
+                    )}
+                </button>
+            </div>
         </div>
     );
 }

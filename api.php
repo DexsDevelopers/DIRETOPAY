@@ -110,7 +110,11 @@ try {
         throw new Exception('Usuário não está habilitado para receber pagamentos.');
     }
 
-    $externalId = !empty($input['external_id']) ? (string)$input['external_id'] : ('user_' . $userId . '_' . time());
+    $externalId    = !empty($input['external_id']) ? (string)$input['external_id'] : ('user_' . $userId . '_' . time());
+    $userNominal   = $user['preferred_nominal'] ?? 'nominal1';
+    // Taxa por nominal: nominal2 = BRPix (2.99% + R$1,00), nominal1 = padrão (8% + R$0,99)
+    $nominalFeePercent = ($userNominal === 'nominal2') ? 2.99 : 8.0;
+    $nominalFeeFixed   = ($userNominal === 'nominal2') ? 1.00 : 0.99;
 
     // ── GATEWAY: IronPay ────────────────────────────────────────────
     if ($useIronPay && !$useBRPix) {
@@ -118,8 +122,8 @@ try {
         if (!defined('IRONPAY_OFFER_HASH'))   define('IRONPAY_OFFER_HASH',   $ironpayOfferHash);
         if (!defined('IRONPAY_PRODUCT_HASH')) define('IRONPAY_PRODUCT_HASH', $ironpayProductHash);
 
-        $feePercent = (float)($getSetting('ironpay_fee_percent') ?: '8');
-        $feeFixed   = (float)($getSetting('ironpay_fee_fixed')   ?: '0.99');
+        $feePercent = $nominalFeePercent;
+        $feeFixed   = $nominalFeeFixed;
 
         $customerData = [
             'name'     => !empty($user['full_name']) ? $user['full_name'] : 'Cliente',
@@ -175,8 +179,8 @@ try {
         if (!defined('BRPIX_CLIENT_ID'))     define('BRPIX_CLIENT_ID',     $brpixClientId);
         if (!defined('BRPIX_CLIENT_SECRET')) define('BRPIX_CLIENT_SECRET', $brpixClientSecret);
 
-        $feePercent = (float)($getSetting('brpix_fee_percent') ?: '8');
-        $feeFixed   = (float)($getSetting('brpix_fee_fixed')   ?: '0.99');
+        $feePercent = $nominalFeePercent;
+        $feeFixed   = $nominalFeeFixed;
 
         write_log('info', "BRPix Request: amount=$amount | externalId=$externalId");
         $bpResult = BRPixService::createCharge($amount, $externalId, 'Pagamento LunarPay');
@@ -298,7 +302,7 @@ try {
                     ->execute([$spRes['token'], $spRes['token']]);
             }
 
-            $gatewayFee  = (float)($spRes['fee'] ?? (round($amount * (8 / 100) + 0.99, 2)));
+            $gatewayFee  = (float)($spRes['fee'] ?? (round($amount * ($nominalFeePercent / 100) + $nominalFeeFixed, 2)));
             $platformFee = $amount * ($user['commission_rate'] / 100);
             $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
 
