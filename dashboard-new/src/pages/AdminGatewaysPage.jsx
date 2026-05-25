@@ -163,6 +163,8 @@ function GatewayCard({ gateway }) {
                                                 value={form[field.key] || ''}
                                                 onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
                                                 placeholder={field.placeholder}
+                                                autoComplete={field.secret ? 'new-password' : 'off'}
+                                                name={`${gateway.id}_${field.key}_${Math.random()}`}
                                                 className={`w-full bg-white border border-gray-200 rounded-xl px-3 py-2.5 text-sm font-mono text-gray-900 focus:outline-none focus:border-${gateway.color}-500/40 transition-all ${field.secret ? 'pr-10' : ''}`}
                                             />
                                             {field.secret && (
