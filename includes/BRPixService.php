@@ -77,7 +77,7 @@ class BRPixService
                     sleep(2);
                     $poll = self::getCharge($txid);
                     $pd   = $poll['data'];
-                    if (!empty($pd['pix']['qr_code']) || !empty($pd['pix']['qr_code_image'])) {
+                    if (!empty($pd['pix']['qr_code']) || !empty($pd['pix']['qr_code_image']) || !empty($pd['qr_code']) || !empty($pd['qr_code_image']) || !empty($pd['br_code'])) {
                         return [
                             'raw'        => $poll['raw'],
                             'http_code'  => 200,

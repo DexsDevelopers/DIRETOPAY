@@ -127,8 +127,8 @@ try {
         if (($bpCode === 200 || $bpCode === 201) && !empty($bpData['txid'])) {
             $pixId   = $bpData['txid'];
             $pixInfo = $bpData['pix'] ?? [];
-            $pixCode = $pixInfo['qr_code'] ?? '';
-            $b64raw  = $pixInfo['qr_code_image'] ?? '';
+            $pixCode = $pixInfo['qr_code']       ?? ($bpData['qr_code']       ?? ($bpData['br_code'] ?? ''));
+            $b64raw  = $pixInfo['qr_code_image'] ?? ($bpData['qr_code_image'] ?? '');
 
             if (!empty($b64raw)) {
                 $qrImage = strpos($b64raw, 'data:') === 0 ? $b64raw : 'data:image/png;base64,' . $b64raw;
