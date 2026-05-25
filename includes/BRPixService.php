@@ -69,15 +69,26 @@ class BRPixService
             'data'       => json_decode($raw ?: '{}', true) ?: [],
         ];
 
-        // HTTP 202 = processamento assíncrono — faz polling até QR code ficar pronto
+        // HTTP 202 — BRPix retorna QR code já na resposta inicial (qr_code_image + qr_code_text)
         if ($httpCode === 202) {
-            $txid = $result['data']['txid'] ?? ($result['data']['id'] ?? null);
+            $d = $result['data'];
+            $hasQr = !empty($d['qr_code_image']) || !empty($d['qr_code_text']) || !empty($d['pix_copia_e_cola']);
+            if ($hasQr) {
+                return [
+                    'raw'        => $result['raw'],
+                    'http_code'  => 200,
+                    'curl_error' => '',
+                    'data'       => $d,
+                ];
+            }
+            // Fallback: polling se QR não vier na resposta 202
+            $txid = $d['txid'] ?? ($d['id'] ?? null);
             if ($txid) {
                 for ($i = 0; $i < 6; $i++) {
                     sleep(2);
                     $poll = self::getCharge($txid);
                     $pd   = $poll['data'];
-                    if (!empty($pd['pix']['qr_code']) || !empty($pd['pix']['qr_code_image']) || !empty($pd['qr_code']) || !empty($pd['qr_code_image']) || !empty($pd['br_code'])) {
+                    if (!empty($pd['pix']['qr_code']) || !empty($pd['pix']['qr_code_image']) || !empty($pd['qr_code']) || !empty($pd['qr_code_image']) || !empty($pd['qr_code_text']) || !empty($pd['br_code'])) {
                         return [
                             'raw'        => $poll['raw'],
                             'http_code'  => 200,
@@ -86,14 +97,6 @@ class BRPixService
                         ];
                     }
                 }
-                // Retorna último resultado do poll mesmo sem QR (status PENDING)
-                $last = self::getCharge($txid);
-                return [
-                    'raw'        => $last['raw'],
-                    'http_code'  => $last['http_code'],
-                    'curl_error' => '',
-                    'data'       => $last['data'],
-                ];
             }
         }
 
