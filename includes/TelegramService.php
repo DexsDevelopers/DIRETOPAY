@@ -425,79 +425,82 @@ class TelegramService
         $h   = (int)date('H');
         $dow = (int)date('w'); // 0=Dom, 5=Sex, 6=Sab
 
-        // Frases por horário
+        // Pool geral de frases estilo UTMify — irônicas, absurdas e criativas
+        $allCelebs = [
+            // Absurdas/engraçadas
+            "🔥 <b>PIX CAIU!</b> O cliente pagou e nem pediu desconto. Raro demais! 😂",
+            "🤖 <b>Confirmado:</b> inteligência artificial tentou comprar também, mas o PIX é só humano. Você ganhou! 🎉",
+            "� <b>Cliente misterioso realizou o pagamento.</b> Pode ser o Papai Noel fora de época. Não questione. 🎁",
+            "� <b>Notificação do futuro:</b> você vai vender R$ 1M em breve. Essa aqui foi só o aquecimento. Confie! �",
+            "💸 <b>O PIX caiu tão rápido</b> que o banco achou que era engano. Mas não era. É lucro! 😎",
+            "🚨 <b>ALERTA DE RIQUEZA:</b> saldo aumentou. Seu eu do passado ficaria com inveja. 📈",
+            "🧾 <b>Processando venda...</b> ██████████ 100% — SUCESSO. Diferente do boleto de 2019 que nunca foi pago. �",
+            "🤑 <b>Cliente pagou na hora.</b> Sem enrolação, sem negociação, sem sumiço. O sonho! 🙌",
+            "🎯 <b>Venda confirmada.</b> Seu ex nunca vai saber mas tudo bem — o PIX sabe. 💀😂",
+            "🧠 <b>Enquanto outros estão no grupo do zap reclamando da vida,</b> você acabou de vender. Diferença de mindset! 🔥",
+            "🏆 <b>CONQUISTA DESBLOQUEADA:</b> mais uma venda. Próximo nível: série no Netflix sobre você. 🎬",
+            "👻 <b>O cliente apareceu, pagou e sumiu.</b> Igual fantasma, mas o dinheiro ficou. Aceito! 💰",
+            "� <b>Oficialmente:</b> essa venda pagou o jantar, o lanche e ainda sobrou pro café amanhã. �☕",
+            "📊 <b>Relatório do dia:</b> 1 venda a mais que ontem. Tendência de alta confirmada! 📈😂",
+            "🤝 <b>O cliente nem pechinchoupechinchar.</b> Pagou o preço cheio. Guarda esse nome! �",
+            "⚡ <b>PIX aprovado em tempo recorde.</b> Mais rápido que sua Wi-Fi quando você precisa. 😂�",
+            "🎪 <b>Mais uma venda confirmada!</b> O show não pode parar — e não vai! 🎭",
+            "� <b>Enquanto a maioria está no modo soneca,</b> você já faturou. Isso se chama postura! 💪",
+        ];
+
+        // Frases por horário (adicionais ao pool geral)
         if ($h >= 5 && $h < 12) {
-            $celebs = [
-                "☀️ <b>BORA! Manhã que começa com venda é dia ABENÇOADO!</b> 🎉",
-                "🌅 <b>Café da manhã pago!</b> O PIX chegou antes do sol esquentar! ☕🔥",
-                "🚀 <b>Nem acordou direito e já faturou!</b> Isso é diferenciado! 💪",
-                "⚡ <b>Nem 12h e já está no lucro!</b> Seus concorrentes ainda estão dormindo! �",
-                "🌄 <b>Manhã dourada!</b> Enquanto todo mundo toma café, você fatura! ☕💰",
-                "🐓 <b>O galo cantou e veio venda junto!</b> Que início de dia INCRÍVEL! 🎯",
-                "💸 <b>Bom dia com dinheiro no bolso!</b> Isso sim é acordar bem! 🌞",
-                "🧠 <b>Acordou e já vendeu.</b> Outros vão acordar e ver a notificação. Diferença de mentalidade! 🔥",
+            $timeCelebs = [
+                "☀️ <b>Bom dia, dinheiro!</b> O PIX acordou antes do café. Que manhã abençoada! ☕💸",
+                "� <b>O galo cantou,</b> o PIX caiu. Você nem levantou da cama e já faturou. 😂🔥",
+                "� <b>Manhã de venda!</b> Seus concorrentes ainda estão dormindo. Aproveita! �",
             ];
         } elseif ($h >= 12 && $h < 15) {
-            $celebs = [
-                "🍽️ <b>O almoço de hoje tá pago e ainda sobrou!</b> VENDA CONFIRMADA! 😋🎉",
-                "🌤 <b>Hora do almoço com venda!</b> Vai no restaurante mais caro hoje! 🥩",
-                "🍕 <b>Pizza no almoço? Que nada — você merece o rodízio completo!</b> 💰😂",
-                "🥗 <b>Enquanto o Brasil dorme depois do almoço, você fatura!</b> Raça! 💪",
-                "☀️ <b>Meio-dia de glória!</b> O PIX não faz hora de almoço — e nem você! ⚡",
-                "🤑 <b>Hora do almoço chegou junto com o dinheiro!</b> Destino duplo! 🎯",
-                "🔔 <b>DING DING DING!</b> Mais uma venda no relógio do almoço! 🏆",
+            $timeCelebs = [
+                "🍕 <b>Almoço por conta da LunarPay!</b> Vai no mais caro — você merece. 😋💰",
+                "🔔 <b>DING DING!</b> Venda no horário do almoço. Melhor notificação de hoje! 🏆",
+                "🥩 <b>Rodízio confirmado!</b> O cliente pagou e o churrasco é seu. Merece! 🎉",
             ];
         } elseif ($h >= 15 && $h < 18) {
-            $celebs = [
-                "☕ <b>Cafézinho da tarde com DINHEIRO!</b> Tá voando alto! 🎉",
-                "💪 <b>Tarde rasgando!</b> Enquanto outros procrastinam, você fatura! 🔥",
-                "🎯 <b>Acertou de novo!</b> Essa tarde tá rendendo mais que o esperado! 💰",
-                "⚡ <b>Tarde com energia máxima!</b> Venda no bolso, foco no próximo! 😎🚀",
-                "🌤 <b>Tarde produtiva!</b> O mercado gosta de quem não para! 💸",
-                "😂 <b>Seu chefe de emprego anterior devia estar com inveja agora!</b> VENDEU! 🤣",
-                "🏃 <b>Tarde de sprint!</b> Mais uma conversão no seu histórico! 📈",
-                "🔥 <b>Fogo na tarde!</b> O PIX caiu e o sorriso apareceu! 😁�",
+            $timeCelebs = [
+                "☕ <b>Cafézinho da tarde veio junto com PIX!</b> Combinação perfeita. 😎🔥",
+                "😂 <b>Seu chefe antigo nunca vai saber</b> que essa tarde valeu mais que um mês de salário. ",
+                "� <b>Tarde no modo sprint!</b> Mais uma conversão no histórico. Segue! 📈",
             ];
         } elseif ($h >= 18 && $h < 22) {
-            $celebs = [
-                "🌙 <b>Jantar pago com venda!</b> Escolhe o restaurante que quiser hoje! 🍽️😂",
-                "🌆 <b>Final de dia com PIX confirmado!</b> Isso é fechar bem! 🎉",
-                "🌃 <b>Noite chegando e o dinheiro já veio antes!</b> Sequência certa! 💰🔥",
-                "🥂 <b>Hora do brinde!</b> Vendeu no fim do dia = dia completo! ✨",
-                "🌟 <b>Dia finalizado com chave de ouro!</b> Não foi fácil? Foi MUITO! 🔑💪",
-                "🛋️ <b>Vai descansar, mas o dinheiro JÁ está guardado!</b> Merecido! 😌💸",
-                "🌜 <b>A noite tá começando e você já ganhou!</b> Isso é estratégia! 🧠",
-                "🎆 <b>FOGOS MENTAIS!</b> Mais uma venda no final do expediente! 🎉🎊",
+            $timeCelebs = [
+                "🌙 <b>Jantar por conta do cliente!</b> Escolhe o restaurante mais caro. 🍽️😂",
+                "🥂 <b>Brinde ao final do dia!</b> Fechou no positivo — isso é o que importa. ✨",
+                "🛋️ <b>Vai descansar,</b> mas o dinheiro JÁ está guardado. Missão cumprida! 😌�",
             ];
         } else {
-            $celebs = [
-                "🦉 <b>MADRUGADA PRODUTIVA!</b> O dinheiro não dorme — e nem você! 💰😂",
-                "🌙 <b>Venda de madrugada!</b> Enquanto o mundo dorme, você FATURA! 🚀",
-                "⭐ <b>Às [hora] da manhã e já vendeu!</b> Isso é compromisso diferenciado! 💪",
-                "🌌 <b>As estrelas viram a notificação antes de você!</b> PIX confirmado! 🎉",
-                "🧛 <b>Vendeu de madrugada!</b> Isso não é trabalho, é vocação! 🔥",
-                "😴 <b>O Brasil dormindo e você faturando.</b> Enquanto isso... 💸�",
+            $timeCelebs = [
+                "� <b>Venda de madrugada!</b> O dinheiro não dorme — e nem você. Respeito! 💰�",
+                "🌙 <b>O Brasil dormindo e você faturando.</b> Isso é diferenciado! �",
                 "🌠 <b>Estrela cadente ou PIX caindo?</b> Os dois! VENDA CONFIRMADA! ✨",
             ];
         }
 
-        // Extra por dia da semana
-        $dayExtras = [];
-        if ($dow === 5) $dayExtras[] = "🎉 <i>SEXTA COM VENDA! Vai comemorar hoje à noite com o dinheiro da LunarPay!</i> 🥳";
-        elseif ($dow === 6) $dayExtras[] = "📅 <i>Sábado? Você não descansa! Respeito enorme!</i> 💪";
-        elseif ($dow === 0) $dayExtras[] = "🌟 <i>DOMINGO vendendo! Você é de outro nível!</i> 🏆";
-        elseif ($dow === 1) $dayExtras[] = "💪 <i>Segunda com venda! A semana já começou no positivo!</i> 🚀";
-        elseif ($dow === 3) $dayExtras[] = "⛰️ <i>Quarta-feira = topo da montanha da semana. E você vendeu lá em cima!</i>";
+        // Mistura o pool geral com as frases por horário
+        $celebs = array_merge($allCelebs, $timeCelebs);
 
-        // Frases motivacionais aleatórias extras
+        // Extras por dia da semana
+        $dayExtras = [];
+        if ($dow === 5) $dayExtras[] = "🎉 <i>SEXTA COM VENDA! Comemora hoje à noite — você merece!</i> 🥳";
+        elseif ($dow === 6) $dayExtras[] = "📅 <i>Sábado vendendo enquanto o mundo descansa. Outro nível!</i> 💪";
+        elseif ($dow === 0) $dayExtras[] = "🌟 <i>DOMINGO de vendas! Isso aqui não é emprego — é vocação!</i> 🏆";
+        elseif ($dow === 1) $dayExtras[] = "💪 <i>Segunda com venda! A semana começou melhor que a maioria vai terminar!</i>";
+        elseif ($dow === 3) $dayExtras[] = "⛰️ <i>Quarta-feira — metade da semana e já na meta. Impressionante!</i>";
+
+        // Extras motivacionais/irônicos
         $extras = [
-            "💡 <i>Cada venda é um passo a mais na direção certa!</i>",
-            "📈 <i>Consistência + LunarPay = resultado garantido!</i>",
-            "🧠 <i>Mentalidade de crescimento em ação!</i>",
-            "🎯 <i>Foco no próximo! Essa foi só o aquecimento!</i>",
-            "🔑 <i>Você descobriu o segredo: não parar nunca!</i>",
-            "🏆 <i>Vencedores vendem enquanto outros reclamam!</i>",
-            "💎 <i>Diamante se forma sob pressão — e você tá brilhando!</i>",
+            "💡 <i>Dica grátis: continua fazendo o que você tá fazendo!</i>",
+            "📈 <i>Mais uma pro histórico. O gráfico só sobe!</i>",
+            "🎯 <i>Foco no próximo. Essa foi só o aquecimento!</i>",
+            "🔑 <i>Segredo revelado: consistência + LunarPay = resultado!</i>",
+            "🏆 <i>Vencedores vendem enquanto outros fazem reunião sobre vender!</i>",
+            "💎 <i>Cada venda é um tijolo a mais no seu castelo!</i>",
+            "🤫 <i>Não conta pra ninguém — fica só entre você e o PIX!</i>",
         ];
 
         $celeb = $celebs[array_rand($celebs)];
