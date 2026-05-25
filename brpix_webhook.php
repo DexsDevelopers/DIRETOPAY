@@ -14,12 +14,20 @@ try {
     require_once 'includes/MailService.php';
     require_once 'includes/BRPixService.php';
 
+    // Verificação de URL — BRPix pode enviar GET/HEAD para validar o endpoint
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(200);
+        echo json_encode(['ok' => true, 'service' => 'LunarPay BRPix Webhook']);
+        exit;
+    }
+
     $rawBody = file_get_contents('php://input');
     write_log('info', "BRPix Webhook recebido: " . substr($rawBody, 0, 500));
 
     if (!$rawBody) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Empty body']);
+        // Ping sem body — retorna 200 para não bloquear verificação
+        http_response_code(200);
+        echo json_encode(['ok' => true]);
         exit;
     }
 
