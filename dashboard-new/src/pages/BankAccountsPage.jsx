@@ -39,7 +39,7 @@ const accounts = [
         description: 'Conta nominal em fase de testes com taxa mais competitiva. Risco elevado de reembolso e MED (Mecanismo Especial de Devolução) durante o período de homologação.',
         warning: 'Risco de reembolso e MED ativo durante os testes. Use com cautela.',
         fees: [
-            { icon: <Percent size={11} />, label: '2,99% + R$1,00 / transação', color: 'dark:bg-violet-500/15 dark:text-violet-300 dark:border-violet-500/20 bg-violet-50 text-violet-700 border-violet-200' },
+            { icon: <Percent size={11} />, label: '4,00% + R$1,00 / transação', color: 'dark:bg-violet-500/15 dark:text-violet-300 dark:border-violet-500/20 bg-violet-50 text-violet-700 border-violet-200' },
             { icon: <Zap size={11} />,      label: 'Saque disponível',           color: 'dark:bg-green-500/15 dark:text-green-300 dark:border-green-500/20 bg-green-50 text-green-700 border-green-200' },
         ],
     },
