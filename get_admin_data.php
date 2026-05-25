@@ -167,9 +167,11 @@ echo json_encode([
     'sigilopay'          => [
         'enabled'    => $pdo->query("SELECT `value` FROM settings WHERE `key`='sigilopay_enabled'")->fetchColumn() === '1',
         'public_key' => $pdo->query("SELECT `value` FROM settings WHERE `key`='sigilopay_public_key'")->fetchColumn() ?: '',
+        'has_secret' => (bool)$pdo->query("SELECT `value` FROM settings WHERE `key`='sigilopay_secret_key'")->fetchColumn(),
     ],
     'brpix'              => [
         'enabled'    => $pdo->query("SELECT `value` FROM settings WHERE `key`='brpix_enabled'")->fetchColumn() === '1',
         'client_id'  => $pdo->query("SELECT `value` FROM settings WHERE `key`='brpix_client_id'")->fetchColumn() ?: '',
+        'has_secret' => (bool)$pdo->query("SELECT `value` FROM settings WHERE `key`='brpix_client_secret'")->fetchColumn(),
     ],
 ]);

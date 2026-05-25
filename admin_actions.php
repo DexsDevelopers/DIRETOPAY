@@ -303,18 +303,23 @@ try {
             break;
 
         case 'save_sigilopay':
-            $pubKey = trim($data['sigilopay_public_key'] ?? '');
-            $secKey = trim($data['sigilopay_secret_key'] ?? '');
+            $pubKey  = trim($data['sigilopay_public_key'] ?? '');
+            $secKey  = trim($data['sigilopay_secret_key'] ?? '');
             $enabled = (int)($data['sigilopay_enabled'] ?? 0);
-            if (!$pubKey || !$secKey) {
+            $keepSec = ($secKey === '__KEEP__' || $secKey === '');
+            // Verifica se já existe secret salvo
+            $existsSec = $pdo->query("SELECT `value` FROM settings WHERE `key`='sigilopay_secret_key'")->fetchColumn();
+            if (!$pubKey || (!$keepSec && !$secKey)) {
                 echo json_encode(['success' => false, 'error' => 'Preencha Public Key e Secret Key']);
                 break;
             }
-            foreach ([
-                'sigilopay_public_key'  => $pubKey,
-                'sigilopay_secret_key'  => $secKey,
-                'sigilopay_enabled'     => $enabled,
-            ] as $k => $v) {
+            if (!$keepSec && !$existsSec && !$secKey) {
+                echo json_encode(['success' => false, 'error' => 'Preencha a Secret Key']);
+                break;
+            }
+            $toSave = ['sigilopay_public_key' => $pubKey, 'sigilopay_enabled' => $enabled];
+            if (!$keepSec) $toSave['sigilopay_secret_key'] = $secKey;
+            foreach ($toSave as $k => $v) {
                 $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES (?,?) ON DUPLICATE KEY UPDATE `value`=?")
                     ->execute([$k, $v, $v]);
             }
@@ -325,15 +330,23 @@ try {
             $clientId     = trim($data['brpix_client_id'] ?? '');
             $clientSecret = trim($data['brpix_client_secret'] ?? '');
             $enabled      = (int)($data['brpix_enabled'] ?? 0);
-            if (!$clientId || !$clientSecret) {
-                echo json_encode(['success' => false, 'error' => 'Preencha Client ID e Client Secret']);
+            $keepSec      = ($clientSecret === '__KEEP__' || $clientSecret === '');
+            $existsSec    = $pdo->query("SELECT `value` FROM settings WHERE `key`='brpix_client_secret'")->fetchColumn();
+            if (!$clientId) {
+                echo json_encode(['success' => false, 'error' => 'Preencha o Client ID']);
                 break;
             }
-            foreach ([
-                'brpix_client_id'     => $clientId,
-                'brpix_client_secret' => $clientSecret,
-                'brpix_enabled'       => $enabled,
-            ] as $k => $v) {
+            if (!$keepSec && !$clientSecret) {
+                echo json_encode(['success' => false, 'error' => 'Preencha o Client Secret']);
+                break;
+            }
+            if ($keepSec && !$existsSec) {
+                echo json_encode(['success' => false, 'error' => 'Preencha o Client Secret']);
+                break;
+            }
+            $toSave = ['brpix_client_id' => $clientId, 'brpix_enabled' => $enabled];
+            if (!$keepSec) $toSave['brpix_client_secret'] = $clientSecret;
+            foreach ($toSave as $k => $v) {
                 $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES (?,?) ON DUPLICATE KEY UPDATE `value`=?")
                     ->execute([$k, $v, $v]);
             }

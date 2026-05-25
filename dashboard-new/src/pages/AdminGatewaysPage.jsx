@@ -235,7 +235,7 @@ export default function AdminGatewaysPage() {
             enabledKey: 'sigilopay_enabled',
             initialForm: {
                 sigilopay_public_key: gateways?.sigilopay?.public_key || '',
-                sigilopay_secret_key: '',
+                sigilopay_secret_key: gateways?.sigilopay?.has_secret ? '__KEEP__' : '',
             },
             fields: [
                 { key: 'sigilopay_public_key', label: 'Public Key (Client ID)', placeholder: 'pk_...', secret: false },
@@ -256,7 +256,7 @@ export default function AdminGatewaysPage() {
             enabledKey: 'brpix_enabled',
             initialForm: {
                 brpix_client_id:     gateways?.brpix?.client_id || '',
-                brpix_client_secret: '',
+                brpix_client_secret: gateways?.brpix?.has_secret ? '__KEEP__' : '',
             },
             fields: [
                 { key: 'brpix_client_id',     label: 'Client ID',     placeholder: 'f1ef52f8...', secret: false },
