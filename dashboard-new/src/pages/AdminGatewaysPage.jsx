@@ -229,6 +229,7 @@ export default function AdminGatewaysPage() {
             webhookUrl: 'lunarpay.site/sigilopay_webhook.php',
             hasForm: true,
             saveAction: 'save_sigilopay',
+            toggleAction: 'toggle_sigilopay',
             enabledKey: 'sigilopay_enabled',
             initialForm: {
                 sigilopay_public_key: gateways?.sigilopay?.public_key || '',

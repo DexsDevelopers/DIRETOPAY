@@ -295,6 +295,13 @@ try {
             echo json_encode(['success' => true, 'med' => $newMed]);
             break;
 
+        case 'toggle_sigilopay':
+            $enabled = (int)($data['enabled'] ?? 0);
+            $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES ('sigilopay_enabled',?) ON DUPLICATE KEY UPDATE `value`=?")
+                ->execute([$enabled, $enabled]);
+            echo json_encode(['success' => true]);
+            break;
+
         case 'save_sigilopay':
             $pubKey = trim($data['sigilopay_public_key'] ?? '');
             $secKey = trim($data['sigilopay_secret_key'] ?? '');
