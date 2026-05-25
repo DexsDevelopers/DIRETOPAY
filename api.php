@@ -26,6 +26,7 @@ try {
     }
     require_once 'includes/TelegramService.php';
     require_once 'includes/BRPixService.php';
+    require_once 'includes/IronPayService.php';
 
     // Autenticação Híbrida 
     $userId = null;
@@ -68,9 +69,15 @@ try {
     $brpixClientSecret = $getSetting('brpix_client_secret');
     $useBRPix          = ($brpixEnabled && $brpixClientId && $brpixClientSecret);
 
-    write_log('info', "Gateway: sigiloEnabled=$sigiloEnabled useSigiloPay=$useSigiloPay | brpixEnabled=$brpixEnabled useBRPix=$useBRPix");
+    $ironpayEnabled     = $getSetting('ironpay_enabled') === '1';
+    $ironpayToken       = $getSetting('ironpay_token');
+    $ironpayOfferHash   = $getSetting('ironpay_offer_hash');
+    $ironpayProductHash = $getSetting('ironpay_product_hash');
+    $useIronPay         = ($ironpayEnabled && $ironpayToken && $ironpayOfferHash && $ironpayProductHash);
 
-    if (!$useSigiloPay && !$useBRPix) {
+    write_log('info', "Gateway: sigiloEnabled=$sigiloEnabled useSigiloPay=$useSigiloPay | brpixEnabled=$brpixEnabled useBRPix=$useBRPix | ironpayEnabled=$ironpayEnabled useIronPay=$useIronPay");
+
+    if (!$useSigiloPay && !$useBRPix && !$useIronPay) {
         throw new Exception('Gateway de pagamento não configurado. Contate o administrador.', 503);
     }
 
@@ -104,6 +111,64 @@ try {
     }
 
     $externalId = !empty($input['external_id']) ? (string)$input['external_id'] : ('user_' . $userId . '_' . time());
+
+    // ── GATEWAY: IronPay ────────────────────────────────────────────
+    if ($useIronPay && !$useBRPix) {
+        if (!defined('IRONPAY_TOKEN'))        define('IRONPAY_TOKEN',        $ironpayToken);
+        if (!defined('IRONPAY_OFFER_HASH'))   define('IRONPAY_OFFER_HASH',   $ironpayOfferHash);
+        if (!defined('IRONPAY_PRODUCT_HASH')) define('IRONPAY_PRODUCT_HASH', $ironpayProductHash);
+
+        $feePercent = (float)($getSetting('ironpay_fee_percent') ?: '8');
+        $feeFixed   = (float)($getSetting('ironpay_fee_fixed')   ?: '0.99');
+
+        $customerData = [
+            'name'     => !empty($user['full_name']) ? $user['full_name'] : 'Cliente',
+            'email'    => $user['email'] ?? '',
+            'phone'    => $user['phone'] ?? '',
+            'document' => (!empty($user['cpf']) && $user['cpf'] !== '000.000.000-00') ? $user['cpf'] : '00000000000',
+        ];
+
+        write_log('info', "IronPay Request: amount=$amount | externalId=$externalId");
+        $ipResult = IronPayService::createCharge($amount, $externalId, $customerData, 'Pagamento LunarPay');
+        write_log('info', "IronPay Response: HTTP={$ipResult['http_code']} | " . substr($ipResult['raw'] ?: '(empty)', 0, 500));
+
+        if ($ipResult['curl_error']) {
+            throw new Exception('Falha na conexão com o gateway de pagamento. Tente novamente.');
+        }
+
+        $ipData = $ipResult['data'];
+        $ipCode = $ipResult['http_code'];
+
+        if (($ipCode === 200 || $ipCode === 201) && !empty($ipData['hash'])) {
+            $pixId   = $ipData['hash'];
+            $pixCode = $ipData['pix']['pix_qr_code'] ?? '';
+            $b64raw  = '';
+
+            if (!empty($pixCode)) {
+                $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($pixCode);
+            } else {
+                $qrImage = '';
+            }
+
+            $gatewayFee  = IronPayService::calculateFee($amount, $feePercent, $feeFixed);
+            $platformFee = $amount * ($user['commission_rate'] / 100);
+            $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
+
+            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança LunarPay', $externalId, 'pix', $utmParams);
+
+            if (class_exists('PushService')) {
+                try { PushService::notifyUser($userId, '⚡ PIX Gerado!', 'Cobrança de R$ ' . number_format($amount, 2, ',', '.') . ' gerada.', 'sale_generated'); } catch (Throwable $e) {}
+            }
+            $txId = (int)$pdo->lastInsertId();
+            try { TelegramService::notifyNewCharge($amount, $user['full_name'] ?? 'N/A', $txId); } catch (Throwable $e) {}
+
+            Response::success(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
+        } else {
+            $errMsg = $ipData['message'] ?? ($ipData['error'] ?? 'Erro de comunicação com o gateway');
+            write_log('error', "IronPay FALHA: HTTP={$ipResult['http_code']} | $errMsg | response={$ipResult['raw']}");
+            throw new Exception('Erro ao processar pagamento: ' . $errMsg);
+        }
+    }
 
     // ── GATEWAY: BRPix Solutions ─────────────────────────────────────
     if ($useBRPix) {

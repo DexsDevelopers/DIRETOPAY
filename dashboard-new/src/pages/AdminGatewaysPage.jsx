@@ -217,8 +217,9 @@ export default function AdminGatewaysPage() {
     );
 
     const sigiloEnabled = gateways?.sigilopay?.enabled === true;
-    const brpixEnabled  = gateways?.brpix?.enabled === true;
-    const activeCount   = (sigiloEnabled ? 1 : 0) + (brpixEnabled ? 1 : 0);
+    const brpixEnabled   = gateways?.brpix?.enabled === true;
+    const ironpayEnabled  = gateways?.ironpay?.enabled === true;
+    const activeCount     = (sigiloEnabled ? 1 : 0) + (brpixEnabled ? 1 : 0) + (ironpayEnabled ? 1 : 0);
 
     const gatewayDefs = [
         {
@@ -261,6 +262,29 @@ export default function AdminGatewaysPage() {
             fields: [
                 { key: 'brpix_client_id',     label: 'Client ID',     placeholder: 'f1ef52f8...', secret: false },
                 { key: 'brpix_client_secret', label: 'Client Secret', placeholder: '••••••••••••••••', secret: true },
+            ],
+        },
+        {
+            id: 'ironpay',
+            name: 'IronPay',
+            description: 'Gateway PIX via token de API — integração simples com postback automático',
+            color: 'purple',
+            Icon: CheckCircle,
+            enabled: ironpayEnabled,
+            webhookUrl: 'lunarpay.site/ironpay_webhook.php',
+            hasForm: true,
+            saveAction: 'save_ironpay',
+            toggleAction: 'toggle_ironpay',
+            enabledKey: 'ironpay_enabled',
+            initialForm: {
+                ironpay_token:        gateways?.ironpay?.has_token    ? '__KEEP__' : '',
+                ironpay_offer_hash:   gateways?.ironpay?.offer_hash   || '',
+                ironpay_product_hash: gateways?.ironpay?.product_hash || '',
+            },
+            fields: [
+                { key: 'ironpay_token',        label: 'API Token',     placeholder: 'hHRg6hOra...', secret: true  },
+                { key: 'ironpay_offer_hash',   label: 'Offer Hash',    placeholder: '7becb...',     secret: false },
+                { key: 'ironpay_product_hash', label: 'Product Hash',  placeholder: '7tjdfk...',    secret: false },
             ],
         },
     ];

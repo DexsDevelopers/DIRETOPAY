@@ -174,4 +174,10 @@ echo json_encode([
         'client_id'  => $pdo->query("SELECT `value` FROM settings WHERE `key`='brpix_client_id'")->fetchColumn() ?: '',
         'has_secret' => (bool)$pdo->query("SELECT `value` FROM settings WHERE `key`='brpix_client_secret'")->fetchColumn(),
     ],
+    'ironpay'            => [
+        'enabled'      => $pdo->query("SELECT `value` FROM settings WHERE `key`='ironpay_enabled'")->fetchColumn() === '1',
+        'offer_hash'   => $pdo->query("SELECT `value` FROM settings WHERE `key`='ironpay_offer_hash'")->fetchColumn() ?: '',
+        'product_hash' => $pdo->query("SELECT `value` FROM settings WHERE `key`='ironpay_product_hash'")->fetchColumn() ?: '',
+        'has_token'    => (bool)$pdo->query("SELECT `value` FROM settings WHERE `key`='ironpay_token'")->fetchColumn(),
+    ],
 ]);

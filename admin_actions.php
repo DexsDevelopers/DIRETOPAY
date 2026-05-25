@@ -360,6 +360,37 @@ try {
             echo json_encode(['success' => true]);
             break;
 
+        case 'save_ironpay':
+            $token       = trim($data['ironpay_token']        ?? '');
+            $offerHash   = trim($data['ironpay_offer_hash']   ?? '');
+            $productHash = trim($data['ironpay_product_hash'] ?? '');
+            $enabled     = (int)($data['ironpay_enabled']     ?? 0);
+            $keepToken   = ($token === '__KEEP__' || $token === '');
+            $existsToken = $pdo->query("SELECT `value` FROM settings WHERE `key`='ironpay_token'")->fetchColumn();
+            if (!$offerHash || !$productHash) {
+                echo json_encode(['success' => false, 'error' => 'Preencha Offer Hash e Product Hash']);
+                break;
+            }
+            if ($keepToken && !$existsToken) {
+                echo json_encode(['success' => false, 'error' => 'Preencha o API Token']);
+                break;
+            }
+            $toSave = ['ironpay_offer_hash' => $offerHash, 'ironpay_product_hash' => $productHash, 'ironpay_enabled' => $enabled];
+            if (!$keepToken) $toSave['ironpay_token'] = $token;
+            foreach ($toSave as $k => $v) {
+                $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES (?,?) ON DUPLICATE KEY UPDATE `value`=?")
+                    ->execute([$k, $v, $v]);
+            }
+            echo json_encode(['success' => true]);
+            break;
+
+        case 'toggle_ironpay':
+            $enabled = (int)($data['enabled'] ?? 0);
+            $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES ('ironpay_enabled',?) ON DUPLICATE KEY UPDATE `value`=?")
+                ->execute([$enabled, $enabled]);
+            echo json_encode(['success' => true]);
+            break;
+
         case 'toggle_pixgo':
         case 'setup_cakto_webhook':
             echo json_encode(['success' => false, 'error' => 'Gateway removido. Apenas SigiloPay é suportado.']);
