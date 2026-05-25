@@ -54,6 +54,9 @@ $base_path = (strpos($_SERVER['PHP_SELF'], '/admin/') !== false) ? '../' : '';
                 <a href="<?php echo $base_path; ?>admin/apis.php" class="nav-item <?php echo $current_page == 'apis.php' ? 'active' : ''; ?>">
                     <i class="fas fa-plug-circle-bolt"></i> Integrações
                 </a>
+                <a href="<?php echo $base_path; ?>admin/whatsapp.php" class="nav-item <?php echo $current_page == 'whatsapp.php' ? 'active' : ''; ?>">
+                    <i class="fab fa-whatsapp" style="color: #25d366;"></i> WhatsApp Bot
+                </a>
                 <a href="<?php echo $base_path; ?>admin/notifications.php" class="nav-item <?php echo $current_page == 'notifications.php' ? 'active' : ''; ?>">
                     <i class="fas fa-bell"></i> Avisos Globais
                 </a>

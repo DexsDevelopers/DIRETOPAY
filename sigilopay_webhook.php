@@ -10,6 +10,7 @@ try {
     require_once 'includes/db.php';
     require_once 'includes/TelegramService.php';
     require_once 'includes/MailService.php';
+    try { require_once 'includes/WhatsAppService.php'; } catch (Throwable $e) {}
 
     $rawBody = file_get_contents('php://input');
     $payload = json_decode($rawBody, true);
@@ -117,6 +118,24 @@ try {
                         (int)$txRow['id']
                     );
                     TelegramService::sendToUser($merchantRow['telegram_chat_id'], $tgMsg);
+                }
+            } catch (Throwable $e) {}
+
+            // WhatsApp admin
+            try { if (class_exists('WhatsAppService')) WhatsAppService::notifySale($amount, $netAmount, $txRow['customer_name'] ?? 'N/A', $merchantName, (int)$txRow['id'], 'SigiloPay'); } catch (Throwable $e) {}
+
+            // WhatsApp vendedor (número cadastrado no perfil)
+            try {
+                if (class_exists('WhatsAppService') && WhatsAppService::isEnabled()) {
+                    $waStmt = $pdo->prepare("SELECT whatsapp FROM users WHERE id = ?");
+                    $waStmt->execute([$userId]);
+                    $waRow = $waStmt->fetch();
+                    if (!empty($waRow['whatsapp'])) {
+                        WhatsAppService::notifySaleToUser(
+                            $waRow['whatsapp'], $amount, $netAmount,
+                            $txRow['customer_name'] ?? 'N/A', (int)$txRow['id']
+                        );
+                    }
                 }
             } catch (Throwable $e) {}
 
@@ -230,6 +249,9 @@ try {
 
             // Telegram admin
             try { TelegramService::notifySale($amount, $netAmount, $clientName, $user['full_name'] ?? 'N/A', 0); } catch (Throwable $e) {}
+
+            // WhatsApp admin
+            try { if (class_exists('WhatsAppService')) WhatsAppService::notifySale($amount, $netAmount, $clientName, $user['full_name'] ?? 'N/A', 0, 'SigiloPay'); } catch (Throwable $e) {}
 
             // Telegram usuário (bot)
             try {
