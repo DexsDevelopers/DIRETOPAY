@@ -168,4 +168,8 @@ echo json_encode([
         'enabled'    => $pdo->query("SELECT `value` FROM settings WHERE `key`='sigilopay_enabled'")->fetchColumn() === '1',
         'public_key' => $pdo->query("SELECT `value` FROM settings WHERE `key`='sigilopay_public_key'")->fetchColumn() ?: '',
     ],
+    'brpix'              => [
+        'enabled'    => $pdo->query("SELECT `value` FROM settings WHERE `key`='brpix_enabled'")->fetchColumn() === '1',
+        'client_id'  => $pdo->query("SELECT `value` FROM settings WHERE `key`='brpix_client_id'")->fetchColumn() ?: '',
+    ],
 ]);

@@ -215,7 +215,8 @@ export default function AdminGatewaysPage() {
     );
 
     const sigiloEnabled = gateways?.sigilopay?.enabled === true;
-    const activeCount   = sigiloEnabled ? 1 : 0;
+    const brpixEnabled  = gateways?.brpix?.enabled === true;
+    const activeCount   = (sigiloEnabled ? 1 : 0) + (brpixEnabled ? 1 : 0);
 
     const gatewayDefs = [
         {
@@ -238,6 +239,27 @@ export default function AdminGatewaysPage() {
                 { key: 'sigilopay_secret_key', label: 'Secret Key (Client Secret)', placeholder: '••••••••••••••••', secret: true },
             ],
         },
+        {
+            id: 'brpix',
+            name: 'BRPix Solutions',
+            description: 'Gateway PIX com autenticação HMAC-SHA256 — cash-in instantâneo',
+            color: 'green',
+            Icon: CheckCircle,
+            enabled: brpixEnabled,
+            webhookUrl: 'lunarpay.site/brpix_webhook.php',
+            hasForm: true,
+            saveAction: 'save_brpix',
+            toggleAction: 'toggle_brpix',
+            enabledKey: 'brpix_enabled',
+            initialForm: {
+                brpix_client_id:     gateways?.brpix?.client_id || '',
+                brpix_client_secret: '',
+            },
+            fields: [
+                { key: 'brpix_client_id',     label: 'Client ID',     placeholder: 'f1ef52f8...', secret: false },
+                { key: 'brpix_client_secret', label: 'Client Secret', placeholder: '••••••••••••••••', secret: true },
+            ],
+        },
     ];
 
     return (
@@ -250,9 +272,9 @@ export default function AdminGatewaysPage() {
                     <p className="text-sm text-gray-500 font-medium mt-1">Configure e ative os gateways da plataforma</p>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2.5">
-                    <Wifi size={15} className={sigiloEnabled ? 'text-green-500' : 'text-gray-300'} />
-                    <span className={`text-sm font-black ${sigiloEnabled ? 'text-green-500' : 'text-gray-400'}`}>
-                        {sigiloEnabled ? '● ONLINE' : '○ OFFLINE'}
+                    <Wifi size={15} className={activeCount > 0 ? 'text-green-500' : 'text-gray-300'} />
+                    <span className={`text-sm font-black ${activeCount > 0 ? 'text-green-500' : 'text-gray-400'}`}>
+                        {activeCount > 0 ? `● ONLINE (${activeCount})` : '○ OFFLINE'}
                     </span>
                 </div>
             </div>
@@ -261,8 +283,8 @@ export default function AdminGatewaysPage() {
             <div className="bg-blue-500/5 border border-blue-500/15 rounded-2xl px-4 py-3 flex items-start gap-3">
                 <AlertCircle size={15} className="text-blue-400 flex-shrink-0 mt-0.5" />
                 <p className="text-[12px] text-blue-300/70 font-medium leading-relaxed">
-                    Insira as credenciais da <strong>SigiloPay</strong> e ative o gateway para começar a receber pagamentos via PIX.
-                    O webhook de retorno é configurado automaticamente.
+                    Configure e ative os gateways PIX da plataforma. O gateway ativo no topo será o utilizado para novas cobranças.
+                    Os webhooks de retorno são configurados automaticamente.
                 </p>
             </div>
 

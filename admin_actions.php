@@ -314,6 +314,32 @@ try {
             echo json_encode(['success' => true]);
             break;
 
+        case 'save_brpix':
+            $clientId     = trim($data['brpix_client_id'] ?? '');
+            $clientSecret = trim($data['brpix_client_secret'] ?? '');
+            $enabled      = (int)($data['brpix_enabled'] ?? 0);
+            if (!$clientId || !$clientSecret) {
+                echo json_encode(['success' => false, 'error' => 'Preencha Client ID e Client Secret']);
+                break;
+            }
+            foreach ([
+                'brpix_client_id'     => $clientId,
+                'brpix_client_secret' => $clientSecret,
+                'brpix_enabled'       => $enabled,
+            ] as $k => $v) {
+                $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES (?,?) ON DUPLICATE KEY UPDATE `value`=?")
+                    ->execute([$k, $v, $v]);
+            }
+            echo json_encode(['success' => true]);
+            break;
+
+        case 'toggle_brpix':
+            $enabled = (int)($data['enabled'] ?? 0);
+            $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES ('brpix_enabled',?) ON DUPLICATE KEY UPDATE `value`=?")
+                ->execute([$enabled, $enabled]);
+            echo json_encode(['success' => true]);
+            break;
+
         case 'toggle_pixgo':
         case 'setup_cakto_webhook':
             echo json_encode(['success' => false, 'error' => 'Gateway removido. Apenas SigiloPay é suportado.']);
