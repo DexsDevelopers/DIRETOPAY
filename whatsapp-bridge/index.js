@@ -156,6 +156,13 @@ function clearAuth() {
 
 // ── Rotas ─────────────────────────────────────────────────────────────────────
 
+function formatUptime(seconds) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.floor(seconds % 60);
+    return `${h}h ${m}m ${s}s`;
+}
+
 app.get('/status', (req, res) => {
     res.json({
         ok:          true,
@@ -164,6 +171,8 @@ app.get('/status', (req, res) => {
         hasQr:       !!qrBase64,
         phoneNumber: phoneNumber,
         error:       lastError,
+        uptimeFormatted: formatUptime(process.uptime()),
+        memoryMB:    Math.round(process.memoryUsage().heapUsed / 1024 / 1024 * 10) / 10,
     });
 });
 

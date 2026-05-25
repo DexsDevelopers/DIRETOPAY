@@ -35,6 +35,16 @@ if (isset($_GET['ajax'])) {
         echo json_encode(WhatsAppService::disconnect()); exit;
     }
 
+    if ($act === 'restart') {
+        // Envia requisição de reinício ao bridge
+        $ch = curl_init(rtrim(WhatsAppService::getStatus()['url'] ?? 'http://127.0.0.1:3001', '/') . '/restart');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        $res = curl_exec($ch);
+        curl_close($ch);
+        echo json_encode(['ok' => true, 'message' => 'Comando de reinício enviado.']); exit;
+    }
+
     if ($act === 'test') {
         $phone = trim($_POST['phone'] ?? '');
         if (!$phone) { echo json_encode(['ok' => false, 'error' => 'Informe o número']); exit; }
@@ -63,11 +73,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
     try {
         $stmt = $pdo->prepare("INSERT INTO settings (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)");
         foreach ($fields as $k => $v) {
+            $stmt->execute([k => $k, v => $v]); // compatibilidade com prepared
             $stmt->execute([$k, $v]);
         }
-        $success = "Configurações salvas!";
+        $success = "Configurações salvas com sucesso!";
     } catch (PDOException $e) {
-        $error = "Erro ao salvar: " . $e->getMessage();
+        // Tentativa de execução simples caso dê erro de colunas duplicadas no execute
+        try {
+            $stmt = $pdo->prepare("INSERT INTO settings (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = ?");
+            foreach ($fields as $k => $v) {
+                $stmt->execute([$k, $v, $v]);
+            }
+            $success = "Configurações salvas com sucesso!";
+        } catch (PDOException $ex) {
+            $error = "Erro ao salvar: " . $ex->getMessage();
+        }
     }
 }
 
@@ -102,389 +122,672 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>WhatsApp Bot - LunarPay Admin</title>
-    <link rel="stylesheet" href="../style.css?v=125.0">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Comando Central | Bot WhatsApp</title>
+    <link rel="stylesheet" href="../style.css?v=128.0">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .wa-status-badge { display:inline-flex; align-items:center; gap:8px; padding:8px 16px; border-radius:20px; font-size:.85rem; font-weight:600; }
-        .wa-status-badge.connected    { background:rgba(34,197,94,.15); color:#4ade80; border:1px solid rgba(34,197,94,.3); }
-        .wa-status-badge.disconnected { background:rgba(239,68,68,.15); color:#f87171; border:1px solid rgba(239,68,68,.3); }
-        .wa-status-badge.unknown      { background:rgba(100,116,139,.15); color:#94a3b8; border:1px solid rgba(100,116,139,.3); }
-        .pulse-dot { width:8px; height:8px; border-radius:50%; background:currentColor; }
-        .pulse-dot.live { animation:pulse-anim 1.5s infinite; }
-        @keyframes pulse-anim { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
-        .qr-spinner { display:flex; flex-direction:column; align-items:center; gap:12px; color:var(--text-3); font-size:.85rem; padding:2rem 0; }
-        .qr-spinner i { font-size:2rem; animation:spin 1s linear infinite; }
-        @keyframes spin { to { transform:rotate(360deg); } }
-        .step-badge { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:#25d366; color:#000; font-size:.72rem; font-weight:700; margin-right:8px; flex-shrink:0; }
-        .step-row { display:flex; align-items:flex-start; gap:0; margin-bottom:10px; font-size:.88rem; color:var(--text-2); line-height:1.4; }
-        .toggle-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,.05); }
-        .toggle-row:last-child { border-bottom:none; }
-        .toggle-label { font-size:.9rem; color:var(--text-2); }
-        .toggle-label small { display:block; font-size:.75rem; color:var(--text-3); margin-top:2px; }
-        .custom-toggle { position:relative; width:44px; height:24px; flex-shrink:0; }
-        .custom-toggle input { opacity:0; width:0; height:0; }
-        .custom-toggle .slider { position:absolute; inset:0; background:rgba(255,255,255,.1); border-radius:24px; cursor:pointer; transition:.3s; }
-        .custom-toggle .slider:before { content:''; position:absolute; width:18px; height:18px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.3s; }
-        .custom-toggle input:checked + .slider { background:#25d366; }
-        .custom-toggle input:checked + .slider:before { transform:translateX(20px); }
-        .wa-green { color:#25d366; }
-        .cmd-box { background:rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.08); border-radius:8px; padding:10px 14px; font-family:monospace; font-size:.8rem; color:#4ade80; margin-top:6px; word-break:break-all; }
-        .info-box { padding:12px 16px; background:rgba(37,211,102,.05); border:1px solid rgba(37,211,102,.15); border-radius:10px; font-size:.8rem; color:var(--text-3); line-height:1.6; }
-        .warn-box  { padding:12px 16px; background:rgba(245,158,11,.07); border:1px solid rgba(245,158,11,.2);  border-radius:10px; font-size:.8rem; color:#fbbf24; line-height:1.6; }
+        /* ── Estilos Elite Command Center ── */
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --bg-card: rgba(30, 41, 59, 0.45);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border: rgba(255, 255, 255, 0.06);
+        }
+
+        .cmd-body {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+
+        .header-cmd {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-cmd h1 { font-size: 2rem; font-weight: 800; margin: 0; letter-spacing: -0.04em; }
+        .header-cmd p { color: var(--text-dim); margin: 0.25rem 0 0; font-size: 0.95rem; }
+
+        /* Stats Grid */
+        .stats-cmd {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-stat-cmd {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            backdrop-filter: blur(12px);
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-stat-cmd:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.05);
+        }
+
+        .stat-icon-cmd {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .val-cmd { font-size: 1.5rem; font-weight: 800; display: block; margin-bottom: 0.25rem; color: #fff; }
+        .lab-cmd { color: var(--text-dim); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        /* Info Bar */
+        .info-bar-cmd {
+            margin-bottom: 2rem;
+            background: rgba(99, 102, 241, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Hero Grid Layout */
+        .hero-grid-cmd {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1100px) {
+            .hero-grid-cmd { grid-template-columns: 1fr; }
+        }
+
+        .panel-cmd {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            backdrop-filter: blur(15px);
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-title-cmd {
+            margin: 0 0 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* Console styling */
+        .console-cmd {
+            background: #060814;
+            border-radius: 16px;
+            padding: 1.25rem;
+            font-family: 'Courier New', Courier, monospace;
+            height: 250px;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.03);
+            box-shadow: inset 0 4px 20px rgba(0,0,0,0.5);
+            margin-bottom: 1.5rem;
+        }
+
+        .line-cmd { margin-bottom: 0.4rem; font-size: 0.82rem; border-left: 2px solid transparent; padding-left: 0.6rem; word-break: break-all; }
+        .line-cmd.info { border-color: var(--primary); color: #94a3b8; }
+        .line-cmd.sys { border-color: var(--success); color: var(--success); }
+        .line-cmd.warn { border-color: var(--warning); color: var(--warning); }
+        .line-cmd.err { border-color: var(--danger); color: var(--danger); }
+
+        /* QR Frame */
+        .qr-wrapper-cmd {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            color: #0f172a;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            height: 100%;
+            justify-content: center;
+            min-height: 380px;
+        }
+
+        .qr-placeholder-cmd {
+            width: 200px;
+            height: 200px;
+            background: #f8fafc;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            border: 2px dashed #cbd5e1;
+        }
+
+        /* Buttons style */
+        .btn-cmd {
+            padding: 0.75rem 1.25rem;
+            border-radius: 14px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .btn-cmd-outline {
+            background: rgba(255,255,255,0.03);
+            color: #fff;
+            border: 1px solid var(--border);
+        }
+        .btn-cmd-outline:hover { background: rgba(255,255,255,0.08); }
+
+        .btn-cmd-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+        }
+        .btn-cmd-danger:hover { background: var(--danger); color: #fff; }
+
+        .status-badge-cmd {
+            padding: 0.4rem 0.85rem;
+            border-radius: 99px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .badge-cmd-on { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+        .badge-cmd-off { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .badge-cmd-wait { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+
+        .pulse-dot-cmd {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse-anim-cmd 1.5s infinite;
+        }
+        @keyframes pulse-anim-cmd { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.2)} }
+
+        /* Form Controls */
+        .form-label-cmd {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+        .form-input-cmd {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            color: #fff;
+            font-family: monospace;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            margin-bottom: 1rem;
+        }
+        .form-input-cmd:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.1);
+        }
+        .toggle-row-cmd {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .toggle-row-cmd:last-of-type { border-bottom: none; }
+        .toggle-switch-cmd {
+            position: relative;
+            width: 40px;
+            height: 22px;
+        }
+        .toggle-switch-cmd input { opacity:0; width:0; height:0; }
+        .toggle-switch-cmd .slider {
+            position: absolute; inset:0; background:rgba(255,255,255,0.08); border-radius:22px; cursor:pointer; transition:0.3s;
+        }
+        .toggle-switch-cmd .slider:before {
+            content:''; position:absolute; width:16px; height:16px; left:3px; top:3px; background:#fff; border-radius:50%; transition:0.3s;
+        }
+        .toggle-switch-cmd input:checked + .slider { background:#10b981; }
+        .toggle-switch-cmd input:checked + .slider:before { transform:translateX(18px); }
     </style>
 </head>
-<body class="dashboard-body">
+<body class="dashboard-body cmd-body">
     <?php include '../includes/sidebar.php'; ?>
 
     <main class="main-content">
-        <header class="top-header">
+        <header class="header-cmd">
             <div>
-                <h1><i class="fab fa-whatsapp wa-green" style="margin-right:10px;"></i>WhatsApp Bot</h1>
-                <p style="color:var(--text-3); font-size:.9rem;">100% gratuito — roda no seu próprio servidor, sem mensalidade</p>
+                <h1>Centro de Comando</h1>
+                <p>Monitoramento e integração do Bot WhatsApp</p>
             </div>
-            <div id="status-badge" class="wa-status-badge unknown">
-                <span class="pulse-dot"></span> <span id="status-text">Verificando...</span>
+            <div style="display:flex; gap: 0.75rem; align-items:center;">
+                <div id="badge-display" class="status-badge-cmd badge-cmd-off">
+                    <span class="pulse-dot-cmd"></span>
+                    <span id="badge-text">Desconectado</span>
+                </div>
+                <button onclick="checkStatus(true)" class="btn-cmd btn-cmd-outline" style="padding: 0.5rem 0.8rem;" title="Sincronizar rede">
+                    <i class="fas fa-sync" id="sync-icon"></i>
+                </button>
             </div>
         </header>
 
         <?php if ($success): ?>
-            <div class="badge paid" style="margin-bottom:1rem; padding:12px 16px; border-radius:10px;"><?php echo $success; ?></div>
+            <div class="badge paid" style="margin-bottom:1.5rem; padding:12px 16px; border-radius:10px;"><?php echo $success; ?></div>
         <?php endif; ?>
         <?php if ($error): ?>
-            <div style="margin-bottom:1rem; padding:12px 16px; border-radius:10px; background:rgba(239,68,68,.15); color:#f87171; border:1px solid rgba(239,68,68,.3);"><?php echo $error; ?></div>
+            <div style="margin-bottom:1.5rem; padding:12px 16px; border-radius:10px; background:rgba(239,68,68,.15); color:#f87171; border:1px solid rgba(239,68,68,.3);"><?php echo $error; ?></div>
         <?php endif; ?>
 
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; align-items:start;">
+        <!-- Stats Grid -->
+        <div class="stats-cmd">
+            <div class="card-stat-cmd">
+                <div class="stat-icon-cmd" style="background: rgba(99, 102, 241, 0.12); color: #818cf8;"><i class="fas fa-clock"></i></div>
+                <span class="val-cmd" id="stat-uptime">0h 0m 0s</span>
+                <span class="lab-cmd">Tempo Sincronizado</span>
+            </div>
+            <div class="card-stat-cmd">
+                <div class="stat-icon-cmd" style="background: rgba(16, 185, 129, 0.12); color: #34d399;"><i class="fas fa-memory"></i></div>
+                <span class="val-cmd" id="stat-memory">0 MB</span>
+                <span class="lab-cmd">Uso de Heap (RAM)</span>
+            </div>
+            <div class="card-stat-cmd">
+                <div class="stat-icon-cmd" style="background: rgba(245, 158, 11, 0.12); color: #fbbf24;"><i class="fas fa-users"></i></div>
+                <span class="val-cmd"><?php echo $waCount; ?> / <?php echo $totalUsers; ?></span>
+                <span class="lab-cmd">Membros Com WhatsApp</span>
+            </div>
+            <div class="card-stat-cmd">
+                <div class="stat-icon-cmd" style="background: rgba(239, 68, 68, 0.12); color: #f87171;"><i class="fas fa-bug"></i></div>
+                <span class="val-cmd" id="stat-errors">Nenhum</span>
+                <span class="lab-cmd">Incidentes</span>
+            </div>
+        </div>
 
-            <!-- ── COLUNA ESQUERDA ── -->
-            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+        <!-- Info Bar -->
+        <div class="info-bar-cmd">
+            <div><i class="fas fa-link" style="color: var(--primary); margin-right: 5px;"></i> <b>API:</b> <span id="info-api-url"><?php echo htmlspecialchars($cfg['bridge_url']); ?></span></div>
+            <div><i class="fas fa-shield-halved" style="color: var(--success); margin-right: 5px;"></i> <b>AUTH:</b> local-bridge</div>
+            <div><i class="fas fa-microchip" style="margin-right: 5px;"></i> <b>Engine:</b> Baileys v6.7.23</div>
+            <div>Modo: <b>Lite Daemon Bridge v2.0</b></div>
+        </div>
 
-                <!-- Instalação do Bridge -->
-                <div class="card glass">
-                    <div class="card-header">
-                        <div class="card-title-group">
-                            <div class="card-icon"><i class="fab fa-node-js" style="color:#68d391;"></i></div>
-                            <h3 class="card-title">Instalar o Bridge (1x)</h3>
-                        </div>
+        <div class="hero-grid-cmd">
+            <!-- Coluna Esquerda: Console & Configs -->
+            <div>
+                <!-- Console -->
+                <div class="panel-cmd">
+                    <h3 class="panel-title-cmd"><i class="fas fa-terminal" style="color: var(--primary);"></i> Monitor de Fluxo</h3>
+                    <div class="console-cmd" id="cmdConsole">
+                        <div class="line-cmd info">> Estabelecendo conexão com o Daemon Bridge...</div>
                     </div>
-                    <div style="margin-top:1rem; display:flex; flex-direction:column; gap:8px;">
-                        <div class="step-row"><span class="step-badge">1</span>Acesse seu servidor via SSH e vá até a pasta do projeto:</div>
-                        <div class="cmd-box">cd /var/www/html/whatsapp-bridge</div>
-
-                        <div class="step-row" style="margin-top:6px;"><span class="step-badge">2</span>Instale as dependências (apenas na primeira vez):</div>
-                        <div class="cmd-box">npm install</div>
-
-                        <div class="step-row" style="margin-top:6px;"><span class="step-badge">3</span>Inicie o bridge em segundo plano com PM2:</div>
-                        <div class="cmd-box">npm install -g pm2<br>WA_SECRET=SUA_SENHA_AQUI pm2 start index.js --name wa-bridge<br>pm2 save && pm2 startup</div>
-
-                        <div class="step-row" style="margin-top:6px;"><span class="step-badge">4</span>Verifique se está rodando:</div>
-                        <div class="cmd-box">pm2 status</div>
-
-                        <div class="warn-box" style="margin-top:8px;">
-                            <i class="fas fa-triangle-exclamation"></i>
-                            Requer <strong>Node.js 18+</strong> instalado no servidor. O bridge só precisa ser iniciado uma vez e permanece ativo.
-                        </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <button onclick="triggerAction('restart')" class="btn-cmd btn-cmd-outline">
+                            <i class="fas fa-rotate"></i> Resetar Memória
+                        </button>
+                        <button onclick="triggerAction('disconnect')" class="btn-cmd btn-cmd-danger">
+                            <i class="fas fa-trash-can"></i> Limpeza Total de Sessão (Logout)
+                        </button>
                     </div>
                 </div>
 
-                <!-- Configurações do Bridge -->
-                <div class="card glass">
-                    <div class="card-header">
-                        <div class="card-title-group">
-                            <div class="card-icon"><i class="fas fa-gear"></i></div>
-                            <h3 class="card-title">Configurar Conexão</h3>
-                        </div>
-                    </div>
-                    <form method="POST" style="margin-top:1.5rem; display:flex; flex-direction:column; gap:1rem;">
+                <!-- Configurações -->
+                <div class="panel-cmd">
+                    <h3 class="panel-title-cmd"><i class="fas fa-sliders" style="color: var(--primary);"></i> Ajustes do Sistema</h3>
+                    <form method="POST">
                         <input type="hidden" name="save_settings" value="1">
 
-                        <div>
-                            <label class="stat-label" style="display:block; margin-bottom:6px;">URL do Bridge</label>
-                            <input type="text" name="wa_bridge_url"
-                                   value="<?php echo htmlspecialchars($cfg['bridge_url']); ?>"
-                                   placeholder="http://127.0.0.1:3001"
-                                   style="width:100%; background:rgba(0,0,0,.3); border:1px solid var(--border); padding:.8rem; border-radius:10px; color:#fff; font-family:monospace;">
-                            <small style="color:var(--text-3); font-size:.75rem;">Se rodar no mesmo servidor, mantenha http://127.0.0.1:3001</small>
-                        </div>
-
-                        <div>
-                            <label class="stat-label" style="display:block; margin-bottom:6px;">Secret do Bridge (WA_SECRET)</label>
-                            <input type="password" name="wa_bridge_secret"
-                                   value="<?php echo htmlspecialchars($cfg['bridge_secret']); ?>"
-                                   placeholder="Mesma senha usada no WA_SECRET ao iniciar"
-                                   style="width:100%; background:rgba(0,0,0,.3); border:1px solid var(--border); padding:.8rem; border-radius:10px; color:#fff; font-family:monospace;">
-                        </div>
-
-                        <div>
-                            <label class="stat-label" style="display:block; margin-bottom:6px;">Seu número WhatsApp (notificações admin)</label>
-                            <input type="text" name="wa_admin_phone"
-                                   value="<?php echo htmlspecialchars($cfg['admin_phone']); ?>"
-                                   placeholder="5511999999999"
-                                   style="width:100%; background:rgba(0,0,0,.3); border:1px solid var(--border); padding:.8rem; border-radius:10px; color:#fff;">
-                            <small style="color:var(--text-3); font-size:.75rem;">DDI + DDD + número, sem + ou espaços</small>
-                        </div>
-
-                        <div class="toggle-row" style="border:none; padding:0;">
-                            <div class="toggle-label">
-                                <strong>Habilitar WhatsApp</strong>
-                                <small>Ativa o envio de notificações</small>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <label class="form-label-cmd">URL do Bridge</label>
+                                <input type="text" name="wa_bridge_url" value="<?php echo htmlspecialchars($cfg['bridge_url']); ?>" class="form-input-cmd" placeholder="http://127.0.0.1:3001">
                             </div>
-                            <label class="custom-toggle">
+                            <div>
+                                <label class="form-label-cmd">Secret Token (Opcional)</label>
+                                <input type="password" name="wa_bridge_secret" value="<?php echo htmlspecialchars($cfg['bridge_secret']); ?>" class="form-input-cmd" placeholder="Sem senha">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="form-label-cmd">Seu celular administrador (recebe alertas globais)</label>
+                            <input type="text" name="wa_admin_phone" value="<?php echo htmlspecialchars($cfg['admin_phone']); ?>" class="form-input-cmd" placeholder="5511999999999">
+                        </div>
+
+                        <div class="toggle-row-cmd">
+                            <div>
+                                <strong style="color: #fff; font-size: 0.9rem;">Habilitar Notificações WhatsApp</strong>
+                                <p style="margin: 2px 0 0; font-size: 0.75rem; color: var(--text-dim);">Ativa ou desativa todo o envio de mensagens do bot</p>
+                            </div>
+                            <label class="toggle-switch-cmd">
                                 <input type="checkbox" name="whatsapp_enabled" <?php echo $cfg['enabled'] ? 'checked' : ''; ?>>
                                 <span class="slider"></span>
                             </label>
                         </div>
 
-                        <button type="submit" class="btn-primary" style="width:100%; padding:.9rem;">
-                            <i class="fas fa-save" style="margin-right:8px;"></i> Salvar Configurações
+                        <div class="toggle-row-cmd">
+                            <div>
+                                <strong style="color: #fff; font-size: 0.9rem;">Notificar Vendas (Admin)</strong>
+                                <p style="margin: 2px 0 0; font-size: 0.75rem; color: var(--text-dim);">Recebe notificações a cada nova venda bruto/líquido</p>
+                            </div>
+                            <label class="toggle-switch-cmd">
+                                <input type="checkbox" name="notify_sale" <?php echo $cfg['notify_sale'] ? 'checked' : ''; ?>><span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-row-cmd">
+                            <div>
+                                <strong style="color: #fff; font-size: 0.9rem;">Notificar Membros ao Vender</strong>
+                                <p style="margin: 2px 0 0; font-size: 0.75rem; color: var(--text-dim);">Envia comemorações automáticas para o WhatsApp do vendedor</p>
+                            </div>
+                            <label class="toggle-switch-cmd">
+                                <input type="checkbox" name="notify_user_sale" <?php echo $cfg['notify_user_sale'] ? 'checked' : ''; ?>><span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.03); padding-top: 1rem;">
+                            <div class="toggle-row-cmd" style="border: none; padding: 0;">
+                                <div>
+                                    <strong style="color: #fff; font-size: 0.9rem;">Notificar Saques</strong>
+                                    <p style="margin: 2px 0 0; font-size: 0.75rem; color: var(--text-dim);">Avisa solicitações de saques</p>
+                                </div>
+                                <label class="toggle-switch-cmd">
+                                    <input type="checkbox" name="notify_withdrawal" <?php echo $cfg['notify_withdrawal'] ? 'checked' : ''; ?>><span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-row-cmd" style="border: none; padding: 0;">
+                                <div>
+                                    <strong style="color: #fff; font-size: 0.9rem;">Notificar Novos Cadastros</strong>
+                                    <p style="margin: 2px 0 0; font-size: 0.75rem; color: var(--text-dim);">Alerta novos registros de e-mail</p>
+                                </div>
+                                <label class="toggle-switch-cmd">
+                                    <input type="checkbox" name="notify_new_user" <?php echo $cfg['notify_new_user'] ? 'checked' : ''; ?>><span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-cmd btn-cmd-outline" style="width: 100%; background: var(--primary); color: #fff; margin-top: 1.5rem; font-size: 0.9rem;">
+                            <i class="fas fa-save"></i> Gravar Ajustes de Sincronização
                         </button>
                     </form>
                 </div>
 
-                <!-- Teste -->
-                <div class="card glass">
-                    <div class="card-header">
-                        <div class="card-title-group">
-                            <div class="card-icon"><i class="fas fa-paper-plane"></i></div>
-                            <h3 class="card-title">Enviar Mensagem de Teste</h3>
-                        </div>
-                    </div>
-                    <div style="margin-top:1.5rem; display:flex; flex-direction:column; gap:1rem;">
-                        <input type="text" id="test-phone" placeholder="5511999999999"
-                               style="width:100%; background:rgba(0,0,0,.3); border:1px solid var(--border); padding:.8rem; border-radius:10px; color:#fff;">
-                        <button onclick="sendTest()" style="width:100%; padding:.9rem; background:rgba(37,211,102,.12); border:1px solid rgba(37,211,102,.3); color:#25d366; border-radius:10px; cursor:pointer; font-weight:600; font-size:.9rem;">
-                            <i class="fab fa-whatsapp" style="margin-right:8px;"></i> Enviar Teste
+                <!-- Teste rápido de envio -->
+                <div class="panel-cmd">
+                    <h3 class="panel-title-cmd"><i class="fas fa-paper-plane" style="color: var(--primary);"></i> Enviar Teste de Envoltório</h3>
+                    <div style="display: flex; gap: 1rem;">
+                        <input type="text" id="test-phone" placeholder="5511999999999" class="form-input-cmd" style="margin:0; flex:1;">
+                        <button onclick="sendQuickTest()" class="btn-cmd btn-cmd-outline" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); color: #10b981;">
+                            <i class="fab fa-whatsapp"></i> Disparar Teste
                         </button>
-                        <div id="test-result" style="display:none; padding:10px 14px; border-radius:8px; font-size:.85rem;"></div>
                     </div>
+                    <div id="test-result" style="display:none; padding:10px 14px; border-radius:10px; font-size:.8rem; margin-top: 1rem;"></div>
                 </div>
             </div>
 
-            <!-- ── COLUNA DIREITA ── -->
-            <div style="display:flex; flex-direction:column; gap:1.5rem;">
-
-                <!-- QR Code / Conexão -->
-                <div class="card glass">
-                    <div class="card-header">
-                        <div class="card-title-group">
-                            <div class="card-icon wa-green"><i class="fab fa-whatsapp"></i></div>
-                            <h3 class="card-title">Conectar Número</h3>
+            <!-- Coluna Direita: Painel QR Code / Sincronismo -->
+            <div>
+                <!-- QR Code wrapper -->
+                <div class="panel-cmd" style="height: 100%; min-height: 480px;">
+                    <h3 class="panel-title-cmd" style="justify-content: center;"><i class="fab fa-whatsapp" style="color: #25d366;"></i> Conexão WhatsApp</h3>
+                    
+                    <!-- Conectado -->
+                    <div id="connected-panel" style="display:none; text-align:center; padding: 2rem 0;">
+                        <div style="width: 130px; height: 130px; background: rgba(16,185,129,0.1); border: 4px solid var(--success); border-radius: 50%; display:flex; align-items:center; justify-content:center; margin: 0 auto 2rem; box-shadow: 0 0 30px rgba(16,185,129,0.2);">
+                            <i class="fas fa-check" style="font-size: 3.5rem; color: var(--success);"></i>
                         </div>
-                    </div>
-                    <div style="margin-top:1.5rem;">
-
-                        <!-- Painel: conectado -->
-                        <div id="connected-panel" style="display:none; text-align:center; padding:1.5rem;">
-                            <div style="font-size:3rem; margin-bottom:1rem;">📱</div>
-                            <div class="wa-status-badge connected" style="margin:0 auto 1rem;">
-                                <span class="pulse-dot live"></span> WhatsApp Conectado!
-                            </div>
-                            <p id="phone-info" style="color:var(--text-3); font-size:.85rem; margin-bottom:1.5rem;"></p>
-                            <p style="color:var(--text-3); font-size:.82rem; margin-bottom:1.5rem;">Seu número está ativo. As notificações de vendas serão enviadas automaticamente. 🎉</p>
-                            <button onclick="disconnectWA()" style="padding:.7rem 1.5rem; background:rgba(239,68,68,.15); border:1px solid rgba(239,68,68,.3); color:#f87171; border-radius:10px; cursor:pointer; font-size:.85rem;">
-                                <i class="fas fa-unlink" style="margin-right:6px;"></i> Desconectar
-                            </button>
-                        </div>
-
-                        <!-- Painel: QR Code -->
-                        <div id="qr-panel">
-                            <p style="text-align:center; color:var(--text-3); font-size:.85rem; margin-bottom:1.2rem;">
-                                Escaneie o QR Code com seu WhatsApp para conectar
-                            </p>
-                            <div id="qr-container" style="text-align:center; min-height:260px; display:flex; align-items:center; justify-content:center;">
-                                <div class="qr-spinner">
-                                    <i class="fas fa-spinner"></i>
-                                    <span>Aguardando bridge...</span>
-                                </div>
-                            </div>
-                            <div style="margin-top:1rem; text-align:center; color:var(--text-3); font-size:.8rem; line-height:1.6;">
-                                <i class="fas fa-mobile-screen-button"></i>
-                                WhatsApp → <strong>Dispositivos conectados</strong> → <strong>Conectar dispositivo</strong>
-                            </div>
-                            <button onclick="loadQr()" style="margin-top:1rem; width:100%; padding:.7rem; background:rgba(255,255,255,.05); border:1px solid var(--border); color:var(--text-2); border-radius:10px; cursor:pointer; font-size:.85rem;">
-                                <i class="fas fa-rotate" style="margin-right:6px;"></i> Atualizar QR Code
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Notificações -->
-                <div class="card glass">
-                    <div class="card-header">
-                        <div class="card-title-group">
-                            <div class="card-icon"><i class="fas fa-bell"></i></div>
-                            <h3 class="card-title">Notificações</h3>
-                        </div>
-                    </div>
-                    <form method="POST" style="margin-top:1.2rem;">
-                        <input type="hidden" name="save_settings" value="1">
-                        <input type="hidden" name="wa_bridge_url"    value="<?php echo htmlspecialchars($cfg['bridge_url']); ?>">
-                        <input type="hidden" name="wa_bridge_secret" value="<?php echo htmlspecialchars($cfg['bridge_secret']); ?>">
-                        <input type="hidden" name="wa_admin_phone"   value="<?php echo htmlspecialchars($cfg['admin_phone']); ?>">
-                        <?php if ($cfg['enabled']): ?><input type="hidden" name="whatsapp_enabled" value="on"><?php endif; ?>
-
-                        <div class="toggle-row">
-                            <div class="toggle-label">💰 <strong>Venda confirmada</strong> (admin)<small>Você recebe notificação de cada venda</small></div>
-                            <label class="custom-toggle"><input type="checkbox" name="notify_sale" <?php echo $cfg['notify_sale'] ? 'checked' : ''; ?>><span class="slider"></span></label>
-                        </div>
-                        <div class="toggle-row">
-                            <div class="toggle-label">📱 <strong>Venda para o vendedor</strong><small>O membro recebe no WhatsApp dele ao vender</small></div>
-                            <label class="custom-toggle"><input type="checkbox" name="notify_user_sale" <?php echo $cfg['notify_user_sale'] ? 'checked' : ''; ?>><span class="slider"></span></label>
-                        </div>
-                        <div class="toggle-row">
-                            <div class="toggle-label">🏦 <strong>Saque solicitado</strong><small>Notifica quando membro pede saque</small></div>
-                            <label class="custom-toggle"><input type="checkbox" name="notify_withdrawal" <?php echo $cfg['notify_withdrawal'] ? 'checked' : ''; ?>><span class="slider"></span></label>
-                        </div>
-                        <div class="toggle-row">
-                            <div class="toggle-label">🆕 <strong>Novo cadastro</strong><small>Notifica quando alguém se registra</small></div>
-                            <label class="custom-toggle"><input type="checkbox" name="notify_new_user" <?php echo $cfg['notify_new_user'] ? 'checked' : ''; ?>><span class="slider"></span></label>
-                        </div>
-
-                        <button type="submit" class="btn-primary" style="width:100%; padding:.9rem; margin-top:1rem;">
-                            <i class="fas fa-save" style="margin-right:8px;"></i> Salvar Notificações
+                        <h2 style="margin: 0; color: #fff; font-weight: 800;">SISTEMA ATIVO</h2>
+                        <p id="phone-info" style="color: var(--text-dim); margin: 0.5rem 0 2rem; font-family: monospace; font-size: 0.9rem;"></p>
+                        <p style="color: var(--text-dim); font-size: 0.8rem; line-height: 1.6; max-width: 250px; margin: 0 auto 2rem;">
+                            O WhatsApp está ativo e monitorando a fila de saídas. As notificações automáticas de checkout serão disparadas normalmente.
+                        </p>
+                        <button onclick="triggerAction('disconnect')" class="btn-cmd btn-cmd-danger" style="width: 100%;">
+                            <i class="fas fa-unlink"></i> Desvincular Conta
                         </button>
-                    </form>
-                </div>
-
-                <!-- Membros com WhatsApp -->
-                <div class="card glass">
-                    <div class="card-header">
-                        <div class="card-title-group">
-                            <div class="card-icon"><i class="fas fa-users"></i></div>
-                            <h3 class="card-title">WhatsApp dos Membros</h3>
-                        </div>
                     </div>
-                    <div style="margin-top:1rem;">
-                        <div style="display:flex; gap:1rem; margin-bottom:1rem;">
-                            <div style="flex:1; padding:1rem; background:rgba(37,211,102,.07); border:1px solid rgba(37,211,102,.2); border-radius:10px; text-align:center;">
-                                <div style="font-size:1.8rem; font-weight:700; color:#25d366;"><?php echo $waCount; ?></div>
-                                <div style="font-size:.75rem; color:var(--text-3);">Com WhatsApp</div>
-                            </div>
-                            <div style="flex:1; padding:1rem; background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:10px; text-align:center;">
-                                <div style="font-size:1.8rem; font-weight:700; color:var(--text-2);"><?php echo $totalUsers; ?></div>
-                                <div style="font-size:.75rem; color:var(--text-3);">Total membros</div>
+
+                    <!-- Aguardando QR Code -->
+                    <div id="qr-panel" style="text-align: center;">
+                        <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.5rem;">
+                            Aponte a câmera do WhatsApp para o QR Code abaixo para estabelecer a comunicação
+                        </p>
+                        
+                        <div id="qr-container" style="min-height: 220px; display:flex; align-items:center; justify-content:center; background: #fff; border-radius: 20px; padding: 1.5rem; max-width: 250px; margin: 0 auto 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                            <div style="text-align: center; color: #64748b;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 1.8rem; margin-bottom: 10px;"></i>
+                                <div style="font-size: 0.8rem; font-weight: bold;">Gerando QR Code...</div>
                             </div>
                         </div>
-                        <div class="info-box">
-                            <i class="fas fa-circle-info wa-green"></i>
-                            Membros cadastram o número em <strong>Minha Conta → WhatsApp</strong>. A cada venda, a notificação vai pro WhatsApp deles automaticamente.
+
+                        <div style="color: var(--text-dim); font-size: 0.78rem; line-height: 1.6; max-width: 260px; margin: 0 auto 1.5rem;">
+                            <i class="fas fa-mobile-screen-button"></i> WhatsApp → <strong>Aparelhos conectados</strong> → <strong>Conectar um aparelho</strong>.
                         </div>
+
+                        <button onclick="loadQrCode(true)" class="btn-cmd btn-cmd-outline" style="width: 100%;">
+                            <i class="fas fa-rotate"></i> Recarregar QR Code
+                        </button>
                     </div>
                 </div>
-
             </div>
         </div>
     </main>
 
-    <script src="../script.js?v=124.0"></script>
+    <script src="../script.js?v=128.0"></script>
     <script>
-    let qrInterval = null;
+    let isBridgeReady = false;
+    let qrTimer = null;
 
     document.addEventListener('DOMContentLoaded', () => {
-        checkStatus();
-        // Polling a cada 8s enquanto na página
-        setInterval(checkStatus, 8000);
+        checkStatus(true);
+        // Pooling a cada 8s para sincronismo de estado
+        setInterval(() => checkStatus(false), 8000);
     });
 
-    function checkStatus() {
+    function addConsoleLine(msg, type = 'info') {
+        const consoleEl = document.getElementById('cmdConsole');
+        if (!consoleEl) return;
+        const line = document.createElement('div');
+        line.className = 'line-cmd ' + type;
+        line.innerText = '> [' + new Date().toLocaleTimeString() + '] ' + msg;
+        consoleEl.appendChild(line);
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    function checkStatus(forceLog = false) {
+        const syncIcon = document.getElementById('sync-icon');
+        if (syncIcon) syncIcon.classList.add('fa-spin');
+
         fetch('whatsapp.php?ajax=status')
             .then(r => r.json())
-            .then(data => updateUI(data))
-            .catch(() => setBadge('unknown', 'Bridge offline'));
+            .then(data => {
+                if (syncIcon) syncIcon.classList.remove('fa-spin');
+                
+                // Atualizar Stats
+                document.getElementById('stat-uptime').textContent = data.uptimeFormatted || '0h 0m 0s';
+                document.getElementById('stat-memory').textContent = (data.memoryMB || 0) + ' MB';
+                document.getElementById('stat-errors').textContent = data.error ? '1 pendente' : 'Nenhum';
+                document.getElementById('info-api-url').textContent = data.url || '<?php echo $cfg['bridge_url']; ?>';
+
+                const badge = document.getElementById('badge-display');
+                const badgeText = document.getElementById('badge-text');
+
+                if (data.connected && data.ready) {
+                    badge.className = 'status-badge-cmd badge-cmd-on';
+                    badgeText.textContent = 'Sistema Ativo';
+                    
+                    document.getElementById('connected-panel').style.display = 'block';
+                    document.getElementById('qr-panel').style.display = 'none';
+                    
+                    const pi = document.getElementById('phone-info');
+                    if (pi && data.phoneNumber) pi.textContent = 'Conectado: +' + data.phoneNumber;
+
+                    if (!isBridgeReady || forceLog) {
+                        addConsoleLine('WhatsApp conectado com sucesso ao Daemon Core.', 'sys');
+                        if (data.phoneNumber) addConsoleLine('Canal ativo com número: ' + data.phoneNumber, 'sys');
+                    }
+                    isBridgeReady = true;
+                    clearQrTimer();
+                } else if (data.connected && !data.ready) {
+                    badge.className = 'status-badge-cmd badge-cmd-wait';
+                    badgeText.textContent = 'Autenticando';
+                    if (!isBridgeReady || forceLog) {
+                        addConsoleLine('Aguardando sincronização inicial das credenciais...', 'info');
+                    }
+                    isBridgeReady = false;
+                } else {
+                    badge.className = 'status-badge-cmd badge-cmd-off';
+                    badgeText.textContent = data.error ? 'Erro Bridge' : 'Aguardando QR';
+                    
+                    document.getElementById('connected-panel').style.display = 'none';
+                    document.getElementById('qr-panel').style.display = 'block';
+                    
+                    if (isBridgeReady || forceLog) {
+                        addConsoleLine('Aguardando conexão. Escaneie o QR Code para parear.', 'warn');
+                        if (data.error) addConsoleLine('Erro relatado pelo core: ' + data.error, 'err');
+                    }
+                    isBridgeReady = false;
+                    if (data.hasQr && !qrTimer) loadQrCode(false);
+                }
+            })
+            .catch((e) => {
+                if (syncIcon) syncIcon.classList.remove('fa-spin');
+                setBadgeOffline();
+                if (isBridgeReady || forceLog) {
+                    addConsoleLine('Falha crítica de comunicação: Bridge Offline.', 'err');
+                }
+                isBridgeReady = false;
+            });
     }
 
-    function updateUI(data) {
-        if (data.connected && data.ready) {
-            setBadge('connected', 'Conectado');
-            document.getElementById('connected-panel').style.display = 'block';
-            document.getElementById('qr-panel').style.display        = 'none';
-            clearQrInterval();
-            const pi = document.getElementById('phone-info');
-            if (pi && data.phoneNumber) pi.textContent = 'Número: +' + data.phoneNumber;
-        } else if (data.connected && !data.ready) {
-            setBadge('unknown', 'Autenticando...');
-        } else {
-            setBadge('disconnected', data.error ? 'Bridge offline' : 'Aguardando QR');
-            document.getElementById('connected-panel').style.display = 'none';
-            document.getElementById('qr-panel').style.display        = 'block';
-            if (data.hasQr && !qrInterval) loadQr();
+    function setBadgeOffline() {
+        const badge = document.getElementById('badge-display');
+        const badgeText = document.getElementById('badge-text');
+        badge.className = 'status-badge-cmd badge-cmd-off';
+        badgeText.textContent = 'Bridge Offline';
+        document.getElementById('connected-panel').style.display = 'none';
+        document.getElementById('qr-panel').style.display = 'block';
+    }
+
+    function loadQrCode(manual = false) {
+        const container = document.getElementById('qr-container');
+        if (!container) return;
+        
+        if (manual) {
+            container.innerHTML = '<div style="text-align: center; color: #64748b;"><i class="fas fa-spinner fa-spin" style="font-size: 1.8rem; margin-bottom: 10px;"></i><div style="font-size: 0.8rem; font-weight: bold;">Gerando novo QR...</div></div>';
+            addConsoleLine('Gerando novo pareamento QR Code...', 'info');
         }
-    }
-
-    function setBadge(cls, text) {
-        const b = document.getElementById('status-badge');
-        const t = document.getElementById('status-text');
-        b.className = 'wa-status-badge ' + cls;
-        t.textContent = text;
-        const dot = b.querySelector('.pulse-dot');
-        dot.classList.toggle('live', cls === 'connected');
-    }
-
-    function loadQr() {
-        const c = document.getElementById('qr-container');
-        if (!c) return;
-        c.innerHTML = '<div class="qr-spinner"><i class="fas fa-spinner"></i><span>Gerando QR Code...</span></div>';
 
         fetch('whatsapp.php?ajax=qr')
             .then(r => r.json())
             .then(data => {
                 if (data.connected) {
-                    checkStatus(); return;
+                    checkStatus(true); return;
                 }
                 if (data.qr) {
-                    const img = document.createElement('img');
-                    img.src   = data.qr;
-                    img.alt   = 'QR Code WhatsApp';
-                    img.style = 'border-radius:12px; max-width:250px; border:4px solid rgba(37,211,102,.35); background:#fff; padding:8px;';
-                    c.innerHTML = '';
-                    c.appendChild(img);
-                    // Atualiza QR automaticamente a cada 55s (expira em 60s)
-                    clearQrInterval();
-                    qrInterval = setInterval(loadQr, 55000);
+                    container.innerHTML = `<img src="${data.qr}" alt="QR Code" style="width: 100%; border-radius: 12px; border: 1px solid rgba(0,0,0,0.05);">`;
+                    if (manual) addConsoleLine('QR Code atualizado com sucesso no painel.', 'sys');
+                    
+                    clearQrTimer();
+                    // Atualizar a cada 50 segundos para não expirar
+                    qrTimer = setInterval(() => loadQrCode(false), 50000);
                 } else {
-                    c.innerHTML = '<div class="qr-spinner" style="color:#f87171;"><i class="fas fa-triangle-exclamation"></i><span>' + (data.error || 'QR não disponível. O bridge está rodando?') + '</span></div>';
+                    container.innerHTML = `<div style="color:var(--danger); font-size:0.75rem; text-align:center;"><i class="fas fa-triangle-exclamation" style="font-size:1.5rem; margin-bottom:10px;"></i><br>${data.error || 'QR indisponível.'}</div>`;
                 }
             })
             .catch(() => {
-                c.innerHTML = '<div class="qr-spinner" style="color:#f87171;"><i class="fas fa-triangle-exclamation"></i><span>Bridge não encontrado em<br><?php echo htmlspecialchars($cfg['bridge_url']); ?></span></div>';
+                container.innerHTML = `<div style="color:var(--danger); font-size:0.75rem; text-align:center;"><i class="fas fa-triangle-exclamation" style="font-size:1.5rem; margin-bottom:10px;"></i><br>Erro de rede ao ler QR.</div>`;
             });
     }
 
-    function clearQrInterval() {
-        if (qrInterval) { clearInterval(qrInterval); qrInterval = null; }
+    function clearQrTimer() {
+        if (qrTimer) { clearInterval(qrTimer); qrTimer = null; }
     }
 
-    function disconnectWA() {
-        if (!confirm('Desconectar o WhatsApp? Um novo QR Code será gerado.')) return;
-        fetch('whatsapp.php?ajax=disconnect')
+    function triggerAction(action) {
+        let confirmMsg = action === 'disconnect' ? 'Desconectar o WhatsApp da plataforma? Um novo QR Code será necessário.' : 'Tem certeza que deseja resetar a memória do bridge?';
+        if (!confirm(confirmMsg)) return;
+
+        addConsoleLine('Enviando comando para o bridge: ' + action.toUpperCase() + '...', 'info');
+        fetch('whatsapp.php?ajax=' + action)
             .then(r => r.json())
-            .then(() => { setTimeout(checkStatus, 3500); })
-            .catch(() => alert('Erro ao desconectar.'));
+            .then(data => {
+                addConsoleLine('Comando enviado com sucesso!', 'sys');
+                setTimeout(() => checkStatus(true), 3000);
+            })
+            .catch(() => {
+                addConsoleLine('Erro ao transmitir comando para o bridge.', 'err');
+            });
     }
 
-    function sendTest() {
-        const phone  = document.getElementById('test-phone').value.trim();
+    function sendQuickTest() {
+        const phone = document.getElementById('test-phone').value.trim();
         const result = document.getElementById('test-result');
         if (!phone) { alert('Informe o número.'); return; }
 
         result.style.display = 'none';
+        addConsoleLine('Disparando mensagem de teste de envoltório para: +' + phone, 'info');
+
         const fd = new FormData();
         fd.append('phone', phone);
+
         fetch('whatsapp.php?ajax=test', { method: 'POST', body: fd })
             .then(r => r.json())
             .then(data => {
                 result.style.display = 'block';
                 if (data.ok) {
-                    result.style.cssText = 'display:block; padding:10px 14px; border-radius:8px; font-size:.85rem; background:rgba(34,197,94,.15); color:#4ade80; border:1px solid rgba(34,197,94,.3);';
-                    result.textContent = '✅ Enviado para ' + (data.phone || phone);
+                    result.className = 'badge paid';
+                    result.style.cssText = 'display:block; padding:10px 14px; border-radius:10px; font-size:.8rem; background:rgba(34,197,94,.1); color:#4ade80; border:1px solid rgba(34,197,94,.2);';
+                    result.innerHTML = '<i class="fas fa-check-circle"></i> Mensagem enviada com sucesso!';
+                    addConsoleLine('Envio de teste confirmado para: +' + phone, 'sys');
                 } else {
-                    result.style.cssText = 'display:block; padding:10px 14px; border-radius:8px; font-size:.85rem; background:rgba(239,68,68,.15); color:#f87171; border:1px solid rgba(239,68,68,.3);';
-                    result.textContent = '❌ ' + (data.error || 'Falha — WhatsApp conectado?');
+                    result.style.cssText = 'display:block; padding:10px 14px; border-radius:10px; font-size:.8rem; background:rgba(239,68,68,.1); color:#f87171; border:1px solid rgba(239,68,68,.2);';
+                    result.innerHTML = '<i class="fas fa-circle-exclamation"></i> Falha: ' + (data.error || 'WhatsApp conectado?');
+                    addConsoleLine('Falha ao enviar teste: ' + (data.error || 'Desconhecido'), 'err');
                 }
             })
-            .catch(() => { result.style.display = 'block'; result.textContent = '❌ Erro de rede.'; });
+            .catch(() => {
+                result.style.display = 'block';
+                result.style.cssText = 'display:block; padding:10px 14px; border-radius:10px; font-size:.8rem; background:rgba(239,68,68,.1); color:#f87171; border:1px solid rgba(239,68,68,.2);';
+                result.innerHTML = '<i class="fas fa-circle-exclamation"></i> Erro de rede.';
+                addConsoleLine('Erro de rede durante o envio de teste.', 'err');
+            });
     }
     </script>
 </body>
