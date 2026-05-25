@@ -12,7 +12,7 @@ dist = 'dashboard-new/dist/assets'
 # 1. Assets do React
 assets_dir = 'dashboard-new/dist/assets'
 for f in os.listdir(assets_dir):
-    sftp.put(os.path.join(assets_dir, f), f'{base}/assets/dashboard-react/{f}')
+    sftp.put(os.path.join(assets_dir, f), f'{base}/assets/dashboard-react/assets/{f}')
     print(f'Uploaded Asset: {f} -> OK')
 
 # 2. Arquivos PHP Raiz
