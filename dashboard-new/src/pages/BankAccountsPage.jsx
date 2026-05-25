@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Building2, CheckCircle2, ChevronRight, Info, Percent, Zap, Shield, Clock } from 'lucide-react';
+import { Building2, CheckCircle2, ChevronRight, Info, Zap, TrendingUp, Clock, Percent, BadgeCheck } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { cn } from '../lib/utils';
 
@@ -7,15 +7,22 @@ const accounts = [
     {
         id: 'nominal1',
         name: 'Nominal 1',
-        badge: 'Disponível',
-        badgeColor: 'bg-green-100 text-green-700',
-        description: 'Em breve...',
-        fees: [],
-        highlight: false,
+        subtitle: 'Nominal Estável',
+        badge: 'Recomendado',
+        badgeColor: 'bg-primary/10 text-primary',
+        description: 'A conta nominal mais estável da plataforma, com a maior taxa de conversão — acima de 70%. Ideal para quem busca consistência no recebimento com saque disponível de forma instantânea.',
+        fees: [
+            { icon: <Percent size={12} />,     label: '8% + R$0,99 por transação' },
+            { icon: <Zap size={12} />,          label: 'Saque instantâneo' },
+            { icon: <TrendingUp size={12} />,   label: '+70% de conversão' },
+            { icon: <BadgeCheck size={12} />,   label: 'Alta estabilidade' },
+        ],
+        highlight: true,
     },
     {
         id: 'nominal2',
         name: 'Nominal 2',
+        subtitle: '',
         badge: 'Disponível',
         badgeColor: 'bg-green-100 text-green-700',
         description: 'Em breve...',
@@ -25,6 +32,7 @@ const accounts = [
     {
         id: 'nominal3',
         name: 'Nominal 3',
+        subtitle: '',
         badge: 'Disponível',
         badgeColor: 'bg-green-100 text-green-700',
         description: 'Em breve...',
@@ -94,9 +102,13 @@ export default function BankAccountsPage() {
                                 "w-full text-left rounded-2xl border p-5 transition-all duration-200",
                                 isSelected
                                     ? 'border-primary bg-primary/5 shadow-[0_0_0_2px_rgba(192,0,106,0.3)]'
-                                    : isDark
-                                        ? 'border-white/10 bg-white/[0.04] hover:border-white/20 hover:bg-white/[0.07]'
-                                        : 'border-gray-200 bg-white hover:border-primary/30 hover:shadow-sm'
+                                    : acc.highlight && !isSelected
+                                        ? isDark
+                                            ? 'border-primary/30 bg-white/[0.04] hover:border-primary/50 hover:bg-white/[0.07]'
+                                            : 'border-primary/20 bg-white hover:border-primary/40 hover:shadow-sm'
+                                        : isDark
+                                            ? 'border-white/10 bg-white/[0.04] hover:border-white/20 hover:bg-white/[0.07]'
+                                            : 'border-gray-200 bg-white hover:border-primary/30 hover:shadow-sm'
                             )}
                         >
                             <div className="flex items-start gap-4">
@@ -118,6 +130,11 @@ export default function BankAccountsPage() {
                                         <span className={cn("text-base font-bold", isDark ? 'text-white' : 'text-gray-900')}>
                                             {acc.name}
                                         </span>
+                                        {acc.subtitle && (
+                                            <span className={cn("text-xs font-medium", isDark ? 'text-gray-400' : 'text-gray-500')}>
+                                                — {acc.subtitle}
+                                            </span>
+                                        )}
                                         <span className={cn("text-xs font-semibold px-2 py-0.5 rounded-full", acc.badgeColor)}>
                                             {acc.badge}
                                         </span>
