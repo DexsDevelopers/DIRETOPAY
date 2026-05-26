@@ -168,6 +168,54 @@ $user = $stmt->fetch();
                             </p>
                         </div>
 
+                        <!-- ── WhatsApp Notifications ─────────────────────────────── -->
+                        <div class="card-header" style="margin-top: 3rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+                            <div class="card-title-group">
+                                <div class="card-icon" style="background: rgba(37,211,102,0.15); color: #25d366;">
+                                    <i class="fab fa-whatsapp"></i>
+                                </div>
+                                <div>
+                                    <h3 class="card-title">Notificações WhatsApp</h3>
+                                    <p style="font-size:0.75rem; color: var(--text-3); margin-top:0.2rem;">Receba alertas de vendas, PIX gerado, visitas e resumos diários direto no seu WhatsApp.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1.2rem;">
+                            <label class="stat-label" style="display:block; margin-bottom: 0.5rem;">
+                                Seu WhatsApp <span style="color:var(--text-3); font-weight:400;">(com DDD, apenas números)</span>
+                            </label>
+                            <div style="display:flex; gap: 0.5rem; align-items: center;">
+                                <div style="position:relative; flex:1;">
+                                    <span style="position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:#25d366; font-size:1rem; pointer-events:none;">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </span>
+                                    <input type="tel" name="whatsapp" id="whatsapp-input"
+                                           value="<?php echo htmlspecialchars((string)($user['whatsapp'] ?? '')); ?>"
+                                           placeholder="Ex: 11999998888"
+                                           maxlength="15"
+                                           style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 0.8rem 1rem 0.8rem 2.8rem; border-radius: 10px; color: var(--text); font-family: 'SF Mono', monospace; transition: border-color 0.2s; box-sizing:border-box;"
+                                           oninput="formatWhatsApp(this)">
+                                </div>
+                                <?php if (!empty($user['whatsapp'])): ?>
+                                <button type="button" onclick="clearWhatsApp()" title="Remover WhatsApp"
+                                        style="min-height:44px; padding:0 1rem; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:10px; color:#ef4444; cursor:pointer; font-size:0.8rem; white-space:nowrap;">
+                                    <i class="fas fa-times"></i> Remover
+                                </button>
+                                <?php endif; ?>
+                            </div>
+                            <?php if (!empty($user['whatsapp'])): ?>
+                            <p style="font-size:0.72rem; color:#25d366; margin-top:0.5rem;">
+                                <i class="fas fa-check-circle"></i> WhatsApp vinculado: <strong><?php echo htmlspecialchars($user['whatsapp']); ?></strong>
+                            </p>
+                            <?php else: ?>
+                            <p style="font-size:0.72rem; color: var(--text-3); margin-top:0.5rem; line-height:1.5;">
+                                <i class="fas fa-info-circle" style="color:#25d366;"></i>
+                                Digite somente números com DDD. Ex: <strong style="color:var(--text-2);">11999998888</strong>. O +55 é adicionado automaticamente.
+                            </p>
+                            <?php endif; ?>
+                        </div>
+
                         <button type="submit" class="btn-primary" id="btn-save-profile" style="margin-top: 2rem;">
                             <i class="fas fa-save"></i> Salvar Alterações
                         </button>
@@ -189,6 +237,19 @@ $user = $stmt->fetch();
             input.type = 'password';
             icon.classList.replace('fa-eye-slash', 'fa-eye');
         }
+    }
+
+    // WhatsApp: só números, máx 11 dígitos
+    function formatWhatsApp(input) {
+        let v = input.value.replace(/\D/g, '');
+        if (v.length > 11) v = v.slice(0, 11);
+        input.value = v;
+    }
+
+    function clearWhatsApp() {
+        if (!confirm('Remover o WhatsApp vinculado? Você não receberá mais notificações por WhatsApp.')) return;
+        document.getElementById('whatsapp-input').value = '';
+        document.getElementById('btn-save-profile').click();
     }
 
     // Toggle visibility of API Key

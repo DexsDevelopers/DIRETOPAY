@@ -28,6 +28,10 @@ $sevenKId        = isset($input['seven_k_id']) && $input['seven_k_id'] !== '' ? 
 $utmifyToken     = isset($input['utmify_api_token']) ? strip_tags(trim($input['utmify_api_token'])) : null;
 if ($utmifyToken === '') $utmifyToken = null;
 
+// WhatsApp: somente dígitos, sem o 55 para armazenar limpo (formatPhone adiciona)
+$whatsapp = preg_replace('/[^0-9]/', '', $input['whatsapp'] ?? '');
+if ($whatsapp === '') $whatsapp = null;
+
 // Validar método
 if (!in_array($withdrawMethod, ['pix', 'btc', 'usdt'])) {
     $withdrawMethod = 'pix';
@@ -65,6 +69,9 @@ try {
 try {
     $pdo->exec("ALTER TABLE users ADD COLUMN crypto_network VARCHAR(20) DEFAULT ''");
 } catch (PDOException $e) {}
+try {
+    $pdo->exec("ALTER TABLE users ADD COLUMN whatsapp VARCHAR(20) NULL DEFAULT NULL");
+} catch (PDOException $e) {}
 
 // Buscar dados atuais do usuário
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
@@ -89,9 +96,9 @@ if (!empty($newPassword)) {
 }
 
 try {
-    // Atualizar dados básicos + método de saque + ID 7K + token UTMify
-    $updateStmt = $pdo->prepare("UPDATE users SET full_name = ?, pix_key = ?, withdraw_method = ?, crypto_address = ?, crypto_network = ?, seven_k_id = ?, utmify_api_token = ? WHERE id = ?");
-    $updateStmt->execute([$fullName, $pixKey, $withdrawMethod, $cryptoAddress, $cryptoNetwork, $sevenKId, $utmifyToken, $userId]);
+    // Atualizar dados básicos + método de saque + ID 7K + token UTMify + WhatsApp
+    $updateStmt = $pdo->prepare("UPDATE users SET full_name = ?, pix_key = ?, withdraw_method = ?, crypto_address = ?, crypto_network = ?, seven_k_id = ?, utmify_api_token = ?, whatsapp = ? WHERE id = ?");
+    $updateStmt->execute([$fullName, $pixKey, $withdrawMethod, $cryptoAddress, $cryptoNetwork, $sevenKId, $utmifyToken, $whatsapp, $userId]);
 
     // Atualizar senha se fornecida
     if (!empty($newPassword)) {
