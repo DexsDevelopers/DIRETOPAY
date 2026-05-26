@@ -199,4 +199,59 @@ class WhatsAppService
           . self::footer();
         return self::sendAdmin($msg);
     }
+
+    /** Converte HTML simples do Telegram para Markdown do WhatsApp */
+    public static function formatHtmlToWhatsApp(string $html): string
+    {
+        $text = $html;
+        $text = preg_replace('/<\/?b>/i', '*', $text);
+        $text = preg_replace('/<\/?strong>/i', '*', $text);
+        $text = preg_replace('/<\/?i>/i', '_', $text);
+        $text = preg_replace('/<\/?em>/i', '_', $text);
+        $text = preg_replace('/<\/?code>/i', '`', $text);
+        $text = strip_tags($text);
+        return $text;
+    }
+
+    /** PIX gerado no produto do vendedor */
+    public static function notifyPixGenerated(string $phone, float $amount, string $customerName, string $checkoutName, int $txId): bool
+    {
+        $amtFmt = number_format($amount, 2, ',', '.');
+        $tips = [
+            "💡 _Dica: responda rápido se o cliente precisar de suporte!_",
+            "💡 _Enquanto aguarda, que tal compartilhar seu link de vendas?_",
+            "💡 _Confirmação chega em segundos após o pagamento!_",
+        ];
+        $tip = $tips[array_rand($tips)];
+        $msg =
+            "⚡ *PIX GERADO!*\n" . self::divider() . "\n\n"
+          . "💵 *Valor:* R$ {$amtFmt}\n"
+          . "👤 *Cliente:* " . ($customerName ?: 'Não informado') . "\n"
+          . "🛍 *Produto:* " . $checkoutName . "\n"
+          . "🆔 *TX:* #{$txId}\n\n"
+          . "⏳ _Aguardando pagamento..._\n\n"
+          . $tip
+          . "\n\n🌙 _LunarPay • " . date('H:i') . "_";
+        return self::send($phone, $msg);
+    }
+
+    /** Visita no checkout do vendedor */
+    public static function notifyCheckoutVisit(string $phone, string $checkoutName, string $ip = ''): bool
+    {
+        $phrases = [
+            "👀 Alguém está olhando seu produto com interesse! Dedos cruzados! 🤞",
+            "🔔 Visita no seu checkout! Pode ser uma venda chegando!",
+            "👁️ Um potencial cliente está no seu checkout agora!",
+            "🛒 Alguém abriu seu produto! A conversão pode estar perto!",
+            "🎯 Visitante no seu checkout! Tudo pronto para a venda?",
+        ];
+        $phrase = $phrases[array_rand($phrases)];
+        $msg =
+            "👁️ *VISITA NO CHECKOUT*\n" . self::divider() . "\n\n"
+          . $phrase . "\n\n"
+          . "🛍 *Produto:* " . $checkoutName . "\n\n"
+          . "_Nenhuma ação necessária — só acompanhe!_"
+          . "\n\n🌙 _LunarPay • " . date('H:i') . "_";
+        return self::send($phone, $msg);
+    }
 }

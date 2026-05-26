@@ -5,6 +5,7 @@ try {
 } catch (Throwable $e) {}
 require_once 'includes/MailService.php';
 require_once 'includes/TelegramService.php';
+try { require_once 'includes/WhatsAppService.php'; } catch (Throwable $e) {}
 
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
@@ -196,6 +197,29 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                 MailService::notifySale($userData['email'], $userData['full_name'], $transaction['amount_brl']);
             }
 
+            // Buscar nome do produto/checkout
+            $checkoutName = '';
+            if (!empty($transaction['external_id'])) {
+                $extId = $transaction['external_id'];
+                if (strpos($extId, 'chk_') === 0) {
+                    $parts = explode('_', $extId);
+                    $chkId = (int)($parts[1] ?? 0);
+                    if ($chkId > 0) {
+                        $cStmt = $pdo->prepare("SELECT name FROM checkouts WHERE id = ?");
+                        $cStmt->execute([$chkId]);
+                        $checkoutName = (string)($cStmt->fetchColumn() ?: '');
+                    }
+                } elseif (strpos($extId, 'prod_') === 0) {
+                    $parts = explode('_', $extId);
+                    $prodId = (int)($parts[1] ?? 0);
+                    if ($prodId > 0) {
+                        $pStmt = $pdo->prepare("SELECT name FROM products WHERE id = ?");
+                        $pStmt->execute([$prodId]);
+                        $checkoutName = (string)($pStmt->fetchColumn() ?: '');
+                    }
+                }
+            }
+
             // Notificar Admin via Telegram
             try {
                 TelegramService::notifySale(
@@ -214,9 +238,37 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                         (float)$transaction['amount_brl'],
                         (float)$transaction['amount_net_brl'],
                         $realPayerName ?: ($transaction['customer_name'] ?? 'N/A'),
-                        (int)$transaction['id']
+                        (int)$transaction['id'],
+                        $checkoutName
                     );
                     TelegramService::sendToUser($userData['telegram_chat_id'], $tgMsg);
+                }
+            } catch (Throwable $e) {}
+
+            // Notificar Admin via WhatsApp
+            try {
+                if (class_exists('WhatsAppService')) {
+                    WhatsAppService::notifySale(
+                        (float)$transaction['amount_brl'],
+                        (float)$transaction['amount_net_brl'],
+                        $realPayerName ?: ($transaction['customer_name'] ?? 'Sem nome'),
+                        $userData['full_name'] ?? 'N/A',
+                        (int)$transaction['id']
+                    );
+                }
+            } catch (Throwable $e) {}
+
+            // Notificar Usuário via WhatsApp Bot (se cadastrado)
+            try {
+                if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($userData['whatsapp'])) {
+                    WhatsAppService::notifySaleToUser(
+                        $userData['whatsapp'],
+                        (float)$transaction['amount_brl'],
+                        (float)$transaction['amount_net_brl'],
+                        $realPayerName ?: ($transaction['customer_name'] ?? 'N/A'),
+                        (int)$transaction['id'],
+                        $checkoutName
+                    );
                 }
             } catch (Throwable $e) {}
 

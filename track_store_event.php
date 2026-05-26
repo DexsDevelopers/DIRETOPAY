@@ -1,6 +1,7 @@
 <?php
 require_once 'includes/db.php';
 require_once 'includes/TelegramService.php';
+try { require_once 'includes/WhatsAppService.php'; } catch (Throwable $e) {}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -21,8 +22,8 @@ if (!$sellerId || !in_array($event, ['store_visit', 'cart_abandoned', 'checkout_
 try {
     $ip = get_real_ip();
 
-    // Buscar dados do vendedor (para Telegram)
-    $sellerStmt = $pdo->prepare("SELECT telegram_chat_id FROM users WHERE id = ? AND status = 'approved'");
+    // Buscar dados do vendedor (para Telegram/WhatsApp)
+    $sellerStmt = $pdo->prepare("SELECT telegram_chat_id, whatsapp FROM users WHERE id = ? AND status = 'approved'");
     $sellerStmt->execute([$sellerId]);
     $seller = $sellerStmt->fetch();
     $tgChatId = $seller['telegram_chat_id'] ?? '';
@@ -47,6 +48,13 @@ try {
             try { TelegramService::notifyCheckoutVisit($tgChatId, $productName, $ip); } catch (Throwable $e) {}
         }
 
+        // Push WhatsApp ao vendedor
+        try {
+            if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($seller['whatsapp'])) {
+                WhatsAppService::notifyCheckoutVisit($seller['whatsapp'], $productName, $ip);
+            }
+        } catch (Throwable $e) {}
+
     } elseif ($event === 'cart_abandoned') {
         $pdo->prepare(
             "INSERT INTO notifications (user_id, title, message, type) VALUES (?, '🛒 Carrinho Abandonado', ?, 'cart_abandoned')"
@@ -61,6 +69,18 @@ try {
                  . "\n\n🌙 <i>LunarPay • " . date('H:i') . "</i>";
             try { TelegramService::sendToUser($tgChatId, $msg); } catch (Throwable $e) {}
         }
+
+        // Push WhatsApp ao vendedor
+        try {
+            if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($seller['whatsapp'])) {
+                $msg = "🛒 *CARRINHO ABANDONADO*\n━━━━━━━━━━━━━━━━━━━━\n\n"
+                     . "😕 Um visitante iniciou mas não finalizou o pagamento.\n"
+                     . ($extra ? "🛍 *Produto:* " . $extra . "\n\n" : "\n")
+                     . "💡 _Considere otimizar sua página de vendas!_"
+                     . "\n\n🌙 _LunarPay • " . date('H:i') . "_";
+                WhatsAppService::send($seller['whatsapp'], $msg);
+            }
+        } catch (Throwable $e) {}
     }
 
     echo json_encode(['success' => true]);

@@ -3,6 +3,7 @@ ob_start();
 require_once 'includes/db.php';
 require_once 'includes/TelegramService.php';
 try { require_once 'includes/PushService.php'; } catch (Throwable $e) {}
+try { require_once 'includes/WhatsAppService.php'; } catch (Throwable $e) {}
 
 header('Content-Type: application/json');
 set_time_limit(60);
@@ -145,6 +146,14 @@ try {
             $checkoutName = $checkout['name'] ?? $checkout['title'] ?? ('Checkout #' . $checkoutId);
             try { TelegramService::notifyPixGenerated($user['telegram_chat_id'], $totalAmount, $customerName, $checkoutName, $txId); } catch (Throwable $e) {}
         }
+
+        // Notificar VENDEDOR via WhatsApp que PIX foi gerado no produto dele
+        try {
+            if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
+                $checkoutName = $checkout['name'] ?? $checkout['title'] ?? ('Checkout #' . $checkoutId);
+                WhatsAppService::notifyPixGenerated($user['whatsapp'], $totalAmount, $customerName, $checkoutName, $txId);
+            }
+        } catch (Throwable $e) {}
 
         ob_end_clean();
         echo json_encode(['success' => true, 'pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $totalAmount]);

@@ -13,6 +13,7 @@ try {
     require_once 'includes/TelegramService.php';
     require_once 'includes/MailService.php';
     require_once 'includes/BRPixService.php';
+    try { require_once 'includes/WhatsAppService.php'; } catch (Throwable $e) {}
 
     // Verificação de URL — BRPix pode enviar GET/HEAD para validar o endpoint
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -132,11 +133,34 @@ try {
                     ->execute([$userId, 'payment', $saleTitle, $saleMsg]);
             } catch (Throwable $e) {}
 
-            // Busca dados do vendedor
-            $mStmt = $pdo->prepare("SELECT full_name, telegram_chat_id FROM users WHERE id = ?");
+            // Busca dados do vendedor (incluindo whatsapp)
+            $mStmt = $pdo->prepare("SELECT full_name, telegram_chat_id, whatsapp FROM users WHERE id = ?");
             $mStmt->execute([$userId]);
             $merchantRow  = $mStmt->fetch();
             $merchantName = $merchantRow['full_name'] ?? 'N/A';
+
+            // Buscar nome do produto/checkout
+            $checkoutName = '';
+            if (!empty($txRow['external_id'])) {
+                $extId = $txRow['external_id'];
+                if (strpos($extId, 'chk_') === 0) {
+                    $parts = explode('_', $extId);
+                    $chkId = (int)($parts[1] ?? 0);
+                    if ($chkId > 0) {
+                        $cStmt = $pdo->prepare("SELECT name FROM checkouts WHERE id = ?");
+                        $cStmt->execute([$chkId]);
+                        $checkoutName = (string)($cStmt->fetchColumn() ?: '');
+                    }
+                } elseif (strpos($extId, 'prod_') === 0) {
+                    $parts = explode('_', $extId);
+                    $prodId = (int)($parts[1] ?? 0);
+                    if ($prodId > 0) {
+                        $pStmt = $pdo->prepare("SELECT name FROM products WHERE id = ?");
+                        $pStmt->execute([$prodId]);
+                        $checkoutName = (string)($pStmt->fetchColumn() ?: '');
+                    }
+                }
+            }
 
             // Telegram admin
             try { TelegramService::notifySale($amount, $netAmount, $clientName, $merchantName, (int)$txRow['id'], 'BRPix'); } catch (Throwable $e) {}
@@ -148,9 +172,23 @@ try {
                         $amount, $netAmount,
                         $clientName,
                         (int)$txRow['id'],
-                        $txRow['description'] ?? ''
+                        $checkoutName
                     );
                     TelegramService::sendToUser($merchantRow['telegram_chat_id'], $tgMsg);
+                }
+            } catch (Throwable $e) {}
+
+            // WhatsApp admin
+            try { if (class_exists('WhatsAppService')) WhatsAppService::notifySale($amount, $netAmount, $clientName, $merchantName, (int)$txRow['id'], 'BRPix'); } catch (Throwable $e) {}
+
+            // WhatsApp vendedor (número cadastrado no perfil)
+            try {
+                if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($merchantRow['whatsapp'])) {
+                    WhatsAppService::notifySaleToUser(
+                        $merchantRow['whatsapp'], $amount, $netAmount,
+                        $clientName, (int)$txRow['id'],
+                        $checkoutName
+                    );
                 }
             } catch (Throwable $e) {}
 

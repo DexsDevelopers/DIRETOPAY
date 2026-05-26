@@ -12,6 +12,7 @@
 date_default_timezone_set('America/Sao_Paulo');
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/TelegramService.php';
+try { require_once __DIR__ . '/includes/WhatsAppService.php'; } catch (Throwable $e) {}
 
 // ── Autenticação ──────────────────────────────────────────────────────────────
 $expectedSecret = defined('TELEGRAM_WEBHOOK_SECRET') ? TELEGRAM_WEBHOOK_SECRET : '';
@@ -25,12 +26,14 @@ $div  = "\n━━━━━━━━━━━━━━━━━━━━";
 $sent = 0;
 $skip = 0;
 
-// ── Buscar todos os vendedores com Telegram vinculado ─────────────────────────
+// ── Buscar todos os vendedores com Telegram ou WhatsApp vinculado ─────────────
 $usersStmt = $pdo->query("
-    SELECT id, full_name, telegram_chat_id
+    SELECT id, full_name, telegram_chat_id, whatsapp
     FROM users
-    WHERE telegram_chat_id IS NOT NULL
-      AND telegram_chat_id != ''
+    WHERE (
+            (telegram_chat_id IS NOT NULL AND telegram_chat_id != '')
+            OR (whatsapp IS NOT NULL AND whatsapp != '')
+          )
       AND status = 'approved'
       AND is_admin = 0
       AND is_demo = 0
@@ -186,8 +189,18 @@ if ($mode === 'morning') {
         $msg    = $phrase . $div . "\n\n" . $tip . "\n\n"
                 . "🌙 <i>LunarPay • " . date('H:i') . "</i>";
         try {
-            if (TelegramService::sendToUser($user['telegram_chat_id'], $msg)) $sent++;
+            $sentTg = false;
+            $sentWa = false;
+            if (!empty($user['telegram_chat_id'])) {
+                $sentTg = TelegramService::sendToUser($user['telegram_chat_id'], $msg);
+            }
+            if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
+                $waMsg = WhatsAppService::formatHtmlToWhatsApp($msg);
+                $sentWa = WhatsAppService::send($user['whatsapp'], $waMsg);
+            }
+            if ($sentTg || $sentWa) $sent++;
             else $skip++;
+
             $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, created_at) VALUES (?,?,?,?,NOW())")
                 ->execute([$user['id'], 'info', $siteMorningTitles[array_rand($siteMorningTitles)], $siteTips[array_rand($siteTips)]]);
             usleep(100000);
@@ -210,8 +223,18 @@ elseif ($mode === 'afternoon') {
              . "🌙 <i>LunarPay • " . date('H:i') . "</i>";
         $siteMsg = $sales > 0 ? "{$sales} venda(s) até agora — " . fBRL((float)$stats['net_volume']) . " no bolso! Bora mais! 🔥" : "Nenhuma venda ainda. A tarde é onde os fortes viram o jogo! 🎯";
         try {
-            if (TelegramService::sendToUser($user['telegram_chat_id'], $msg)) $sent++;
+            $sentTg = false;
+            $sentWa = false;
+            if (!empty($user['telegram_chat_id'])) {
+                $sentTg = TelegramService::sendToUser($user['telegram_chat_id'], $msg);
+            }
+            if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
+                $waMsg = WhatsAppService::formatHtmlToWhatsApp($msg);
+                $sentWa = WhatsAppService::send($user['whatsapp'], $waMsg);
+            }
+            if ($sentTg || $sentWa) $sent++;
             else $skip++;
+
             $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, created_at) VALUES (?,?,?,?,NOW())")
                 ->execute([$user['id'], 'info', $siteAfternoonTitles[array_rand($siteAfternoonTitles)], $siteMsg]);
             usleep(100000);
@@ -235,8 +258,18 @@ elseif ($mode === 'evening') {
              . "🌙 <i>LunarPay • " . date('H:i') . "</i>";
         $siteMsg = $sales > 0 ? "{$sales} venda(s) hoje — " . fBRL((float)$stats['net_volume']) . " líquido. Dorme com esse sorriso! 😁" : "Hoje foi tranquilo. Amanhã você muda o placar! 💪";
         try {
-            if (TelegramService::sendToUser($user['telegram_chat_id'], $msg)) $sent++;
+            $sentTg = false;
+            $sentWa = false;
+            if (!empty($user['telegram_chat_id'])) {
+                $sentTg = TelegramService::sendToUser($user['telegram_chat_id'], $msg);
+            }
+            if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
+                $waMsg = WhatsAppService::formatHtmlToWhatsApp($msg);
+                $sentWa = WhatsAppService::send($user['whatsapp'], $waMsg);
+            }
+            if ($sentTg || $sentWa) $sent++;
             else $skip++;
+
             $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, created_at) VALUES (?,?,?,?,NOW())")
                 ->execute([$user['id'], 'info', $siteEveningTitles[array_rand($siteEveningTitles)], $siteMsg]);
             usleep(100000);
@@ -278,7 +311,9 @@ elseif ($mode === 'daily_summary') {
              . "   ⚡ Cobranças geradas: {$charges}\n"
              . ($sales > 0
                  ? "   💵 Volume bruto: <b>" . fBRL((float)$stats['volume']) . "</b>\n"
-                 . "   💎 Seu líquido: <b>" . fBRL((float)$stats['net_volume']) . "</b>\n"
+                 : "")
+             . ($sales > 0
+                 ? "   💎 Seu líquido: <b>" . fBRL((float)$stats['net_volume']) . "</b>\n"
                  : "")
              . "\n<b>🏦 SALDO DISPONÍVEL:</b> " . fBRL($balance) . "\n\n"
              . $summary . $div . "\n\n"
@@ -286,8 +321,18 @@ elseif ($mode === 'daily_summary') {
              . "🌙 <i>LunarPay • Resumo automático • " . date('H:i') . "</i>";
 
         try {
-            if (TelegramService::sendToUser($user['telegram_chat_id'], $msg)) $sent++;
+            $sentTg = false;
+            $sentWa = false;
+            if (!empty($user['telegram_chat_id'])) {
+                $sentTg = TelegramService::sendToUser($user['telegram_chat_id'], $msg);
+            }
+            if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
+                $waMsg = WhatsAppService::formatHtmlToWhatsApp($msg);
+                $sentWa = WhatsAppService::send($user['whatsapp'], $waMsg);
+            }
+            if ($sentTg || $sentWa) $sent++;
             else $skip++;
+
             usleep(150000);
         } catch (Throwable $e) { $skip++; }
     }
