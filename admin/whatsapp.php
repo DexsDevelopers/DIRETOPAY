@@ -73,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
     try {
         $stmt = $pdo->prepare("INSERT INTO settings (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)");
         foreach ($fields as $k => $v) {
-            $stmt->execute([k => $k, v => $v]); // compatibilidade com prepared
             $stmt->execute([$k, $v]);
         }
         $success = "Configurações salvas com sucesso!";
