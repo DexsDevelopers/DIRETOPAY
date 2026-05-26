@@ -201,12 +201,45 @@ app.post('/send', async (req, res) => {
     if (num.length < 12 || num.length > 13) {
         return res.status(400).json({ ok: false, error: 'Número inválido: ' + num });
     }
-    const jid = num + '@s.whatsapp.net';
+
+    let targetJid = num + '@s.whatsapp.net';
 
     try {
-        await sock.sendMessage(jid, { text: message });
-        console.log('[WA Bridge] Mensagem enviada para', num);
-        res.json({ ok: true, phone: num });
+        // Tenta resolver o JID válido via WhatsApp
+        try {
+            console.log('[WA Bridge] Verificando número no WhatsApp:', num);
+            const onWa = await sock.onWhatsApp(targetJid);
+            
+            if (onWa && onWa.length > 0 && onWa[0].exists) {
+                targetJid = onWa[0].jid;
+                console.log('[WA Bridge] JID original validado:', targetJid);
+            } else if (num.startsWith('55')) {
+                // Tenta variação do 9º dígito
+                let altNum = null;
+                if (num.length === 13 && num[4] === '9') {
+                    // Remove o 9 (ex: 5511988888888 -> 551188888888)
+                    altNum = num.substring(0, 4) + num.substring(5);
+                } else if (num.length === 12) {
+                    // Adiciona o 9 (ex: 551188888888 -> 5511988888888)
+                    altNum = num.substring(0, 4) + '9' + num.substring(4);
+                }
+
+                if (altNum) {
+                    console.log('[WA Bridge] JID original não encontrado. Tentando variação BR:', altNum);
+                    const onWaAlt = await sock.onWhatsApp(altNum + '@s.whatsapp.net');
+                    if (onWaAlt && onWaAlt.length > 0 && onWaAlt[0].exists) {
+                        targetJid = onWaAlt[0].jid;
+                        console.log('[WA Bridge] Variação validada encontrada:', targetJid);
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn('[WA Bridge] Erro ao resolver JID via onWhatsApp:', e.message);
+        }
+
+        await sock.sendMessage(targetJid, { text: message });
+        console.log('[WA Bridge] Mensagem enviada com sucesso para JID:', targetJid);
+        res.json({ ok: true, phone: num, jid: targetJid });
     } catch (err) {
         console.error('[WA Bridge] Erro ao enviar para', num, ':', err.message);
         res.status(500).json({ ok: false, error: err.message });
