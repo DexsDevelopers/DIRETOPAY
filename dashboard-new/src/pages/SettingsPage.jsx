@@ -21,6 +21,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
     const [cryptoNetwork, setCryptoNetwork] = useState(userData?.crypto_network || '');
     const [utmifyToken, setUtmifyToken] = useState(userData?.utmify_api_token || '');
     const [sevenKId, setSevenKId] = useState(userData?.seven_k_id || '');
+    const [whatsapp, setWhatsapp] = useState(userData?.whatsapp || '');
     const [showUtmToken, setShowUtmToken] = useState(false);
     const fileInputRef = useRef(null);
     const [testingPush, setTestingPush] = useState(false);
@@ -36,6 +37,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
         if (userData?.crypto_network) setCryptoNetwork(userData.crypto_network);
         if (userData?.utmify_api_token) setUtmifyToken(userData.utmify_api_token);
         if (userData?.seven_k_id) setSevenKId(String(userData.seven_k_id));
+        if (userData?.whatsapp) setWhatsapp(String(userData.whatsapp));
     }, [userData]);
 
     const handleCopyToken = () => {
@@ -138,7 +140,8 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                     crypto_address: cryptoAddress,
                     crypto_network: cryptoNetwork,
                     utmify_api_token: utmifyToken,
-                    seven_k_id: sevenKId || null
+                    seven_k_id: sevenKId || null,
+                    whatsapp: whatsapp || ''
                 })
             });
             const data = await res.json();
@@ -507,6 +510,56 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                             })}
                                         </div>
                                     </div>
+                                </div>
+
+                                {/* ── WhatsApp Notifications ─────────────────── */}
+                                <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 space-y-5">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{background:'rgba(37,211,102,0.15)'}}>
+                                            <span style={{color:'#25d366', fontSize:'1.2rem'}}>💬</span>
+                                        </div>
+                                        <div>
+                                            <h4 className="font-black text-gray-900">Notificações WhatsApp</h4>
+                                            <p className="text-xs text-gray-500">Receba vendas, PIX gerado, visitas e resumos direto no WhatsApp.</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">Seu número WhatsApp (com DDD)</label>
+                                        <div className="relative">
+                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base" style={{color:'#25d366'}}>📱</span>
+                                            <input
+                                                type="tel"
+                                                value={whatsapp}
+                                                onChange={(e) => {
+                                                    const v = e.target.value.replace(/\D/g, '').slice(0, 11);
+                                                    setWhatsapp(v);
+                                                }}
+                                                placeholder="Ex: 11999998888"
+                                                maxLength={11}
+                                                className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-5 py-3.5 font-mono text-sm text-gray-700 focus:outline-none focus:border-primary/50 transition-all"
+                                            />
+                                        </div>
+                                        {whatsapp ? (
+                                            <p className="text-[11px] font-bold flex items-center gap-1.5 ml-2" style={{color:'#25d366'}}>
+                                                <Check size={12} /> WhatsApp vinculado: {whatsapp}
+                                            </p>
+                                        ) : (
+                                            <p className="text-[10px] text-gray-400 ml-2">
+                                                Apenas números com DDD. Ex: <strong>11999998888</strong>. O +55 é adicionado automaticamente.
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    {whatsapp && (
+                                        <button
+                                            type="button"
+                                            onClick={() => { if(confirm('Remover WhatsApp? Você não receberá mais notificações por WhatsApp.')) setWhatsapp(''); }}
+                                            className="text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-red-500 transition-colors"
+                                        >
+                                            Remover vínculo
+                                        </button>
+                                    )}
                                 </div>
 
                                 <button
