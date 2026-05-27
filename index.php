@@ -76,18 +76,6 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
             }
         } catch (\Throwable $e) {}
     }
-    
-    // Buscar o arquivo CheckoutPage no assets
-    $assetsDir = __DIR__ . '/assets/dashboard-react/assets';
-    if (is_dir($assetsDir)) {
-        $files = scandir($assetsDir);
-        foreach ($files as $file) {
-            if (strpos($file, 'CheckoutPage-') === 0 && str_ends_with($file, '.js')) {
-                $checkoutPageFile = "/assets/dashboard-react/assets/" . $file;
-                break;
-            }
-        }
-    }
 }
 ?>
 <!doctype html>
@@ -122,10 +110,13 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/utils-DCsqA19A.js">
     <link rel="stylesheet" crossorigin href="/assets/dashboard-react/assets/index-Cya2b0bu.css">
     
-    <!-- Preload fonts to avoid layout shift -->
-    <?php if ($checkoutPageFile): ?>
-    <link rel="modulepreload" crossorigin href="<?php echo $checkoutPageFile; ?>">
+    <!-- React Checkout Chunk Preload -->
+    <?php if ($requestPath && strpos($requestPath, '/p/') === 0): ?>
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/CheckoutPage-DXwgqS_e.js">
     <?php endif; ?>
+    <!-- React Checkout Chunk Preload End -->
+
+    <!-- Preload fonts to avoid layout shift -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>

@@ -33,7 +33,7 @@ def update_index_php():
         
     # Encontrar os delimitadores em index.php
     start_marker = "<!-- React Build Assets -->"
-    end_marker = "<!-- Preload fonts to avoid layout shift -->"
+    end_marker = "<!-- React Checkout Chunk Preload -->"
     
     if start_marker not in php_content or end_marker not in php_content:
         print("Erro: Marcadores de assets não encontrados em index.php.")
@@ -46,6 +46,35 @@ def update_index_php():
     
     replacement = f"{start_marker}\n    {asset_block}\n    \n    {end_marker}"
     updated_content = pattern_replace.sub(replacement, php_content)
+    
+    # Encontrar o chunk do CheckoutPage localmente
+    local_assets_dir = os.path.join("dashboard-new", "dist", "assets")
+    checkout_chunk_file = ""
+    if os.path.exists(local_assets_dir):
+        for file in os.listdir(local_assets_dir):
+            if file.startswith("CheckoutPage-") and file.endswith(".js"):
+                checkout_chunk_file = f"/assets/dashboard-react/assets/{file}"
+                break
+                
+    if not checkout_chunk_file:
+        print("Erro: Chunk do CheckoutPage não encontrado localmente.")
+        return False
+        
+    # Encontrar e substituir o preload do CheckoutPage
+    preload_start = "<!-- React Checkout Chunk Preload -->"
+    preload_end = "<!-- React Checkout Chunk Preload End -->"
+    
+    if preload_start not in updated_content or preload_end not in updated_content:
+        print("Erro: Marcadores de preload do CheckoutPage não encontrados em index.php.")
+        return False
+        
+    pattern_preload = re.compile(
+        re.escape(preload_start) + r".*?" + re.escape(preload_end),
+        re.DOTALL
+    )
+    
+    preload_replacement = f"{preload_start}\n    <?php if ($requestPath && strpos($requestPath, '/p/') === 0): ?>\n    <link rel=\"modulepreload\" crossorigin href=\"{checkout_chunk_file}\">\n    <?php endif; ?>\n    {preload_end}"
+    updated_content = pattern_preload.sub(preload_replacement, updated_content)
     
     with open(index_php_path, 'w', encoding='utf-8') as f:
         f.write(updated_content)
@@ -76,7 +105,7 @@ for f in os.listdir(assets_dir):
     uploaded_assets += 1
 print(f"{uploaded_assets} assets do React enviados com sucesso!")
 
-# 2.2 Arquivos PHP Raiz
+# 2.2 Arquivos PHP/Config Raiz
 php_files = [
     'index.php',
     'dashboard.php',
@@ -85,13 +114,14 @@ php_files = [
     'dashboard_legacy.php',
     'get_admin_data.php',
     'withdraw.php',
-    'telegram_user_bot.php'
+    'telegram_user_bot.php',
+    '.htaccess'
 ]
 
-print("Enviando arquivos PHP raiz...")
+print("Enviando arquivos raiz (PHP e Config)...")
 for f in php_files:
     sftp.put(f, f'{base}/{f}')
-    print(f'Uploaded PHP: {f} -> OK')
+    print(f'Uploaded Root File: {f} -> OK')
 
 # 2.3 Arquivos em includes
 includes_files = [
