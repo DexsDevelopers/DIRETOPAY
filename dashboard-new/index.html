@@ -1,13 +1,128 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>dashboard-new</title>
+    <meta name="theme-color" content="#0d0d12" />
+    <title>LunarPay — Plataforma de Pagamentos</title>
+    <meta name="description" content="Gere cobranças PIX, gerencie vendas e saques com a LunarPay." />
+
+    <!--
+      ANTI-FLASH: detecta o tema ANTES do primeiro paint.
+      Executa de forma síncrona (sem defer/async) para que o browser
+      aplique a classe 'dark' e o background correto antes de renderizar
+      qualquer pixel — eliminando o flash branco/preto.
+    -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('ghost_theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var isDark = stored ? stored === 'dark' : prefersDark;
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.backgroundColor = '#0d0d12';
+            document.documentElement.style.color = '#eeeef5';
+          } else {
+            document.documentElement.style.backgroundColor = '#f9f9fc';
+            document.documentElement.style.color = '#1E1B4B';
+          }
+        } catch (e) {
+          document.documentElement.style.backgroundColor = '#0d0d12';
+        }
+      })();
+    </script>
+
+    <style>
+      /* Splash screen — visível até o React montar */
+      #lp-splash {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        z-index: 9999;
+        transition: opacity 0.3s ease;
+      }
+      html.dark #lp-splash { background: #0d0d12; }
+      html:not(.dark) #lp-splash { background: #f9f9fc; }
+
+      #lp-splash.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .lp-logo-ring {
+        width: 64px;
+        height: 64px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #C0006A, #8B0045);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 40px rgba(192,0,106,0.4);
+        animation: lp-pulse 1.8s ease-in-out infinite;
+      }
+
+      .lp-logo-ring svg {
+        width: 36px;
+        height: 36px;
+        fill: white;
+      }
+
+      .lp-spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid rgba(192,0,106,0.2);
+        border-top-color: #C0006A;
+        border-radius: 50%;
+        animation: lp-spin 0.8s linear infinite;
+      }
+
+      @keyframes lp-spin {
+        to { transform: rotate(360deg); }
+      }
+
+      @keyframes lp-pulse {
+        0%, 100% { box-shadow: 0 0 30px rgba(192,0,106,0.35); transform: scale(1); }
+        50% { box-shadow: 0 0 60px rgba(192,0,106,0.6); transform: scale(1.05); }
+      }
+    </style>
   </head>
   <body>
+    <!-- Splash visível imediatamente, antes do bundle JS carregar -->
+    <div id="lp-splash">
+      <div class="lp-logo-ring">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 2L4.5 13.5H11L10 22L19.5 10.5H13L13 2Z"/>
+        </svg>
+      </div>
+      <div class="lp-spinner"></div>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Remove o splash assim que o React montar -->
+    <script>
+      (function () {
+        var splash = document.getElementById('lp-splash');
+        if (!splash) return;
+        var observer = new MutationObserver(function () {
+          var root = document.getElementById('root');
+          if (root && root.children.length > 0) {
+            splash.classList.add('hidden');
+            setTimeout(function () { splash.remove(); }, 350);
+            observer.disconnect();
+          }
+        });
+        observer.observe(document.getElementById('root'), { childList: true });
+        // Fallback: remove após 5s caso algo falhe
+        setTimeout(function () { splash.remove(); }, 5000);
+      })();
+    </script>
   </body>
 </html>
