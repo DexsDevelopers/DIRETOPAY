@@ -24,6 +24,71 @@ if ($isAuth && $requestPath === '/') {
     header('Location: /dashboard');
     exit;
 }
+
+// Otimização de Checkout: Buscar dados e pregar chunk no primeiro render
+$checkoutData = null;
+$checkoutPageFile = '';
+
+if ($requestPath && strpos($requestPath, '/p/') === 0) {
+    $parts = explode('/', trim($requestPath, '/'));
+    if (count($parts) >= 2 && $parts[0] === 'p') {
+        $slug = $parts[1];
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM checkouts WHERE slug = ? AND active = 1");
+            $stmt->execute([$slug]);
+            $checkout = $stmt->fetch();
+
+            if ($checkout) {
+                $stmt = $pdo->prepare("SELECT * FROM checkout_items WHERE checkout_id = ?");
+                $stmt->execute([$checkout['id']]);
+                $items = $stmt->fetchAll();
+
+                $total = 0;
+                foreach ($items as $it) {
+                    $total += (float)$it['price'];
+                }
+
+                $hasUtmify = false;
+                try {
+                    $uStmt = $pdo->prepare("SELECT utmify_api_token FROM users WHERE id = ? LIMIT 1");
+                    $uStmt->execute([$checkout['user_id']]);
+                    $utmToken = $uStmt->fetchColumn();
+                    $hasUtmify = !empty($utmToken);
+                } catch (\Throwable $e) {}
+
+                $checkoutData = [
+                    'success' => true,
+                    'has_utmify' => $hasUtmify,
+                    'checkout' => [
+                        'id' => $checkout['id'],
+                        'user_id' => $checkout['user_id'],
+                        'title' => $checkout['title'],
+                        'primary_color' => $checkout['primary_color'],
+                        'secondary_color' => $checkout['secondary_color'],
+                        'banner_url' => $checkout['checkout_banner_url'],
+                        'custom_html_head' => $checkout['custom_html_head'] ?? '',
+                        'custom_html_body' => $checkout['custom_html_body'] ?? '',
+                        'custom_settings' => $checkout['custom_settings'] ? json_decode($checkout['custom_settings'], true) : (object)[],
+                    ],
+                    'items' => $items,
+                    'total' => $total
+                ];
+            }
+        } catch (\Throwable $e) {}
+    }
+    
+    // Buscar o arquivo CheckoutPage no assets
+    $assetsDir = __DIR__ . '/assets/dashboard-react/assets';
+    if (is_dir($assetsDir)) {
+        $files = scandir($assetsDir);
+        foreach ($files as $file) {
+            if (strpos($file, 'CheckoutPage-') === 0 && str_ends_with($file, '.js')) {
+                $checkoutPageFile = "/assets/dashboard-react/assets/" . $file;
+                break;
+            }
+        }
+    }
+}
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -38,18 +103,29 @@ if ($isAuth && $requestPath === '/') {
     <meta name="apple-mobile-web-app-title" content="LunarPay" />
     <link rel="apple-touch-icon" href="/logo_lunarpay.png" />
     <meta name="csrf-token" content="<?php echo csrf_token(); ?>">
-    <script>window.__AUTH__ = <?php echo json_encode($isAuth); ?>;</script>
-    <title>LunarPay - Dashboard Premium</title>
+    <script>
+      window.__AUTH__ = <?php echo json_encode($isAuth); ?>;
+      <?php if ($checkoutData): ?>
+      window.__CHECKOUT_DATA__ = <?php echo json_encode($checkoutData); ?>;
+      <?php endif; ?>
+    </script>
+    <title>LunarPay - Plataforma de Pagamentos</title>
     
     <!-- React Build Assets -->
+    <script type="module" crossorigin src="/assets/dashboard-react/assets/index-CcwZQFqd.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/rolldown-runtime-WehaI0Q3.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-charts-He-U0hDw.js">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-react-CIFpnPib.js">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-motion-BKEh_tME.js">
-    <script type="module" crossorigin src="/assets/dashboard-react/assets/index-BOEii1TR.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/assets/index-DBeFkOVF.css">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-router-Dg8CQPxv.js">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-motion-CSww8jv2.js">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-icons-ETzilq70.js">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-react-B6YjI7Jz.js">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/utils-DCsqA19A.js">
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/assets/index-Cya2b0bu.css">
     
     <!-- Preload fonts to avoid layout shift -->
+    <?php if ($checkoutPageFile): ?>
+    <link rel="modulepreload" crossorigin href="<?php echo $checkoutPageFile; ?>">
+    <?php endif; ?>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -63,10 +139,93 @@ if ($isAuth && $requestPath === '/') {
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 10px; }
       ::-webkit-scrollbar-thumb:hover { background: rgba(168,85,247,0.5); }
+
+      /* Splash screen — visível até o React montar */
+      #lp-splash {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        z-index: 9999;
+        transition: opacity 0.3s ease;
+        background: #0a0a0c;
+      }
+
+      #lp-splash.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .lp-logo-ring {
+        width: 64px;
+        height: 64px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #C0006A, #8B0045);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 40px rgba(192,0,106,0.4);
+        animation: lp-pulse 1.8s ease-in-out infinite;
+      }
+
+      .lp-logo-ring svg {
+        width: 36px;
+        height: 36px;
+        fill: white;
+      }
+
+      .lp-spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid rgba(192,0,106,0.2);
+        border-top-color: #C0006A;
+        border-radius: 50%;
+        animation: lp-spin 0.8s linear infinite;
+      }
+
+      @keyframes lp-spin {
+        to { transform: rotate(360deg); }
+      }
+
+      @keyframes lp-pulse {
+        0%, 100% { box-shadow: 0 0 30px rgba(192,0,106,0.35); transform: scale(1); }
+        50% { box-shadow: 0 0 60px rgba(192,0,106,0.6); transform: scale(1.05); }
+      }
     </style>
   </head>
   <body>
+    <!-- Splash visível imediatamente, antes do bundle JS carregar -->
+    <div id="lp-splash">
+      <div class="lp-logo-ring">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 2L4.5 13.5H11L10 22L19.5 10.5H13L13 2Z"/>
+        </svg>
+      </div>
+      <div class="lp-spinner"></div>
+    </div>
+
     <div id="root"></div>
-    <!-- Os dados são buscados via fetch('../get_dashboard_data.php') no App.jsx -->
+
+    <!-- Remove o splash assim que o React montar -->
+    <script>
+      (function () {
+        var splash = document.getElementById('lp-splash');
+        if (!splash) return;
+        var observer = new MutationObserver(function () {
+          var root = document.getElementById('root');
+          if (root && root.children.length > 0) {
+            splash.classList.add('hidden');
+            setTimeout(function () { splash.remove(); }, 350);
+            observer.disconnect();
+          }
+        });
+        observer.observe(document.getElementById('root'), { childList: true });
+        // Fallback: remove após 5s caso algo falhe
+        setTimeout(function () { splash.remove(); }, 5000);
+      })();
+    </script>
   </body>
 </html>

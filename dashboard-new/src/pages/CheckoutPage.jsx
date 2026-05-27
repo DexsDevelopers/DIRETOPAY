@@ -168,6 +168,31 @@ export default function CheckoutPage() {
     }, [data]);
 
     const fetchCheckout = async () => {
+        // Usar dados pré-carregados pelo PHP se disponíveis
+        if (window.__CHECKOUT_DATA__ && window.__CHECKOUT_DATA__.success) {
+            const json = window.__CHECKOUT_DATA__;
+            window.__CHECKOUT_DATA__ = null; // Limpa para evitar reuso indevido
+            
+            setData(json);
+            const sellerId = json.checkout?.user_id;
+            if (sellerId) {
+                fetch('/track_store_event.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ event: 'store_visit', seller_id: sellerId, extra: json.checkout?.title || '' })
+                }).catch(() => {});
+                const handleUnload = () => {
+                    if (!hasPaidRef.current) {
+                        navigator.sendBeacon('/track_store_event.php',
+                            JSON.stringify({ event: 'cart_abandoned', seller_id: sellerId, extra: json.checkout?.title || '' }));
+                    }
+                };
+                window.addEventListener('beforeunload', handleUnload);
+            }
+            setLoading(false);
+            return;
+        }
+
         try {
             const res  = await fetch(`/get_checkout_data.php?slug=${slug}`);
             const json = await res.json();
