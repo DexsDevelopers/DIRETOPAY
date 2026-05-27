@@ -7,12 +7,18 @@ export default defineConfig({
   build: {
     sourcemap: false,
     minify: 'esbuild',
+    // Aumenta o limite do aviso (chunks de páginas grandes são esperados)
+    chunkSizeWarningLimit: 600,
     rolldownOptions: {
       output: {
+        // Separa vendors pesados em chunks próprios
         manualChunks: (id) => {
-          if (id.includes('node_modules/framer-motion')) return 'vendor-motion';
-          if (id.includes('node_modules/recharts')) return 'vendor-charts';
-          if (id.includes('node_modules/react')) return 'vendor-react';
+          if (id.includes('node_modules/framer-motion'))  return 'vendor-motion';
+          if (id.includes('node_modules/recharts'))       return 'vendor-charts';
+          if (id.includes('node_modules/react-dom'))      return 'vendor-react';
+          if (id.includes('node_modules/react/'))         return 'vendor-react';
+          if (id.includes('node_modules/react-router'))   return 'vendor-router';
+          if (id.includes('node_modules/lucide-react'))   return 'vendor-icons';
         }
       }
     }
@@ -20,7 +26,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/get_dashboard_data.php': {
-        target: 'http://localhost', // Ajuste para o endereço do seu servidor PHP (XAMPP/WAMP/etc)
+        target: 'http://localhost',
         changeOrigin: true,
       }
     }

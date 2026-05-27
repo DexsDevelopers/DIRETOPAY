@@ -18,47 +18,63 @@ import PixModal from './components/PixModal';
 import PushManager from './components/PushManager';
 import WhatsAppPopup from './components/WhatsAppPopup';
 
-// Pages
-import LandingPage from './pages/LandingPage';
-import SalesPage from './pages/SalesPage';
-import WithdrawalsPage from './pages/WithdrawalsPage';
-import SettingsPage from './pages/SettingsPage';
-import CheckoutPage from './pages/CheckoutPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import AdminPage from './pages/AdminPage';
-import AdminApisPage from './pages/AdminApisPage';
-import AdminTransactionsPage from './pages/AdminTransactionsPage';
-import CheckoutsPage from './pages/CheckoutsPage';
-import CheckoutBuilderPage from './pages/CheckoutBuilderPage';
-import ApiDocsPage from './pages/ApiDocsPage';
-import ReportsPage from './pages/ReportsPage';
-import AffiliatePage from './pages/AffiliatePage';
-import DemoPage from './pages/DemoPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import ResetPasswordPage from './pages/ResetPasswordPage';
-import ProdutosPage from './pages/ProdutosPage';
-import AssinaturasPage from './pages/AssinaturasPage';
-import CuponsPage from './pages/CuponsPage';
-import CriarProdutoPage from './pages/CriarProdutoPage';
-import LojaPage from './pages/LojaPage';
-import VitrinePage from './pages/VitrinePage';
-import ProductDetailPage from './pages/ProductDetailPage';
-import AdminProdutosPage from './pages/AdminProdutosPage';
-import AdminUsersPage from './pages/AdminUsersPage';
-import AdminAnunciosPage from './pages/AdminAnunciosPage';
-import AdminBannersPage from './pages/AdminBannersPage';
-import EntregaPage from './pages/EntregaPage';
-import ChatPage from './pages/ChatPage';
-import AdminChatsPage from './pages/AdminChatsPage';
-import AdminSaquesPage from './pages/AdminSaquesPage';
-import PixPage from './pages/PixPage';
-import AdminGatewaysPage from './pages/AdminGatewaysPage';
-import BuyerChatPage from './pages/BuyerChatPage';
-import ParceirosPage from './pages/ParceirosPage';
-import PremiacoesPage from './pages/PremiacoesPage';
-import BankAccountsPage from './pages/BankAccountsPage';
-import AnnouncementModal from './components/AnnouncementModal';
+// Pages — lazy loaded para reduzir bundle inicial
+const LandingPage          = React.lazy(() => import('./pages/LandingPage'));
+const SalesPage            = React.lazy(() => import('./pages/SalesPage'));
+const WithdrawalsPage      = React.lazy(() => import('./pages/WithdrawalsPage'));
+const SettingsPage         = React.lazy(() => import('./pages/SettingsPage'));
+const CheckoutPage         = React.lazy(() => import('./pages/CheckoutPage'));
+const LoginPage            = React.lazy(() => import('./pages/LoginPage'));
+const RegisterPage         = React.lazy(() => import('./pages/RegisterPage'));
+const AdminPage            = React.lazy(() => import('./pages/AdminPage'));
+const AdminApisPage        = React.lazy(() => import('./pages/AdminApisPage'));
+const AdminTransactionsPage= React.lazy(() => import('./pages/AdminTransactionsPage'));
+const CheckoutsPage        = React.lazy(() => import('./pages/CheckoutsPage'));
+const CheckoutBuilderPage  = React.lazy(() => import('./pages/CheckoutBuilderPage'));
+const ApiDocsPage          = React.lazy(() => import('./pages/ApiDocsPage'));
+const ReportsPage          = React.lazy(() => import('./pages/ReportsPage'));
+const AffiliatePage        = React.lazy(() => import('./pages/AffiliatePage'));
+const DemoPage             = React.lazy(() => import('./pages/DemoPage'));
+const ForgotPasswordPage   = React.lazy(() => import('./pages/ForgotPasswordPage'));
+const ResetPasswordPage    = React.lazy(() => import('./pages/ResetPasswordPage'));
+const ProdutosPage         = React.lazy(() => import('./pages/ProdutosPage'));
+const AssinaturasPage      = React.lazy(() => import('./pages/AssinaturasPage'));
+const CuponsPage           = React.lazy(() => import('./pages/CuponsPage'));
+const CriarProdutoPage     = React.lazy(() => import('./pages/CriarProdutoPage'));
+const LojaPage             = React.lazy(() => import('./pages/LojaPage'));
+const VitrinePage          = React.lazy(() => import('./pages/VitrinePage'));
+const ProductDetailPage    = React.lazy(() => import('./pages/ProductDetailPage'));
+const AdminProdutosPage    = React.lazy(() => import('./pages/AdminProdutosPage'));
+const AdminUsersPage       = React.lazy(() => import('./pages/AdminUsersPage'));
+const AdminAnunciosPage    = React.lazy(() => import('./pages/AdminAnunciosPage'));
+const AdminBannersPage     = React.lazy(() => import('./pages/AdminBannersPage'));
+const EntregaPage          = React.lazy(() => import('./pages/EntregaPage'));
+const ChatPage             = React.lazy(() => import('./pages/ChatPage'));
+const AdminChatsPage       = React.lazy(() => import('./pages/AdminChatsPage'));
+const AdminSaquesPage      = React.lazy(() => import('./pages/AdminSaquesPage'));
+const PixPage              = React.lazy(() => import('./pages/PixPage'));
+const AdminGatewaysPage    = React.lazy(() => import('./pages/AdminGatewaysPage'));
+const BuyerChatPage        = React.lazy(() => import('./pages/BuyerChatPage'));
+const ParceirosPage        = React.lazy(() => import('./pages/ParceirosPage'));
+const PremiacoesPage       = React.lazy(() => import('./pages/PremiacoesPage'));
+const BankAccountsPage     = React.lazy(() => import('./pages/BankAccountsPage'));
+const AnnouncementModal    = React.lazy(() => import('./components/AnnouncementModal'));
+
+// Fallback leve usado pelo Suspense enquanto o chunk da página carrega
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center h-64">
+      <div style={{
+        width: 28, height: 28,
+        border: '3px solid rgba(192,0,106,0.2)',
+        borderTopColor: '#C0006A',
+        borderRadius: '50%',
+        animation: 'spin 0.8s linear infinite'
+      }} />
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    </div>
+  );
+}
 
 // Proteção de Rota Admin
 function AdminRoute({ children, userData }) {
@@ -493,6 +509,7 @@ export default function App() {
     <ThemeProvider>
     <>
       {showWhatsAppPopup && <WhatsAppPopup onClose={() => setShowWhatsAppPopup(false)} />}
+      <React.Suspense fallback={<PageLoader />}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/demo" element={<DemoPage />} />
@@ -774,6 +791,7 @@ export default function App() {
         <Route path="/p/:slug" element={<CheckoutPage />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      </React.Suspense>
       {activePix && createPortal(
         <PixModal
           pixData={activePix}
