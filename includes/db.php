@@ -229,7 +229,7 @@ try {
 
     // Auto-Migração: Nominal preferido pelo usuário (nominal1 ou nominal2)
     try {
-        $pdo->exec("ALTER TABLE users ADD COLUMN preferred_nominal VARCHAR(20) NOT NULL DEFAULT 'nominal1'");
+        $pdo->exec("ALTER TABLE users ADD COLUMN preferred_nominal VARCHAR(20) NOT NULL DEFAULT 'nominal2'");
     } catch (PDOException $e) {}
 
     // Auto-Migração: Tabela de variantes de produto

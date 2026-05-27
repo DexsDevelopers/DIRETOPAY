@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $defaultTax = (float)($defTaxStmt->fetchColumn() ?: '5.0');
 
     try {
-        $stmt = $pdo->prepare("INSERT INTO users (email, password, full_name, pix_key, status, affiliate_id, referral_token, commission_rate, registration_ip, preferred_nominal) VALUES (?, ?, ?, ?, 'approved', ?, ?, ?, ?, 'nominal1')");
+        $stmt = $pdo->prepare("INSERT INTO users (email, password, full_name, pix_key, status, affiliate_id, referral_token, commission_rate, registration_ip, preferred_nominal) VALUES (?, ?, ?, ?, 'approved', ?, ?, ?, ?, 'nominal2')");
         $stmt->execute([$email, $hash, $full_name, $pix_key, $affiliateId, bin2hex(random_bytes(8)), $defaultTax, $clientIp]);
         $newUserId = $pdo->lastInsertId();
 

@@ -207,7 +207,7 @@ echo json_encode([
         'utmify_api_token' => $user['utmify_api_token'] ?? '',
         'seven_k_id' => $user['seven_k_id'] ?? null,
         'commission_rate' => $user['commission_rate'] ?? null,
-        'preferred_nominal' => $user['preferred_nominal'] ?? 'nominal1',
+        'preferred_nominal' => $user['preferred_nominal'] ?? 'nominal2',
         'is_admin' => (bool)$user['is_admin'],
         'avatar_url' => (function() use ($userId) {
             $dir = __DIR__ . '/uploads/avatars/';

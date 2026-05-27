@@ -111,7 +111,7 @@ try {
     }
 
     $externalId    = !empty($input['external_id']) ? (string)$input['external_id'] : ('user_' . $userId . '_' . time());
-    $userNominal   = $user['preferred_nominal'] ?? 'nominal1';
+    $userNominal   = $user['preferred_nominal'] ?? 'nominal2';
     // Taxa por nominal: nominal2 = BRPix (4% + R$1,00), nominal1 = SigiloPay (8% + R$0,99)
     $nominalFeePercent = ($userNominal === 'nominal2') ? 4.00 : 8.0;
     $nominalFeeFixed   = ($userNominal === 'nominal2') ? 1.00 : 0.99;
