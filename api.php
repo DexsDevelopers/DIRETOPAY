@@ -112,12 +112,23 @@ try {
 
     $externalId    = !empty($input['external_id']) ? (string)$input['external_id'] : ('user_' . $userId . '_' . time());
     $userNominal   = $user['preferred_nominal'] ?? 'nominal1';
-    // Taxa por nominal: nominal2 = BRPix (2.99% + R$1,00), nominal1 = padrão (8% + R$0,99)
+    // Taxa por nominal: nominal2 = BRPix (4% + R$1,00), nominal1 = SigiloPay (8% + R$0,99)
     $nominalFeePercent = ($userNominal === 'nominal2') ? 4.00 : 8.0;
     $nominalFeeFixed   = ($userNominal === 'nominal2') ? 1.00 : 0.99;
 
+    // ── Seleciona gateway pelo nominal do usuário ─────────────────────
+    // nominal1 → SigiloPay (mais estável), nominal2 → BRPix (taxa menor)
+    if ($userNominal === 'nominal2') {
+        $activeGateway = $useBRPix ? 'brpix' : ($useSigiloPay ? 'sigilopay' : 'ironpay');
+    } else {
+        // nominal1 (padrão): prefere SigiloPay → fallback BRPix → fallback IronPay
+        $activeGateway = $useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : 'ironpay');
+    }
+
+    write_log('info', "Nominal=$userNominal | Gateway selecionado=$activeGateway");
+
     // ── GATEWAY: IronPay ────────────────────────────────────────────
-    if ($useIronPay && !$useBRPix) {
+    if ($activeGateway === 'ironpay') {
         if (!defined('IRONPAY_TOKEN'))        define('IRONPAY_TOKEN',        $ironpayToken);
         if (!defined('IRONPAY_OFFER_HASH'))   define('IRONPAY_OFFER_HASH',   $ironpayOfferHash);
         if (!defined('IRONPAY_PRODUCT_HASH')) define('IRONPAY_PRODUCT_HASH', $ironpayProductHash);
@@ -175,7 +186,7 @@ try {
     }
 
     // ── GATEWAY: BRPix Solutions ─────────────────────────────────────
-    if ($useBRPix) {
+    if ($activeGateway === 'brpix') {
         if (!defined('BRPIX_CLIENT_ID'))     define('BRPIX_CLIENT_ID',     $brpixClientId);
         if (!defined('BRPIX_CLIENT_SECRET')) define('BRPIX_CLIENT_SECRET', $brpixClientSecret);
 
@@ -231,7 +242,7 @@ try {
     }
 
     // ── GATEWAY: SigiloPay ───────────────────────────────────────────
-    if ($useSigiloPay) {
+    if ($activeGateway === 'sigilopay') {
         $clientData = [
             'name'     => !empty($user['full_name']) ? $user['full_name'] : 'Cliente',
             'email'    => $user['email'] ?? '',
