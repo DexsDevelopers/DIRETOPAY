@@ -115,7 +115,9 @@ php_files = [
     'get_admin_data.php',
     'withdraw.php',
     'telegram_user_bot.php',
-    '.htaccess'
+    '.htaccess',
+    'api.php',
+    'get_dashboard_data.php'
 ]
 
 print("Enviando arquivos raiz (PHP e Config)...")
@@ -123,7 +125,17 @@ for f in php_files:
     sftp.put(f, f'{base}/{f}')
     print(f'Uploaded Root File: {f} -> OK')
 
-# 2.3 Arquivos em includes
+# 2.3 Arquivos de Autenticação
+auth_files = [
+    'register.php'
+]
+
+print("Enviando arquivos de autenticação...")
+for f in auth_files:
+    sftp.put(f'auth/{f}', f'{base}/auth/{f}')
+    print(f'Uploaded Auth File: {f} -> OK')
+
+# 2.4 Arquivos em includes
 includes_files = [
     'TelegramService.php',
     'db.php'
