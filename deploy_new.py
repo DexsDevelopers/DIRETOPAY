@@ -114,6 +114,7 @@ php_files = [
     'dashboard_legacy.php',
     'get_admin_data.php',
     'withdraw.php',
+    'send_pix.php',
     'telegram_user_bot.php',
     '.htaccess',
     'api.php',
