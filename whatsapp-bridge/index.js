@@ -99,6 +99,7 @@ async function initClient() {
             if (qr) {
                 isConnected = false;
                 isReady = false;
+                lastError = null;
                 try {
                     qrBase64 = await qrcode.toDataURL(qr, { width: 300, margin: 2 });
                     console.log('[WA Bridge] Novo QR Code gerado.');
