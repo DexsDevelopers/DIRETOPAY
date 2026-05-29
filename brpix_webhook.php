@@ -163,7 +163,7 @@ try {
             }
 
             // Telegram admin
-            try { TelegramService::notifySale($amount, $netAmount, $clientName, $merchantName, (int)$txRow['id'], 'BRPix'); } catch (Throwable $e) {}
+            try { TelegramService::notifySale($amount, $netAmount, $clientName, $merchantName, (int)$txRow['id'], 'PIX'); } catch (Throwable $e) {}
 
             // Telegram vendedor (mensagem engraçada)
             try {
@@ -179,7 +179,7 @@ try {
             } catch (Throwable $e) {}
 
             // WhatsApp admin
-            try { if (class_exists('WhatsAppService')) WhatsAppService::notifySale($amount, $netAmount, $clientName, $merchantName, (int)$txRow['id'], 'BRPix'); } catch (Throwable $e) {}
+            try { if (class_exists('WhatsAppService')) WhatsAppService::notifySale($amount, $netAmount, $clientName, $merchantName, (int)$txRow['id'], 'PIX'); } catch (Throwable $e) {}
 
             // WhatsApp vendedor (número cadastrado no perfil)
             try {

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * ╔══════════════════════════════════════════════════════════════════════════╗
  * ║   LunarPay — Telegram User Bot v2.0                                   ║
@@ -425,7 +425,7 @@ if (isset($input['callback_query'])) {
         uEditMessage($cbChatId, $cbMsgId,
             "🏦 <b>Solicitar Saque</b>" . div() . "\n\n"
             . "✅ Disponível: <b>" . formatBRL($available) . "</b>\n"
-            . "📉 Taxa plataforma: R$ 3,50 + Taxa SigiloPay: R$ 4,00 + 0,2%\n\n"
+            . "💸 Taxa plataforma: R$ 3,50 + Taxa Gateway: R$ 4,00 + 0,2%\n\n"
             . "Digite o valor:\n<code>/sacar 50</code>\n\nOu: <i>\"quero sacar 100\"</i>",
             [[['text' => '« Voltar ao menu', 'callback_data' => 'act_menu']]]
         );
@@ -863,7 +863,7 @@ function handlePix(string $chatId, array $user, float $amount): void {
         $spEnabled = ($sp['sigilopay_enabled'] ?? '0') === '1';
 
         if (!$spEnabled || !$spPublic || !$spSecret) {
-            $failMsg = "❌ <b>Gateway não configurado</b>" . div() . "\n\nSigiloPay não está ativo. Fale com o administrador." . footer();
+            $failMsg = "❌ <b>Gateway não configurado</b>" . div() . "\n\nO gateway de pagamento não está ativo. Fale com o administrador." . footer();
             if ($loadingMsgId) uEditMessage($chatId, $loadingMsgId, $failMsg, afterActionKeyboard());
             else uReply($chatId, $failMsg, afterActionKeyboard());
             return;
@@ -1087,7 +1087,7 @@ function handleSacar(string $chatId, array $user, float $amount): void {
     $withdrawFee = $platformFee + $sigiloFee;
 
     if ($amount < 20) {
-        uReply($chatId, "⚠️ <b>Mínimo para saque: R$ 20,00</b>\n📉 Taxa: R$ 3,50 (plataforma) + R$ 4,00 + 0,2% (SigiloPay)\n\nExemplo: <code>/sacar 50</code>" . footer(), afterActionKeyboard());
+        uReply($chatId, "💸 <b>Mínimo para saque: R$ 20,00</b>\n💸 Taxa: R$ 3,50 (plataforma) + R$ 4,00 + 0,2% (Gateway)\n\nExemplo: <code>/sacar 50</code>" . footer(), afterActionKeyboard());
         return;
     }
     if (empty($user['pix_key'])) {
@@ -1115,7 +1115,7 @@ function handleSacar(string $chatId, array $user, float $amount): void {
         "🏦 <b>Confirmar Saque</b>" . div() . "\n\n"
         . "💵 Valor bruto: <b>" . formatBRL($amount) . "</b>\n"
         . "📉 Taxa plataforma: -R$ 3,50\n"
-        . "📉 Taxa SigiloPay: -" . formatBRL($sigiloFee) . " (R$ 4,00 + 0,2%)\n"
+        . "💸 Taxa Gateway: -" . formatBRL($sigiloFee) . " (R$ 4,00 + 0,2%)\n"
         . "✅ Você recebe: <b>" . formatBRL($netAmount) . "</b>\n"
         . "🔑 PIX: <code>{$user['pix_key']}</code>\n\n"
         . "⚠️ <i>Após confirmar, o admin será notificado.</i>",
@@ -1191,7 +1191,7 @@ function processWithdrawal(string $chatId, array $user, float $amount): void {
             "✅ <b>Saque Solicitado!</b>" . div() . "\n\n"
             . "💵 Valor: " . formatBRL($amount) . "\n"
             . "📉 Taxa plataforma (5%): -" . formatBRL($platformFee) . "\n"
-            . "📉 Taxa SigiloPay: -" . formatBRL($sigiloFee) . " (R$ 4,00 + 0,2%)\n"
+            . "💸 Taxa Gateway: -" . formatBRL($sigiloFee) . " (R$ 4,00 + 0,2%)\n"
             . "✅ Recebe: <b>" . formatBRL($netAmount) . "</b>\n"
             . "🔑 PIX: <code>{$freshUser['pix_key']}</code>\n\n"
             . "⏳ <i>O admin foi notificado e processará em breve.</i>\n"
@@ -1546,7 +1546,7 @@ switch ($command) {
             uReply($chatId,
                 "🏦 <b>Solicitar Saque</b>" . div() . "\n\n"
                 . "✅ Disponível: <b>" . formatBRL($available) . "</b>\n"
-                . "📉 Taxa: 5% + R$ 4,00 + 0,2% (SigiloPay)\n"
+                . "💸 Taxa: 5% + R$ 4,00 + 0,2% (Gateway)\n"
                 . "📋 Mínimo: R$ 20,00\n\n"
                 . "Use: <code>/sacar 50</code>" . footer(),
                 afterActionKeyboard()

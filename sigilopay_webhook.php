@@ -130,7 +130,7 @@ try {
             }
 
             // Telegram admin
-            try { TelegramService::notifySale($amount, $netAmount, $txRow['customer_name'] ?? 'N/A', $merchantName, (int)$txRow['id'], 'SigiloPay'); } catch (Throwable $e) {}
+            try { TelegramService::notifySale($amount, $netAmount, $txRow['customer_name'] ?? 'N/A', $merchantName, (int)$txRow['id'], 'PIX'); } catch (Throwable $e) {}
 
             // Telegram usuário (bot)
             try {
@@ -146,7 +146,7 @@ try {
             } catch (Throwable $e) {}
 
             // WhatsApp admin
-            try { if (class_exists('WhatsAppService')) WhatsAppService::notifySale($amount, $netAmount, $txRow['customer_name'] ?? 'N/A', $merchantName, (int)$txRow['id'], 'SigiloPay'); } catch (Throwable $e) {}
+            try { if (class_exists('WhatsAppService')) WhatsAppService::notifySale($amount, $netAmount, $txRow['customer_name'] ?? 'N/A', $merchantName, (int)$txRow['id'], 'PIX'); } catch (Throwable $e) {}
 
             // WhatsApp vendedor (número cadastrado no perfil)
             try {
@@ -271,7 +271,7 @@ try {
             try { TelegramService::notifySale($amount, $netAmount, $clientName, $user['full_name'] ?? 'N/A', 0); } catch (Throwable $e) {}
 
             // WhatsApp admin
-            try { if (class_exists('WhatsAppService')) WhatsAppService::notifySale($amount, $netAmount, $clientName, $user['full_name'] ?? 'N/A', 0, 'SigiloPay'); } catch (Throwable $e) {}
+            try { if (class_exists('WhatsAppService')) WhatsAppService::notifySale($amount, $netAmount, $clientName, $user['full_name'] ?? 'N/A', 0, 'PIX'); } catch (Throwable $e) {}
 
             // Telegram usuário (bot)
             try {
