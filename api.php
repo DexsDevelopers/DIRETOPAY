@@ -25,6 +25,9 @@ try {
         write_log('WARNING', 'PushService desativado devido a erro no vendor: ' . $e->getMessage());
     }
     require_once 'includes/TelegramService.php';
+    try {
+        require_once 'includes/WhatsAppService.php';
+    } catch (Throwable $e) {}
     require_once 'includes/BRPixService.php';
     require_once 'includes/IronPayService.php';
 
@@ -176,6 +179,11 @@ try {
             }
             $txId = (int)$pdo->lastInsertId();
             try { TelegramService::notifyNewCharge($amount, $user['full_name'] ?? 'N/A', $txId); } catch (Throwable $e) {}
+            try {
+                if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
+                    WhatsAppService::notifyPixGenerated($user['whatsapp'], $amount, 'Cliente API', 'Cobrança IronPay', $txId);
+                }
+            } catch (Throwable $e) {}
 
             Response::success(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
         } else {
@@ -229,6 +237,11 @@ try {
             }
             $txId = (int)$pdo->lastInsertId();
             try { TelegramService::notifyNewCharge($amount, $user['full_name'] ?? 'N/A', $txId); } catch (Throwable $e) {}
+            try {
+                if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
+                    WhatsAppService::notifyPixGenerated($user['whatsapp'], $amount, 'Cliente API', 'Cobrança BRPix', $txId);
+                }
+            } catch (Throwable $e) {}
             if (class_exists('PushService')) {
                 try { PushService::notifyAdmins('⚡ Nova Cobrança #' . $txId, 'R$ ' . number_format($amount, 2, ',', '.') . ' — ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {}
             }
@@ -324,6 +337,11 @@ try {
             }
             $txId = (int)$pdo->lastInsertId();
             try { TelegramService::notifyNewCharge($amount, $user['full_name'] ?? 'N/A', $txId); } catch (Throwable $e) {}
+            try {
+                if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
+                    WhatsAppService::notifyPixGenerated($user['whatsapp'], $amount, 'Cliente API', 'Cobrança SigiloPay', $txId);
+                }
+            } catch (Throwable $e) {}
             if (class_exists('PushService')) {
                 try { PushService::notifyAdmins('⚡ Nova Cobrança #' . $txId, 'R$ ' . number_format($amount, 2, ',', '.') . ' — ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {}
             }
