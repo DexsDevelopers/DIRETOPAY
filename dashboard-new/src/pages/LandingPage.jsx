@@ -184,6 +184,7 @@ function DashboardMockup() {
 
 function AwardCard({ icon: Icon, amount, name, desc, color, delay }) {
     const { isDark } = useTheme();
+    const [activePlate, setActivePlate] = useState(0);
     const palette = {
         platinum: { hex: isDark ? '#e2e8f0' : '#64748b', glow: 'rgba(100,116,139,0.15)', border: isDark ? 'rgba(226,232,240,0.2)' : 'rgba(100,116,139,0.25)', bg: isDark ? 'rgba(226,232,240,0.06)' : 'rgba(100,116,139,0.06)', badge: 'PLATINUM' },
         gold:     { hex: '#f59e0b', glow: 'rgba(245,158,11,0.18)',  border: 'rgba(245,158,11,0.3)',   bg: isDark ? 'rgba(245,158,11,0.07)'  : 'rgba(245,158,11,0.06)',  badge: 'GOLD' },
@@ -229,6 +230,7 @@ function AwardCard({ icon: Icon, amount, name, desc, color, delay }) {
 
 function RankingItem({ position, name, sales, amount, avatar, type }) {
     const { isDark } = useTheme();
+    const [activePlate, setActivePlate] = useState(0);
     const badgeStyles = {
         gold:    'bg-yellow-400/20 text-yellow-500 border-yellow-400/40',
         silver:  'bg-gray-200/60  text-gray-500  border-gray-300/60',
@@ -269,6 +271,7 @@ function RankingItem({ position, name, sales, amount, avatar, type }) {
 
 function FeatureCard({ icon: Icon, title, desc, delay = 0 }) {
     const { isDark } = useTheme();
+    const [activePlate, setActivePlate] = useState(0);
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ delay, duration: 0.5 }}
@@ -344,12 +347,62 @@ function ThemeToggle() {
     );
 }
 
+
+const MILESTONE_PLATES = [
+    {
+        id: '10k',
+        amount: '10K',
+        title: 'Ao você faturar',
+        badge: '10k',
+        desc: 'Primeira prova de que o jogo é real. Você saiu do zero.',
+        subdesc: 'Ao faturar R$ 10.000 na DiretoPay, você garante a nossa primeira placa física exclusiva para marcar o início da sua jornada.',
+        image: '/assets/placa-10k-D-keX8kW.webp'
+    },
+    {
+        id: '100k',
+        amount: '100K',
+        title: 'Ao você faturar',
+        badge: '100k',
+        desc: 'A consistência gera escala. Você provou que seu método funciona.',
+        subdesc: 'O marco dos seis dígitos faturados. Uma placa de metal premium para consolidar o crescimento do seu negócio.',
+        image: '/assets/placa-100k-L8htTMxu.webp'
+    },
+    {
+        id: '250k',
+        amount: '250K',
+        title: 'Ao você faturar',
+        badge: '250k',
+        desc: 'O caminho da consolidação. Seu negócio atinge o profissionalismo.',
+        subdesc: 'Bater R$ 250.000 faturados te coloca em um patamar de alto nível. Receba a placa de acrílico premium na sua casa.',
+        image: '/assets/placa-250k-p9cuG3oH.webp'
+    },
+    {
+        id: '500k',
+        amount: '500K',
+        title: 'Ao você faturar',
+        badge: '500k',
+        desc: 'Meio caminho para o milhão. Um feito para quem joga grande.',
+        subdesc: 'Meio milhão de reais faturados na DiretoPay. Você garante nossa placa de luxo exclusiva e mentoria direta com os fundadores.',
+        image: '/assets/placa-500k-Dywjx6p8.webp'
+    },
+    {
+        id: '1m',
+        amount: '1M',
+        title: 'Ao você faturar',
+        badge: '1M',
+        desc: 'O topo absoluto. O clube dos sete dígitos é o seu lugar.',
+        subdesc: 'Um milhão de reais faturados! O troféu Black definitivo para eternizar sua conquista no topo do mercado digital.',
+        image: '/assets/placa-1milhao-D7KkbHhg.webp'
+    }
+];
+
 // ===== COMPONENTE PRINCIPAL =====
 
 export default function LandingPage() {
     const [onlineUsers, setOnlineUsers] = useState(2348);
     const [scrolled, setScrolled] = useState(false);
     const { isDark } = useTheme();
+    const [activePlate, setActivePlate] = useState(0);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -488,8 +541,8 @@ export default function LandingPage() {
                 {/* decorative glows */}
                 <div className={`absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none ${isDark ? 'bg-yellow-500/5' : 'bg-yellow-300/20'}`} />
                 <div className={`absolute bottom-0 right-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none ${isDark ? 'bg-emerald-700/8' : 'bg-emerald-300/20'}`} />
-                <div className={`absolute top-1/2 left-0 w-72 h-72 rounded-full blur-[100px] pointer-events-none ${isDark ? 'bg-emerald-900/10' : 'bg-emerald-100/40'}`} />
-                <div className="max-w-7xl mx-auto relative z-10">
+                
+                <div className="max-w-6xl mx-auto relative z-10">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-sm font-black mb-6">
@@ -500,11 +553,122 @@ export default function LandingPage() {
                         <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
                             className="text-gray-500 text-lg">Reconhecemos sua performance com prêmios exclusivos. Cada marco é uma conquista celebrada.</motion.p>
                     </div>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <AwardCard icon={Medal} amount="100 Mil" name="Direto Platinum" desc="Para quem transforma os primeiros 100 mil em apenas o começo." color="platinum" delay={0.1} />
-                        <AwardCard icon={Trophy} amount="500 Mil" name="Direto Gold" desc="Reconhece a ousadia de quem encara grandes desafios." color="gold" delay={0.2} />
-                        <AwardCard icon={Crown} amount="1 Milhão" name="Direto Wine" desc="Celebra a excelência rara e sofisticação estratégica." color="wine" delay={0.3} />
-                        <AwardCard icon={Gem} amount="5 Milhões" name="Direto Emerald" desc="Para quem chega aos 5 milhões não por acaso, mas por legado." color="emerald" delay={0.4} />
+
+                    {/* Interactive Plate Carousel Block */}
+                    <div className={`grid lg:grid-cols-2 gap-12 items-center p-8 sm:p-12 rounded-[40px] border ${isDark ? 'bg-[#13131c]/60 border-white/5' : 'bg-white border-gray-200'} shadow-2xl relative`}>
+                        {/* Lado Esquerdo - Informacoes */}
+                        <div className="space-y-8 flex flex-col justify-center">
+                            <div>
+                                <span className="text-xs font-black text-gray-400 uppercase tracking-widest">
+                                    {MILESTONE_PLATES[activePlate].title}
+                                </span>
+                                
+                                <div className="mt-3 flex items-center gap-3">
+                                    <motion.div 
+                                        key={activePlate}
+                                        initial={{ scale: 0.9, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        className={`px-6 py-2 text-3xl sm:text-4xl font-[1000] rounded-2xl w-fit tracking-tight border ${
+                                            isDark 
+                                                ? 'bg-emerald-950/30 text-primary border-emerald-500/30 shadow-[0_0_20px_rgba(30,164,101,0.15)]'
+                                                : 'bg-emerald-50 text-primary border-emerald-200'
+                                        }`}
+                                    >
+                                        {MILESTONE_PLATES[activePlate].amount}
+                                    </motion.div>
+                                </div>
+                            </div>
+
+                            {/* Card com o premio */}
+                            <motion.div
+                                key={`perk-${activePlate}`}
+                                initial={{ x: -20, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ duration: 0.4 }}
+                                className={`p-6 rounded-3xl border flex gap-4 ${
+                                    isDark ? 'bg-white/[0.02] border-white/5' : 'bg-gray-50 border-gray-100'
+                                }`}
+                            >
+                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${
+                                    isDark ? 'bg-emerald-500/10 text-primary' : 'bg-emerald-50 text-primary'
+                                }`}>
+                                    <Trophy size={20} className="fill-current" />
+                                </div>
+                                <div className="space-y-1">
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Você recebe</span>
+                                    <p className={`text-sm sm:text-base font-black leading-snug ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                        {MILESTONE_PLATES[activePlate].desc}
+                                    </p>
+                                    <p className="text-xs text-gray-500 leading-normal mt-2 font-medium">
+                                        {MILESTONE_PLATES[activePlate].subdesc}
+                                    </p>
+                                </div>
+                            </motion.div>
+
+                            {/* Controles de Navegacao */}
+                            <div className="flex flex-col gap-4">
+                                {/* Tab list */}
+                                <div className="flex flex-wrap gap-2">
+                                    {MILESTONE_PLATES.map((plate, index) => (
+                                        <button
+                                            key={plate.id}
+                                            onClick={() => setActivePlate(index)}
+                                            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all ${
+                                                activePlate === index
+                                                    ? 'bg-primary text-black border-primary shadow-[0_4px_12px_rgba(30,164,101,0.25)]'
+                                                    : isDark
+                                                        ? 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
+                                                        : 'bg-gray-100 border-gray-200 text-gray-500 hover:text-gray-900'
+                                            }`}
+                                        >
+                                            {plate.amount}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {/* Dots */}
+                                <div className="flex items-center gap-2 pt-2">
+                                    {MILESTONE_PLATES.map((_, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => setActivePlate(index)}
+                                            className={`h-2.5 rounded-full transition-all duration-300 ${
+                                                activePlate === index 
+                                                    ? 'w-6 bg-primary' 
+                                                    : 'w-2.5 bg-gray-400/40 hover:bg-gray-400/70'
+                                            }`}
+                                            title={`Ver placa ${MILESTONE_PLATES[index].amount}`}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Lado Direito - Imagem da Placa */}
+                        <div className="flex flex-col items-center justify-center relative">
+                            {/* Ambient glow behind image */}
+                            <div className="absolute inset-0 bg-primary/10 rounded-full blur-[80px] pointer-events-none" />
+
+                            <motion.div
+                                key={`image-${activePlate}`}
+                                initial={{ scale: 0.9, opacity: 0, y: 10 }}
+                                animate={{ scale: 1, opacity: 1, y: 0 }}
+                                transition={{ type: "spring", stiffness: 100, damping: 15 }}
+                                className="relative w-full max-w-[280px] aspect-[3/4] flex items-center justify-center"
+                            >
+                                <img
+                                    src={MILESTONE_PLATES[activePlate].image}
+                                    alt={`Placa de ${MILESTONE_PLATES[activePlate].amount} faturados DiretoPay`}
+                                    className="w-full h-full object-contain filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] select-none pointer-events-none"
+                                />
+                            </motion.div>
+
+                            {/* Entregas tag */}
+                            <div className="mt-8 flex items-center gap-2 text-[10px] sm:text-xs font-black text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full uppercase tracking-wider">
+                                <Trophy size={14} className="fill-current" />
+                                Mais de 500 placas já entregues para nossos sellers!
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
