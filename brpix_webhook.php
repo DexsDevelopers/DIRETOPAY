@@ -2,7 +2,7 @@
 /**
  * BRPix Webhook Receiver
  * Processa eventos charge.paid enviados pela BRPix Solutions.
- * Configure no dashboard BRPix: URL = https://lunarpay.site/brpix_webhook.php
+ * Configure no dashboard BRPix: URL = https://diretopay.com.br/brpix_webhook.php
  * Eventos: charge.paid
  */
 
@@ -18,7 +18,7 @@ try {
     // Verificação de URL — BRPix pode enviar GET/HEAD para validar o endpoint
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         http_response_code(200);
-        echo json_encode(['ok' => true, 'service' => 'LunarPay BRPix Webhook']);
+        echo json_encode(['ok' => true, 'service' => 'DiretoPay BRPix Webhook']);
         exit;
     }
 
@@ -211,7 +211,7 @@ try {
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_POST           => true,
                         CURLOPT_POSTFIELDS     => json_encode($cbPayload),
-                        CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'User-Agent: LunarPay-Webhook/1.0', 'X-LunarPay-Event: payment.completed'],
+                        CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'User-Agent: DiretoPay-Webhook/1.0', 'X-DiretoPay-Event: payment.completed'],
                         CURLOPT_TIMEOUT        => 10,
                         CURLOPT_CONNECTTIMEOUT => 5,
                     ]);

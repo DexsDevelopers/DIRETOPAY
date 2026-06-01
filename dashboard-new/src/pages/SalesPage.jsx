@@ -57,7 +57,7 @@ function DetailView({ tx, onBack }) {
             <div className="bg-white border border-gray-100 rounded-3xl p-6">
                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-3">Método de pagamento</p>
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#C0006A,#8B0045)' }}>
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#1ea465,#126b41)' }}>
                         <QrCode size={16} className="text-white" />
                     </div>
                     <span className="font-black text-gray-900">Pix</span>
@@ -69,7 +69,7 @@ function DetailView({ tx, onBack }) {
                 <div className="bg-white border border-gray-100 rounded-3xl p-6">
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-4">Informações do comprador</p>
                     <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-black text-white shrink-0" style={{ background: 'linear-gradient(135deg,#C0006A,#8B0045)' }}>
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-black text-white shrink-0" style={{ background: 'linear-gradient(135deg,#1ea465,#126b41)' }}>
                             {(tx.customer_name || 'C')[0].toUpperCase()}
                         </div>
                         <div>

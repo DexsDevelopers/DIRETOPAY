@@ -47,7 +47,7 @@ class UtmifyService
 
         // Produto
         $productId      = (string)($product['id']    ?? $transaction['id'] ?? '0');
-        $productName    = $product['name']            ?? 'Produto LunarPay';
+        $productName    = $product['name']            ?? 'Produto DiretoPay';
         $planId         = (string)($product['plan_id'] ?? $productId);
         $planName       = $product['plan_name']       ?? $productName;
 
@@ -66,7 +66,7 @@ class UtmifyService
             'isTest'        => $isTest,
             'status'        => 'paid',
             'orderId'       => (string)($transaction['pix_id'] ?? $transaction['id']),
-            'platform'      => 'LunarPay',
+            'platform'      => 'DiretoPay',
             'createdAt'     => $createdAt,
             'approvedDate'  => $approvedAt,
             'refundedAt'    => null,
@@ -110,13 +110,13 @@ class UtmifyService
             'isTest'        => false,
             'status'        => 'refunded',
             'orderId'       => (string)($transaction['pix_id'] ?? $transaction['id']),
-            'platform'      => 'LunarPay',
+            'platform'      => 'DiretoPay',
             'createdAt'     => $transaction['created_at']  ?? date('Y-m-d H:i:s'),
             'approvedDate'  => $transaction['updated_at']  ?? date('Y-m-d H:i:s'),
             'refundedAt'    => date('Y-m-d H:i:s'),
             'paymentMethod' => 'pix',
             'customer'      => ['name' => $transaction['customer_name'] ?? '', 'email' => '', 'phone' => null, 'country' => 'BR', 'document' => null],
-            'products'      => [['id' => '0', 'name' => 'Produto LunarPay', 'planId' => '0', 'planName' => 'Produto', 'quantity' => 1, 'priceInCents' => (int)round((float)($transaction['amount_brl'] ?? 0) * 100)]],
+            'products'      => [['id' => '0', 'name' => 'Produto DiretoPay', 'planId' => '0', 'planName' => 'Produto', 'quantity' => 1, 'priceInCents' => (int)round((float)($transaction['amount_brl'] ?? 0) * 100)]],
             'commission'    => ['totalPriceInCents' => 0, 'gatewayFeeInCents' => 0, 'userCommissionInCents' => 0],
             'trackingParameters' => ['sck' => null, 'src' => null, 'utm_term' => null, 'utm_medium' => null, 'utm_source' => null, 'utm_content' => null, 'utm_campaign' => null],
         ];
@@ -141,7 +141,7 @@ class UtmifyService
             CURLOPT_HTTPHEADER     => [
                 'Content-Type: application/json',
                 'x-api-token: ' . $apiToken,
-                'User-Agent: LunarPay/1.0',
+                'User-Agent: DiretoPay/1.0',
             ],
             CURLOPT_TIMEOUT        => 10,
             CURLOPT_CONNECTTIMEOUT => 5,

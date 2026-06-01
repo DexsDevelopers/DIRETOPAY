@@ -13,7 +13,7 @@ class IronPayService
         float  $amountBrl,
         string $externalId,
         array  $customer,
-        string $description = 'Pagamento LunarPay',
+        string $description = 'Pagamento DiretoPay',
         int    $expireDays  = 1
     ): array {
         $token       = defined('IRONPAY_TOKEN')        ? IRONPAY_TOKEN        : '';
@@ -27,7 +27,7 @@ class IronPayService
         $cpf = preg_replace('/\D/', '', $customer['document'] ?? '');
         if (empty($cpf)) $cpf = '00000000000';
         $name  = !empty($customer['name'])  ? $customer['name']  : 'Cliente';
-        $email = !empty($customer['email']) ? $customer['email'] : 'cliente@lunarpay.site';
+        $email = !empty($customer['email']) ? $customer['email'] : 'cliente@diretopay.com.br';
 
         $body = json_encode([
             'amount'              => $amountCents,
@@ -36,7 +36,7 @@ class IronPayService
             'installments'        => 1,
             'expire_in_days'      => $expireDays,
             'transaction_origin'  => 'api',
-            'postback_url'        => 'https://lunarpay.site/ironpay_webhook.php',
+            'postback_url'        => 'https://diretopay.com.br/ironpay_webhook.php',
             'customer' => [
                 'name'         => $name,
                 'email'        => $email,
@@ -55,7 +55,7 @@ class IronPayService
             'tracking' => [
                 'src'          => '',
                 'utm_source'   => 'api',
-                'utm_medium'   => 'lunarpay',
+                'utm_medium'   => 'diretopay',
                 'utm_campaign' => $externalId,
                 'utm_term'     => '',
                 'utm_content'  => '',

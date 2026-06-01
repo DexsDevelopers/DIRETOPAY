@@ -56,6 +56,26 @@ $stmt->execute([$email]);
 $user = $stmt->fetch();
 
 if (!$user) {
+    // ── Validação rigorosa contra injeção e contas de pentest ──────────
+    $clientIp = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+    $injectionPatterns = ["'", '"', '--', ';', 'SLEEP', 'SELECT', 'DROP', 'INSERT', 'UPDATE', 'DELETE', 'UNION', 'EXEC', '<script', '0x', '#'];
+    foreach ($injectionPatterns as $pattern) {
+        if (stripos($name, $pattern) !== false || stripos($email, $pattern) !== false) {
+            write_log('SECURITY', 'Tentativa de injection no SSO', ['ip' => $clientIp, 'name' => $name, 'email' => $email]);
+            header('Location: /login?error=invalid_payload');
+            exit;
+        }
+    }
+
+    $pentestKeywords = ['pentest', 'bugbounty', 'sqltest', 'bbadmin', 'bbtest', 'admintest'];
+    foreach ($pentestKeywords as $keyword) {
+        if (stripos($name, $keyword) !== false || stripos($email, $keyword) !== false) {
+            write_log('SECURITY', 'SSO bloqueado: palavra reservada detectada', ['ip' => $clientIp, 'name' => $name, 'email' => $email]);
+            header('Location: /login?error=invalid_payload');
+            exit;
+        }
+    }
+
     // Auto-create account
     $randomPass = password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT);
     $defTaxStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'default_user_tax'");

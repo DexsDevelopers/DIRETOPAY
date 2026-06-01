@@ -96,9 +96,17 @@ if (!empty($newPassword)) {
 }
 
 try {
+    $oldWhatsapp = $user['whatsapp'] ?? '';
+    
     // Atualizar dados básicos + método de saque + ID 7K + token UTMify + WhatsApp
     $updateStmt = $pdo->prepare("UPDATE users SET full_name = ?, pix_key = ?, withdraw_method = ?, crypto_address = ?, crypto_network = ?, seven_k_id = ?, utmify_api_token = ?, whatsapp = ? WHERE id = ?");
     $updateStmt->execute([$fullName, $pixKey, $withdrawMethod, $cryptoAddress, $cryptoNetwork, $sevenKId, $utmifyToken, $whatsapp, $userId]);
+
+    // Envia mensagem de boas-vindas caso seja um novo número cadastrado
+    if (!empty($whatsapp) && $whatsapp !== $oldWhatsapp) {
+        require_once 'includes/WhatsAppService.php';
+        WhatsAppService::sendWelcomeMessage($whatsapp, $fullName);
+    }
 
     // Atualizar senha se fornecida
     if (!empty($newPassword)) {

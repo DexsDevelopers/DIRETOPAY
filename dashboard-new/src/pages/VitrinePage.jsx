@@ -406,7 +406,7 @@ export default function VitrinePage() {
         <div className="flex-1 min-w-0">
           <p className="text-sm font-black text-green-400 mb-1">🛡️ Compra Protegida pela Plataforma</p>
           <p className="text-[13px] text-gray-700 leading-relaxed">
-            <strong className="text-gray-900">Todos os produtos possuem segurança LunarPay.</strong>{' '}
+            <strong className="text-gray-900">Todos os produtos possuem segurança DiretoPay.</strong>{' '}
             O pagamento ao vendedor só é liberado após a confirmação de entrega do produto. Compre com tranquilidade e segurança total.
           </p>
         </div>

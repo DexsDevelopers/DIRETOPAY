@@ -28,6 +28,7 @@ export default function AdminSaquesPage() {
     const [loading, setLoading]         = useState(true);
     const [search, setSearch]           = useState('');
     const [statusFilter, setStatusFilter] = useState('pending');
+    const [nominalFilter, setNominalFilter] = useState('');
     const [actionLoading, setActionLoading] = useState(null);
     const [txInputs, setTxInputs]       = useState({});
     const [copied, setCopied]           = useState(null);
@@ -38,18 +39,27 @@ export default function AdminSaquesPage() {
         try {
             const params = new URLSearchParams({ status: statusFilter, search });
             if (dateFilter) params.append('date', dateFilter);
+            if (nominalFilter) params.append('nominal', nominalFilter);
             const res  = await fetch(`/get_admin_withdrawals.php?${params}`);
             const json = await res.json();
             if (json.success) setData(json);
         } catch (e) { console.error('AdminSaques fetch error:', e); }
         finally { setLoading(false); }
-    }, [statusFilter, search, dateFilter]);
+    }, [statusFilter, search, dateFilter, nominalFilter]);
 
     useEffect(() => { fetchData(); }, [fetchData]);
 
     const copyPix = (key) => {
         navigator.clipboard.writeText(key);
         setCopied(key);
+        setTimeout(() => setCopied(null), 1500);
+    };
+
+    const copyWithdrawalDetails = (w) => {
+        const gatewayLabel = w.nominal === 'nominal3' ? 'Nominal 3' : (w.nominal === 'nominal2' ? 'Nominal 2' : 'Nominal 1');
+        const text = `Nome: ${w.full_name}\nEmail: ${w.email}\nChave Pix: ${w.pix_key}\nValor: R$ ${fmt(w.amount)}\nGateway: ${gatewayLabel}`;
+        navigator.clipboard.writeText(text);
+        setCopied(`details-${w.id}`);
         setTimeout(() => setCopied(null), 1500);
     };
 
@@ -106,6 +116,20 @@ export default function AdminSaquesPage() {
                     </div>
                     <p className="text-2xl font-black text-amber-400">{stats?.pending_count ?? '—'}</p>
                     <p className="text-xs text-gray-400 mt-1">R$ {fmt(stats?.pending_amount)}</p>
+                    <div className="mt-3 pt-2 border-t border-gray-100/50 flex flex-col gap-1 text-[10px] font-bold text-gray-400">
+                        <div className="flex justify-between">
+                            <span>Nominal 1:</span>
+                            <span className="text-purple-500">R$ {fmt(stats?.pending_nominal1_amount)} ({stats?.pending_nominal1_count})</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>Nominal 2:</span>
+                            <span className="text-cyan-500">R$ {fmt(stats?.pending_nominal2_amount)} ({stats?.pending_nominal2_count})</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>Nominal 3:</span>
+                            <span className="text-emerald-500">R$ {fmt(stats?.pending_nominal3_amount)} ({stats?.pending_nominal3_count})</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
@@ -197,6 +221,22 @@ export default function AdminSaquesPage() {
                         </button>
                     ))}
                 </div>
+                <div className="flex gap-2 sm:border-l sm:border-gray-100 sm:pl-3">
+                    {[['','Todos Gateways'],['nominal1','Nominal 1'],['nominal2','Nominal 2'],['nominal3','Nominal 3']].map(([val, label]) => (
+                        <button
+                            key={val}
+                            onClick={() => setNominalFilter(val)}
+                            className={cn(
+                                'px-3 py-2.5 rounded-xl text-xs font-black border transition-all',
+                                nominalFilter === val
+                                    ? 'bg-primary/15 text-primary border-primary/20'
+                                    : 'bg-gray-50 text-gray-400 border-gray-200 hover:text-gray-900 hover:bg-gray-100'
+                            )}
+                        >
+                            {label}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {/* ── List ── */}
@@ -231,6 +271,29 @@ export default function AdminSaquesPage() {
                                             {w.type === 'pix_transfer' && w.description && (
                                                 <p className="text-[10px] text-violet-500 font-medium mt-0.5">Descrição: {w.description}</p>
                                             )}
+                                            <div className="mt-1">
+                                                {w.status === 'pending' ? (
+                                                    <select
+                                                        value={w.nominal}
+                                                        onChange={e => handleAction('update_withdraw_nominal', { withdraw_id: w.id, nominal: e.target.value })}
+                                                        className={cn(
+                                                            "px-2 py-0.5 rounded-lg text-[9px] font-black uppercase border cursor-pointer outline-none bg-white",
+                                                            w.nominal === 'nominal3' ? "text-emerald-400 border-emerald-500/20" : (w.nominal === 'nominal2' ? "text-cyan-400 border-cyan-500/20" : "text-purple-400 border-purple-500/20")
+                                                        )}
+                                                    >
+                                                        <option value="nominal1">Nominal 1</option>
+                                                        <option value="nominal2">Nominal 2</option>
+                                                        <option value="nominal3">Nominal 3</option>
+                                                    </select>
+                                                ) : (
+                                                    <span className={cn(
+                                                        "inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase border",
+                                                        w.nominal === 'nominal3' ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : (w.nominal === 'nominal2' ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" : "bg-purple-500/10 text-purple-400 border border-purple-500/20")
+                                                    )}>
+                                                        {w.nominal === 'nominal3' ? 'Nominal 3' : (w.nominal === 'nominal2' ? 'Nominal 2' : 'Nominal 1')}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
                                         <div className="text-right shrink-0">
                                             <p className="text-lg font-black text-emerald-400">R$ {fmt(w.amount)}</p>
@@ -243,34 +306,48 @@ export default function AdminSaquesPage() {
 
                                     <div className="flex items-center gap-2">
                                         <code className="flex-1 bg-gray-50 border border-gray-100 rounded-lg px-3 py-1.5 text-xs font-mono text-primary truncate">{w.pix_key}</code>
-                                        <button onClick={() => copyPix(w.pix_key)} className="p-2 bg-gray-50 rounded-lg text-gray-400 shrink-0">
+                                        <button onClick={() => copyPix(w.pix_key)} title="Copiar Chave Pix" className="p-2 bg-gray-50 rounded-lg text-gray-400 shrink-0">
                                             {copied === w.pix_key ? <CheckCircle size={13} className="text-emerald-400" /> : <Copy size={13} />}
+                                        </button>
+                                        <button onClick={() => copyWithdrawalDetails(w)} title="Copiar Detalhes Completos" className="p-2 bg-gray-50 rounded-lg text-gray-400 hover:text-gray-900 transition-colors shrink-0 flex items-center gap-1 text-[10px] font-bold">
+                                            {copied === `details-${w.id}` ? <CheckCircle size={13} className="text-emerald-400" /> : <Copy size={13} />}
                                         </button>
                                     </div>
 
                                     {w.status === 'pending' && (
-                                        <div className="flex items-center gap-2">
-                                            <input
-                                                id={`tx-m-${w.id}`}
-                                                value={txInputs[w.id] || ''}
-                                                onChange={e => setTxInputs(p => ({ ...p, [w.id]: e.target.value }))}
-                                                placeholder="Hash da transação (opcional)"
-                                                className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-700 focus:outline-none focus:border-emerald-500/30 font-mono"
-                                            />
-                                            <button
-                                                onClick={() => handleAction('complete_withdraw', { withdraw_id: w.id, tx_hash: txInputs[w.id] || '' })}
-                                                disabled={!!actionLoading}
-                                                className="bg-emerald-500 text-white px-3 py-2 rounded-lg font-black text-xs shrink-0 disabled:opacity-50"
-                                            >
-                                                {actionLoading === `complete_withdraw-${w.id}` ? <Loader2 size={12} className="animate-spin" /> : 'PAGO'}
-                                            </button>
-                                            <button
-                                                onClick={() => handleAction('reject_withdraw', { withdraw_id: w.id })}
-                                                disabled={!!actionLoading}
-                                                className="bg-red-500/10 text-red-400 border border-red-500/20 px-3 py-2 rounded-lg font-black text-xs shrink-0 disabled:opacity-50"
-                                            >
-                                                {actionLoading === `reject_withdraw-${w.id}` ? <Loader2 size={12} className="animate-spin" /> : 'NEGAR'}
-                                            </button>
+                                        <div className="flex flex-col gap-2">
+                                            {w.nominal === 'nominal3' && (
+                                                <button
+                                                    onClick={() => handleAction('payout_withdraw_misticpay', { withdraw_id: w.id })}
+                                                    disabled={!!actionLoading}
+                                                    className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-lg font-black text-xs disabled:opacity-50 flex items-center justify-center gap-1 active:scale-95 transition-all"
+                                                >
+                                                    {actionLoading === `payout_withdraw_misticpay-${w.id}` ? <Loader2 size={12} className="animate-spin" /> : 'PAGAMENTO AUTOMATICO'}
+                                                </button>
+                                            )}
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    id={`tx-m-${w.id}`}
+                                                    value={txInputs[w.id] || ''}
+                                                    onChange={e => setTxInputs(p => ({ ...p, [w.id]: e.target.value }))}
+                                                    placeholder="Hash da transação (opcional)"
+                                                    className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-700 focus:outline-none focus:border-emerald-500/30 font-mono"
+                                                />
+                                                <button
+                                                    onClick={() => handleAction('complete_withdraw', { withdraw_id: w.id, tx_hash: txInputs[w.id] || '' })}
+                                                    disabled={!!actionLoading}
+                                                    className="bg-emerald-500 text-white px-3 py-2 rounded-lg font-black text-xs shrink-0 disabled:opacity-50"
+                                                >
+                                                    {actionLoading === `complete_withdraw-${w.id}` ? <Loader2 size={12} className="animate-spin" /> : 'PAGO'}
+                                                </button>
+                                                <button
+                                                    onClick={() => handleAction('reject_withdraw', { withdraw_id: w.id })}
+                                                    disabled={!!actionLoading}
+                                                    className="bg-red-500/10 text-red-400 border border-red-500/20 px-3 py-2 rounded-lg font-black text-xs shrink-0 disabled:opacity-50"
+                                                >
+                                                    {actionLoading === `reject_withdraw-${w.id}` ? <Loader2 size={12} className="animate-spin" /> : 'NEGAR'}
+                                                </button>
+                                            </div>
                                         </div>
                                     )}
                                     {w.tx_hash && (
@@ -309,6 +386,29 @@ export default function AdminSaquesPage() {
                                                 {w.type === 'pix_transfer' && w.description && (
                                                     <p className="text-[10px] text-violet-500 font-medium mt-0.5">Desc: {w.description}</p>
                                                 )}
+                                                <div className="mt-1">
+                                                    {w.status === 'pending' ? (
+                                                        <select
+                                                            value={w.nominal}
+                                                            onChange={e => handleAction('update_withdraw_nominal', { withdraw_id: w.id, nominal: e.target.value })}
+                                                            className={cn(
+                                                                "px-2 py-0.5 rounded-lg text-[9px] font-black uppercase border cursor-pointer outline-none bg-white",
+                                                                w.nominal === 'nominal3' ? "text-emerald-400 border-emerald-500/20" : (w.nominal === 'nominal2' ? "text-cyan-400 border-cyan-500/20" : "text-purple-400 border-purple-500/20")
+                                                            )}
+                                                        >
+                                                            <option value="nominal1">Nominal 1</option>
+                                                            <option value="nominal2">Nominal 2</option>
+                                                            <option value="nominal3">Nominal 3</option>
+                                                        </select>
+                                                    ) : (
+                                                        <span className={cn(
+                                                            "inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase border",
+                                                            w.nominal === 'nominal3' ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : (w.nominal === 'nominal2' ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" : "bg-purple-500/10 text-purple-400 border border-purple-500/20")
+                                                        )}>
+                                                            {w.nominal === 'nominal3' ? 'Nominal 3' : (w.nominal === 'nominal2' ? 'Nominal 2' : 'Nominal 1')}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td className="p-5 text-center">
                                                 <div className="flex flex-col items-center">
@@ -323,8 +423,12 @@ export default function AdminSaquesPage() {
                                             <td className="p-5">
                                                 <div className="flex items-center gap-2">
                                                     <code className="bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-lg text-xs font-mono text-primary max-w-[180px] truncate">{w.pix_key}</code>
-                                                    <button onClick={() => copyPix(w.pix_key)} className="p-1.5 bg-gray-50 rounded-lg text-gray-400 hover:text-gray-900 transition-colors shrink-0">
+                                                    <button onClick={() => copyPix(w.pix_key)} title="Copiar Chave Pix" className="p-1.5 bg-gray-50 rounded-lg text-gray-400 hover:text-gray-900 transition-colors shrink-0">
                                                         {copied === w.pix_key ? <CheckCircle size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                                                    </button>
+                                                    <button onClick={() => copyWithdrawalDetails(w)} title="Copiar Detalhes Completos" className="p-1.5 bg-gray-50 rounded-lg text-gray-400 hover:text-gray-900 transition-colors shrink-0 flex items-center gap-1 text-[10px] font-bold">
+                                                        {copied === `details-${w.id}` ? <CheckCircle size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                                                        <span>Detalhes</span>
                                                     </button>
                                                 </div>
                                             </td>
@@ -340,6 +444,15 @@ export default function AdminSaquesPage() {
                                             <td className="p-5 pr-6">
                                                 {w.status === 'pending' ? (
                                                     <div className="flex items-center justify-end gap-2">
+                                                        {w.nominal === 'nominal3' && (
+                                                            <button
+                                                                onClick={() => handleAction('payout_withdraw_misticpay', { withdraw_id: w.id })}
+                                                                disabled={!!actionLoading}
+                                                                className="bg-emerald-500 text-white px-4 py-2 rounded-xl font-black text-xs hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-1 shrink-0"
+                                                            >
+                                                                {actionLoading === `payout_withdraw_misticpay-${w.id}` ? <Loader2 size={12} className="animate-spin" /> : <><CheckCircle size={12} /> PAGAMENTO AUTOMATICO</>}
+                                                            </button>
+                                                        )}
                                                         <input
                                                             value={txInputs[w.id] || ''}
                                                             onChange={e => setTxInputs(p => ({ ...p, [w.id]: e.target.value }))}
@@ -349,14 +462,14 @@ export default function AdminSaquesPage() {
                                                         <button
                                                             onClick={() => handleAction('complete_withdraw', { withdraw_id: w.id, tx_hash: txInputs[w.id] || '' })}
                                                             disabled={!!actionLoading}
-                                                            className="bg-emerald-500 text-white px-4 py-2 rounded-xl font-black text-xs hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-1"
+                                                            className="bg-emerald-500 text-white px-4 py-2 rounded-xl font-black text-xs hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-1 shrink-0"
                                                         >
                                                             {actionLoading === `complete_withdraw-${w.id}` ? <Loader2 size={12} className="animate-spin" /> : <><CheckCircle size={12} /> PAGO</>}
                                                         </button>
                                                         <button
                                                             onClick={() => handleAction('reject_withdraw', { withdraw_id: w.id })}
                                                             disabled={!!actionLoading}
-                                                            className="bg-red-500/10 text-red-400 border border-red-500/20 px-4 py-2 rounded-xl font-black text-xs hover:bg-red-500 hover:text-white transition-all disabled:opacity-50 flex items-center gap-1"
+                                                            className="bg-red-500/10 text-red-400 border border-red-500/20 px-4 py-2 rounded-xl font-black text-xs hover:bg-red-500 hover:text-white transition-all disabled:opacity-50 flex items-center gap-1 shrink-0"
                                                         >
                                                             {actionLoading === `reject_withdraw-${w.id}` ? <Loader2 size={12} className="animate-spin" /> : <><XCircle size={12} /> NEGAR</>}
                                                         </button>

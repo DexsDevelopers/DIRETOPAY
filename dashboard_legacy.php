@@ -221,7 +221,7 @@ elseif ($approvalRate >= 50) $approvalBadgeClass = 'ghost-yellow';
                             <p style="color: var(--text-2); font-size: 0.85rem;">Para começar a movimentar e gerar cobranças, sua conta precisa ser verificada.</p>
                         </div>
                     </div>
-                    <a href="https://wa.me/5511998627674?text=Ol%C3%A1%2C%20gostaria%20de%20ativar%20minha%20conta%20na%20LunarPay!%20Meu%20email%3A%20<?php echo urlencode($user['email']); ?>" 
+                    <a href="https://wa.me/5511998627674?text=Ol%C3%A1%2C%20gostaria%20de%20ativar%20minha%20conta%20na%20DiretoPay!%20Meu%20email%3A%20<?php echo urlencode($user['email']); ?>" 
                        target="_blank" 
                        class="badge paid" 
                        style="display: flex; align-items: center; gap: 8px; text-decoration: none; padding: 10px 18px; font-weight: 600; background: #25d366; color: #000; border: none; font-size: 0.85rem;">

@@ -1,7 +1,7 @@
 {
-  "name": "lunarpay-whatsapp-bridge",
+  "name": "diretopay-whatsapp-bridge",
   "version": "1.0.0",
-  "description": "Bridge WhatsApp para LunarPay — sem mensalidade, 100% próprio (Baileys)",
+  "description": "Bridge WhatsApp para DiretoPay — sem mensalidade, 100% próprio (Baileys)",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

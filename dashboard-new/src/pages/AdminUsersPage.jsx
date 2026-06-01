@@ -53,19 +53,20 @@ export default function AdminUsersPage() {
     const [loading, setLoading]               = useState(true);
     const [search, setSearch]                 = useState('');
     const [statusFilter, setStatusFilter]     = useState('');
+    const [orderBy, setOrderBy]               = useState('recent');
     const [actionLoading, setActionLoading]   = useState(null);
     const [showFakeWithdrawModal, setShowFakeWithdrawModal] = useState(null);
 
     const fetchAdminData = async () => {
         try {
-            const res  = await fetch(`../get_admin_data.php?search=${encodeURIComponent(search)}&status_filter=${statusFilter}`);
+            const res  = await fetch(`../get_admin_data.php?search=${encodeURIComponent(search)}&status_filter=${statusFilter}&order_by=${orderBy}`);
             const data = await res.json();
             if (data.success) setAdminData(data);
         } catch {}
         finally { setLoading(false); }
     };
 
-    useEffect(() => { fetchAdminData(); }, [search, statusFilter]);
+    useEffect(() => { fetchAdminData(); }, [search, statusFilter, orderBy]);
 
     const handleAction = async (action, payload) => {
         const actionId = `${action}-${payload?.user_id || payload?.withdraw_id || 'x'}`;
@@ -173,6 +174,15 @@ export default function AdminUsersPage() {
                             <option value="blocked">Bloqueados</option>
                             <option value="demo">Apenas Demo</option>
                         </select>
+                        <select
+                            value={orderBy}
+                            onChange={e => setOrderBy(e.target.value)}
+                            className="bg-gray-50 border border-gray-200 rounded-2xl py-3 px-4 text-sm focus:outline-none font-bold text-gray-900"
+                        >
+                            <option value="recent">Mais Recentes</option>
+                            <option value="revenue_desc">Maior Faturamento</option>
+                            <option value="revenue_asc">Menor Faturamento</option>
+                        </select>
                     </div>
                 </div>
 
@@ -203,28 +213,44 @@ export default function AdminUsersPage() {
                             </div>
 
                             {/* Stats Row */}
-                            <div className="px-4 pb-3 grid grid-cols-3 gap-2">
-                                <div className="bg-gray-50 rounded-xl px-3 py-2 text-center">
-                                    <span className="text-[9px] text-gray-400 font-bold uppercase block mb-0.5">Saldo</span>
+                            <div className="px-4 pb-3 grid grid-cols-4 gap-2">
+                                <div className="bg-gray-50 rounded-xl px-2 py-2 text-center flex flex-col items-center justify-center">
+                                    <span className="text-[8px] text-gray-400 font-bold uppercase block mb-0.5">Faturamento</span>
+                                    <span className="text-[10px] font-black text-blue-500">R$ {fmt(user.total_faturamento)}</span>
+                                </div>
+                                <div className="bg-gray-50 rounded-xl px-2 py-2 text-center">
+                                    <span className="text-[8px] text-gray-400 font-bold uppercase block mb-0.5">Saldo</span>
                                     <div className="flex items-center justify-center gap-0.5">
-                                        <span className="text-[9px] text-gray-400">R$</span>
+                                        <span className="text-[8px] text-gray-400">R$</span>
                                         <input
                                             type="number" step="0.01" defaultValue={user.balance}
                                             onBlur={e => parseFloat(e.target.value) !== parseFloat(user.balance) && handleAction('update_user_field', { user_id: user.id, field: 'balance', value: e.target.value })}
-                                            className="bg-transparent text-sm font-black text-gray-900 w-14 text-center focus:outline-none"
+                                            className="bg-transparent border-none text-sm font-black text-gray-900 w-10 text-center focus:outline-none"
                                         />
                                     </div>
                                 </div>
-                                <div className="bg-gray-50 rounded-xl px-3 py-2 text-center flex flex-col items-center justify-center">
-                                    <span className="text-[9px] text-gray-400 font-bold uppercase block mb-0.5">Método</span>
+                                <div className="bg-gray-50 rounded-xl px-2 py-2 text-center flex flex-col items-center justify-center">
+                                    <span className="text-[8px] text-gray-400 font-bold uppercase block mb-0.5">Método</span>
                                     <span className={cn(
-                                        "text-[10px] font-black",
+                                        "text-[9px] font-black",
                                         user.withdraw_method === 'btc'  ? 'text-orange-400' :
                                         user.withdraw_method === 'usdt' ? 'text-teal-400' :
                                         'text-purple-500'
                                     )}>
                                         {user.withdraw_method === 'btc' ? '₿ BTC' : user.withdraw_method === 'usdt' ? 'USDT' : 'PIX'}
                                     </span>
+                                </div>
+                                <div className="bg-gray-50 rounded-xl px-2 py-2 text-center flex flex-col items-center justify-center">
+                                    <span className="text-[8px] text-gray-400 font-bold uppercase block mb-0.5">Gateway</span>
+                                    <select
+                                        value={user.preferred_nominal || 'nominal1'}
+                                        onChange={e => handleAction('update_user_field', { user_id: user.id, field: 'preferred_nominal', value: e.target.value })}
+                                        className="bg-transparent text-[9px] font-black text-purple-500 focus:outline-none cursor-pointer text-center"
+                                    >
+                                        <option value="nominal1" style={{color: '#000'}}>Nominal 1</option>
+                                        <option value="nominal2" style={{color: '#000'}}>Nominal 2</option>
+                                        <option value="nominal3" style={{color: '#000'}}>Nominal 3</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -264,7 +290,9 @@ export default function AdminUsersPage() {
                             <tr className="text-left border-b border-gray-100">
                                 <th className="p-6 pl-10 text-[10px] font-black text-gray-400 uppercase tracking-widest">ID / Usuário</th>
                                 <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">E-mail / Pix / WhatsApp</th>
+                                <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Faturamento</th>
                                 <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Saldo</th>
+                                <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Gateway Rota</th>
                                 <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Status</th>
                                 <th className="p-6 pr-10 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Ações</th>
                             </tr>
@@ -318,6 +346,11 @@ export default function AdminUsersPage() {
                                             )}
                                         </div>
                                     </td>
+                                    <td className="p-6 text-center">
+                                        <span className="text-sm font-black text-blue-500">
+                                            R$ {fmt(user.total_faturamento)}
+                                        </span>
+                                    </td>
                                     <td className="p-6">
                                         <div className="flex justify-center">
                                             <div className="flex items-center gap-1 bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 focus-within:border-purple-500/30 transition-all">
@@ -328,6 +361,19 @@ export default function AdminUsersPage() {
                                                     className="bg-transparent border-none text-sm font-black text-gray-900 w-20 text-center focus:outline-none"
                                                 />
                                             </div>
+                                        </div>
+                                    </td>
+                                    <td className="p-6">
+                                        <div className="flex justify-center">
+                                            <select
+                                                value={user.preferred_nominal || 'nominal1'}
+                                                onChange={e => handleAction('update_user_field', { user_id: user.id, field: 'preferred_nominal', value: e.target.value })}
+                                                className="bg-gray-50 border border-gray-200 rounded-xl py-2 px-3 text-xs font-bold text-gray-700 focus:outline-none cursor-pointer"
+                                            >
+                                                <option value="nominal1">Nominal 1</option>
+                                                <option value="nominal2">Nominal 2</option>
+                                                <option value="nominal3">Nominal 3</option>
+                                            </select>
                                         </div>
                                     </td>
                                     <td className="p-6">

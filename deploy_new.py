@@ -118,7 +118,26 @@ php_files = [
     'telegram_user_bot.php',
     '.htaccess',
     'api.php',
-    'get_dashboard_data.php'
+    'get_dashboard_data.php',
+    'save_nominal.php',
+    'misticpay_webhook.php',
+    'webhook.php',
+    'sigilopay_webhook.php',
+    'check_checkout_status.php',
+    'get_affiliate_data.php',
+    'afiliados.php',
+    'process_checkout.php',
+    'process_checkout_card.php',
+    'save_whatsapp.php',
+    'sso_login.php',
+    'telegram_cron.php',
+    'telegram_daily_report.php',
+    'track_store_event.php',
+    'update_profile.php',
+    'sobre.php',
+    'termos.php',
+    'privacidade.php',
+    'suporte.php'
 ]
 
 print("Enviando arquivos raiz (PHP e Config)...")
@@ -139,13 +158,40 @@ for f in auth_files:
 # 2.4 Arquivos em includes
 includes_files = [
     'TelegramService.php',
-    'db.php'
+    'WhatsAppService.php',
+    'db.php',
+    'MisticPayService.php'
 ]
 
 print("Enviando arquivos de inclusão...")
 for f in includes_files:
     sftp.put(f'includes/{f}', f'{base}/includes/{f}')
     print(f'Uploaded Include: {f} -> OK')
+
+# 2.5 Arquivos em admin
+admin_files = [
+    'index.php',
+    'whatsapp.php'
+]
+
+print("Enviando arquivos do admin...")
+for f in admin_files:
+    sftp.put(f'admin/{f}', f'{base}/admin/{f}')
+    print(f'Uploaded Admin: {f} -> OK')
+
+# 2.6 Arquivos do WhatsApp Bridge
+bridge_files = [
+    'index.js',
+    'start.sh',
+    'keep_alive.sh'
+]
+
+print("Enviando arquivos do WhatsApp Bridge...")
+for f in bridge_files:
+    try: sftp.mkdir(f'{base}/whatsapp-bridge')
+    except: pass
+    sftp.put(f'whatsapp-bridge/{f}', f'{base}/whatsapp-bridge/{f}')
+    print(f'Uploaded Bridge: {f} -> OK')
 
 sftp.close()
 c.close()

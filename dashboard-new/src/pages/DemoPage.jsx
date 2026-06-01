@@ -234,7 +234,7 @@ export default function DemoPage() {
             <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-5xl h-14 bg-[#0a0a0a]/70 backdrop-blur-2xl border border-white/10 rounded-full px-6 flex items-center justify-between">
                 <Link to="/" className="flex items-center gap-2">
                     <div className="w-7 h-7 rounded-lg bg-primary/20 flex items-center justify-center overflow-hidden">
-                        <img src="/logo_premium.png?v=3" alt="LunarPay" className="w-full h-full object-cover" />
+                        <img src="/logo_premium.png?v=3" alt="DiretoPay" className="w-full h-full object-cover" />
                     </div>
                     <span className="text-sm font-black tracking-tight">Lunar<span className="text-primary italic">Pay</span></span>
                 </Link>
@@ -264,7 +264,7 @@ export default function DemoPage() {
                         <span className="text-[10px] font-black text-primary uppercase tracking-widest">Demo Interativa</span>
                     </div>
                     <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black leading-[0.95] tracking-[-0.04em] mb-6">
-                        Veja o LunarPay
+                        Veja o DiretoPay
                         <br />
                         <span className="text-primary italic">em ação.</span>
                     </h1>
@@ -419,7 +419,7 @@ export default function DemoPage() {
 
                                 <div className="mt-4 flex items-center justify-center gap-2 text-[10px] text-white/20">
                                     <Lock size={10} />
-                                    <span>Pagamento seguro via LunarPay</span>
+                                    <span>Pagamento seguro via DiretoPay</span>
                                 </div>
                             </div>
                         </div>

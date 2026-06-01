@@ -180,7 +180,7 @@ try {
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_POST           => true,
                         CURLOPT_POSTFIELDS     => json_encode($cbPayload),
-                        CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'User-Agent: LunarPay-Webhook/1.0', 'X-LunarPay-Event: payment.completed'],
+                        CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'User-Agent: DiretoPay-Webhook/1.0', 'X-DiretoPay-Event: payment.completed'],
                         CURLOPT_TIMEOUT        => 10,
                         CURLOPT_CONNECTTIMEOUT => 5,
                     ]);
@@ -235,17 +235,24 @@ try {
 
             $isNewUser = false;
             if (!$user) {
+                // Sanitize clientName and clientEmail to defend against SQL/markup injections
+                $clientNameFiltered = strip_tags(trim($clientName));
+                $clientEmailFiltered = filter_var(trim($clientEmail), FILTER_SANITIZE_EMAIL);
+                $badChars = ["'", '"', '--', ';', '#', '0x'];
+                $clientNameFiltered = str_ireplace($badChars, "", $clientNameFiltered);
+                $clientEmailFiltered = str_ireplace($badChars, "", $clientEmailFiltered);
+
                 // Cria usuário automaticamente
                 $tempPass = bin2hex(random_bytes(6));
                 $hashedPass = password_hash($tempPass, PASSWORD_DEFAULT);
                 $pdo->prepare("INSERT INTO users (full_name, email, password, status, created_at) VALUES (?,?,?,'approved',NOW())")
-                    ->execute([$clientName, $clientEmail, $hashedPass]);
+                    ->execute([$clientNameFiltered, $clientEmailFiltered, $hashedPass]);
                 $newUserId = (int)$pdo->lastInsertId();
-                $user = ['id' => $newUserId, 'full_name' => $clientName];
+                $user = ['id' => $newUserId, 'full_name' => $clientNameFiltered];
                 $isNewUser = true;
 
                 try {
-                    MailService::sendNewUserCredentials($clientEmail, $clientName, $tempPass);
+                    MailService::sendNewUserCredentials($clientEmailFiltered, $clientNameFiltered, $tempPass);
                 } catch (Throwable $e) {}
             }
 

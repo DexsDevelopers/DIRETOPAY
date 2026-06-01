@@ -14,7 +14,7 @@ function reativarNotificacoes() {
     window.location.reload();
 }
 
-const P = '#C0006A';
+const P = '#1ea465';
 
 const NOTIF_TYPES = {
     info:           { icon: Info,          hex: '#3b82f6', label: 'Info' },
@@ -61,7 +61,7 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
     const { isDark, toggleTheme } = useTheme();
 
     return (
-        <header className="h-20 border-b border-gray-100 flex items-center justify-between px-6 lg:px-8 shrink-0 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-[0_1px_12px_rgba(192,0,106,0.06)]">
+        <header className="h-20 border-b border-gray-100 flex items-center justify-between px-6 lg:px-8 shrink-0 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-[0_1px_12px_rgba(30,164,101,0.06)]">
             {/* Left */}
             <div className="flex items-center gap-4">
                 <button onClick={onMenuClick} className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-600">
@@ -112,14 +112,14 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
                                 exit={{ opacity: 0, y: -8, scale: 0.96 }}
                                 transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
                                 className="absolute inset-0 flex flex-col md:inset-auto md:top-[72px] md:right-4 md:bottom-auto md:left-auto md:w-[400px] md:h-[580px] md:rounded-[24px] overflow-hidden z-10"
-                                style={{ boxShadow: '0 32px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(192,0,106,0.1)' }}
+                                style={{ boxShadow: '0 32px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(30,164,101,0.1)' }}
                             >
                                 {/* ── HEADER GRADIENTE ── */}
                                 <div className="relative shrink-0 overflow-hidden"
                                     style={{ background: 'linear-gradient(135deg, #1a000e 0%, #3d0020 60%, #1a000e 100%)' }}>
                                     {/* glow orb */}
                                     <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full pointer-events-none"
-                                        style={{ background: 'radial-gradient(circle, rgba(192,0,106,0.35) 0%, transparent 70%)' }} />
+                                        style={{ background: 'radial-gradient(circle, rgba(30,164,101,0.35) 0%, transparent 70%)' }} />
 
                                     <div className="relative z-10 px-5 pt-5 pb-4">
                                         <div className="flex items-center justify-between mb-4">
@@ -134,7 +134,7 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
                                                     </div>
                                                     <div>
                                                         <p className="font-black text-sm text-white leading-none tracking-tight">Notificações</p>
-                                                        <p className="text-[10px] font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>LunarPay</p>
+                                                        <p className="text-[10px] font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>DiretoPay</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -256,7 +256,7 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
 
                                 {/* ── FOOTER ── */}
                                 <div className="px-4 py-3 shrink-0 bg-white dark:bg-[#0f0f14]"
-                                    style={{ borderTop: '1px solid rgba(192,0,106,0.08)' }}>
+                                    style={{ borderTop: '1px solid rgba(30,164,101,0.08)' }}>
                                     <div className="flex items-center justify-between mb-2.5">
                                         <p className="text-[10px] text-gray-400 font-bold">{notifications.length} no total</p>
                                         <div className="flex items-center gap-1.5">
@@ -286,7 +286,7 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
                         <p className="text-[10px] text-gray-400 uppercase tracking-tighter mt-1 font-bold">Plano Classic</p>
                     </div>
                     <div className="w-10 h-10 rounded-full p-[1.5px] cursor-pointer hover:rotate-12 transition-transform"
-                        style={{ background: `linear-gradient(135deg, ${P}, #8B0045)` }}>
+                        style={{ background: `linear-gradient(135deg, ${P}, #126b41)` }}>
                         <div className="w-full h-full rounded-full bg-white flex items-center justify-center font-black text-sm" style={{ color: P }}>
                             {userData?.name ? userData.name.charAt(0).toUpperCase() : <User size={18} />}
                         </div>

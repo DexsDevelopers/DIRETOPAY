@@ -780,7 +780,7 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
         /* Awards Section */
         .awards-section-v2 {
             padding: 100px 20px;
-            background: linear-gradient(180deg, transparent 0%, rgba(168,85,247,0.03) 50%, transparent 100%);
+            background: linear-gradient(180deg, transparent 0%, rgba(30,164,101,0.03) 50%, transparent 100%);
         }
 
         .awards-grid-v2 {
@@ -883,9 +883,9 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
         }
 
         .routing-node-v2.active {
-            background: rgba(168, 85, 247, 0.2);
+            background: rgba(30, 164, 101, 0.2);
             border-color: var(--primary);
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+            box-shadow: 0 0 30px rgba(30, 164, 101, 0.3);
         }
 
         .routing-node-v2.success {
@@ -927,7 +927,7 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
         /* Ranking Section */
         .ranking-section-v2 {
             padding: 100px 20px;
-            background: linear-gradient(180deg, rgba(168,85,247,0.02) 0%, transparent 100%);
+            background: linear-gradient(180deg, rgba(30,164,101,0.02) 0%, transparent 100%);
         }
 
         .ranking-card-v2 {
@@ -1358,7 +1358,7 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
     <section class="routing-section-v2">
         <div class="routing-container-v2">
             <div data-aos="fade-right">
-                <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); padding: 8px 16px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; color: var(--primary); margin-bottom: 20px;">
+                <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(30, 164, 101, 0.15); border: 1px solid rgba(30, 164, 101, 0.3); padding: 8px 16px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; color: var(--primary); margin-bottom: 20px;">
                     <i class="fas fa-network-wired"></i> Multi-Adquirentes
                 </div>
                 <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 20px; line-height: 1.3;">

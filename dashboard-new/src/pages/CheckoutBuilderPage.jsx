@@ -41,6 +41,7 @@ const GRAD_DIRS = [
 ];
 
 const DEFAULT_CS = {
+    allow_item_selection: false,
     bg_type: 'solid',
     gradient_from: '#0a0a0f',
     gradient_to: '#1a0a2e',
@@ -123,6 +124,7 @@ const DEFAULT_CS = {
     seo_title: '',
     seo_description: '',
     seo_favicon: '',
+    font_color_override: '',
 };
 
 // ── Reusable sub-components ─────────────────────────────────────────────────
@@ -410,6 +412,15 @@ export default function CheckoutBuilderPage() {
                                 </motion.div>
                             ))}
                         </div>
+                        <div className="border-t border-gray-100 pt-4 mt-2">
+                            <ToggleRow 
+                                icon={<Package size={14} />} 
+                                label="Escolha de Itens pelo Cliente" 
+                                sub="Permite que o comprador selecione quais produtos deseja comprar no checkout" 
+                                value={cs.allow_item_selection || false} 
+                                onChange={v => setCSF('allow_item_selection', v)} 
+                            />
+                        </div>
                     </div>
 
                     {/* Mini Preview */}
@@ -418,10 +429,10 @@ export default function CheckoutBuilderPage() {
                             <Eye size={16} className="text-primary" /> Pré-visualização do Tema
                         </h3>
                         <div className="rounded-2xl overflow-hidden border border-gray-200 h-36 relative flex items-center justify-center"
-                            style={{ background: previewBg }}>
+                            style={{ background: previewBg, color: cs.font_color_override || '#ffffff' }}>
                             <div className="text-center">
                                 <div className="w-8 h-1 rounded-full mx-auto mb-2" style={{ background: form.primary_color }} />
-                                <p className="text-xs font-black" style={{ color: form.primary_color, fontFamily: cs.font_family }}>
+                                <p className="text-xs font-black" style={{ color: cs.font_color_override || '#ffffff', fontFamily: cs.font_family }}>
                                     {form.title || 'Seu Checkout'}
                                 </p>
                                 <div className={`mt-3 mx-auto px-6 py-2 text-[10px] font-black text-black inline-block ${cs.btn_pulse ? 'animate-pulse' : ''}`}
@@ -502,6 +513,20 @@ export default function CheckoutBuilderPage() {
                                 <span className="text-[10px] font-mono text-gray-400">{form.primary_color}</span>
                                 <input type="color" value={form.primary_color}
                                     onChange={e => setForm(f => ({ ...f, primary_color: e.target.value }))}
+                                    className="w-9 h-9 rounded-lg cursor-pointer border border-gray-200 overflow-hidden p-0.5" />
+                            </div>
+                        </div>
+
+                        {/* Font color */}
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs font-bold text-gray-700">Cor da Fonte</p>
+                                <p className="text-[10px] text-gray-400">Títulos e textos</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-mono text-gray-400">{cs.font_color_override || '#ffffff'}</span>
+                                <input type="color" value={cs.font_color_override || '#ffffff'}
+                                    onChange={e => setCSF('font_color_override', e.target.value)}
                                     className="w-9 h-9 rounded-lg cursor-pointer border border-gray-200 overflow-hidden p-0.5" />
                             </div>
                         </div>

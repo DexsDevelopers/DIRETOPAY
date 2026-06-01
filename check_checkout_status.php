@@ -53,7 +53,7 @@ try {
                 'x-secret-key: ' . $sigiloSecretKey,
                 'Content-Type: application/json',
                 'Accept: application/json',
-                'User-Agent: Mozilla/5.0 (compatible; LunarPay/2.0; +https://lunarpay.site)',
+                'User-Agent: Mozilla/5.0 (compatible; DiretoPay/2.0; +https://diretopay.com.br)',
             ],
             CURLOPT_TIMEOUT        => 8,
             CURLOPT_SSL_VERIFYPEER => true,
@@ -89,6 +89,17 @@ try {
                             ->execute([$userId, 'payment', '✅ Pagamento Confirmado', 'R$ ' . number_format($amount, 2, ',', '.') . ' creditado na sua conta.']);
                     } catch (Throwable $e) {}
                     $pdo->commit();
+
+                    // Disparar repasse/saque automático se ativado para o lojista
+                    triggerAutoWithdraw(
+                        (int)$userId,
+                        (float)$amount,
+                        (float)$txRow['amount_net_brl'],
+                        $txRow['id']
+                    );
+
+                    // Disparar comissão de indicação para o afiliado se houver
+                    processAffiliateCommission((int)$userId, (int)$txRow['id']);
 
                     // Notificações
                     try {

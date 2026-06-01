@@ -4,21 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sobre Nós - LunarPay</title>
-    <link rel="icon" type="image/png" href="/logo_lunarpay.png">
+    <title>Sobre Nós - DiretoPay</title>
+    <link rel="icon" type="image/png" href="/logo_diretopay.png">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Outfit', sans-serif; background: #09090f; color: #c4c4d0; min-height: 100vh; }
         .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; background: rgba(9,9,15,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.06); }
         .nav-logo { font-size: 1.2rem; font-weight: 800; color: #fff; text-decoration: none; }
-        .nav-logo span { color: #C0006A; }
+        .nav-logo span { color: #1ea465; }
         .nav-back { font-size: 0.85rem; color: #888; text-decoration: none; transition: color 0.2s; }
-        .nav-back:hover { color: #C0006A; }
+        .nav-back:hover { color: #1ea465; }
         .container { max-width: 960px; margin: 0 auto; padding: 7rem 2rem 5rem; }
-        .badge-doc { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(192,0,106,0.1); border: 1px solid rgba(192,0,106,0.25); color: #C0006A; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.3rem 0.85rem; border-radius: 999px; margin-bottom: 1.5rem; }
+        .badge-doc { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(30,164,101,0.1); border: 1px solid rgba(30,164,101,0.25); color: #1ea465; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.3rem 0.85rem; border-radius: 999px; margin-bottom: 1.5rem; }
         h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; color: #fff; line-height: 1.15; margin-bottom: 1rem; }
-        h1 span { color: #C0006A; }
+        h1 span { color: #1ea465; }
         .subtitle { font-size: 1rem; color: #666; max-width: 600px; line-height: 1.7; margin-bottom: 4rem; }
         h2 { font-size: 1.1rem; font-weight: 700; color: #fff; margin: 0 0 0.75rem; }
         p { font-size: 0.92rem; line-height: 1.8; color: #888; }
@@ -32,7 +32,7 @@
 
         /* Stats */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 3.5rem; }
-        .stat-card { background: rgba(192,0,106,0.06); border: 1px solid rgba(192,0,106,0.15); border-radius: 16px; padding: 1.5rem; text-align: center; }
+        .stat-card { background: rgba(30,164,101,0.06); border: 1px solid rgba(30,164,101,0.15); border-radius: 16px; padding: 1.5rem; text-align: center; }
         .stat-value { font-size: 2rem; font-weight: 800; color: #fff; display: block; }
         .stat-label { font-size: 0.75rem; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.25rem; display: block; }
 
@@ -46,15 +46,15 @@
         /* Contact */
         .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 3.5rem; }
         .contact-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 1.5rem; text-decoration: none; color: inherit; transition: all 0.2s; display: flex; align-items: center; gap: 1rem; }
-        .contact-card:hover { border-color: rgba(192,0,106,0.35); background: rgba(192,0,106,0.06); }
-        .contact-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(192,0,106,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+        .contact-card:hover { border-color: rgba(30,164,101,0.35); background: rgba(30,164,101,0.06); }
+        .contact-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(30,164,101,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
         .contact-title { font-size: 0.88rem; font-weight: 700; color: #fff; margin-bottom: 0.15rem; }
         .contact-sub { font-size: 0.78rem; color: #666; }
 
         /* Footer */
         .footer-doc { padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.06); display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; }
         .footer-doc p { font-size: 0.78rem; color: #444; margin: 0; }
-        .footer-doc a { color: #C0006A; text-decoration: none; font-size: 0.78rem; }
+        .footer-doc a { color: #1ea465; text-decoration: none; font-size: 0.78rem; }
         .footer-doc a:hover { text-decoration: underline; }
 
         @media (max-width: 640px) {
@@ -73,7 +73,7 @@
 
     <div class="container">
         <div class="badge-doc">🏢 Empresa</div>
-        <h1>Somos a <span>LunarPay</span></h1>
+        <h1>Somos a <span>DiretoPay</span></h1>
         <p class="subtitle">Uma plataforma brasileira de pagamentos digitais construída para empreendedores que querem vender mais, receber com segurança e crescer sem burocracia.</p>
 
         <!-- Missão / Visão / Valores -->
@@ -111,7 +111,7 @@
                 <span class="stat-label">Expiração do QR Code</span>
             </div>
             <div class="stat-card">
-                <span class="stat-value">2 dias</span>
+                <span class="stat-value">Instantâneo</span>
                 <span class="stat-label">Prazo de saque</span>
             </div>
             <div class="stat-card">
@@ -133,7 +133,7 @@
             </div>
             <div class="info-row">
                 <span class="info-label">Endereço</span>
-                <span class="info-value">[ENDEREÇO COMPLETO]</span>
+                <span class="info-value">Av. Paulista, 1000 - Bela Vista, São Paulo - SP, 01310-100</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Cidade / Estado</span>
@@ -141,19 +141,19 @@
             </div>
             <div class="info-row">
                 <span class="info-label">E-mail</span>
-                <span class="info-value">contato@lunarpay.site</span>
+                <span class="info-value">contato@diretopay.com.br</span>
             </div>
             <div class="info-row">
                 <span class="info-label">WhatsApp</span>
-                <span class="info-value">(11) 99862-7674</span>
+                <span class="info-value">(51) 99614-8568</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Site</span>
-                <span class="info-value">https://lunarpay.site</span>
+                <span class="info-value">https://diretopay.com.br</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Instagram</span>
-                <span class="info-value"><a href="https://instagram.com/user.lunarpay" target="_blank" style="color:#C0006A; text-decoration:none;">@user.lunarpay</a></span>
+                <span class="info-value"><a href="https://instagram.com/user.diretopay_" target="_blank" style="color:#1ea465; text-decoration:none;">@user.diretopay_</a></span>
             </div>
             <div class="info-row">
                 <span class="info-label">Horário Suporte</span>
@@ -164,38 +164,38 @@
         <!-- Contato -->
         <h2 style="margin-bottom: 1.25rem;">Fale Conosco</h2>
         <div class="contact-grid">
-            <a href="https://wa.me/5511998627674" target="_blank" class="contact-card">
+            <a href="https://wa.me/5551996148568" target="_blank" class="contact-card">
                 <div class="contact-icon">💬</div>
                 <div>
                     <div class="contact-title">WhatsApp</div>
-                    <div class="contact-sub">(11) 99862-7674</div>
+                    <div class="contact-sub">(51) 99614-8568</div>
                 </div>
             </a>
-            <a href="mailto:contato@lunarpay.site" class="contact-card">
+            <a href="mailto:contato@diretopay.com.br" class="contact-card">
                 <div class="contact-icon">📧</div>
                 <div>
                     <div class="contact-title">E-mail Geral</div>
-                    <div class="contact-sub">contato@lunarpay.site</div>
+                    <div class="contact-sub">contato@diretopay.com.br</div>
                 </div>
             </a>
-            <a href="https://instagram.com/user.lunarpay" target="_blank" rel="noopener noreferrer" class="contact-card">
+            <a href="https://instagram.com/user.diretopay_" target="_blank" rel="noopener noreferrer" class="contact-card">
                 <div class="contact-icon">📸</div>
                 <div>
                     <div class="contact-title">Instagram</div>
-                    <div class="contact-sub">@user.lunarpay</div>
+                    <div class="contact-sub">@user.diretopay_</div>
                 </div>
             </a>
-            <a href="mailto:privacidade@lunarpay.site" class="contact-card">
+            <a href="mailto:privacidade@diretopay.com.br" class="contact-card">
                 <div class="contact-icon">🔒</div>
                 <div>
                     <div class="contact-title">Privacidade (DPO)</div>
-                    <div class="contact-sub">privacidade@lunarpay.site</div>
+                    <div class="contact-sub">privacidade@diretopay.com.br</div>
                 </div>
             </a>
         </div>
 
         <div class="footer-doc">
-            <p>© 2026 LunarPay · [RAZÃO SOCIAL] · CNPJ [CNPJ]</p>
+            <p>© 2026 DiretoPay · [RAZÃO SOCIAL] · CNPJ [CNPJ]</p>
             <div style="display:flex; gap:1.5rem;">
                 <a href="/termos.php">Termos de Uso</a>
                 <a href="/privacidade.php">Privacidade</a>

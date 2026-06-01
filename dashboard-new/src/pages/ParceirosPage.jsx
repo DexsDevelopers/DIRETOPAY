@@ -19,10 +19,10 @@ const parceiros = [
         accentColor: 'text-violet-400',
     },
     {
-        id: 'lunarpay-docs',
+        id: 'diretopay-docs',
         name: 'Documentação API',
-        tagline: 'Integre a LunarPay no seu sistema',
-        description: 'Documentação completa da API de pagamentos LunarPay para desenvolvedores e integradores.',
+        tagline: 'Integre a DiretoPay no seu sistema',
+        description: 'Documentação completa da API de pagamentos DiretoPay para desenvolvedores e integradores.',
         url: '/api-docs',
         sso: false,
         badge: 'Interno',
@@ -114,7 +114,7 @@ function PartnerCard({ partner, isDark }) {
                         isDark ? 'border-white/[0.06] text-gray-500' : 'border-gray-100 text-gray-400'
                     )}>
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0 animate-pulse" />
-                        Login automático com sua conta LunarPay
+                        Login automático com sua conta DiretoPay
                     </div>
                 )}
             </div>
@@ -133,7 +133,7 @@ export default function ParceirosPage() {
                     Parceiros
                 </h1>
                 <p className={cn("text-sm mt-1", isDark ? 'text-gray-400' : 'text-gray-500')}>
-                    Ferramentas e plataformas integradas ao ecossistema LunarPay.
+                    Ferramentas e plataformas integradas ao ecossistema DiretoPay.
                 </p>
             </div>
 

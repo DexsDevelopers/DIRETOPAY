@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lunarpay-v1';
+const CACHE_NAME = 'diretopay-v1';
 
 // Install - sem cache.addAll para garantir que o SW sempre ativa
 self.addEventListener('install', (event) => {
@@ -33,9 +33,9 @@ self.addEventListener('push', (event) => {
     console.log('[SW] Push received:', event);
 
     let data = {
-        title: 'LunarPay',
+        title: 'DiretoPay',
         body: 'Nova notificação recebida!',
-        icon: '/logo_lunarpay.png'
+        icon: '/logo_diretopay.png'
     };
 
     if (event.data) {
@@ -53,9 +53,9 @@ self.addEventListener('push', (event) => {
     const options = {
         body: data.body,
         icon: data.icon,
-        badge: '/logo_lunarpay.png',
+        badge: '/logo_diretopay.png',
         vibrate: [200, 100, 200],
-        tag: 'lunarpay-' + Date.now(),
+        tag: 'diretopay-' + Date.now(),
         renotify: true,
         requireInteraction: false,
         data: {

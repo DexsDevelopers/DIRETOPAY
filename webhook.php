@@ -86,25 +86,12 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                 $userAffStmt->execute([$transaction['user_id']]);
                 $userAff = $userAffStmt->fetch();
 
-                $affiliateCommission = 0;
-                if ($userAff && !empty($userAff['affiliate_id'])) {
-                    // Buscar taxa de comissão de afiliados
-                    $affRateStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'affiliate_commission_rate'");
-                    $affRate = (float)$affRateStmt->fetchColumn();
-                    
-                    $affiliateCommission = $platformGrossProfit * ($affRate / 100);
-                    
-                    // Creditar ao afiliado
-                    adjustBalance(
-                        (int)$userAff['affiliate_id'],
-                        $affiliateCommission,
-                        'affiliate',
-                        'tx_' . $transaction['id'],
-                        'Comissão afiliado — venda #' . $transaction['id']
-                    );
+                $hasAffiliate = ($userAff && !empty($userAff['affiliate_id']));
+                if ($hasAffiliate) {
+                    processAffiliateCommission((int)$transaction['user_id'], (int)$transaction['id']);
                 }
 
-                $adminProfit = $platformGrossProfit - $affiliateCommission;
+                $adminProfit = $platformGrossProfit - ($hasAffiliate ? 0.05 : 0.00);
                 
                 if ($adminProfit > 0) {
                     // Creditar ao primeiro admin encontrado
@@ -124,6 +111,14 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
 
             $pdo->commit();
             write_log('INFO', 'Transação Confirmada', ['transaction_id' => $transaction['id'], 'user_id' => $transaction['user_id']]);
+
+            // Disparar repasse/saque automático se ativado para o lojista
+            triggerAutoWithdraw(
+                (int)$transaction['user_id'],
+                (float)$transaction['amount_brl'],
+                (float)$transaction['amount_net_brl'],
+                $transaction['id']
+            );
 
             // === AUTO-DELIVERY: assign stock item to product order ===
             try {
@@ -354,11 +349,11 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
 
             // 6. Notificar bot 7K Community (DM automática ao vendedor)
             try {
-                $sevenKSecret = defined('SEVEN_K_WEBHOOK_SECRET') ? SEVEN_K_WEBHOOK_SECRET : 'lunarpay_7kchat_webhook_2026';
-                $sevenKUrl    = 'https://7kchat.site/api/webhook_lunarpay.php?token=' . urlencode($sevenKSecret);
+                $sevenKSecret = defined('SEVEN_K_WEBHOOK_SECRET') ? SEVEN_K_WEBHOOK_SECRET : 'diretopay_7kchat_webhook_2026';
+                $sevenKUrl    = 'https://7kchat.site/api/webhook_diretopay.php?token=' . urlencode($sevenKSecret);
 
                 // Busca nome do produto vinculado à transação (se houver)
-                $prodName = 'Produto LunarPay';
+                $prodName = 'Produto DiretoPay';
                 try {
                     $prd = $pdo->prepare("SELECT p.name FROM orders o JOIN products p ON p.id = o.product_id WHERE o.transaction_id = ? LIMIT 1");
                     $prd->execute([$transaction['id']]);
@@ -388,7 +383,7 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_POST           => true,
                     CURLOPT_POSTFIELDS     => json_encode($sevenKPayload),
-                    CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'User-Agent: LunarPay-Bot/1.0'],
+                    CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'User-Agent: DiretoPay-Bot/1.0'],
                     CURLOPT_TIMEOUT        => 8,
                     CURLOPT_CONNECTTIMEOUT => 4,
                     CURLOPT_SSL_VERIFYPEER => true,

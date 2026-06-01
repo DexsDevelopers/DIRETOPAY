@@ -476,7 +476,7 @@ export default function ProductDetailPage() {
 
           <div className="flex gap-3 pt-2">
             <button onClick={() => setBuyModal(true)}
-              className="flex-1 py-4 bg-primary text-white font-black text-sm rounded-xl hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-[0_10px_30px_rgba(168,85,247,0.2)]">
+              className="flex-1 py-4 bg-primary text-white font-black text-sm rounded-xl hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-[0_10px_30px_rgba(30,164,101,0.2)]">
               <ShoppingCart size={16} /> {product.type === 'subscription' ? 'Assinar Agora' : 'Comprar Agora'}
             </button>
           </div>
@@ -485,7 +485,7 @@ export default function ProductDetailPage() {
             <Shield size={16} className="text-primary shrink-0 mt-0.5" />
             <div>
               <p className="text-xs font-bold text-gray-700">Compra Segura</p>
-              <p className="text-[11px] text-gray-400">Pagamento processado pela LunarPay com criptografia de ponta a ponta.</p>
+              <p className="text-[11px] text-gray-400">Pagamento processado pela DiretoPay com criptografia de ponta a ponta.</p>
             </div>
           </div>
         </div>

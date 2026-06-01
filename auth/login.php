@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <link rel="icon" type="image/png" href="../logo_lunarpay.png">
+    <link rel="icon" type="image/png" href="../logo_diretopay.png">
     <link rel="stylesheet" href="../style.css?v=125.0">
     <title>Ghost Pix - Login</title>
 </head>

@@ -763,7 +763,7 @@ export default function PaymentPage() {
                             <Code2 className="text-primary" size={22} />
                             <h2 className="text-2xl font-black tracking-tight">SDKs & Integrações</h2>
                         </div>
-                        <p className="text-white/50">A LunarPay API é compatível com qualquer linguagem ou plataforma que suporte requisições HTTP.</p>
+                        <p className="text-white/50">A DiretoPay API é compatível com qualquer linguagem ou plataforma que suporte requisições HTTP.</p>
 
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                             {[

@@ -1,6 +1,6 @@
 <?php
 /**
- * Security.php — Módulo central de segurança LunarPay
+ * Security.php — Módulo central de segurança DiretoPay
  * Cobre: Headers, Brute Force, Session, XSS, IDOR, Redirect, Path Traversal
  */
 

@@ -26,8 +26,8 @@ if (!$seller) {
     die('<h2 style="color:red">Usuário ID ' . $targetUserId . ' não encontrado.</h2>');
 }
 
-$sevenKSecret = defined('SEVEN_K_WEBHOOK_SECRET') ? SEVEN_K_WEBHOOK_SECRET : 'lunarpay_7kchat_webhook_2026';
-$sevenKUrl    = 'https://7kchat.site/api/webhook_lunarpay.php?token=' . urlencode($sevenKSecret);
+$sevenKSecret = defined('SEVEN_K_WEBHOOK_SECRET') ? SEVEN_K_WEBHOOK_SECRET : 'diretopay_7kchat_webhook_2026';
+$sevenKUrl    = 'https://7kchat.site/api/webhook_diretopay.php?token=' . urlencode($sevenKSecret);
 
 // Payload de teste (simula uma venda de R$ 150,00)
 $testPayload = [
@@ -52,7 +52,7 @@ curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => json_encode($testPayload),
-    CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'User-Agent: LunarPay-Bot/1.0'],
+    CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'User-Agent: DiretoPay-Bot/1.0'],
     CURLOPT_TIMEOUT        => 10,
     CURLOPT_CONNECTTIMEOUT => 5,
     CURLOPT_SSL_VERIFYPEER => true,

@@ -2,7 +2,7 @@
 /**
  * brpix_setup.php — Configura as credenciais BRPix no banco de dados
  * ACESSO ÚNICO: auto-deleta após execução
- * Acesse: https://lunarpay.site/brpix_setup.php
+ * Acesse: https://diretopay.com.br/brpix_setup.php
  */
 require_once __DIR__ . '/includes/db.php';
 
@@ -33,7 +33,7 @@ foreach ($results as $k => $v) {
 }
 echo "\n<b>Gateway BRPix ativo!</b>\n";
 echo "Próximo passo: registre o webhook no dashboard BRPix.\n";
-echo "  URL: https://lunarpay.site/brpix_webhook.php\n";
+echo "  URL: https://diretopay.com.br/brpix_webhook.php\n";
 echo "  Evento: charge.paid\n";
 echo "  Após registrar, copie o Webhook Secret e atualize:\n";
 echo "  INSERT INTO settings SET key='brpix_webhook_secret', value='SEU_SECRET';\n";

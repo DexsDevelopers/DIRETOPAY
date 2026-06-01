@@ -27,7 +27,7 @@ $is_whatsapp_active = ($current_page == 'whatsapp.php');
                 </div>
                 <div class="sb-user-info">
                     <span class="sb-name"><?php echo htmlspecialchars(explode(' ', $_SESSION['full_name'] ?? 'Usuário')[0]); ?></span>
-                    <span class="sb-sub"><?php echo isAdmin() ? 'Administrador' : 'LunarPay'; ?></span>
+                    <span class="sb-sub"><?php echo isAdmin() ? 'Administrador' : 'DiretoPay'; ?></span>
                 </div>
             </div>
             <button class="sb-close-btn" id="sidebar-close">
@@ -180,7 +180,7 @@ $is_whatsapp_active = ($current_page == 'whatsapp.php');
                         <span>Gestão de APIs</span>
                     </a>
                     <a href="/admin/whatsapp.php" class="sb-subitem <?php echo $is_whatsapp_active ? 'active' : ''; ?>">
-                        <i class="fa-brands fa-whatsapp <?php echo $is_whatsapp_active ? 'text-[#e91e63]' : ''; ?>"></i>
+                        <i class="fa-brands fa-whatsapp <?php echo $is_whatsapp_active ? 'text-[#1ea465]' : ''; ?>"></i>
                         <span>WhatsApp Bot</span>
                     </a>
                     <a href="/admin/banners" class="sb-subitem">
@@ -265,7 +265,7 @@ $is_whatsapp_active = ($current_page == 'whatsapp.php');
             height: 2.5rem !important;
             border-radius: 1rem !important;
             background: rgba(233, 30, 99, 0.15) !important;
-            color: #e91e63 !important;
+            color: #1ea465 !important;
             border: 1px solid rgba(233, 30, 99, 0.3) !important;
             display: flex !important;
             align-items: center !important;
@@ -294,7 +294,7 @@ $is_whatsapp_active = ($current_page == 'whatsapp.php');
         .sb-sub {
             font-size: 11px !important;
             font-weight: 600 !important;
-            color: #e91e63 !important;
+            color: #1ea465 !important;
             margin-top: 2px !important;
         }
 
@@ -362,7 +362,7 @@ $is_whatsapp_active = ($current_page == 'whatsapp.php');
         }
 
         .sb-item.active {
-            background: #e91e63 !important;
+            background: #1ea465 !important;
             color: #ffffff !important;
             font-weight: 600 !important;
             box-shadow: 0 4px 14px rgba(233, 30, 99, 0.35) !important;
@@ -387,7 +387,7 @@ $is_whatsapp_active = ($current_page == 'whatsapp.php');
 
         .sb-group.open .sb-chevron {
             transform: rotate(90deg) !important;
-            color: #e91e63 !important;
+            color: #1ea465 !important;
         }
 
         .sb-group-content {
@@ -431,12 +431,12 @@ $is_whatsapp_active = ($current_page == 'whatsapp.php');
         }
 
         .sb-subitem.active {
-            color: #e91e63 !important;
+            color: #1ea465 !important;
             font-weight: 600 !important;
         }
 
         .sb-subitem.active i {
-            color: #e91e63 !important;
+            color: #1ea465 !important;
         }
 
         .sb-footer {

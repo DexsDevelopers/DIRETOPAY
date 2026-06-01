@@ -5,14 +5,54 @@ const SUPPORT_WHATSAPP = '5511988627674';
 
 const AWARDS = [
     {
-        id: 'pulseira_10k',
-        title: 'Pulseira de 10K',
-        description: 'Exclusiva para quem faturou R$ 10.000 na plataforma. Um símbolo do seu sucesso.',
+        id: 'placa_10k',
+        title: 'Placa de 10K',
+        description: 'Exclusiva para quem faturou R$ 10.000 na plataforma. Um símbolo do seu início rumo ao sucesso.',
         goal: 10000,
         goalLabel: 'R$ 10.000',
-        emoji: '⌚',
-        color: 'amber',
-        perks: ['Pulseira premium personalizada', 'Entrega no endereço cadastrado', 'Certificado digital exclusivo'],
+        image: '/assets/placa-10k-D-keX8kW.webp',
+        color: 'emerald',
+        perks: ['Placa física personalizada', 'Entrega no endereço cadastrado', 'Certificado digital de seller'],
+    },
+    {
+        id: 'placa_100k',
+        title: 'Placa de 100K',
+        description: 'Parabéns pelos R$ 100.000 faturados! Agora não é sorte — é estratégia.',
+        goal: 100000,
+        goalLabel: 'R$ 100.000',
+        image: '/assets/placa-100k-L8htTMxu.webp',
+        color: 'emerald',
+        perks: ['Placa de metal 100k', 'Gerente de contas exclusivo', 'Acesso VIP a novos recursos'],
+    },
+    {
+        id: 'placa_250k',
+        title: 'Placa de 250K',
+        description: 'Bata R$ 250.000 em faturamento e suba o patamar do seu negócio.',
+        goal: 250000,
+        goalLabel: 'R$ 250.000',
+        image: '/assets/placa-250k-p9cuG3oH.webp',
+        color: 'emerald',
+        perks: ['Placa acrílica premium 250k', 'Suporte prioritário 24/7', 'Taxas operacionais reduzidas'],
+    },
+    {
+        id: 'placa_500k',
+        title: 'Placa de 500K',
+        description: 'A marca épica de meio milhão de reais faturados na plataforma.',
+        goal: 500000,
+        goalLabel: 'R$ 500.000',
+        image: '/assets/placa-500k-Dywjx6p8.webp',
+        color: 'emerald',
+        perks: ['Placa de luxo 500k', 'Mentoria com fundadores', 'Convites para eventos exclusivos'],
+    },
+    {
+        id: 'placa_1m',
+        title: 'Placa de 1 Milhão',
+        description: 'O topo absoluto do Hall da Fama. Atingido por pouquíssimos sellers.',
+        goal: 1000000,
+        goalLabel: 'R$ 1.000.000',
+        image: '/assets/placa-1milhao-D7KkbHhg.webp',
+        color: 'emerald',
+        perks: ['Troféu Black de 1 Milhão', 'Taxas zeradas em saques', 'Participação no grupo Mastermind'],
     },
 ];
 
@@ -27,6 +67,17 @@ const colorMap = {
         icon:    'text-amber-400',
         border:  'border-amber-500/30',
         tag:     'bg-amber-500/10 text-amber-400 border-amber-400/20',
+    },
+    emerald: {
+        ring:    'ring-emerald-400/40',
+        glow:    'shadow-emerald-500/20',
+        badge:   'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+        bar:     'bg-emerald-500',
+        barBg:   'bg-emerald-500/10',
+        btn:     'bg-emerald-500 hover:bg-emerald-600 text-white',
+        icon:    'text-emerald-500',
+        border:  'border-emerald-500/30',
+        tag:     'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
     },
 };
 
@@ -77,7 +128,11 @@ function AwardCard({ award, totalPaid, status, onClaim, claiming }) {
                     {/* Trophy emoji / icon */}
                     <div className={`relative w-20 h-20 rounded-2xl flex items-center justify-center text-4xl border-2 shrink-0
                         ${unlocked ? `${c.border} bg-gray-50 ring-4 ${c.ring}` : 'border-gray-200 bg-gray-100 grayscale opacity-50'}`}>
-                        {award.emoji}
+                        {award.image ? (
+                            <img src={award.image} alt={award.title} className="w-full h-full object-contain rounded-xl p-1" />
+                        ) : (
+                            award.emoji
+                        )}
                         {unlocked && !claimed && (
                             <span className={`absolute -top-2 -right-2 w-5 h-5 rounded-full ${c.bar} flex items-center justify-center`}>
                                 <Star size={11} className="text-black fill-black" />

@@ -10,8 +10,8 @@
 /* ──────────────────────────────────────────────────── */
 :root {
     /* Core Design System Tokens — Ghostspay Inspired */
-    --primary: #E91E63;
-    --primary-h: #D81B60;
+    --primary: #1ea465;
+    --primary-h: #188a53;
     --primary-glow: rgba(233, 30, 99, 0.25);
     
     --green: #22c55e;
@@ -654,8 +654,8 @@ a,
 }
 
 .stat-card.ghost-purple {
-    border-bottom: 2px solid rgba(168, 85, 247, 0.5);
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.05), transparent);
+    border-bottom: 2px solid rgba(30, 164, 101, 0.5);
+    background: linear-gradient(135deg, rgba(30, 164, 101, 0.05), transparent);
 }
 
 .stat-card.ghost-yellow {
@@ -691,9 +691,9 @@ a,
 }
 
 .stat-card.ghost-purple .stat-icon {
-    background: rgba(168, 85, 247, 0.15);
+    background: rgba(30, 164, 101, 0.15);
     color: #c084fc;
-    box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+    box-shadow: 0 0 15px rgba(30, 164, 101, 0.2);
 }
 
 .stat-card.ghost-yellow .stat-icon {
@@ -3280,7 +3280,7 @@ input:-webkit-autofill:focus {
 }
 
 .r-check.purple {
-    background: rgba(168, 85, 247, 0.1);
+    background: rgba(30, 164, 101, 0.1);
     color: #a855f7;
 }
 

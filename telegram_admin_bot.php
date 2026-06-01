@@ -1,7 +1,7 @@
 ﻿<?php
 /**
  * ╔══════════════════════════════════════════════════════════════════════════╗
- * ║   LunarPay — Telegram Admin Bot                                        ║
+ * ║   DiretoPay — Telegram Admin Bot                                        ║
  * ║   Comandos exclusivos para administradores via Telegram                 ║
  * ╚══════════════════════════════════════════════════════════════════════════╝
  *
@@ -170,7 +170,7 @@ if (in_array($command, ['ranking', 'ranking7', 'ranking30'])) {
     $reply .= div() . "\n"
            .  "👥 <b>{$totalSellers}</b> vendedores ativos\n"
            .  "💰 Volume total: <b>" . number_format($totalVol, 2, ',', '.') . "</b>\n"
-           .  "\n🤖 <i>LunarPay Admin • " . date('d/m/Y H:i') . "</i>";
+           .  "\n🤖 <i>DiretoPay Admin • " . date('d/m/Y H:i') . "</i>";
 
     adminSend($chatId, $reply);
     http_response_code(200);
@@ -195,7 +195,7 @@ if ($command === 'resumo') {
            . "    " . fmt($monthVol) . " em vendas\n\n"
            . "👥 <b>Vendedores ativos:</b> {$totalUsers}\n"
            . "🏦 <b>Saques pendentes:</b> {$pendingWd} — " . fmt($pendingWdVol) . "\n\n"
-           . "🤖 <i>LunarPay Admin • " . date('d/m/Y H:i') . "</i>";
+           . "🤖 <i>DiretoPay Admin • " . date('d/m/Y H:i') . "</i>";
 
     adminSend($chatId, $reply);
     http_response_code(200);
@@ -206,7 +206,7 @@ if ($command === 'resumo') {
 // /ajuda — Lista de comandos admin
 // ══════════════════════════════════════════════════════════════════════════════
 if (in_array($command, ['ajuda', 'help', 'start'])) {
-    $reply = "🤖 <b>LunarPay — Bot Admin</b>\n" . div() . "\n\n"
+    $reply = "🤖 <b>DiretoPay — Bot Admin</b>\n" . div() . "\n\n"
            . "Comandos disponíveis:\n\n"
            . "🏆 <b>/ranking</b> — Ranking geral (todos os tempos)\n"
            . "🏆 <b>/ranking hoje</b> — Ranking do dia\n"

@@ -14,7 +14,7 @@ if (!$isAuth) {
   <head>
     <base href="/">
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logo_lunarpay.png" />
+    <link rel="icon" type="image/png" href="/logo_diretopay.png" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="apple-mobile-web-app-capable" content="yes" />

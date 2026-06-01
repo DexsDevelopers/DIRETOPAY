@@ -94,14 +94,14 @@ $body = [
     'expire_in_days'     => 1,
     'transaction_origin' => 'api',
     'customer' => [
-        'name'         => 'Teste LunarPay',
-        'email'        => 'teste@lunarpay.site',
+        'name'         => 'Teste DiretoPay',
+        'email'        => 'teste@diretopay.com.br',
         'phone_number' => '11900000000',
         'document'     => '09115751031',
     ],
     'cart' => [[
         'product_hash'   => $useProductHash,
-        'title'          => 'Teste LunarPay',
+        'title'          => 'Teste DiretoPay',
         'cover'          => null,
         'price'          => 500,
         'quantity'       => 1,

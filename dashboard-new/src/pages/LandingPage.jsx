@@ -22,7 +22,7 @@ function SpotlightCursor() {
     }, []);
     return (
         <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden"
-            style={{ background: `radial-gradient(600px circle at ${pos.x}px ${pos.y}px, rgba(192,0,106,0.07), transparent 40%)` }}
+            style={{ background: `radial-gradient(600px circle at ${pos.x}px ${pos.y}px, rgba(30,164,101,0.07), transparent 40%)` }}
         />
     );
 }
@@ -187,7 +187,7 @@ function AwardCard({ icon: Icon, amount, name, desc, color, delay }) {
     const palette = {
         platinum: { hex: isDark ? '#e2e8f0' : '#64748b', glow: 'rgba(100,116,139,0.15)', border: isDark ? 'rgba(226,232,240,0.2)' : 'rgba(100,116,139,0.25)', bg: isDark ? 'rgba(226,232,240,0.06)' : 'rgba(100,116,139,0.06)', badge: 'PLATINUM' },
         gold:     { hex: '#f59e0b', glow: 'rgba(245,158,11,0.18)',  border: 'rgba(245,158,11,0.3)',   bg: isDark ? 'rgba(245,158,11,0.07)'  : 'rgba(245,158,11,0.06)',  badge: 'GOLD' },
-        wine:     { hex: '#C0006A', glow: 'rgba(192,0,106,0.20)',   border: 'rgba(192,0,106,0.3)',    bg: isDark ? 'rgba(192,0,106,0.08)'   : 'rgba(192,0,106,0.06)',   badge: 'WINE' },
+        wine:     { hex: '#1ea465', glow: 'rgba(30,164,101,0.20)',   border: 'rgba(30,164,101,0.3)',    bg: isDark ? 'rgba(30,164,101,0.08)'   : 'rgba(30,164,101,0.06)',   badge: 'WINE' },
         emerald:  { hex: '#10b981', glow: 'rgba(16,185,129,0.18)',  border: 'rgba(16,185,129,0.3)',   bg: isDark ? 'rgba(16,185,129,0.07)'  : 'rgba(16,185,129,0.06)',  badge: 'EMERALD' },
     };
     const p = palette[color];
@@ -296,7 +296,7 @@ function FeatureCard({ icon: Icon, title, desc, delay = 0 }) {
                 <Icon size={26} />
             </div>
             <h3 className={`text-2xl font-black mb-4 tracking-tight group-hover:text-primary transition-colors ${isDark ? 'text-gray-100' : 'text-gray-800'}`}>{title}</h3>
-            <p className="text-gray-500 font-medium leading-relaxed">{desc}</p>
+            <p className={`font-medium leading-relaxed transition-colors ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{desc}</p>
         </motion.div>
     );
 }
@@ -388,11 +388,11 @@ export default function LandingPage() {
             {/* Navbar — full-width no topo, pill flutuante ao rolar */}
             <nav className={`fixed z-50 flex items-center justify-between transition-all duration-500
                 ${scrolled
-                    ? 'left-1/2 -translate-x-1/2 top-3 w-[94%] sm:w-[90%] max-w-6xl h-14 sm:h-16 rounded-[32px] px-5 sm:px-8 border shadow-[0_8px_32px_rgba(192,0,106,0.12)] backdrop-blur-3xl ' + (isDark ? 'bg-[#0f0f16]/95 border-white/10' : 'bg-white/95 border-pink-100')
+                    ? 'left-1/2 -translate-x-1/2 top-3 w-[94%] sm:w-[90%] max-w-6xl h-14 sm:h-16 rounded-[32px] px-5 sm:px-8 border shadow-[0_8px_32px_rgba(30,164,101,0.12)] backdrop-blur-3xl ' + (isDark ? 'bg-[#0f0f16]/95 border-white/10' : 'bg-white/95 border-pink-100')
                     : 'left-0 translate-x-0 top-[38px] sm:top-[38px] w-full h-16 sm:h-20 rounded-none px-6 sm:px-16 border-b border-transparent backdrop-blur-sm ' + (isDark ? 'bg-[#0a0a0f]/80' : 'bg-white/80')
                 }`}>
                 <div className="flex items-center gap-2 sm:gap-3">
-                    <img src={isDark ? "/logo_premium.png?v=3" : "/logo_white.jpg?v=3"} alt="LunarPay" className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl shadow-[0_0_16px_rgba(192,0,106,0.3)]" />
+                    <img src={isDark ? "/logo_premium.png?v=3" : "/logo_white.jpg?v=3"} alt="DiretoPay" className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl shadow-[0_0_16px_rgba(30,164,101,0.3)]" />
                     <span className={`font-black text-base sm:text-lg tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Lunar<span className="text-primary">Pay</span></span>
                 </div>
                 <div className="hidden lg:flex items-center gap-8 text-[12px] font-semibold text-gray-500">
@@ -405,7 +405,7 @@ export default function LandingPage() {
                 <div className="flex items-center gap-2 sm:gap-3">
                     <ThemeToggle />
                     <Link to="/login" className={`hidden sm:block text-[12px] font-semibold px-4 py-2 rounded-full border transition-all hover:border-primary hover:text-primary ${isDark ? 'text-gray-300 border-white/15' : 'text-gray-600 border-gray-200'}`}>Login</Link>
-                    <Link to="/register" className="bg-gradient-to-r from-pink-600 to-rose-700 text-white text-[11px] sm:text-[12px] font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-full hover:opacity-90 transition-all active:scale-95 shadow-[0_4px_16px_rgba(192,0,106,0.35)] whitespace-nowrap">Cadastre-se</Link>
+                    <Link to="/register" className="bg-gradient-to-r from-pink-600 to-rose-700 text-white text-[11px] sm:text-[12px] font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-full hover:opacity-90 transition-all active:scale-95 shadow-[0_4px_16px_rgba(30,164,101,0.35)] whitespace-nowrap">Cadastre-se</Link>
                 </div>
             </nav>
 
@@ -454,7 +454,7 @@ export default function LandingPage() {
                                 <ShimmerButton className="w-full sm:w-auto">
                                 <Link to="/register" className="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-rose-700 text-white h-14 px-8 rounded-2xl flex items-center justify-center font-black hover:opacity-90 transition-all active:scale-95 group">
                                     <ShieldCheck className="mr-2 shrink-0" size={20} />
-                                    Quero entrar na LunarPay
+                                    Quero entrar na DiretoPay
                                     <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform shrink-0" size={18} />
                                 </Link>
                                 </ShimmerButton>
@@ -497,7 +497,7 @@ export default function LandingPage() {
                             <Trophy size={16} /> Programa de Recompensas
                         </motion.div>
                         <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
-                            className={`text-3xl sm:text-5xl font-black mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>A LunarPay vibra a cada meta batida!</motion.h2>
+                            className={`text-3xl sm:text-5xl font-black mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>A DiretoPay vibra a cada meta batida!</motion.h2>
                         <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
                             className="text-gray-500 text-lg">Reconhecemos sua performance com prêmios exclusivos. Cada marco é uma conquista celebrada.</motion.p>
                     </div>
@@ -521,11 +521,11 @@ export default function LandingPage() {
                             </motion.div>
                             <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
                                 className="text-3xl sm:text-4xl font-black mb-6 leading-tight">
-                                Adquirente falhou?<br /><span className="text-primary">A LunarPay encontra outra rota na mesma hora.</span>
+                                Adquirente falhou?<br /><span className="text-primary">A DiretoPay encontra outra rota na mesma hora.</span>
                             </motion.h2>
                             <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
                                 className="text-gray-400 text-lg mb-8 leading-relaxed">
-                                Deixe a LunarPay encontrar a rota com maior chance de aprovação enquanto você foca em vender! Nosso sistema inteligente alterna automaticamente entre múltiplos processadores.
+                                Deixe a DiretoPay encontrar a rota com maior chance de aprovação enquanto você foca em vender! Nosso sistema inteligente alterna automaticamente entre múltiplos processadores.
                             </motion.p>
                             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }}
                                 className="grid grid-cols-2 gap-4">
@@ -579,7 +579,7 @@ export default function LandingPage() {
                                             transition={{ repeat: Infinity, duration: 2 }}
                                             className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-all ${
                                                 active
-                                                    ? 'bg-rose-700/20 border-rose-600/80 shadow-[0_0_20px_rgba(192,0,106,0.25)]'
+                                                    ? 'bg-rose-700/20 border-rose-600/80 shadow-[0_0_20px_rgba(30,164,101,0.25)]'
                                                     : 'bg-white/5 border-white/10 opacity-40'
                                             }`}>
                                             <div className="flex items-center gap-2">
@@ -638,7 +638,7 @@ export default function LandingPage() {
                             <Flame size={16} /> Competição Mensal
                         </motion.div>
                         <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
-                            className="text-3xl sm:text-5xl font-black mb-4">Na LunarPay, sua performance importa!</motion.h2>
+                            className="text-3xl sm:text-5xl font-black mb-4">Na DiretoPay, sua performance importa!</motion.h2>
                         <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
                             className="text-gray-400 text-lg">Todos os meses, os sellers disputam o ranking para ganhar prêmios exclusivos. Vendeu mais? Sobe no ranking. Atingiu o topo? Premiação garantida!</motion.p>
                     </div>
@@ -665,19 +665,19 @@ export default function LandingPage() {
             </section>
 
             {/* Solutions Section */}
-            <section id="solucoes" className="py-32 px-6" style={{ background: '#e8e8f0' }}>
+            <section id="solucoes" className={`py-32 px-6 ${isDark ? 'bg-[#0a0a0f]' : ''}`} style={isDark ? {} : { background: '#e8e8f0' }}>
                 <div className="max-w-7xl mx-auto space-y-20">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-gray-200 pb-16">
+                    <div className={`flex flex-col md:flex-row md:items-end justify-between gap-8 border-b pb-16 ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
                         <div className="space-y-4">
                             <p className="text-[11px] font-black text-primary uppercase tracking-[0.4em]">Soluções Corporativas</p>
-                            <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-gray-900">Projetado para <br /> <span className="text-primary italic">quem joga grande.</span></h2>
+                            <h2 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter ${isDark ? 'text-white' : 'text-gray-900'}`}>Projetado para <br /> <span className="text-primary italic">quem joga grande.</span></h2>
                         </div>
-                        <p className="text-gray-400 max-w-xs font-bold leading-relaxed text-sm">Eliminamos as barreiras entre sua venda e seu lucro com tecnologia de ponta.</p>
+                        <p className={`max-w-xs font-bold leading-relaxed text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Eliminamos as barreiras entre sua venda e seu lucro com tecnologia de ponta.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         <AnimatedBorderCard><FeatureCard icon={ShieldCheck} title="Anonimato Bancário" desc="Seus dados pessoais ou da sua empresa nunca são revelados ao pagador. Total descrição para o seu negócio." delay={0.1} /></AnimatedBorderCard>
                         <AnimatedBorderCard><FeatureCard icon={Zap} title="Conversão Extrema" desc="Checkout otimizado para o Pix. Experiência de um clique que reduz o abandono em até 45%." delay={0.2} /></AnimatedBorderCard>
-                        <AnimatedBorderCard><FeatureCard icon={Layers} title="LunarPay - Dashboard Premium" desc="Gerencie múltiplos projetos e fluxos financeiros em uma única dashboard integrada e centralizada." delay={0.3} /></AnimatedBorderCard>
+                        <AnimatedBorderCard><FeatureCard icon={Layers} title="DiretoPay - Dashboard Premium" desc="Gerencie múltiplos projetos e fluxos financeiros em uma única dashboard integrada e centralizada." delay={0.3} /></AnimatedBorderCard>
                         <AnimatedBorderCard><FeatureCard icon={BarChart3} title="Analytics em Real-time" desc="Acompanhe cada centavo que entra. Insights detalhados de conversão e comportamento do cliente." delay={0.4} /></AnimatedBorderCard>
                         <AnimatedBorderCard><FeatureCard icon={Rocket} title="Saques Sem Taxas" desc="Transferências ultra-rápidas e gratuitas para sua conta bancária de preferência logo após o processamento." delay={0.5} /></AnimatedBorderCard>
                         <AnimatedBorderCard><FeatureCard icon={Globe} title="Infraestrutura Global" desc="Servidores distribuídos para garantir que seu link esteja sempre no ar, 24 horas por dia, 7 dias por semana." delay={0.6} /></AnimatedBorderCard>
@@ -710,10 +710,10 @@ export default function LandingPage() {
                             </div>
                             <div className="space-y-2 text-white/80">
                                 <p className="text-white/20">// Initialize your integration</p>
-                                <p><span className="text-purple-400">const</span> lunarPay = <span className="text-blue-400">new</span> <span className="text-purple-400">LunarPay</span>{'({'} key: <span className="text-orange-400">'pk_live_...'</span> {'})'};</p>
+                                <p><span className="text-purple-400">const</span> diretoPay = <span className="text-blue-400">new</span> <span className="text-purple-400">DiretoPay</span>{'({'} key: <span className="text-orange-400">'pk_live_...'</span> {'})'};</p>
                                 <p>&nbsp;</p>
                                 <p className="text-white/20">// Generate an anonymous Pix</p>
-                                <p><span className="text-purple-400">await</span> lunarPay.<span className="text-blue-400">createTransaction</span>{'({'}</p>
+                                <p><span className="text-purple-400">await</span> diretoPay.<span className="text-blue-400">createTransaction</span>{'({'}</p>
                                 <p className="pl-4">amount: <span className="text-orange-400">97.00</span>,</p>
                                 <p className="pl-4">customer: <span className="text-purple-300">'John Doe'</span></p>
                                 <p>{'})'};</p>
@@ -728,7 +728,7 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto px-6">
                     <p className="text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.5em] mb-16">Empresas e Empreendedores que confiam</p>
                     <div className="flex flex-wrap justify-center gap-x-12 gap-y-10 md:gap-24 opacity-30 hover:opacity-70 transition-all duration-700">
-                        {['TECHFLOW', 'ZENITH', 'NEXUS-X', 'CRYPTO-GEN', 'PULSE-PAY', 'LUNARPAY-STT'].map(p => (
+                        {['TECHFLOW', 'ZENITH', 'NEXUS-X', 'CRYPTO-GEN', 'PULSE-PAY', 'DIRETOPAY-STT'].map(p => (
                             <span key={p} className="text-xl md:text-3xl font-[1000] italic tracking-tighter text-gray-600 whitespace-nowrap">{p}</span>
                         ))}
                     </div>
@@ -743,9 +743,9 @@ export default function LandingPage() {
                         <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Suporte humanizado disponível 24/7</p>
                     </div>
                     <div className="bg-gray-50 border border-pink-100 rounded-[28px] sm:rounded-[48px] p-5 sm:p-8 md:p-16">
-                        <AccordionItem title="O LunarPay é realmente anônimo?" content="Sim. Utilizamos uma camada de abstração bancária onde seus dados pessoais ou da sua empresa nunca aparecem para o pagador final. O dinheiro cai na nossa conta de liquidação e é repassado instantaneamente para você." />
-                        <AccordionItem title="Tem alguma taxa por transação?" content="Não! A LunarPay não cobra taxa por transação. Você recebe o valor integral das suas vendas diretamente no seu saldo, sem surpresas e sem taxas escondidas." />
-                        <AccordionItem title="Como funciona o sistema de saques?" content="Após a confirmação do pagamento pelo nosso sistema (que ocorre em milissegundos), o saldo fica disponível em sua conta LunarPay. Você pode solicitar o saque via Pix para sua chave cadastrada a qualquer momento, sem taxas." />
+                        <AccordionItem title="O DiretoPay é realmente anônimo?" content="Sim. Utilizamos uma camada de abstração bancária onde seus dados pessoais ou da sua empresa nunca aparecem para o pagador final. O dinheiro cai na nossa conta de liquidação e é repassado instantaneamente para você." />
+                        <AccordionItem title="Tem alguma taxa por transação?" content="Não! A DiretoPay não cobra taxa por transação. Você recebe o valor integral das suas vendas diretamente no seu saldo, sem surpresas e sem taxas escondidas." />
+                        <AccordionItem title="Como funciona o sistema de saques?" content="Após a confirmação do pagamento pelo nosso sistema (que ocorre em milissegundos), o saldo fica disponível em sua conta DiretoPay. Você pode solicitar o saque via Pix para sua chave cadastrada a qualquer momento, sem taxas." />
                         <AccordionItem title="Posso integrar com qualquer site ou bot?" content="Com certeza. Nossa API REST é agnóstica de linguagem e plataforma. Seja em um bot de Telegram, um dashboard customizado ou um e-commerce em WordPress, a integração é fluida e documentada." />
                     </div>
                 </div>
@@ -777,7 +777,7 @@ export default function LandingPage() {
                         {/* Col 1 - Brand */}
                         <div className="space-y-5 lg:col-span-1">
                             <div className="flex items-center gap-2">
-                                <img src={isDark ? "/logo_premium.png?v=3" : "/logo_white.jpg?v=3"} alt="LunarPay" className="w-8 h-8 rounded-lg" />
+                                <img src={isDark ? "/logo_premium.png?v=3" : "/logo_white.jpg?v=3"} alt="DiretoPay" className="w-8 h-8 rounded-lg" />
                                 <span className="font-black text-base text-gray-900">Lunar<span className="text-primary">Pay</span></span>
                             </div>
                             <p className="text-gray-500 text-sm leading-relaxed">O lado invisível que faz sua operação crescer!</p>
@@ -786,9 +786,9 @@ export default function LandingPage() {
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                                     LinkedIn
                                 </a>
-                                <a href="https://instagram.com/user.lunarpay" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-primary text-sm font-semibold hover:underline">
+                                <a href="https://instagram.com/user.diretopay" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-primary text-sm font-semibold hover:underline">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
-                                    @user.lunarpay
+                                    @user.diretopay
                                 </a>
                             </div>
                         </div>
@@ -838,8 +838,8 @@ export default function LandingPage() {
 
                     {/* Bottom bar */}
                     <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-100 pt-6 gap-3">
-                        <p className="text-gray-400 text-sm">© 2026 LunarPay · CNPJ [CNPJ]</p>
-                        <Link to="/register" className="text-sm text-gray-400 hover:text-primary transition-colors font-medium">Criar Conta LunarPay →</Link>
+                        <p className="text-gray-400 text-sm">© 2026 DiretoPay · CNPJ [CNPJ]</p>
+                        <Link to="/register" className="text-sm text-gray-400 hover:text-primary transition-colors font-medium">Criar Conta DiretoPay →</Link>
                     </div>
                 </div>
             </footer>

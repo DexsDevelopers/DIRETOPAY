@@ -133,7 +133,7 @@ const AnnouncementModal = () => {
                   className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm transition-all duration-300"
                   style={{
                     background: 'linear-gradient(135deg, #7c3aed, #a855f7)',
-                    boxShadow: '0 4px 20px -4px rgba(168,85,247,0.4)',
+                    boxShadow: '0 4px 20px -4px rgba(30,164,101,0.4)',
                   }}
                 >
                   <ExternalLink size={15} />

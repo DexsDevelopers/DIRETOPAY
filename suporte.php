@@ -15,8 +15,8 @@ $user = $stmt->fetch();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>Suporte & FAQ - LunarPay</title>
-    <link rel="icon" type="image/png" href="logo_lunarpay.png">
+    <title>Suporte & FAQ - DiretoPay</title>
+    <link rel="icon" type="image/png" href="logo_diretopay.png">
     <link rel="stylesheet" href="style.css?v=125.0">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -58,7 +58,7 @@ $user = $stmt->fetch();
                         </div>
                     </div>
                     <p style="color: var(--text-2); line-height: 1.7; margin-bottom: 1rem; font-size: 0.95rem;">
-                        A <strong>LunarPay</strong> é uma plataforma de intermediação de pagamentos digitais que permite a vendedores e empreendedores gerenciar cobranças via Pix, criar checkouts personalizados, vender produtos digitais e físicos, e acompanhar suas finanças em tempo real.
+                        A <strong>DiretoPay</strong> é uma plataforma de intermediação de pagamentos digitais que permite a vendedores e empreendedores gerenciar cobranças via Pix, criar checkouts personalizados, vender produtos digitais e físicos, e acompanhar suas finanças em tempo real.
                     </p>
                     <p style="color: var(--text-2); line-height: 1.7; font-size: 0.95rem;">
                         Nossa missão é simplificar os recebimentos online, com tecnologia robusta, suporte humanizado e conformidade total com a legislação brasileira.
@@ -69,7 +69,7 @@ $user = $stmt->fetch();
                 
                 <div class="faq-item">
                     <div class="faq-question">Como funciona a geração de cobranças via Pix? <i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">Acesse o Dashboard e clique em "Gerar Cobrança". Defina o valor, e o sistema criará um QR Code Pix dinâmico com validade de 20 minutos. Assim que o pagamento for confirmado, o valor é creditado automaticamente no seu saldo LunarPay.</div>
+                    <div class="faq-answer">Acesse o Dashboard e clique em "Gerar Cobrança". Defina o valor, e o sistema criará um QR Code Pix dinâmico com validade de 20 minutos. Assim que o pagamento for confirmado, o valor é creditado automaticamente no seu saldo DiretoPay.</div>
                 </div>
 
                 <div class="faq-item">
@@ -94,7 +94,7 @@ $user = $stmt->fetch();
 
                 <div class="faq-item">
                     <div class="faq-question">Posso vender produtos físicos e digitais? <i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">Sim! A LunarPay suporta ambos os tipos. Para produtos digitais, você pode configurar entrega automática por e-mail ou link após o pagamento. Para produtos físicos, é possível coletar endereço de entrega no checkout.</div>
+                    <div class="faq-answer">Sim! A DiretoPay suporta ambos os tipos. Para produtos digitais, você pode configurar entrega automática por e-mail ou link após o pagamento. Para produtos físicos, é possível coletar endereço de entrega no checkout.</div>
                 </div>
 
                 <div class="faq-item">
@@ -117,12 +117,12 @@ $user = $stmt->fetch();
                     <p style="color: var(--text-2); margin-bottom: 1.5rem; font-size: 0.95rem;">Fale diretamente com nossa equipe de suporte humano.</p>
                     
                     <div class="support-contact-grid">
-                        <a href="https://wa.me/5511998627674" target="_blank" class="contact-method">
+                        <a href="https://wa.me/5551996148568" target="_blank" class="contact-method">
                             <i class="fab fa-whatsapp"></i>
                             <h4 style="margin-bottom: 0.3rem;">WhatsApp</h4>
                             <p style="font-size: 0.8rem; color: var(--text-2);">Atendimento Instantâneo</p>
                         </a>
-                        <a href="mailto:contato@lunarpay.site" class="contact-method">
+                        <a href="mailto:contato@diretopay.com.br" class="contact-method">
                             <i class="far fa-envelope"></i>
                             <h4 style="margin-bottom: 0.3rem;">E-mail</h4>
                             <p style="font-size: 0.8rem; color: var(--text-2);">Suporte Corporativo</p>

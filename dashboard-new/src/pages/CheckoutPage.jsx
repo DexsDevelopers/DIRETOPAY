@@ -19,6 +19,7 @@ const DEFAULT_CS = {
     guarantee_sub: 'Não ficou satisfeito? Devolvemos 100% do seu dinheiro, sem perguntas.',
     show_social: true, social_count: '2.400', show_trust_seals: true, cta_text: '',
     show_sticky_mobile: true,
+    font_color_override: '',
 };
 
 /* ── helpers ─────────────────────────────────────────────── */
@@ -74,6 +75,44 @@ function TrustBadge({ icon, label, sub, color }) {
     );
 }
 
+/* ── Product Selection Helpers ───────────────────────────── */
+const getOriginalPrice = (price) => {
+    const p = parseFloat(price);
+    if (Math.abs(p - 17.90) < 0.1) return 39.90;
+    if (Math.abs(p - 37.90) < 0.1) return 59.90;
+    const raw = p * 1.6;
+    return Math.ceil(raw / 10) * 10 - 0.10;
+};
+
+const getProductEmoji = (name, isFeatured) => {
+    const lower = name.toLowerCase();
+    if (lower.includes('bronze')) return '🥉';
+    if (lower.includes('prata') || lower.includes('silver')) return '🥈';
+    if (lower.includes('ouro') || lower.includes('gold')) return '🥇';
+    return isFeatured ? '🥇' : '📦';
+};
+
+const getFeaturedItemId = (items) => {
+    if (!items || items.length === 0) return null;
+    const keywords = ['ouro', 'gold', 'mais escolhido', 'premium', 'completo', 'vip'];
+    for (const item of items) {
+        const nameLower = item.name.toLowerCase();
+        if (keywords.some(k => nameLower.includes(k))) {
+            return item.id;
+        }
+    }
+    let maxPrice = -1;
+    let featuredId = items[0].id;
+    for (const item of items) {
+        const p = parseFloat(item.price);
+        if (p > maxPrice) {
+            maxPrice = p;
+            featuredId = item.id;
+        }
+    }
+    return featuredId;
+};
+
 /* ═══════════════════════════════════════════════════════════ */
 export default function CheckoutPage() {
     const { slug } = useParams();
@@ -93,12 +132,25 @@ export default function CheckoutPage() {
     const [activePix, setActivePix]     = useState(null);
     const [paymentMethod, setPaymentMethod] = useState('pix');
     const formRef = useRef(null);
+    const [selectedItems, setSelectedItems] = useState([]);
 
     const hasPaidRef = useRef(false);
     const { m, s, expired } = useCountdown(15 * 60);
     const viewers = useViewers(8);
 
     useEffect(() => { fetchCheckout(); }, [slug]);
+
+    useEffect(() => {
+        if (data?.items) {
+            const csSettings = data.checkout.custom_settings || {};
+            if (csSettings.allow_item_selection && data.items.length > 1) {
+                const featuredId = getFeaturedItemId(data.items);
+                setSelectedItems([featuredId]);
+            } else {
+                setSelectedItems(data.items.map(item => item.id));
+            }
+        }
+    }, [data]);
 
     // Inject Google Font when data loads
     useEffect(() => {
@@ -221,7 +273,14 @@ export default function CheckoutPage() {
     const handlePay = async (e) => {
         e.preventDefault();
         setIsProcessing(true);
+        const csSettings = { ...DEFAULT_CS, ...(data?.checkout?.custom_settings || {}) };
+        if (csSettings.allow_item_selection && selectedItems.length === 0) {
+            alert('Selecione pelo menos um produto para comprar.');
+            setIsProcessing(false);
+            return;
+        }
         try {
+            const selectedItemIds = csSettings.allow_item_selection ? selectedItems : data.items.map(item => item.id);
             if (paymentMethod === 'card') {
                 const res = await fetch('/process_checkout_card.php', {
                     method:  'POST',
@@ -229,7 +288,8 @@ export default function CheckoutPage() {
                     body:    JSON.stringify({
                         checkout_id:       data.checkout.id,
                         customer_name:     customerName,
-                        customer_document: customerDoc.replace(/\D/g, '')
+                        customer_document: customerDoc.replace(/\D/g, ''),
+                        selected_item_ids: selectedItemIds
                     })
                 });
                 const d = await res.json();
@@ -245,7 +305,8 @@ export default function CheckoutPage() {
                     body:    JSON.stringify({
                         checkout_id:       data.checkout.id,
                         customer_name:     customerName,
-                        customer_document: customerDoc.replace(/\D/g, '')
+                        customer_document: customerDoc.replace(/\D/g, ''),
+                        selected_item_ids: selectedItemIds
                     })
                 });
                 const d = await res.json();
@@ -288,7 +349,23 @@ export default function CheckoutPage() {
     const btnR = cs.btn_radius === 'pill' ? '9999px' : cs.btn_radius === 'sharp' ? '6px' : '16px';
     const fontFam = `'${cs.font_family || 'Outfit'}', sans-serif`;
     const btnColor = cs.btn_color_override || primary;
-    const finalTotal = couponApplied ? Math.max(0, data.total - couponDiscount) : data.total;
+    const itemsTotal = data?.items
+        ? data.items.filter(item => selectedItems.includes(item.id)).reduce((sum, item) => sum + parseFloat(item.price), 0)
+        : 0;
+    const currentTotal = cs.allow_item_selection ? itemsTotal : (data?.total || 0);
+    const finalTotal = couponApplied ? Math.max(0, currentTotal - couponDiscount) : currentTotal;
+
+    const getHexColor = (col) => {
+        if (!col) return '';
+        if (col.startsWith('#')) {
+            if (col.length === 4) {
+                return '#' + col[1] + col[1] + col[2] + col[2] + col[3] + col[3];
+            }
+            return col;
+        }
+        return col;
+    };
+    const fontColor = getHexColor(cs.font_color_override);
 
     /* ── RENDER ── */
     return (
@@ -296,6 +373,43 @@ export default function CheckoutPage() {
             className="min-h-screen text-white relative overflow-x-hidden"
             style={{ background: bgCss, fontFamily: fontFam }}
         >
+            {fontColor && (
+                <style>{`
+                    .min-h-screen.text-white {
+                        color: ${fontColor} !important;
+                    }
+                    .text-white {
+                        color: ${fontColor} !important;
+                    }
+                    .text-white\\/70 {
+                        color: ${fontColor}b3 !important;
+                    }
+                    .text-white\\/60 {
+                        color: ${fontColor}99 !important;
+                    }
+                    .text-white\\/50 {
+                        color: ${fontColor}80 !important;
+                    }
+                    .text-white\\/40 {
+                        color: ${fontColor}66 !important;
+                    }
+                    .text-white\\/30 {
+                        color: ${fontColor}4d !important;
+                    }
+                    .text-white\\/25 {
+                        color: ${fontColor}40 !important;
+                    }
+                    .text-white\\/20 {
+                        color: ${fontColor}33 !important;
+                    }
+                    .text-white\\/15 {
+                        color: ${fontColor}26 !important;
+                    }
+                    .text-white\\/8 {
+                        color: ${fontColor}14 !important;
+                    }
+                `}</style>
+            )}
             {/* Ambient glow */}
             <div
                 className="fixed inset-0 -z-10 pointer-events-none opacity-[0.07]"
@@ -340,8 +454,10 @@ export default function CheckoutPage() {
 
             {/* ── BANNER ── */}
             {data.checkout.banner_url && (
-                <div className="w-full max-h-52 overflow-hidden">
-                    <img src={data.checkout.banner_url} className="w-full object-cover" alt="Banner" />
+                <div className="max-w-4xl mx-auto px-4 mt-6">
+                    <div className="rounded-[24px] overflow-hidden border border-white/10 shadow-2xl bg-white/[0.02] backdrop-blur-sm">
+                        <img src={data.checkout.banner_url} className="w-full h-auto block" alt="Banner" />
+                    </div>
                 </div>
             )}
 
@@ -391,46 +507,117 @@ export default function CheckoutPage() {
                 )}
                 {!cs.headline && !cs.subheadline && !cs.urgency_text && <div className="mb-6" />}
 
+                {/* ── PRODUCT SELECTION CARDS (KITS) ── */}
+                {cs.allow_item_selection && data.items.length > 1 && (
+                    <div className="mb-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                            {data.items.map((item) => {
+                                const isSelected = selectedItems.includes(item.id);
+                                const isFeatured = item.id === getFeaturedItemId(data.items);
+                                const originalPrice = getOriginalPrice(item.price);
+                                const emoji = getProductEmoji(item.name, isFeatured);
+                                
+                                return (
+                                    <div
+                                        key={item.id}
+                                        onClick={() => setSelectedItems([item.id])}
+                                        className={`relative cursor-pointer transition-all duration-300 rounded-[32px] p-6 flex flex-col items-center justify-between border-4 select-none ${
+                                            isFeatured
+                                                ? `bg-[#f5b823] text-black ${
+                                                    isSelected
+                                                        ? 'border-black shadow-2xl scale-[1.02] opacity-100'
+                                                        : 'border-transparent opacity-60 hover:opacity-90 hover:scale-[1.01]'
+                                                  }`
+                                                : `bg-white text-slate-900 ${
+                                                    isSelected
+                                                        ? 'border-slate-900 shadow-2xl scale-[1.02] opacity-100'
+                                                        : 'border-transparent opacity-60 hover:opacity-90 hover:scale-[1.01]'
+                                                  }`
+                                        }`}
+                                    >
+                                        {/* Tag Mais Escolhido */}
+                                        {isFeatured && (
+                                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#121214] text-[#f5b823] text-[10px] font-black uppercase tracking-widest px-5 py-1.5 rounded-full shadow-lg border border-[#f5b823]/20">
+                                                ★ MAIS ESCOLHIDO
+                                            </div>
+                                        )}
+
+                                        {/* Título do Kit */}
+                                        <h3 className="text-lg font-black text-center mb-4 flex items-center justify-center gap-2 text-slate-950">
+                                            <span className="text-xl">{emoji}</span>
+                                            <span>{item.name}</span>
+                                        </h3>
+
+                                        {/* Imagem do Produto */}
+                                        <div className="w-full bg-white rounded-[24px] p-4 mb-4 border border-slate-100 flex items-center justify-center aspect-[4/3] overflow-hidden shadow-inner">
+                                            {item.image_url ? (
+                                                <img
+                                                    src={item.image_url}
+                                                    alt={item.name}
+                                                    className="max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-105"
+                                                />
+                                            ) : (
+                                                <Gift className="w-12 h-12 text-slate-300 animate-pulse" />
+                                            )}
+                                        </div>
+
+                                        {/* Preço e Seleção */}
+                                        <div className="text-center w-full mt-auto">
+                                            <p className="text-[11px] font-bold line-through text-slate-500">
+                                                De R$ {fmtBRL(originalPrice)}
+                                            </p>
+                                            <p className={`text-3xl font-black ${
+                                                isFeatured ? 'text-slate-950' : 'text-green-600'
+                                            }`}>
+                                                R$ {fmtBRL(item.price)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
+
                 <div className={cs.layout === '1col' ? 'max-w-xl mx-auto space-y-4' : 'grid grid-cols-1 md:grid-cols-2 gap-5'}>
 
                     {/* ── LEFT: ORDER SUMMARY ── */}
                     <div className="space-y-4">
-
-                        {/* Product list */}
                         <div className="bg-white/[0.03] border border-white/8 rounded-[28px] p-6">
-                            <h2 className="text-sm font-black text-white/50 uppercase tracking-widest mb-5 flex items-center gap-2">
-                                <ShoppingBag size={14} style={{ color: primary }} />
-                                Resumo do Pedido
-                            </h2>
-
+                            <h3 className="text-xs font-black text-white/30 uppercase tracking-widest mb-6">Resumo do pedido</h3>
+                            
                             <div className="space-y-4">
-                                {data.items.map((item, i) => (
-                                    <div key={i} className="flex items-center gap-4">
-                                        {item.image_url ? (
-                                            <img src={item.image_url} className="w-14 h-14 rounded-2xl object-cover border border-white/10 flex-shrink-0" alt={item.name} />
-                                        ) : (
-                                            <div className="w-14 h-14 rounded-2xl flex-shrink-0 flex items-center justify-center border border-white/5" style={{ background: `${primary}15` }}>
-                                                <Gift size={20} style={{ color: primary }} />
+                                {data.items
+                                    .filter(item => !cs.allow_item_selection || selectedItems.includes(item.id))
+                                    .map((item, i) => {
+                                        return (
+                                            <div key={i} className="flex items-center gap-4 animate-fadeIn">
+                                                {item.image_url ? (
+                                                    <img src={item.image_url} className="w-14 h-14 rounded-2xl object-cover border border-white/10 flex-shrink-0" alt={item.name} />
+                                                ) : (
+                                                    <div className="w-14 h-14 rounded-2xl flex-shrink-0 flex items-center justify-center border border-white/5" style={{ background: `${primary}15` }}>
+                                                        <Gift size={20} style={{ color: primary }} />
+                                                    </div>
+                                                )}
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="font-bold text-white text-sm leading-tight">{item.name}</p>
+                                                    <div className="flex items-center gap-1 mt-1">
+                                                        {[1,2,3,4,5].map(s => <Star key={s} size={10} fill={primary} style={{ color: primary }} />)}
+                                                        <span className="text-[10px] text-white/30 ml-1">5.0</span>
+                                                    </div>
+                                                </div>
+                                                <span className="font-black text-white whitespace-nowrap">
+                                                    R$ {fmtBRL(item.price)}
+                                                </span>
                                             </div>
-                                        )}
-                                        <div className="flex-1 min-w-0">
-                                            <p className="font-bold text-white text-sm leading-tight">{item.name}</p>
-                                            <div className="flex items-center gap-1 mt-1">
-                                                {[1,2,3,4,5].map(s => <Star key={s} size={10} fill={primary} style={{ color: primary }} />)}
-                                                <span className="text-[10px] text-white/30 ml-1">5.0</span>
-                                            </div>
-                                        </div>
-                                        <span className="font-black text-white whitespace-nowrap">
-                                            R$ {fmtBRL(item.price)}
-                                        </span>
-                                    </div>
-                                ))}
+                                        );
+                                    })}
                             </div>
 
                             <div className="mt-6 pt-5 border-t border-white/5 flex items-center justify-between">
                                 <span className="text-xs font-black text-white/30 uppercase tracking-widest">Total</span>
                                 <span className="text-2xl font-black" style={{ color: primary }}>
-                                    R$ {fmtBRL(data.total)}
+                                    R$ {fmtBRL(finalTotal)}
                                 </span>
                             </div>
                         </div>
@@ -685,7 +872,7 @@ export default function CheckoutPage() {
                 </div>
                 )}
                 <p className="text-center text-[10px] text-white/8 font-black uppercase tracking-[0.4em] mt-4">
-                    Powered by LunarPay Technology
+                    Powered by DiretoPay Technology
                 </p>
             </div>
 

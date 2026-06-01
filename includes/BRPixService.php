@@ -33,7 +33,7 @@ class BRPixService
     public static function createCharge(
         float  $amountBrl,
         string $externalId,
-        string $description = 'Pagamento LunarPay',
+        string $description = 'Pagamento DiretoPay',
         int    $expiresIn   = 3600
     ): array {
         $amountCents = (int) round($amountBrl * 100);

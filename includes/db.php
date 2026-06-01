@@ -2,7 +2,7 @@
 require_once __DIR__ . '/Security.php';
 
 // Domínio base para links públicos de checkout
-define('APP_CHECKOUT_URL', 'https://lunarpay.site');
+define('APP_CHECKOUT_URL', 'https://diretopay.com.br');
 
 // Protections que rodam em TODA requisição
 send_security_headers();
@@ -232,6 +232,16 @@ try {
         $pdo->exec("ALTER TABLE users ADD COLUMN preferred_nominal VARCHAR(20) NOT NULL DEFAULT 'nominal1'");
     } catch (PDOException $e) {}
 
+    // Auto-Migração: Preferência de saque do usuário (accumulate ou auto_direct)
+    try {
+        $pdo->exec("ALTER TABLE users ADD COLUMN withdraw_preference VARCHAR(20) NOT NULL DEFAULT 'accumulate'");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: Coluna nominal em withdrawals
+    try {
+        $pdo->exec("ALTER TABLE withdrawals ADD COLUMN nominal VARCHAR(20) DEFAULT 'nominal1'");
+    } catch (PDOException $e) {}
+
     // Auto-Migração: Tabela de variantes de produto
     try {
         $pdo->exec("CREATE TABLE IF NOT EXISTS product_variants (
@@ -326,6 +336,22 @@ try {
 
     // Auto-Migração: Configurações avançadas de personalização do checkout
     try { $pdo->exec("ALTER TABLE checkouts ADD COLUMN custom_settings TEXT DEFAULT NULL"); } catch (PDOException $e) {}
+
+    // Auto-Migração: Tabela de instâncias do WhatsApp (Failover)
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS whatsapp_instances (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            bridge_url VARCHAR(255) NOT NULL,
+            bridge_secret VARCHAR(255) DEFAULT '',
+            status VARCHAR(50) DEFAULT 'disconnected',
+            phone VARCHAR(50) DEFAULT NULL,
+            last_error TEXT DEFAULT NULL,
+            priority INT DEFAULT 0,
+            is_active TINYINT DEFAULT 1,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
 
 } catch (PDOException $e) {
     die("Erro ao conectar ao banco de dados: " . $e->getMessage());
@@ -610,6 +636,207 @@ function getFullUrl($path = '') {
     $path = ltrim($path, '/');
     
     return $protocol . '://' . $host . $scriptDir . '/' . $path;
+}
+
+/**
+ * Dispara saque automático para o lojista após venda confirmada,
+ * se o Nominal selecionado for o Nominal 3 (sempre automático)
+ * ou se a sua preferência de saque for definida como "auto_direct" (sacar a cada venda).
+ */
+function triggerAutoWithdraw(int $userId, float $amountBrl, float $netAmount, $transactionId): bool {
+    global $pdo;
+    
+    try {
+        // Obter dados do lojista
+        $stmt = $pdo->prepare("SELECT email, full_name, pix_key, preferred_nominal, withdraw_preference, commission_rate, whatsapp FROM users WHERE id = ?");
+        $stmt->execute([$userId]);
+        $user = $stmt->fetch();
+        
+        if (!$user) {
+            write_log('WARNING', 'Auto-Withdraw: Lojista nao encontrado', ['user_id' => $userId]);
+            return false;
+        }
+        
+        $preferredNominal = $user['preferred_nominal'] ?? 'nominal1';
+        $withdrawPreference = $user['withdraw_preference'] ?? 'accumulate';
+        $pixKey = trim($user['pix_key'] ?? '');
+        
+        // Verifica se o saque automático está ativo (Nominal 3 força isso, ou preferência auto_direct)
+        $isNominal3 = ($preferredNominal === 'nominal3');
+        $isAutoDirect = ($withdrawPreference === 'auto_direct');
+        
+        if ((!$isNominal3 && !$isAutoDirect) || empty($pixKey)) {
+            return false;
+        }
+        
+        // Deduzir tipo de chave Pix
+        $pixKeyType = '';
+        if (strpos($pixKey, '@') !== false) {
+            $pixKeyType = 'EMAIL';
+        } elseif (preg_match('/^[0-9]{11}$/', preg_replace('/\D/', '', $pixKey))) {
+            $pixKeyType = 'CPF';
+        } elseif (preg_match('/^[0-9]{14}$/', preg_replace('/\D/', '', $pixKey))) {
+            $pixKeyType = 'CNPJ';
+        } elseif (preg_match('/^\+?[0-9]{10,15}$/', preg_replace('/[^\d]/', '', $pixKey))) {
+            $pixKeyType = 'TELEFONE';
+        } else {
+            $pixKeyType = 'CHAVE_ALEATORIA';
+        }
+        
+        // Calcular taxas do saque
+        $commissionRate = (float)($user['commission_rate'] ?? 5.0);
+        $fee_platform = round($amountBrl * ($commissionRate / 100), 2);
+        $fee_gateway  = round($amountBrl - $netAmount - $fee_platform, 2);
+        if ($fee_gateway < 0) $fee_gateway = 0;
+        
+        $pdo->beginTransaction();
+        
+        // 1. Debitar saldo bruto imediatamente do lojista
+        $adjust = adjustBalance(
+            $userId,
+            -abs($amountBrl),
+            'withdraw_reserve',
+            '', // preenchido depois
+            "Reserva de saldo para repasse automático da venda #$transactionId"
+        );
+        
+        if (!$adjust['success']) {
+            $pdo->rollBack();
+            write_log('ERROR', 'Auto-Withdraw: Falha ao debitar saldo', ['user_id' => $userId, 'error' => $adjust['error']]);
+            return false;
+        }
+        
+        // 2. Registrar pedido de saque como pendente no banco
+        $stmtW = $pdo->prepare("INSERT INTO withdrawals (user_id, amount_gross, amount, fee_platform, fee_gateway, pix_key, pix_key_type, description, status, is_debited, nominal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', 1, ?)");
+        $stmtW->execute([
+            $userId,
+            $amountBrl,
+            $netAmount,
+            $fee_platform,
+            $fee_gateway,
+            $pixKey,
+            $pixKeyType,
+            "Repasse automático da venda #$transactionId",
+            $preferredNominal
+        ]);
+        $wId = $pdo->lastInsertId();
+        
+        // Atualiza referência no log de auditoria
+        $pdo->prepare("UPDATE balance_log SET reference_id = ? WHERE user_id = ? AND origin = 'withdraw_reserve' AND reference_id = '' ORDER BY id DESC LIMIT 1")
+            ->execute(['wd_' . $wId, $userId]);
+            
+        $pdo->commit();
+        
+        // 3. Executar o pagamento via API da MisticPay (Nominal 3)
+        require_once __DIR__ . '/MisticPayService.php';
+        $mpRes = MisticPayService::requestWithdraw($netAmount, $pixKey, $pixKeyType, 'Repasse DiretoPay #' . $wId);
+        
+        if (($mpRes['http_code'] === 200 || $mpRes['http_code'] === 201) && !empty($mpRes['data']['data']['transactionId'])) {
+            $txHash = $mpRes['data']['data']['transactionId'];
+            
+            $pdo->beginTransaction();
+            $pdo->prepare("UPDATE withdrawals SET status = 'completed', tx_hash = ? WHERE id = ?")->execute([$txHash, $wId]);
+            $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, 'Repasse Enviado! 💸', ?, 'success')")
+                ->execute([$userId, "O repasse automático de R$ " . number_format($netAmount, 2, ',', '.') . " caiu na sua conta."]);
+            $pdo->commit();
+            
+            // Notificações por E-mail, Telegram e WhatsApp
+            require_once __DIR__ . '/MailService.php';
+            require_once __DIR__ . '/TelegramService.php';
+            try { MailService::notifyWithdrawalPaid($user['email'], $user['full_name'], $netAmount); } catch (Throwable $e) {}
+            try { TelegramService::notifyWithdrawalApproved($user['full_name'], $netAmount, $pixKey, $txHash); } catch (Throwable $e) {}
+            try {
+                require_once __DIR__ . '/WhatsAppService.php';
+                if (!empty($user['whatsapp'])) {
+                    WhatsAppService::notifyWithdrawalPaid($user['whatsapp'], $user['full_name'], $netAmount);
+                }
+                WhatsAppService::notifyWithdrawalPaidAdmin($user['full_name'], $netAmount);
+            } catch (Throwable $e) {}
+            
+            write_log('INFO', 'Auto-Withdraw: Repasse realizado com sucesso', ['user_id' => $userId, 'amount' => $netAmount, 'wd_id' => $wId]);
+            return true;
+        } else {
+            // Em caso de falha na API, o saque permanece como 'pending' no painel admin para processamento manual/reprocessamento
+            $errMsg = $mpRes['data']['message'] ?? ($mpRes['curl_error'] ?: 'API error');
+            write_log('ERROR', 'Auto-Withdraw: API de pagamento falhou', ['wd_id' => $wId, 'api_response' => $mpRes]);
+            return false;
+        }
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
+        write_log('ERROR', 'Auto-Withdraw: Erro fatal', ['user_id' => $userId, 'error' => $e->getMessage()]);
+        return false;
+    }
+}
+
+/**
+ * Processa a comissão do afiliado para uma venda confirmada.
+ * Paga R$ 0.05 fixo por transação paga.
+ * A cada 100 transações pagas do lojista indicado, credita um bônus adicional de R$ 5.00.
+ */
+function processAffiliateCommission(int $merchantId, int $transactionId): bool {
+    global $pdo;
+    
+    try {
+        // 1. Verificar se o lojista possui um afiliado
+        $stmt = $pdo->prepare("SELECT affiliate_id, full_name FROM users WHERE id = ?");
+        $stmt->execute([$merchantId]);
+        $merchant = $stmt->fetch();
+        
+        if (!$merchant || empty($merchant['affiliate_id'])) {
+            return false; // Sem afiliado
+        }
+        
+        $affiliateId = (int)$merchant['affiliate_id'];
+        
+        // 2. Creditar a comissão fixa de R$ 0.05
+        $commAmount = 0.05;
+        $adjustComm = adjustBalance(
+            $affiliateId,
+            $commAmount,
+            'affiliate',
+            'tx_' . $transactionId,
+            'Comissão de indicação — venda #' . $transactionId . ' do lojista ' . $merchant['full_name']
+        );
+        
+        if (!$adjustComm['success']) {
+            write_log('WARNING', 'Affiliate: Falha ao creditar comissao fixa', ['merchant_id' => $merchantId, 'affiliate_id' => $affiliateId, 'error' => $adjustComm['error']]);
+        }
+        
+        // 3. Contar total de transações pagas do lojista indicado para verificação de bônus
+        $txCountStmt = $pdo->prepare("SELECT COUNT(*) FROM transactions WHERE user_id = ? AND status = 'paid'");
+        $txCountStmt->execute([$merchantId]);
+        $totalPaidTransactions = (int)$txCountStmt->fetchColumn();
+        
+        // Se bater um múltiplo de 100 (100, 200, 300...), paga o bônus de R$ 5.00
+        if ($totalPaidTransactions > 0 && ($totalPaidTransactions % 100) === 0) {
+            $bonusAmount = 5.00;
+            $adjustBonus = adjustBalance(
+                $affiliateId,
+                $bonusAmount,
+                'affiliate',
+                'tx_' . $transactionId,
+                'Bônus de milestone (' . $totalPaidTransactions . ' transações) — lojista ' . $merchant['full_name']
+            );
+            
+            if ($adjustBonus['success']) {
+                // Inserir notificação para o afiliado sobre o bônus de milestone
+                try {
+                    $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, 'Milestone Alcançado! 🎉', ?, 'success')")
+                        ->execute([
+                            $affiliateId,
+                            'Você ganhou um bônus extra de R$ 5,00 porque seu indicado ' . $merchant['full_name'] . ' atingiu ' . $totalPaidTransactions . ' transações intermediadas!'
+                        ]);
+                } catch (Throwable $e) {}
+            } else {
+                write_log('WARNING', 'Affiliate: Falha ao creditar bonus de milestone', ['merchant_id' => $merchantId, 'affiliate_id' => $affiliateId, 'total_tx' => $totalPaidTransactions, 'error' => $adjustBonus['error']]);
+            }
+        }
+        
+        return true;
+    } catch (Throwable $e) {
+        write_log('ERROR', 'Affiliate: Erro ao processar comissao', ['merchant_id' => $merchantId, 'error' => $e->getMessage()]);
+        return false;
+    }
 }
 ?>
 

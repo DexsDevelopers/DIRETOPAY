@@ -43,8 +43,8 @@ $amount           = floatval($body['amount']      ?? 0);
 $desc             = trim($body['description']     ?? '');
 $charge_recipient = !empty($body['charge_recipient']) ? 1 : 0;
 
-if (!$key || $amount < 0.01) {
-    echo json_encode(['success' => false, 'message' => 'Chave e valor são obrigatórios.']);
+if (!$key) {
+    echo json_encode(['success' => false, 'message' => 'A chave PIX é obrigatória.']);
     exit;
 }
 
@@ -59,12 +59,20 @@ try {
 }
 
 // Obter dados do usuário
-$userStmt = $pdo->prepare("SELECT balance, commission_rate, full_name FROM users WHERE id = ?");
+$userStmt = $pdo->prepare("SELECT balance, commission_rate, full_name, preferred_nominal FROM users WHERE id = ?");
 $userStmt->execute([$userId]);
 $user = $userStmt->fetch();
 
 if (!$user) {
     echo json_encode(['success' => false, 'message' => 'Usuário não encontrado.']);
+    exit;
+}
+
+$userNominal = $user['preferred_nominal'] ?? 'nominal1';
+$minAmount = ($userNominal === 'nominal2') ? 0.01 : 20.00;
+
+if ($amount < $minAmount) {
+    echo json_encode(['success' => false, 'message' => 'O valor mínimo para envio de PIX é R$ ' . number_format($minAmount, 2, ',', '.') . '.']);
     exit;
 }
 
@@ -137,10 +145,11 @@ try {
         exit;
     }
 
+    $userNominal = $user['preferred_nominal'] ?? 'nominal1';
     // 2. Registrar na tabela withdrawals
     $insertStmt = $pdo->prepare("
-        INSERT INTO withdrawals (user_id, amount_gross, amount, fee_platform, fee_gateway, pix_key, pix_key_type, description, charge_recipient, status, type, is_debited, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'pix_transfer', 1, NOW())
+        INSERT INTO withdrawals (user_id, amount_gross, amount, fee_platform, fee_gateway, pix_key, pix_key_type, description, charge_recipient, status, type, is_debited, created_at, nominal)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'pix_transfer', 1, NOW(), ?)
     ");
     $insertStmt->execute([
         $userId,
@@ -151,7 +160,8 @@ try {
         $key,
         $key_type,
         $desc ?: null,
-        $charge_recipient
+        $charge_recipient,
+        $userNominal
     ]);
     
     $transferId = $pdo->lastInsertId();
@@ -174,7 +184,11 @@ try {
 
     try {
         require_once 'includes/TelegramService.php';
-        TelegramService::notifyWithdrawal($userName, $amountGross, $key, $feePlatform, $feeGateway);
+        TelegramService::notifyWithdrawal($userName, $amountGross, $key, $feePlatform, $feeGateway, $userNominal);
+    } catch (Throwable $e) {}
+    try {
+        require_once 'includes/WhatsAppService.php';
+        WhatsAppService::notifyWithdrawal($userName, $amountGross, $key, $feePlatform, $feeGateway, $userNominal);
     } catch (Throwable $e) {}
 
     echo json_encode([

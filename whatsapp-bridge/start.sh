@@ -1,21 +1,8 @@
 #!/bin/bash
-NODE_BIN=/home/u853242961/.nvm/versions/node/v18.20.8/bin
-export PATH=$NODE_BIN:$PATH
-export WA_SECRET=""
-export WA_PORT=3001
-export WA_HOST=127.0.0.1
+# start.sh — Inicia o bridge com limite de memória para evitar crash WASM
 
-# Para processo anterior se existir
-pm2 delete wa-bridge 2>/dev/null || true
+export NVM_DIR="/home/u853242961/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-# Inicia bridge
-pm2 start /home/u853242961/domains/pixghost.site/public_html/whatsapp-bridge/index.js \
-  --name wa-bridge \
-  --interpreter node \
-  --env WA_SECRET="" \
-  --env WA_PORT=3001 \
-  --env WA_HOST=127.0.0.1
-
-pm2 save
-pm2 list
-
+# Limita o heap do Node.js a 256MB e desativa trap handler do WASM para evitar crash na Hostinger
+exec node --disable-wasm-trap-handler --max-old-space-size=256 index.js

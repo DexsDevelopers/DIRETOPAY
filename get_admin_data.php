@@ -67,8 +67,9 @@ for ($i = 6; $i >= 0; $i--) {
 // 2. Lista de Usuários (Filtros)
 $search = $_GET['search'] ?? '';
 $status_filter = $_GET['status_filter'] ?? '';
+$order_by = $_GET['order_by'] ?? 'recent';
 
-$sql = "SELECT id, full_name, email, pix_key, whatsapp, withdraw_method, crypto_address, balance, commission_rate, status, is_demo, created_at FROM users WHERE is_admin = 0";
+$sql = "SELECT id, full_name, email, pix_key, whatsapp, withdraw_method, crypto_address, balance, commission_rate, status, is_demo, preferred_nominal, created_at, (SELECT COALESCE(SUM(amount_brl), 0) FROM transactions WHERE user_id = users.id AND status = 'paid') AS total_faturamento FROM users WHERE is_admin = 0";
 $params = [];
 
 if (!empty($search)) {
@@ -87,7 +88,14 @@ if ($status_filter === 'pending') {
     $sql .= " AND is_demo = 1";
 }
 
-$sql .= " ORDER BY created_at DESC LIMIT 100";
+if ($order_by === 'revenue_desc') {
+    $sql .= " ORDER BY total_faturamento DESC, created_at DESC";
+} elseif ($order_by === 'revenue_asc') {
+    $sql .= " ORDER BY total_faturamento ASC, created_at DESC";
+} else {
+    $sql .= " ORDER BY created_at DESC";
+}
+$sql .= " LIMIT 100";
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -179,5 +187,10 @@ echo json_encode([
         'offer_hash'   => $pdo->query("SELECT `value` FROM settings WHERE `key`='ironpay_offer_hash'")->fetchColumn() ?: '',
         'product_hash' => $pdo->query("SELECT `value` FROM settings WHERE `key`='ironpay_product_hash'")->fetchColumn() ?: '',
         'has_token'    => (bool)$pdo->query("SELECT `value` FROM settings WHERE `key`='ironpay_token'")->fetchColumn(),
+    ],
+    'misticpay'          => [
+        'enabled'    => $pdo->query("SELECT `value` FROM settings WHERE `key`='misticpay_enabled'")->fetchColumn() === '1',
+        'client_id'  => $pdo->query("SELECT `value` FROM settings WHERE `key`='misticpay_client_id'")->fetchColumn() ?: '',
+        'has_secret' => (bool)$pdo->query("SELECT `value` FROM settings WHERE `key`='misticpay_client_secret'")->fetchColumn(),
     ],
 ]);

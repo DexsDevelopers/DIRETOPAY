@@ -32,12 +32,49 @@ function StatusBadge({ status }) {
     return <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${s.cls}`}>{s.label}</span>;
 }
 
-export default function PixPage({ handleManualPix, activePix, setActivePix, balance, userData }) {
+export default function PixPage({ handleManualPix, activePix, setActivePix, balance, userData, fetchDashboard }) {
     const [tab, setTab]               = useState('cobrar');
 
     /* ── Cobrar ── */
     const [amount, setAmount]         = useState('');
     const [genLoading, setGenLoading] = useState(false);
+    const [switchingNominal, setSwitchingNominal] = useState(false);
+    const [switchSuccess, setSwitchSuccess] = useState('');
+
+    const handleSwitchNominal = async () => {
+        if (switchingNominal) return;
+        setSwitchingNominal(true);
+        setSwitchSuccess('');
+
+        const currentNominal = userData?.preferred_nominal || 'nominal1';
+        const nextNominal = currentNominal === 'nominal1' ? 'nominal2' : (currentNominal === 'nominal2' ? 'nominal3' : 'nominal1');
+        
+        try {
+            const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const res = await fetch('/save_nominal.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf || '' },
+                body: JSON.stringify({ 
+                    nominal: nextNominal,
+                    withdraw_preference: nextNominal === 'nominal3' ? 'auto_direct' : (userData?.withdraw_preference || 'accumulate')
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                const names = { nominal1: 'Nominal 1', nominal2: 'Nominal 2', nominal3: 'Nominal 3' };
+                setSwitchSuccess(`Rota alterada para ${names[nextNominal]}!`);
+                if (fetchDashboard) {
+                    await fetchDashboard();
+                }
+            } else {
+                alert(data.error || 'Erro ao alternar rota.');
+            }
+        } catch (e) {
+            alert('Falha na conexão com o servidor.');
+        } finally {
+            setSwitchingNominal(false);
+        }
+    };
 
     /* ── Enviar ── */
     const [keyType, setKeyType]       = useState('cpf');
@@ -102,7 +139,11 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
     const handleEnviar = async () => {
         if (sendStep === 1) {
             if (!pixKey.trim() || !sendAmt) { setSendError('Preencha a chave e o valor.'); return; }
-            if (parseFloat(sendAmt) < 0.01) { setSendError('Valor inválido.'); return; }
+            const minAmtVal = (userData?.preferred_nominal === 'nominal2' || userData?.preferred_nominal === 'nominal3') ? 0.01 : 20.00;
+            if (parseFloat(sendAmt) < minAmtVal) {
+                setSendError(`O valor mínimo para envio é R$ ${minAmtVal.toFixed(2).replace('.', ',')}.`);
+                return;
+            }
             setSendError('');
             setSendStep(2);
             return;
@@ -185,39 +226,79 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
 
                         {/* ═══ COBRAR ═══ */}
                         {tab === 'cobrar' && (
-                            <motion.div key="cobrar" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                                className="bg-white dark:bg-gray-900/60 border border-gray-100 dark:border-white/5 rounded-2xl p-6 space-y-5">
-                                <h2 className="font-black text-gray-900 text-base">Gerar cobrança PIX</h2>
+                            <div className="space-y-4">
+                                <motion.div key="cobrar" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+                                    className="bg-white dark:bg-gray-900/60 border border-gray-100 dark:border-white/5 rounded-2xl p-6 space-y-5">
+                                    <h2 className="font-black text-gray-900 text-base">Gerar cobrança PIX</h2>
 
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Valor</label>
-                                    <div className="relative">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm">R$</span>
-                                        <input
-                                            type="number" min="2" step="0.01"
-                                            value={amount} onChange={e => setAmount(e.target.value)}
-                                            placeholder="0,00"
-                                            className="w-full bg-gray-50 border border-gray-300 rounded-xl py-4 pl-10 pr-4 font-black text-2xl text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-400"
-                                        />
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Valor</label>
+                                        <div className="relative">
+                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm">R$</span>
+                                            <input
+                                                type="number" min="2" step="0.01"
+                                                value={amount} onChange={e => setAmount(e.target.value)}
+                                                placeholder="0,00"
+                                                className="w-full bg-gray-50 border border-gray-300 rounded-xl py-4 pl-10 pr-4 font-black text-2xl text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all placeholder:text-gray-400"
+                                            />
+                                        </div>
+                                        <p className="text-[11px] text-gray-400 px-1">Mínimo: R$ 2,00</p>
                                     </div>
-                                    <p className="text-[11px] text-gray-400 px-1">Mínimo: R$ 2,00</p>
-                                </div>
 
-                                <button onClick={handleGerar} disabled={genLoading || !amount}
-                                    className="w-full py-4 rounded-xl font-black text-white flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 shadow-[0_8px_24px_rgba(192,0,106,0.3)]"
-                                    style={{ background: 'linear-gradient(135deg, #C0006A, #8B0045)' }}
+                                    <button onClick={handleGerar} disabled={genLoading || !amount}
+                                        className="w-full py-4 rounded-xl font-black text-white flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 shadow-[0_8px_24px_rgba(30,164,101,0.3)]"
+                                        style={{ background: 'linear-gradient(135deg, #1ea465, #126b41)' }}
+                                    >
+                                        {genLoading
+                                            ? <><Loader2 size={18} className="animate-spin" /> Gerando...</>
+                                            : <><Zap size={18} fill="currentColor" /> Gerar PIX</>
+                                        }
+                                    </button>
+
+                                    <div className="flex items-center gap-2 justify-center text-gray-300">
+                                        <CheckCircle size={13} />
+                                        <span className="text-[11px] font-medium">Crédito imediato após confirmação</span>
+                                    </div>
+                                </motion.div>
+
+                                {/* Card de Troca Automática de Nominal se houver aviso de golpe */}
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 10 }} 
+                                    animate={{ opacity: 1, y: 0 }}
+                                    onClick={handleSwitchNominal}
+                                    className="bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-2 border-amber-500/30 hover:border-amber-500/50 rounded-2xl p-5 cursor-pointer hover:bg-amber-500/[0.06] dark:hover:bg-amber-500/[0.12] transition-all select-none group relative overflow-hidden shadow-sm"
                                 >
-                                    {genLoading
-                                        ? <><Loader2 size={18} className="animate-spin" /> Gerando...</>
-                                        : <><Zap size={18} fill="currentColor" /> Gerar PIX</>
-                                    }
-                                </button>
-
-                                <div className="flex items-center gap-2 justify-center text-gray-300">
-                                    <CheckCircle size={13} />
-                                    <span className="text-[11px] font-medium">Crédito imediato após confirmação</span>
-                                </div>
-                            </motion.div>
+                                    <div className="flex gap-4 items-start">
+                                        <div className="p-3 bg-amber-500/10 dark:bg-amber-500/20 rounded-xl text-amber-500 shrink-0 group-hover:scale-105 transition-transform">
+                                            {switchingNominal ? <Loader2 className="animate-spin" size={20} /> : <AlertCircle size={20} />}
+                                        </div>
+                                        <div className="flex-1 min-w-0 pr-14">
+                                            <h4 className="font-extrabold text-amber-900 dark:text-amber-100 text-sm">
+                                                Deu aviso de golpe no PIX?
+                                            </h4>
+                                            <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed mt-1.5 font-medium">
+                                                Se o banco do cliente exibiu um alerta ao pagar, clique aqui para trocar de rota nominal automaticamente e resolver na hora.
+                                            </p>
+                                            
+                                            <div className="flex flex-col gap-3 mt-3">
+                                                {switchSuccess && (
+                                                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-lg text-xs font-bold animate-in fade-in self-start">
+                                                        <Check size={14} className="stroke-[3]" /> {switchSuccess}
+                                                    </div>
+                                                )}
+                                                <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-extrabold transition-colors shadow-sm self-start group-hover:scale-[1.02] active:scale-[0.98]">
+                                                    {switchSuccess ? 'Alternar Rota Novamente' : 'Alternar Rota Automaticamente'} <ChevronRight size={14} className="stroke-[3]" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="absolute top-4 right-4 shrink-0">
+                                        <span className="text-[10px] font-black text-amber-800 dark:text-amber-200 uppercase tracking-wider bg-amber-500/15 dark:bg-amber-500/25 px-2.5 py-1 rounded-lg border border-amber-500/20">
+                                            Ativo: {userData?.preferred_nominal === 'nominal3' ? 'Nominal 3' : (userData?.preferred_nominal === 'nominal2' ? 'Nominal 2' : 'Nominal 1')}
+                                        </span>
+                                    </div>
+                                </motion.div>
+                            </div>
                         )}
 
                         {/* ═══ ENVIAR ═══ */}
@@ -286,7 +367,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
 
                                             <button onClick={handleEnviar} disabled={sendLoading}
                                                 className="w-full py-4 rounded-xl font-black text-white flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50"
-                                                style={{ background: 'linear-gradient(135deg, #C0006A, #8B0045)', boxShadow: '0 8px 24px rgba(192,0,106,0.3)' }}>
+                                                style={{ background: 'linear-gradient(135deg, #1ea465, #126b41)', boxShadow: '0 8px 24px rgba(30,164,101,0.3)' }}>
                                                 {sendLoading
                                                     ? <><Loader2 size={18} className="animate-spin" /> Enviando...</>
                                                     : <><SendHorizonal size={18} /> Confirmar envio</>
@@ -341,7 +422,9 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
 
                                             {/* Amount */}
                                             <div className="space-y-1.5">
-                                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Valor</label>
+                                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                                    Valor {!['nominal2', 'nominal3'].includes(userData?.preferred_nominal) && '(Mínimo R$ 20,00)'}
+                                                </label>
                                                 <div className="relative">
                                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm">R$</span>
                                                     <input type="number" min="0.01" step="0.01"
@@ -401,8 +484,8 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                             )}
 
                                             <button onClick={handleEnviar}
-                                                className="w-full py-4 rounded-xl font-black text-white flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-[0_8px_24px_rgba(192,0,106,0.3)]"
-                                                style={{ background: 'linear-gradient(135deg, #C0006A, #8B0045)' }}>
+                                                className="w-full py-4 rounded-xl font-black text-white flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-[0_8px_24px_rgba(30,164,101,0.3)]"
+                                                style={{ background: 'linear-gradient(135deg, #1ea465, #126b41)' }}>
                                                 <ArrowRight size={18} /> Continuar
                                             </button>
                                         </motion.div>
@@ -457,7 +540,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                             <div className="bg-gray-50 dark:bg-gray-800/40 rounded-2xl p-4">
                                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">Método de pagamento</p>
                                 <div className="flex items-center gap-2">
-                                    <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#C0006A,#8B0045)' }}>
+                                    <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#1ea465,#126b41)' }}>
                                         <QrCode size={14} className="text-white" />
                                     </div>
                                     <span className="font-black text-gray-900 dark:text-white text-sm">PIX</span>
@@ -469,7 +552,7 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                 <div className="bg-gray-50 dark:bg-gray-800/40 rounded-2xl p-4">
                                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-3">Informações do comprador</p>
                                     <div className="flex items-center gap-3 mb-2">
-                                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black text-white" style={{ background: 'linear-gradient(135deg,#C0006A,#8B0045)' }}>
+                                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black text-white" style={{ background: 'linear-gradient(135deg,#1ea465,#126b41)' }}>
                                             {(selectedTx.customer_name || 'C')[0].toUpperCase()}
                                         </div>
                                         <div>

@@ -83,13 +83,13 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
   <head>
     <base href="/">
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logo_lunarpay.png" />
+    <link rel="icon" type="image/png" href="/logo_diretopay.png" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="LunarPay" />
-    <link rel="apple-touch-icon" href="/logo_lunarpay.png" />
+    <meta name="apple-mobile-web-app-title" content="DiretoPay" />
+    <link rel="apple-touch-icon" href="/logo_diretopay.png" />
     <meta name="csrf-token" content="<?php echo csrf_token(); ?>">
     <script>
       window.__AUTH__ = <?php echo json_encode($isAuth); ?>;
@@ -97,22 +97,22 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
       window.__CHECKOUT_DATA__ = <?php echo json_encode($checkoutData); ?>;
       <?php endif; ?>
     </script>
-    <title>LunarPay - Plataforma de Pagamentos</title>
+    <title>DiretoPay - Plataforma de Pagamentos</title>
     
     <!-- React Build Assets -->
-    <script type="module" crossorigin src="/assets/dashboard-react/assets/index-CcwZQFqd.js"></script>
+    <script type="module" crossorigin src="/assets/dashboard-react/assets/index-17K9Flu5.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/rolldown-runtime-WehaI0Q3.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-charts-He-U0hDw.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-router-Dg8CQPxv.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-motion-CSww8jv2.js">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-icons-ETzilq70.js">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-icons-BUmyEMwy.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-react-B6YjI7Jz.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/utils-DCsqA19A.js">
-    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/assets/index-Cya2b0bu.css">
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/assets/index-XA6tSrb8.css">
     
     <!-- React Checkout Chunk Preload -->
     <?php if ($requestPath && strpos($requestPath, '/p/') === 0): ?>
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/CheckoutPage-DXwgqS_e.js">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/CheckoutPage-Cw8FbTcw.js">
     <?php endif; ?>
     <!-- React Checkout Chunk Preload End -->
 
@@ -128,8 +128,8 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
       }
       ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 10px; }
-      ::-webkit-scrollbar-thumb:hover { background: rgba(168,85,247,0.5); }
+      ::-webkit-scrollbar-thumb { background: rgba(30,164,101,0.3); border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(30,164,101,0.5); }
 
       /* Splash screen — visível até o React montar */
       #lp-splash {
@@ -154,11 +154,11 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
         width: 64px;
         height: 64px;
         border-radius: 20px;
-        background: linear-gradient(135deg, #C0006A, #8B0045);
+        background: linear-gradient(135deg, #1ea465, #126b41);
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 0 40px rgba(192,0,106,0.4);
+        box-shadow: 0 0 40px rgba(30,164,101,0.4);
         animation: lp-pulse 1.8s ease-in-out infinite;
       }
 
@@ -171,8 +171,8 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
       .lp-spinner {
         width: 32px;
         height: 32px;
-        border: 3px solid rgba(192,0,106,0.2);
-        border-top-color: #C0006A;
+        border: 3px solid rgba(30,164,101,0.2);
+        border-top-color: #1ea465;
         border-radius: 50%;
         animation: lp-spin 0.8s linear infinite;
       }
@@ -182,8 +182,8 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
       }
 
       @keyframes lp-pulse {
-        0%, 100% { box-shadow: 0 0 30px rgba(192,0,106,0.35); transform: scale(1); }
-        50% { box-shadow: 0 0 60px rgba(192,0,106,0.6); transform: scale(1.05); }
+        0%, 100% { box-shadow: 0 0 30px rgba(30,164,101,0.35); transform: scale(1); }
+        50% { box-shadow: 0 0 60px rgba(30,164,101,0.6); transform: scale(1.05); }
       }
     </style>
   </head>

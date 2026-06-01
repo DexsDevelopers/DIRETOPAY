@@ -30,8 +30,8 @@ export default function AffiliatePage() {
         if (!data?.ref_link) return;
         if (navigator.share) {
             navigator.share({
-                title: 'LunarPay - Convite',
-                text: 'Crie sua conta na LunarPay e comece a receber pagamentos Pix anonimamente!',
+                title: 'DiretoPay - Convite',
+                text: 'Crie sua conta na DiretoPay e comece a receber pagamentos Pix anonimamente!',
                 url: data.ref_link,
             }).catch(() => {});
         } else {
@@ -57,13 +57,12 @@ export default function AffiliatePage() {
 
     return (
         <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
-            {/* Header */}
             <div>
                 <h1 className="text-3xl font-black tracking-tight text-gray-900 flex items-center gap-3">
                     <Gift className="text-primary" size={32} />
                     Programa de <span className="text-primary italic">Afiliados</span>
                 </h1>
-                <p className="text-gray-500 font-medium mt-1">Compartilhe seu link e ganhe comissões automáticas sobre cada transação.</p>
+                <p className="text-gray-500 font-medium mt-1">Ganhe R$ 0,05 por transação + bônus de R$ 5,00 a cada 100 transações intermediadas</p>
             </div>
 
             {/* Stats Cards */}
@@ -75,10 +74,10 @@ export default function AffiliatePage() {
                     sub={`${data.active_referrals} ativos`}
                 />
                 <StatCard
-                    icon={<Percent size={22} />}
+                    icon={<DollarSign size={22} />}
                     label="Sua Comissão"
-                    value={`${data.commission_rate}%`}
-                    sub="Sobre o lucro da taxa"
+                    value="R$ 0,05"
+                    sub="+ R$ 5,00 a cada 100 tx"
                 />
                 <StatCard
                     icon={<DollarSign size={22} />}
@@ -104,8 +103,8 @@ export default function AffiliatePage() {
                             <Link2 size={20} className="text-primary" />
                         </div>
                         <div>
-                            <h3 className="text-lg font-black text-gray-900">Seu Link de Indicação</h3>
-                            <p className="text-xs text-gray-400">Compartilhe para ganhar comissões</p>
+                            <h3 className="text-lg font-black text-gray-900">Seu Link de Afiliado</h3>
+                            <p className="text-xs text-gray-400">Compartilhe este link e ganhe R$ 0,05 por cada transação dos seus indicados + bônus de R$ 5,00 a cada 100 transações!</p>
                         </div>
                     </div>
 
@@ -169,7 +168,7 @@ export default function AffiliatePage() {
                             { step: '01', title: 'Compartilhe seu link', desc: 'Envie seu link exclusivo para amigos, redes sociais ou comunidades.' },
                             { step: '02', title: 'Eles se cadastram', desc: 'Novos usuários se registram pela sua indicação automaticamente.' },
                             { step: '03', title: 'Eles transacionam', desc: 'Quando seus indicados recebem pagamentos Pix, a plataforma cobra uma taxa.' },
-                            { step: '04', title: 'Você ganha', desc: `Você recebe ${data.commission_rate}% do lucro da plataforma em cada transação.` },
+                            { step: '04', title: 'Você ganha', desc: 'Ganhe R$ 0,05 por cada transação dos seus indicados + bônus de R$ 5,00 a cada 100 transações!' },
                         ].map((item, i) => (
                             <div key={i} className="flex gap-4 items-start group">
                                 <div className="w-10 h-10 shrink-0 rounded-xl bg-primary/5 border border-primary/10 flex items-center justify-center text-primary text-[11px] font-black group-hover:bg-primary/10 transition-colors">

@@ -7,7 +7,7 @@ const BADGE = {
     rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
 };
 
-export default function WithdrawalsPage({ balance, availableForWithdraw, pendingWithdrawals }) {
+export default function WithdrawalsPage({ balance, availableForWithdraw, pendingWithdrawals, userData }) {
     const [amount, setAmount] = useState('');
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
@@ -18,6 +18,12 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
     const sigiloFee = (val) => Math.round((val * 0.002 + 4.00) * 100) / 100;
     const totalFee = (val) => platformFee + sigiloFee(val);
     const netAmount = (val) => Math.max(0, val - totalFee(val));
+
+    const userNominal = userData?.preferred_nominal ?? 'nominal1';
+    let minWithdraw = 20;
+    if (userNominal === 'nominal1') minWithdraw = 25;
+    else if (userNominal === 'nominal2') minWithdraw = 5;
+    else if (userNominal === 'nominal3') minWithdraw = 10;
 
     const displayAvailable = availableForWithdraw ?? balance;
     const hasPending = pendingWithdrawals && parseFloat(String(pendingWithdrawals).replace(/\./g, '').replace(',', '.')) > 0;
@@ -36,8 +42,8 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
 
     const handleWithdraw = async () => {
         const val = parseFloat(amount);
-        if (!val || val < 20) {
-            setResult({ success: false, error: `O valor mínimo para saque é R$ 20,00.` });
+        if (!val || val < minWithdraw) {
+            setResult({ success: false, error: `O valor mínimo para saque na rota ${userNominal.toUpperCase()} é R$ ${minWithdraw.toFixed(2).replace('.', ',')}.` });
             return;
         }
         if (netAmount(val) <= 0) {
@@ -142,18 +148,18 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
                                         value={amount}
                                         onChange={(e) => setAmount(e.target.value)}
                                         placeholder="0,00"
-                                        min="20"
+                                        min={minWithdraw}
                                         step="0.01"
                                         className="w-full bg-gray-50 border border-gray-200 rounded-[24px] py-6 pl-16 pr-8 text-2xl font-black text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all"
                                     />
                                 </div>
-                                {amount && parseFloat(amount) >= 20 ? (
+                                {amount && parseFloat(amount) >= minWithdraw ? (
                                 <div className="ml-2 space-y-0.5">
                                     <p className="text-[10px] text-gray-400">Taxa plataforma: R$ 3,50 &nbsp;|&nbsp; Taxa de saque: R$ 4,00 + 0,2%</p>
                                     <p className="text-[10px] text-gray-500 font-bold">Total de taxas: R$ {totalFee(parseFloat(amount)).toFixed(2).replace('.', ',')} &nbsp;→&nbsp; <span className="text-primary">Você recebe: R$ {netAmount(parseFloat(amount)).toFixed(2).replace('.', ',')}</span></p>
                                 </div>
                             ) : (
-                                <p className="text-[10px] text-gray-400 ml-2">Mínimo: R$ 20,00 &nbsp;|&nbsp; Taxas: R$ 3,50 + R$ 4,00 + 0,2%</p>
+                                <p className="text-[10px] text-gray-400 ml-2">Mínimo na rota {userNominal.toUpperCase()}: R$ {minWithdraw.toFixed(2).replace('.', ',')} &nbsp;|&nbsp; Taxas: R$ 3,50 + R$ 4,00 + 0,2%</p>
                             )}
                             </div>
 

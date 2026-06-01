@@ -1,4 +1,4 @@
-// LunarPay SPA v2.1 - Build for Auth & Checkout
+// DiretoPay SPA v2.1 - Build for Auth & Checkout
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Routes, Route, Navigate, useLocation, Link, useNavigate } from 'react-router-dom';
@@ -66,8 +66,8 @@ function PageLoader() {
     <div className="flex items-center justify-center h-64">
       <div style={{
         width: 28, height: 28,
-        border: '3px solid rgba(192,0,106,0.2)',
-        borderTopColor: '#C0006A',
+        border: '3px solid rgba(30,164,101,0.2)',
+        borderTopColor: '#1ea465',
         borderRadius: '50%',
         animation: 'spin 0.8s linear infinite'
       }} />
@@ -225,7 +225,7 @@ export default function App() {
   console.log("RENDERING APP. Path:", location.pathname, "dashboardData:", !!dashboardData);
 
   const fetchDashboard = async () => {
-    console.log("LunarPay SPA v2.2 - Iniciando carga de dados...");
+    console.log("DiretoPay SPA v2.2 - Iniciando carga de dados...");
     try {
       const res = await fetch('/get_dashboard_data.php');
       const data = await res.json();
@@ -304,7 +304,7 @@ export default function App() {
         <Route path="/pix" element={
           <PrivateRoute>
             <DashboardLayout {...commonProps} activeTab="pix">
-              <PixPage handleManualPix={handleManualPix} activePix={activePix} setActivePix={setActivePix} balance={commonProps.balance} userData={commonProps.userData} />
+              <PixPage handleManualPix={handleManualPix} activePix={activePix} setActivePix={setActivePix} balance={commonProps.balance} userData={commonProps.userData} fetchDashboard={fetchDashboard} />
             </DashboardLayout>
           </PrivateRoute>
         } />
@@ -328,7 +328,7 @@ export default function App() {
         <Route path="/saques" element={
           <PrivateRoute>
             <DashboardLayout {...commonProps} activeTab="saques">
-              <WithdrawalsPage balance={commonProps.balance} availableForWithdraw={dashboardData?.available_for_withdraw} pendingWithdrawals={dashboardData?.pending_withdrawals} transactions={dashboardData?.transactions} />
+              <WithdrawalsPage balance={commonProps.balance} availableForWithdraw={dashboardData?.available_for_withdraw} pendingWithdrawals={dashboardData?.pending_withdrawals} transactions={dashboardData?.transactions} userData={commonProps.userData} />
             </DashboardLayout>
           </PrivateRoute>
         } />

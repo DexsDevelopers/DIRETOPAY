@@ -29,7 +29,7 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <link rel="icon" type="image/png" href="logo_lunarpay.png">
+    <link rel="icon" type="image/png" href="logo_diretopay.png">
     <meta name="theme-color" content="#080808">
     <title>Ghost Pix - Receba com Total Blindagem e Privacidade</title>
     <link rel="stylesheet" href="style.css?v=126.0">
@@ -105,8 +105,8 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: rgba(168, 85, 247, 0.15);
-            border: 1px solid rgba(168, 85, 247, 0.3);
+            background: rgba(30, 164, 101, 0.15);
+            border: 1px solid rgba(30, 164, 101, 0.3);
             padding: 10px 20px;
             border-radius: 100px;
             font-size: 0.85rem;
@@ -514,7 +514,7 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
         /* ===== MULTI-ADQUIRENTE VISUALIZATION ===== */
         .routing-section {
             padding: 100px 20px;
-            background: linear-gradient(180deg, transparent 0%, rgba(168,85,247,0.03) 50%, transparent 100%);
+            background: linear-gradient(180deg, transparent 0%, rgba(30,164,101,0.03) 50%, transparent 100%);
         }
 
         .routing-container {
@@ -544,9 +544,9 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
         }
 
         .routing-node.active {
-            background: rgba(168, 85, 247, 0.15);
+            background: rgba(30, 164, 101, 0.15);
             border-color: var(--primary);
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+            box-shadow: 0 0 30px rgba(30, 164, 101, 0.3);
         }
 
         .routing-node.client {
@@ -601,7 +601,7 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
 
         .routing-line {
             position: absolute;
-            background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(168,85,247,0.5));
+            background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(30,164,101,0.5));
             height: 2px;
             transform-origin: left center;
         }
@@ -803,7 +803,7 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
             transform: translate(-50%, -50%);
             width: 800px;
             height: 800px;
-            background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(30,164,101,0.15) 0%, transparent 70%);
             pointer-events: none;
         }
 
@@ -1106,7 +1106,7 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
 
         /* ===== FOOTER ===== */
         .gfooter {
-            background: linear-gradient(180deg, transparent 0%, rgba(168,85,247,0.05) 100%);
+            background: linear-gradient(180deg, transparent 0%, rgba(30,164,101,0.05) 100%);
             border-top: 1px solid rgba(255,255,255,0.05);
             padding: 60px 20px 30px;
         }
@@ -1174,7 +1174,7 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
         }
 
         .gfooter-social a:hover {
-            background: rgba(168,85,247,0.2);
+            background: rgba(30,164,101,0.2);
             border-color: var(--primary);
             transform: translateY(-3px);
         }
@@ -1400,7 +1400,7 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
     <section class="routing-section">
         <div class="routing-container">
             <div class="routing-content" data-aos="fade-right">
-                <div class="section-tag" style="background: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.3); color: var(--primary);">
+                <div class="section-tag" style="background: rgba(30, 164, 101, 0.15); border-color: rgba(30, 164, 101, 0.3); color: var(--primary);">
                     <i class="fas fa-network-wired"></i> Multi-Adquirentes
                 </div>
                 <h3>Adquirente falhou?<br>A Ghosts encontra outra rota na mesma hora.</h3>

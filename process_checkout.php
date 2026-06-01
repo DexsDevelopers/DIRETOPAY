@@ -33,9 +33,29 @@ try {
     }
 
     // Buscar Itens e calcular total
-    $stmt = $pdo->prepare("SELECT SUM(price) as total_amount FROM checkout_items WHERE checkout_id = ?");
-    $stmt->execute([$checkoutId]);
-    $totalAmount = (float)$stmt->fetchColumn();
+    $customSettings = [];
+    if (!empty($checkout['custom_settings'])) {
+        $customSettings = json_decode($checkout['custom_settings'], true);
+    }
+
+    $allowItemSelection = (bool)($customSettings['allow_item_selection'] ?? false);
+
+    if ($allowItemSelection) {
+        $selectedItemIds = $input['selected_item_ids'] ?? [];
+        if (empty($selectedItemIds) || !is_array($selectedItemIds)) {
+            throw new Exception('Selecione pelo menos um produto.');
+        }
+        $selectedItemIds = array_map('intval', $selectedItemIds);
+        $inQuery = implode(',', array_fill(0, count($selectedItemIds), '?'));
+        $stmtParams = array_merge($selectedItemIds, [$checkoutId]);
+        $stmt = $pdo->prepare("SELECT SUM(price) as total_amount FROM checkout_items WHERE id IN ($inQuery) AND checkout_id = ?");
+        $stmt->execute($stmtParams);
+        $totalAmount = (float)$stmt->fetchColumn();
+    } else {
+        $stmt = $pdo->prepare("SELECT SUM(price) as total_amount FROM checkout_items WHERE checkout_id = ?");
+        $stmt->execute([$checkoutId]);
+        $totalAmount = (float)$stmt->fetchColumn();
+    }
 
     if ($totalAmount < 2) {
         throw new Exception('O valor mínimo de transação é R$ 2,00.');
@@ -77,7 +97,7 @@ try {
         'amount'      => $totalAmount,
         'client'      => [
             'name'     => empty($customerName) ? 'Cliente Checkout' : $customerName,
-            'email'    => (!empty($user['email'])) ? $user['email'] : 'comprador@lunarpay.site',
+            'email'    => (!empty($user['email'])) ? $user['email'] : 'comprador@diretopay.com.br',
             'phone'    => '(11) 9 0000-0000',
             'document' => !empty($customerDocument) ? preg_replace('/[^0-9]/', '', $customerDocument) : '147.143.016-24',
         ],
@@ -96,7 +116,7 @@ try {
             'x-secret-key: ' . $sigiloSecretKey,
             'Content-Type: application/json',
             'Accept: application/json',
-            'User-Agent: Mozilla/5.0 (compatible; LunarPay/2.0; +https://lunarpay.site)',
+            'User-Agent: Mozilla/5.0 (compatible; DiretoPay/2.0; +https://diretopay.com.br)',
         ],
         CURLOPT_TIMEOUT        => 30,
         CURLOPT_SSL_VERIFYPEER => true,

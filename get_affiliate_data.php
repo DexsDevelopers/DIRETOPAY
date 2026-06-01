@@ -46,22 +46,21 @@ foreach ($referrals as &$ref) {
         $activeReferrals++;
     }
 
-    // Calcular comissão gerada por este indicado
-    // Lucro plataforma por transação = amount_brl - amount_net_brl - (amount_brl * 0.08 + 0.99)
+    // Calcular comissão gerada por este indicado (R$ 0,05 fixo + R$ 5,00 milestone bônus)
+    // Buscamos diretamente as entradas correspondentes no balance_log do afiliado
     $earnStmt = $pdo->prepare("
         SELECT 
+            COALESCE(SUM(bl.amount), 0) as total,
             COALESCE(SUM(
-                (amount_brl - amount_net_brl - (amount_brl * 0.08 + 0.99)) * ? / 100
-            ), 0) as total,
-            COALESCE(SUM(
-                CASE WHEN DATE_FORMAT(created_at, '%Y-%m') = ? 
-                THEN (amount_brl - amount_net_brl - (amount_brl * 0.08 + 0.99)) * ? / 100
+                CASE WHEN DATE_FORMAT(bl.created_at, '%Y-%m') = ? 
+                THEN bl.amount 
                 ELSE 0 END
             ), 0) as this_month
-        FROM transactions 
-        WHERE user_id = ? AND status = 'paid'
+        FROM balance_log bl
+        JOIN transactions t ON CONCAT('tx_', t.id) = bl.reference_id
+        WHERE bl.user_id = ? AND bl.origin = 'affiliate' AND t.user_id = ?
     ");
-    $earnStmt->execute([$affRate, $currentMonth, $affRate, $ref['id']]);
+    $earnStmt->execute([$currentMonth, $userId, $ref['id']]);
     $earnings = $earnStmt->fetch();
 
     $refEarnings = max(0, (float)$earnings['total']);

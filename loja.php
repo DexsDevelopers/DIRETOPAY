@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ghost Pix — Loja</title>
 <meta name="description" content="Descubra e compre produtos digitais, cursos e serviços de vendedores verificados. Pagamento 100% via PIX, sem cadastro.">
-<link rel="icon" type="image/png" href="/logo_lunarpay.png">
+<link rel="icon" type="image/png" href="/logo_diretopay.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('ghost_loja_theme');if(t==='light'||(!t&&matchMedia('(prefers-color-scheme:light)').matches))document.documentElement.classList.add('light')}catch(e){}</script>
@@ -19,7 +19,7 @@ img{max-width:100%;display:block}
 button{cursor:pointer;border:none;outline:none;font-family:inherit}
 input,select{font-family:inherit;outline:none;border:none}
 ::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-thumb{background:rgba(168,85,247,.3);border-radius:4px}
+::-webkit-scrollbar-thumb{background:rgba(30,164,101,.3);border-radius:4px}
 
 /* ── Tokens ── */
 :root{
@@ -73,16 +73,16 @@ input,select{font-family:inherit;outline:none;border:none}
 .navbar{position:sticky;top:0;z-index:200;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .25s}
 .nav-inner{display:flex;align-items:center;gap:12px;padding:12px 0;min-height:60px}
 .brand{display:flex;align-items:center;gap:8px;font-size:.95rem;font-weight:900;letter-spacing:-.03em;flex-shrink:0}
-.brand img{width:30px;height:30px;border-radius:8px;box-shadow:0 0 14px rgba(168,85,247,.3)}
+.brand img{width:30px;height:30px;border-radius:8px;box-shadow:0 0 14px rgba(30,164,101,.3)}
 .brand em{color:var(--primary);font-style:italic}
 .nav-search{flex:1;position:relative;min-width:0}
 .nav-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--dim);pointer-events:none;flex-shrink:0}
 .nav-search input{width:100%;background:var(--input-bg);border:1.5px solid var(--border);border-radius:50px;padding:9px 14px 9px 38px;font-size:.82rem;color:var(--input-color);transition:border-color .2s,background .25s}
-.nav-search input:focus{border-color:rgba(168,85,247,.45);background:rgba(168,85,247,.04)}
+.nav-search input:focus{border-color:rgba(30,164,101,.45);background:rgba(30,164,101,.04)}
 .nav-search input::placeholder{color:var(--dim)}
 .nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.btn-seller{background:rgba(168,85,247,.12);border:1.5px solid rgba(168,85,247,.25);color:var(--primary);border-radius:50px;padding:7px 16px;font-size:.75rem;font-weight:800;white-space:nowrap;transition:all .2s;display:none}
-.btn-seller:hover{background:rgba(168,85,247,.22)}
+.btn-seller{background:rgba(30,164,101,.12);border:1.5px solid rgba(30,164,101,.25);color:var(--primary);border-radius:50px;padding:7px 16px;font-size:.75rem;font-weight:800;white-space:nowrap;transition:all .2s;display:none}
+.btn-seller:hover{background:rgba(30,164,101,.22)}
 @media(min-width:480px){.btn-seller{display:block}}
 
 /* ─────────────────────────────────────────────
@@ -180,7 +180,7 @@ main{padding:20px 0 60px}
    PRODUCT CARD
 ───────────────────────────────────────────── */
 .pcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,border-color .2s,box-shadow .2s;position:relative}
-.pcard:hover{border-color:rgba(168,85,247,.3);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.5)}
+.pcard:hover{border-color:rgba(30,164,101,.3);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.5)}
 .pcard:active{transform:translateY(0)}
 
 /* Image */
@@ -194,7 +194,7 @@ main{padding:20px 0 60px}
 .pcard-badges{position:absolute;top:7px;left:7px;display:flex;gap:4px;flex-wrap:wrap}
 .badge{font-size:.55rem;font-weight:900;text-transform:uppercase;letter-spacing:.05em;padding:3px 7px;border-radius:50px;backdrop-filter:blur(8px)}
 .badge-cat{background:rgba(0,0,0,.65);color:rgba(255,255,255,.65)}
-.badge-sub{background:rgba(168,85,247,.25);border:1px solid rgba(168,85,247,.4);color:var(--primary)}
+.badge-sub{background:rgba(30,164,101,.25);border:1px solid rgba(30,164,101,.4);color:var(--primary)}
 .badge-new{background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.3);color:#4ade80}
 
 /* Body */
@@ -213,8 +213,8 @@ main{padding:20px 0 60px}
 .pcard-price{font-size:1rem;font-weight:900;letter-spacing:-.03em;color:var(--text)}
 @media(min-width:640px){.pcard-price{font-size:1.05rem}}
 .pcard-sold{font-size:.58rem;color:var(--dim);font-weight:700}
-.btn-ver{background:linear-gradient(135deg,var(--primary),var(--pd));border-radius:10px;padding:6px 10px;font-size:.67rem;font-weight:900;color:#fff;white-space:nowrap;transition:all .2s;box-shadow:0 3px 12px rgba(168,85,247,.25)}
-.btn-ver:hover{box-shadow:0 6px 20px rgba(168,85,247,.4);transform:scale(1.03)}
+.btn-ver{background:linear-gradient(135deg,var(--primary),var(--pd));border-radius:10px;padding:6px 10px;font-size:.67rem;font-weight:900;color:#fff;white-space:nowrap;transition:all .2s;box-shadow:0 3px 12px rgba(30,164,101,.25)}
+.btn-ver:hover{box-shadow:0 6px 20px rgba(30,164,101,.4);transform:scale(1.03)}
 @media(max-width:400px){.btn-ver{display:none}}
 
 /* ─────────────────────────────────────────────
@@ -256,7 +256,7 @@ footer a{color:var(--primary)}
 .mobile-sort{display:flex;gap:8px;padding:12px 0 4px;overflow-x:auto;scrollbar-width:none}
 .mobile-sort::-webkit-scrollbar{display:none}
 .msort-btn{flex-shrink:0;padding:6px 14px;border-radius:50px;font-size:.68rem;font-weight:800;background:rgba(255,255,255,.05);border:1.5px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s}
-.msort-btn.active{background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.4);color:var(--primary)}
+.msort-btn.active{background:rgba(30,164,101,.15);border-color:rgba(30,164,101,.4);color:var(--primary)}
 @media(min-width:481px){.mobile-sort{display:none}}
 
 /* ─────────────────────────────────────────────
@@ -283,7 +283,7 @@ footer a{color:var(--primary)}
       <input type="text" id="search-input" placeholder="Buscar produtos, cursos, templates..." autocomplete="off">
     </div>
     <div class="nav-actions">
-      <button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema" style="display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:50px;border:1.5px solid var(--border2);background:var(--card2);color:var(--text);font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .2s;flex-shrink:0" onmouseover="this.style.borderColor='rgba(168,85,247,.5)'" onmouseout="this.style.borderColor='var(--border2)'">
+      <button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema" style="display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:50px;border:1.5px solid var(--border2);background:var(--card2);color:var(--text);font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .2s;flex-shrink:0" onmouseover="this.style.borderColor='rgba(30,164,101,.5)'" onmouseout="this.style.borderColor='var(--border2)'">
         <span id="theme-icon" style="display:flex;align-items:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
         <span id="theme-label" class="theme-lbl">Claro</span>
       </button>

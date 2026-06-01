@@ -37,8 +37,8 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
     );
   }
 
-  const P  = '#C0006A';
-  const P2 = '#8B0045';
+  const P  = '#1ea465';
+  const P2 = '#126b41';
 
   const statCards = [
     { label: 'Saldo Total',   value: `R$ ${stats.total_paid   || '0,00'}`, sub: 'acumulado',           icon: Banknote,    color: P,        spark: spark.up   },
@@ -74,7 +74,7 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
         <div className="sm:col-span-2 relative rounded-2xl overflow-hidden p-6 flex flex-col justify-between min-h-[170px]"
           style={{ background: 'linear-gradient(135deg, #3d0020 0%, #1a000e 50%, #0a0006 100%)' }}>
           <div className="absolute inset-0 pointer-events-none"
-            style={{ backgroundImage: 'radial-gradient(ellipse at 85% 15%, rgba(192,0,106,.45), transparent 60%), radial-gradient(ellipse at 15% 85%, rgba(139,0,69,.30), transparent 55%)' }} />
+            style={{ backgroundImage: 'radial-gradient(ellipse at 85% 15%, rgba(30,164,101,.45), transparent 60%), radial-gradient(ellipse at 15% 85%, rgba(139,0,69,.30), transparent 55%)' }} />
           <div className="relative z-10 flex items-start justify-between">
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -104,7 +104,7 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
             </div>
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-[3px]"
-            style={{ background: 'linear-gradient(90deg, #C0006A, #ff4da6, #8B0045, #ff80c0, #C0006A)' }} />
+            style={{ background: 'linear-gradient(90deg, #1ea465, #ff4da6, #126b41, #ff80c0, #1ea465)' }} />
         </div>
 
         {/* 4 stat mini cards */}
@@ -159,13 +159,13 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
         <div className="lg:col-span-2 rounded-2xl border bg-white dark:bg-[#13131a] border-gray-100 dark:border-[#1e1e2e] overflow-hidden">
           <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-50 dark:border-[#1e1e2e]">
             <h2 className="text-sm font-black text-gray-900 dark:text-white flex items-center gap-2">
-              <span className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: '#C0006A22' }}>
-                <History size={13} style={{ color: '#C0006A' }} />
+              <span className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: '#1ea46522' }}>
+                <History size={13} style={{ color: '#1ea465' }} />
               </span>
               Últimas transações
             </h2>
             <button onClick={() => navigate('/vendas')}
-              className="text-[11px] font-black flex items-center gap-1 hover:opacity-70 transition-opacity" style={{ color: '#C0006A' }}>
+              className="text-[11px] font-black flex items-center gap-1 hover:opacity-70 transition-opacity" style={{ color: '#1ea465' }}>
               Ver todas <ChevronRight size={12} />
             </button>
           </div>
@@ -176,8 +176,8 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
         <div className="rounded-2xl border bg-white dark:bg-[#13131a] border-gray-100 dark:border-[#1e1e2e] p-5 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-black text-gray-900 dark:text-white flex items-center gap-2">
-              <span className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: '#C0006A22' }}>
-                <BarChart3 size={13} style={{ color: '#C0006A' }} />
+              <span className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: '#1ea46522' }}>
+                <BarChart3 size={13} style={{ color: '#1ea465' }} />
               </span>
               Desempenho
             </h2>
@@ -192,8 +192,8 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
               <AreaChart data={[2,5,3,6,4,8,6,9,7,11,8,10].map(v => ({ v }))} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
                 <defs>
                   <linearGradient id="perfGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%"  stopColor="#C0006A" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#C0006A" stopOpacity={0} />
+                    <stop offset="5%"  stopColor="#1ea465" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#1ea465" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <Tooltip
@@ -202,13 +202,13 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
                   formatter={(v) => [`R$ ${v * 100},00`, '']}
                   labelFormatter={() => ''}
                 />
-                <Area type="monotone" dataKey="v" stroke="#C0006A" strokeWidth={2} fill="url(#perfGrad)" dot={false} />
+                <Area type="monotone" dataKey="v" stroke="#1ea465" strokeWidth={2} fill="url(#perfGrad)" dot={false} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
           <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-50 dark:border-[#1e1e2e]">
             {[
-              { label: 'Saldo Total', value: `R$ ${stats.total_paid || '0,00'}`, color: '#C0006A' },
+              { label: 'Saldo Total', value: `R$ ${stats.total_paid || '0,00'}`, color: '#1ea465' },
               { label: 'Pendentes',   value: stats.pending_count || '0',          color: '#f59e0b' },
             ].map(({ label, value, color }) => (
               <div key={label}>

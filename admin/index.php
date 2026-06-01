@@ -134,6 +134,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     }
 
+    if (isset($_POST['update_preferred_nominal'])) {
+        $userId = (int)$_POST['user_id'];
+        $nominal = $_POST['preferred_nominal'] ?? 'nominal1';
+        if (in_array($nominal, ['nominal1', 'nominal2', 'nominal3'])) {
+            $stmt = $pdo->prepare("UPDATE users SET preferred_nominal = ? WHERE id = ?");
+            $stmt->execute([$nominal, $userId]);
+        }
+        header("Location: index.php?success=1");
+        exit;
+    }
+
+    if (isset($_POST['update_withdraw_nominal'])) {
+        $wId = (int)$_POST['withdraw_id'];
+        $nominal = $_POST['nominal'] ?? 'nominal1';
+        if (in_array($nominal, ['nominal1', 'nominal2', 'nominal3'])) {
+            $stmt = $pdo->prepare("UPDATE withdrawals SET nominal = ? WHERE id = ?");
+            $stmt->execute([$nominal, $wId]);
+        }
+        header("Location: index.php?success=1");
+        exit;
+    }
+
     if (isset($_POST['approve_user']) || isset($_POST['block_user'])) {
         $id = (int)$_POST['user_id'];
         $status = isset($_POST['approve_user']) ? 'approved' : 'blocked';
@@ -213,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $pdo->beginTransaction();
             try {
                 $stmtW = $pdo->prepare("SELECT w.user_id, w.amount, w.amount_gross, w.status, w.is_debited FROM withdrawals w WHERE w.id = ? FOR UPDATE");
-                $stmtW->execute([$wId]);
+                $stmtW->execute([wId]);
                 $w = $stmtW->fetch();
                 if (!$w || $w['status'] !== 'pending') {
                     $pdo->rollBack();
@@ -244,14 +266,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header("Location: index.php?success=1");
             exit;
         }
+
+        if ($action == 'delete_user') {
+            $userId = (int)$_POST['user_id'];
+            
+            // Proibir exclusão de administradores por segurança
+            $stmtCheck = $pdo->prepare("SELECT is_admin FROM users WHERE id = ?");
+            $stmtCheck->execute([$userId]);
+            $userCheck = $stmtCheck->fetch();
+            if ($userCheck && (int)$userCheck['is_admin'] === 1) {
+                header("Location: index.php?error=admin_no_delete");
+                exit;
+            }
+
+            $pdo->beginTransaction();
+            try {
+                // Deleta registros filhos nas tabelas relacionadas
+                $pdo->prepare("DELETE FROM balance_log WHERE user_id = ?")->execute([$userId]);
+                $pdo->prepare("DELETE FROM notifications WHERE user_id = ?")->execute([$userId]);
+                $pdo->prepare("DELETE FROM withdrawals WHERE user_id = ?")->execute([$userId]);
+                $pdo->prepare("DELETE FROM transactions WHERE user_id = ?")->execute([$userId]);
+                $pdo->prepare("DELETE FROM products WHERE user_id = ?")->execute([$userId]);
+                $pdo->prepare("DELETE FROM checkouts WHERE user_id = ?")->execute([$userId]);
+                $pdo->prepare("DELETE FROM orders WHERE buyer_user_id = ? OR seller_id = ?")->execute([$userId, $userId]);
+                
+                // Por fim, deleta o usuário
+                $pdo->prepare("DELETE FROM users WHERE id = ? AND is_admin = 0")->execute([$userId]);
+                
+                $pdo->commit();
+                write_log('INFO', 'Usuário deletado via painel admin legacy', ['user_id' => $userId]);
+                header("Location: index.php?success=1");
+                exit;
+            } catch (Throwable $e) {
+                if ($pdo->inTransaction()) $pdo->rollBack();
+                write_log('ERROR', 'delete_user legacy FAILED', ['user_id' => $userId, 'error' => $e->getMessage()]);
+                header("Location: index.php?error=delete_failed");
+                exit;
+            }
+        }
     }
 }
 
 // Lógica de Filtros e Busca
 $search = $_GET['search'] ?? '';
 $status_filter = $_GET['status_filter'] ?? '';
+$order_by = $_GET['order_by'] ?? 'recent';
 
-$sql = "SELECT * FROM users WHERE is_admin = 0";
+$sql = "SELECT *, (SELECT COALESCE(SUM(amount_brl), 0) FROM transactions WHERE user_id = users.id AND status = 'paid') AS total_faturamento FROM users WHERE is_admin = 0";
 $params = [];
 
 if (!empty($search)) {
@@ -270,7 +331,14 @@ if ($status_filter === 'pending') {
     $sql .= " AND is_demo = 1";
 }
 
-$sql .= " ORDER BY created_at DESC";
+if ($order_by === 'revenue_desc') {
+    $sql .= " ORDER BY total_faturamento DESC, created_at DESC";
+} elseif ($order_by === 'revenue_asc') {
+    $sql .= " ORDER BY total_faturamento ASC, created_at DESC";
+} else {
+    $sql .= " ORDER BY created_at DESC";
+}
+
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $users = $stmt->fetchAll();
@@ -318,8 +386,8 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>LunarPay Admin</title>
-    <link rel="icon" type="image/png" href="../logo_lunarpay.png">
+    <title>DiretoPay Admin</title>
+    <link rel="icon" type="image/png" href="../logo_diretopay.png">
     <link rel="stylesheet" href="../style.css?v=125.0">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -707,7 +775,7 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                             </div>
                         </div>
 
-                        <form method="POST" class="stat-card ghost-purple" style="padding: 1rem; flex-direction: row; gap: 1.5rem; align-items: center; margin-bottom: 0; border: 1px solid rgba(168, 85, 247, 0.2); min-width: 320px;">
+                        <form method="POST" class="stat-card ghost-purple" style="padding: 1rem; flex-direction: row; gap: 1.5rem; align-items: center; margin-bottom: 0; border: 1px solid rgba(30, 164, 101, 0.2); min-width: 320px;">
                             <div style="display: flex; align-items: center; gap: 1rem; flex: 1; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 1rem;">
                                 <div class="stat-icon" style="margin-bottom: 0; width: 32px; height: 32px; font-size: 0.9rem;"><i class="fas fa-percent"></i></div>
                                 <div style="display: flex; flex-direction: column;">
@@ -762,11 +830,18 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                             <option value="demo" <?php echo $status_filter == 'demo' ? 'selected' : ''; ?> style="background: #000; color: #fff;">Contas Demo</option>
                         </select>
 
+                        <!-- Filtro Ordenação Faturamento -->
+                        <select name="order_by" class="filter-input" style="cursor: pointer; width: auto;">
+                            <option value="recent" <?php echo $order_by == 'recent' ? 'selected' : ''; ?> style="background: #000; color: #fff;">Mais Recentes</option>
+                            <option value="revenue_desc" <?php echo $order_by == 'revenue_desc' ? 'selected' : ''; ?> style="background: #000; color: #fff;">Maior Faturamento</option>
+                            <option value="revenue_asc" <?php echo $order_by == 'revenue_asc' ? 'selected' : ''; ?> style="background: #000; color: #fff;">Menor Faturamento</option>
+                        </select>
+
                         <button type="submit" class="btn-primary" style="width: auto; padding: 10px 20px; font-size: 0.85rem; border-radius: 12px; height: 42px;">
                             <i class="fas fa-filter" style="margin-right: 8px;"></i> Filtrar
                         </button>
 
-                        <?php if(!empty($search) || !empty($status_filter)): ?>
+                        <?php if(!empty($search) || !empty($status_filter) || $order_by !== 'recent'): ?>
                             <a href="index.php" title="Limpar Filtros" style="width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; border-radius: 12px; text-decoration: none; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'" onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'">
                                 <i class="fas fa-times"></i>
                             </a>
@@ -787,8 +862,10 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                                 <th class="col-user">Usuário / Demo</th>
                                 <th class="col-email">Email / Pix</th>
                                 <th style="width:120px;">WhatsApp</th>
+                                <th style="width:130px;">Faturamento</th>
                                 <th class="col-balance">Saldo</th>
                                 <th class="col-rate">Taxa (%)</th>
+                                <th style="width:110px;">Gateway Rota</th>
                                 <th class="col-status">Status</th>
                                 <th class="col-actions" style="text-align: right;">Ações</th>
                             </tr>
@@ -814,7 +891,7 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                                     <form method="POST" style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
                                         <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
                                         <input type="text" name="pix_key" value="<?php echo htmlspecialchars($u['pix_key']); ?>" class="pix-input-admin" style="padding: 3px 8px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: #fff; border-radius: 4px; outline: none;">
-                                        <button type="submit" name="update_pix" class="btn-icon-sm" style="background: rgba(168, 85, 247, 0.1); color: var(--purple); border: none; border-radius: 4px; cursor: pointer; height: 24px; width: 24px;"><i class="fas fa-save" style="font-size: 0.7rem;"></i></button>
+                                        <button type="submit" name="update_pix" class="btn-icon-sm" style="background: rgba(30, 164, 101, 0.1); color: var(--purple); border: none; border-radius: 4px; cursor: pointer; height: 24px; width: 24px;"><i class="fas fa-save" style="font-size: 0.7rem;"></i></button>
                                     </form>
                                 </td>
                                 <td data-label="WhatsApp">
@@ -834,6 +911,9 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                                         <span style="font-size:0.7rem; color:rgba(255,255,255,0.2); font-style:italic;">—</span>
                                     <?php endif; ?>
                                 </td>
+                                <td data-label="Faturamento" style="font-weight: 700; color: #3b82f6;">
+                                    R$ <?php echo number_format((float)$u['total_faturamento'], 2, ',', '.'); ?>
+                                </td>
                                 <td data-label="Saldo">
                                     <form method="POST" style="display: flex; align-items: center; gap: 5px;">
                                         <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
@@ -845,6 +925,17 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                                 <td data-label="Taxa (%)">
                                     <input type="number" form="global-comm-form" name="comm[<?php echo $u['id']; ?>]" value="<?php echo $u['commission_rate']; ?>" step="0.1" style="width: 65px; padding: 5px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white; border-radius: 8px; outline: none; font-size: 0.85rem;">
                                 </td>
+                                <td data-label="Gateway Rota">
+                                    <form method="POST" style="display:flex; align-items:center; gap:5px;">
+                                        <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
+                                        <select name="preferred_nominal" onchange="this.form.submit()" style="padding: 5px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: white; border-radius: 8px; outline: none; font-size: 0.8rem; cursor: pointer; width: 100%;">
+                                            <option value="nominal1" <?php echo $u['preferred_nominal'] === 'nominal1' ? 'selected' : ''; ?>>Nominal 1</option>
+                                            <option value="nominal2" <?php echo $u['preferred_nominal'] === 'nominal2' ? 'selected' : ''; ?>>Nominal 2</option>
+                                            <option value="nominal3" <?php echo $u['preferred_nominal'] === 'nominal3' ? 'selected' : ''; ?>>Nominal 3</option>
+                                        </select>
+                                        <input type="hidden" name="update_preferred_nominal" value="1">
+                                    </form>
+                                </td>
                                 <td data-label="Status">
                                     <span class="badge <?php echo $u['status'] == 'approved' ? 'paid' : ($u['status'] == 'pending' ? 'pending' : 'expired'); ?>" style="font-size: 0.65rem;">
                                         <?php echo ucfirst($u['status']); ?>
@@ -853,6 +944,12 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                                 <td data-label="Ações" class="actions-cell" style="text-align: right;">
                                     <div style="display: flex; gap: 5px; justify-content: flex-end; flex-wrap: wrap;">
                                         <button type="button" onclick="openFakeWithdrawModal(<?php echo $u['id']; ?>, '<?php echo addslashes($u['full_name']); ?>', '<?php echo $u['pix_key']; ?>')" class="badge paid" style="border: none; cursor: pointer; background: var(--purple); font-size: 0.6rem;">Saque Fake</button>
+                                        
+                                        <form method="POST" style="display:inline;" onsubmit="return confirm('Deseja realmente DELETAR permanentemente este usuário e todos os seus registros?')">
+                                            <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
+                                            <input type="hidden" name="action" value="delete_user">
+                                            <button type="submit" class="badge expired" style="border: none; cursor: pointer; background: #ef4444; font-size: 0.6rem;">Deletar</button>
+                                        </form>
                                         
                                         <form method="POST" style="display:inline;">
                                             <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
@@ -869,7 +966,7 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                             <?php endforeach; ?>
                             <?php if(empty($users)): ?>
                             <tr>
-                                <td colspan="7" style="text-align: center; padding: 3rem 1rem; opacity: 0.5;">
+                                <td colspan="10" style="text-align: center; padding: 3rem 1rem; opacity: 0.5;">
                                     <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
                                         <i class="fas fa-search" style="font-size: 2rem;"></i>
                                         <p>Nenhum usuário encontrado com os filtros atuais.</p>
@@ -905,11 +1002,38 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                     </thead>
                     <tbody>
                         <?php
-                        $stmt = $pdo->query("SELECT w.*, u.email, u.pix_key, u.commission_rate, u.balance FROM withdrawals w JOIN users u ON w.user_id = u.id WHERE w.status = 'pending' ORDER BY w.created_at DESC");
+                        $stmt = $pdo->query("SELECT w.*, COALESCE(w.nominal, u.preferred_nominal, 'nominal1') AS nominal_display, u.email, u.pix_key, u.commission_rate, u.balance FROM withdrawals w JOIN users u ON w.user_id = u.id WHERE w.status = 'pending' ORDER BY w.created_at DESC");
                         while($w = $stmt->fetch()):
                         ?>
                         <tr class="responsive-row">
-                            <td data-label="Nome"><strong><?php echo htmlspecialchars($w['full_name']); ?></strong></td>
+                             <td data-label="Nome">
+                                <strong><?php echo htmlspecialchars($w['full_name']); ?></strong>
+                                <div style="margin-top: 5px;">
+                                    <form method="POST" style="display:inline-block;">
+                                        <input type="hidden" name="withdraw_id" value="<?php echo $w['id']; ?>">
+                                        <?php
+                                        $bgStyle = 'rgba(30, 164, 101, 0.15)';
+                                        $colorStyle = '#a855f7';
+                                        $borderStyle = 'rgba(30, 164, 101, 0.25)';
+                                        if ($w['nominal_display'] === 'nominal2') {
+                                            $bgStyle = 'rgba(6, 182, 212, 0.15)';
+                                            $colorStyle = '#06b6d4';
+                                            $borderStyle = 'rgba(6, 182, 212, 0.25)';
+                                        } elseif ($w['nominal_display'] === 'nominal3') {
+                                            $bgStyle = 'rgba(16, 185, 129, 0.15)';
+                                            $colorStyle = '#10b981';
+                                            $borderStyle = 'rgba(16, 185, 129, 0.25)';
+                                        }
+                                        ?>
+                                        <select name="nominal" onchange="this.form.submit()" style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; background: <?php echo $bgStyle; ?>; color: <?php echo $colorStyle; ?>; border: 1px solid <?php echo $borderStyle; ?>; text-transform: uppercase; cursor: pointer; outline: none;">
+                                            <option value="nominal1" <?php echo $w['nominal_display'] === 'nominal1' ? 'selected' : ''; ?> style="background:#000; color:#fff;">Nominal 1</option>
+                                            <option value="nominal2" <?php echo $w['nominal_display'] === 'nominal2' ? 'selected' : ''; ?> style="background:#000; color:#fff;">Nominal 2</option>
+                                            <option value="nominal3" <?php echo $w['nominal_display'] === 'nominal3' ? 'selected' : ''; ?> style="background:#000; color:#fff;">Nominal 3</option>
+                                        </select>
+                                        <input type="hidden" name="update_withdraw_nominal" value="1">
+                                    </form>
+                                </div>
+                            </td>
                             <td data-label="Email"><?php echo htmlspecialchars($w['email']); ?></td>
                             <td data-label="Chave PIX"><code style="background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;"><?php echo htmlspecialchars($w['pix_key']); ?></code></td>
                             <td data-label="Valor">R$ <?php echo number_format($w['amount'], 2, ',', '.'); ?></td>

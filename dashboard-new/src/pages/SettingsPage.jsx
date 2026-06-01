@@ -681,7 +681,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                     <Shield className="text-primary shrink-0 mt-0.5" size={24} />
                                     <div>
                                         <h4 className="font-bold text-primary italic text-lg">Acesso Desenvolvedor</h4>
-                                        <p className="text-xs text-primary/70 font-medium mt-1">Use sua chave API para integrar o LunarPay ao seu sistema, bot, site ou checkout externo.</p>
+                                        <p className="text-xs text-primary/70 font-medium mt-1">Use sua chave API para integrar o DiretoPay ao seu sistema, bot, site ou checkout externo.</p>
                                     </div>
                                 </div>
 
@@ -1341,7 +1341,7 @@ function TelegramTab() {
                             </p>
                         </div>
                     </div>
-                    <span className={`w-3 h-3 rounded-full ${connected ? 'bg-primary shadow-[0_0_10px_rgba(168,85,247,0.5)]' : 'bg-gray-300'}`} />
+                    <span className={`w-3 h-3 rounded-full ${connected ? 'bg-primary shadow-[0_0_10px_rgba(30,164,101,0.5)]' : 'bg-gray-300'}`} />
                 </div>
             </div>
 

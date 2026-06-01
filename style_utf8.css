@@ -650,7 +650,7 @@ a,
 }
 
 .stat-card.ghost-purple {
-    border-bottom: 2px solid rgba(168, 85, 247, 0.3);
+    border-bottom: 2px solid rgba(30, 164, 101, 0.3);
 }
 
 .stat-card.ghost-yellow {
@@ -681,7 +681,7 @@ a,
 }
 
 .stat-card.ghost-purple .stat-icon {
-    background: rgba(168, 85, 247, 0.1);
+    background: rgba(30, 164, 101, 0.1);
     color: #a855f7;
 }
 
@@ -3096,7 +3096,7 @@ input:-webkit-autofill:focus {
 }
 
 .r-check.purple {
-    background: rgba(168, 85, 247, 0.1);
+    background: rgba(30, 164, 101, 0.1);
     color: #a855f7;
 }
 

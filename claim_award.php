@@ -37,10 +37,34 @@ $totalPaid = (float)$stmtTotal->fetchColumn();
 
 // Definição dos prêmios
 $awards = [
-    'pulseira_10k' => [
-        'id'    => 'pulseira_10k',
-        'title' => 'Pulseira de 10K',
+    'placa_10k' => [
+        'id'    => 'placa_10k',
+        'title' => 'Placa de 10K',
         'goal'  => 10000.00,
+        'unit'  => 'BRL',
+    ],
+    'placa_100k' => [
+        'id'    => 'placa_100k',
+        'title' => 'Placa de 100K',
+        'goal'  => 100000.00,
+        'unit'  => 'BRL',
+    ],
+    'placa_250k' => [
+        'id'    => 'placa_250k',
+        'title' => 'Placa de 250K',
+        'goal'  => 250000.00,
+        'unit'  => 'BRL',
+    ],
+    'placa_500k' => [
+        'id'    => 'placa_500k',
+        'title' => 'Placa de 500K',
+        'goal'  => 500000.00,
+        'unit'  => 'BRL',
+    ],
+    'placa_1m' => [
+        'id'    => 'placa_1m',
+        'title' => 'Placa de 1 Milhão',
+        'goal'  => 1000000.00,
         'unit'  => 'BRL',
     ],
 ];

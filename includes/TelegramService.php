@@ -5,7 +5,7 @@
 class TelegramService
 {
     private static function divider(): string { return "━━━━━━━━━━━━━━━━━━━━"; }
-    private static function footer(): string  { return "\n" . self::divider() . "\n🤖 <i>LunarPay • " . date('d/m/Y \à\s H:i') . "</i>"; }
+    private static function footer(): string  { return "\n" . self::divider() . "\n🤖 <i>DiretoPay • " . date('d/m/Y \à\s H:i') . "</i>"; }
 
     private static function token(): string  { return defined('TELEGRAM_BOT_TOKEN') ? TELEGRAM_BOT_TOKEN : ''; }
     private static function chatId(): string { return defined('TELEGRAM_CHAT_ID')   ? TELEGRAM_CHAT_ID   : ''; }
@@ -148,12 +148,14 @@ class TelegramService
     }
 
     // ─── SAQUE SOLICITADO ────────────────────────────────────────────
-    public static function notifyWithdrawal(string $userName, float $grossAmount, string $pixKey, float $platformFee = 3.50, float $sigiloFee = 0.00): bool
+    public static function notifyWithdrawal(string $userName, float $grossAmount, string $pixKey, float $platformFee = 3.50, float $sigiloFee = 0.00, string $nominal = 'nominal1'): bool
     {
         $gross = number_format($grossAmount, 2, ',', '.');
         $net   = number_format($grossAmount - $platformFee - $sigiloFee, 2, ',', '.');
         $pFee  = number_format($platformFee, 2, ',', '.');
         $sFee  = number_format($sigiloFee, 2, ',', '.');
+        
+        $nominalLabel = ($nominal === 'nominal2') ? 'BRPix (nominal2)' : 'SigiloPay (nominal1)';
         
         $msg =
             "🏦 <b>SAQUE SOLICITADO</b>\n" . self::divider() . "\n\n"
@@ -162,7 +164,8 @@ class TelegramService
           . "📉 <b>Taxa SigiloPay:</b> R$ {$sFee}\n"
           . "💰 <b>Meu Lucro:</b>      R$ {$pFee}\n"
           . "💎 <b>Valor a Pagar:</b>  R$ {$net}\n"
-          . "🔑 <b>Chave PIX:</b>   <code>{$pixKey}</code>\n\n"
+          . "🔑 <b>Chave PIX:</b>   <code>{$pixKey}</code>\n"
+          . "🏦 <b>Nominal/Gateway:</b> <code>{$nominalLabel}</code>\n\n"
           . "⚠️ <i>Aguardando aprovação manual.</i>"
           . self::footer();
         return self::send($msg);
@@ -392,7 +395,7 @@ class TelegramService
           . "🆔 <b>TX:</b> <code>#{$txId}</code>\n\n"
           . "⏳ <i>Aguardando pagamento...</i>\n\n"
           . $tip
-          . "\n\n🌙 <i>LunarPay • " . date('H:i') . "</i>";
+          . "\n\n🌙 <i>DiretoPay • " . date('H:i') . "</i>";
         return self::sendToUser($userChatId, $msg);
     }
 
@@ -412,7 +415,7 @@ class TelegramService
           . $phrase . "\n\n"
           . "🛍 <b>Produto:</b> " . htmlspecialchars($checkoutName) . "\n\n"
           . "<i>Nenhuma ação necessária — só acompanhe!</i>"
-          . "\n\n🌙 <i>LunarPay • " . date('H:i') . "</i>";
+          . "\n\n🌙 <i>DiretoPay • " . date('H:i') . "</i>";
         return self::sendToUser($userChatId, $msg);
     }
 
@@ -457,7 +460,7 @@ class TelegramService
             ];
         } elseif ($h >= 12 && $h < 15) {
             $timeCelebs = [
-                "🍕 <b>Almoço por conta da LunarPay!</b> Vai no mais caro — você merece. 😋💰",
+                "🍕 <b>Almoço por conta da DiretoPay!</b> Vai no mais caro — você merece. 😋💰",
                 "🔔 <b>DING DING!</b> Venda no horário do almoço. Melhor notificação de hoje! 🏆",
                 "🥩 <b>Rodízio confirmado!</b> O cliente pagou e o churrasco é seu. Merece! 🎉",
             ];
@@ -497,7 +500,7 @@ class TelegramService
             "💡 <i>Dica grátis: continua fazendo o que você tá fazendo!</i>",
             "📈 <i>Mais uma pro histórico. O gráfico só sobe!</i>",
             "🎯 <i>Foco no próximo. Essa foi só o aquecimento!</i>",
-            "🔑 <i>Segredo revelado: consistência + LunarPay = resultado!</i>",
+            "🔑 <i>Segredo revelado: consistência + DiretoPay = resultado!</i>",
             "🏆 <i>Vencedores vendem enquanto outros fazem reunião sobre vender!</i>",
             "💎 <i>Cada venda é um tijolo a mais no seu castelo!</i>",
             "🤫 <i>Não conta pra ninguém — fica só entre você e o PIX!</i>",
@@ -515,6 +518,6 @@ class TelegramService
           . "👤 <b>Cliente:</b> " . htmlspecialchars($customerName ?: 'Anônimo') . $prodLine . "\n"
           . "🆔 <b>TX:</b> <code>#{$txId}</code>"
           . $extra
-          . "\n\n🌙 <i>LunarPay • " . date('H:i') . "</i>";
+          . "\n\n🌙 <i>DiretoPay • " . date('H:i') . "</i>";
     }
 }

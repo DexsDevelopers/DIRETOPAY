@@ -38,7 +38,7 @@ $fee_platform = round($platformProfit, 2);
 $withdrawFee = $fee_gateway + $fee_platform;
 
 try {
-    $stmt = $pdo->prepare("SELECT balance, pix_key FROM users WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT balance, pix_key, preferred_nominal FROM users WHERE id = ?");
     $stmt->execute([$userId]);
     $user = $stmt->fetch();
 } catch (PDOException $e) {
@@ -46,8 +46,18 @@ try {
     exit;
 }
 
-if ($amount < 20) {
-    echo json_encode(['error' => 'O valor mínimo para saque é R$ 20,00.']);
+$userNominal = $user['preferred_nominal'] ?? 'nominal1';
+$minWithdraw = 20.00;
+if ($userNominal === 'nominal1') {
+    $minWithdraw = 25.00;
+} elseif ($userNominal === 'nominal2') {
+    $minWithdraw = 5.00;
+} elseif ($userNominal === 'nominal3') {
+    $minWithdraw = 10.00;
+}
+
+if ($amount < $minWithdraw) {
+    echo json_encode(['error' => 'O valor mínimo para saque na rota ' . strtoupper($userNominal) . ' é R$ ' . number_format($minWithdraw, 2, ',', '.') . '.']);
     exit;
 }
 
@@ -106,9 +116,10 @@ try {
         exit;
     }
 
+    $userNominal = $user['preferred_nominal'] ?? 'nominal1';
     // 2. Registrar pedido de saque
-    $stmt = $pdo->prepare("INSERT INTO withdrawals (user_id, amount_gross, amount, fee_platform, fee_gateway, pix_key, status, is_debited) VALUES (?, ?, ?, ?, ?, ?, 'pending', 1)");
-    $stmt->execute([$userId, $amount, $netAmount, $fee_platform, $fee_gateway, $user['pix_key']]);
+    $stmt = $pdo->prepare("INSERT INTO withdrawals (user_id, amount_gross, amount, fee_platform, fee_gateway, pix_key, status, is_debited, nominal) VALUES (?, ?, ?, ?, ?, ?, 'pending', 1, ?)");
+    $stmt->execute([$userId, $amount, $netAmount, $fee_platform, $fee_gateway, $user['pix_key'], $userNominal]);
     $wId = $pdo->lastInsertId();
 
     // 3. Atualizar log de saldo com o ID do saque (opcional, mas bom para rastreio)
@@ -127,8 +138,12 @@ try {
         try { PushService::notifyAdmins('🏦 Saque Solicitado', $userName . ' — R$ ' . number_format($amount, 2, ',', '.') . ' — Pix: ' . $user['pix_key'], 'warning'); } catch (Throwable $e) {}
     }
     
-    // Notificar Admin via Telegram
-    try { TelegramService::notifyWithdrawal($userName, $amount, $user['pix_key'], $fee_platform, $fee_gateway); } catch (Throwable $e) {}
+    // Notificar Admin via Telegram e WhatsApp
+    try { TelegramService::notifyWithdrawal($userName, $amount, $user['pix_key'], $fee_platform, $fee_gateway, $userNominal); } catch (Throwable $e) {}
+    try {
+        require_once __DIR__ . '/includes/WhatsAppService.php';
+        WhatsAppService::notifyWithdrawal($userName, $amount, $user['pix_key'], $fee_platform, $fee_gateway, $userNominal);
+    } catch (Throwable $e) {}
     
     echo json_encode(['status' => 'success', 'message' => 'Solicitação de saque enviada ao administrador!']);
 } catch (Exception $e) {

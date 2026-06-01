@@ -20,7 +20,7 @@ function NavItem({ item, location, onTabChange, onClose, isDark }) {
             className={cn(
                 "flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-150 group w-full mb-0.5",
                 isActive
-                    ? 'bg-primary text-white font-semibold shadow-[0_4px_14px_rgba(192,0,106,0.35)]'
+                    ? 'bg-primary text-white font-semibold shadow-[0_4px_14px_rgba(30,164,101,0.35)]'
                     : isDark
                         ? 'text-gray-300 hover:bg-white/[0.06] hover:text-white'
                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
@@ -191,7 +191,7 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
 
     const bg     = isDark ? 'bg-[#13131a]'       : 'bg-white';
     const border = isDark ? 'border-white/[0.07]' : 'border-gray-100';
-    const shadow = isDark ? 'shadow-[4px_0_32px_rgba(0,0,0,0.6)]' : 'shadow-[4px_0_32px_rgba(192,0,106,0.07)]';
+    const shadow = isDark ? 'shadow-[4px_0_32px_rgba(0,0,0,0.6)]' : 'shadow-[4px_0_32px_rgba(30,164,101,0.07)]';
     const sharedProps = { location, onTabChange, onClose, isDark };
 
     return (
@@ -212,7 +212,7 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
                         </div>
                         <div className="min-w-0">
                             <p className={cn("text-[14px] font-bold truncate leading-tight", isDark ? 'text-white' : 'text-gray-900')}>{userName}</p>
-                            <p className="text-[11px] text-primary font-semibold mt-0.5">LunarPay</p>
+                            <p className="text-[11px] text-primary font-semibold mt-0.5">DiretoPay</p>
                         </div>
                     </div>
                     <button onClick={onClose} className={cn("p-2 rounded-xl transition-colors shrink-0", isDark ? 'text-gray-500 hover:text-gray-200 hover:bg-white/8' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100')}>

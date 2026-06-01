@@ -11,6 +11,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
+if (!function_exists('sendResponseAndContinue')) {
+    function sendResponseAndContinue(array $responseData) {
+        if (ob_get_level() > 0) ob_end_clean();
+        ignore_user_abort(true);
+        header('Connection: close');
+        header('Content-Type: application/json');
+        $json = json_encode(array_merge(['success' => true], $responseData));
+        header('Content-Length: ' . strlen($json));
+        echo $json;
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        } else {
+            flush();
+        }
+    }
+}
+
 // 3. Início do processamento com proteção total contra erros 500
 try {
     ob_start();
@@ -30,6 +47,7 @@ try {
     } catch (Throwable $e) {}
     require_once 'includes/BRPixService.php';
     require_once 'includes/IronPayService.php';
+    require_once 'includes/MisticPayService.php';
 
     // Autenticação Híbrida 
     $userId = null;
@@ -78,9 +96,14 @@ try {
     $ironpayProductHash = $getSetting('ironpay_product_hash');
     $useIronPay         = ($ironpayEnabled && $ironpayToken && $ironpayOfferHash && $ironpayProductHash);
 
-    write_log('info', "Gateway: sigiloEnabled=$sigiloEnabled useSigiloPay=$useSigiloPay | brpixEnabled=$brpixEnabled useBRPix=$useBRPix | ironpayEnabled=$ironpayEnabled useIronPay=$useIronPay");
+    $misticpayEnabled      = $getSetting('misticpay_enabled') === '1';
+    $misticpayClientId     = $getSetting('misticpay_client_id');
+    $misticpayClientSecret = $getSetting('misticpay_client_secret');
+    $useMisticPay          = ($misticpayEnabled && $misticpayClientId && $misticpayClientSecret);
 
-    if (!$useSigiloPay && !$useBRPix && !$useIronPay) {
+    write_log('info', "Gateway: sigiloEnabled=$sigiloEnabled useSigiloPay=$useSigiloPay | brpixEnabled=$brpixEnabled useBRPix=$useBRPix | ironpayEnabled=$ironpayEnabled useIronPay=$useIronPay | misticpayEnabled=$misticpayEnabled useMisticPay=$useMisticPay");
+
+    if (!$useSigiloPay && !$useBRPix && !$useIronPay && !$useMisticPay) {
         throw new Exception('Gateway de pagamento não configurado. Contate o administrador.', 503);
     }
 
@@ -115,17 +138,25 @@ try {
 
     $externalId    = !empty($input['external_id']) ? (string)$input['external_id'] : ('user_' . $userId . '_' . time());
     $userNominal   = $user['preferred_nominal'] ?? 'nominal1';
-    // Taxa por nominal: nominal2 = BRPix (4% + R$1,00), nominal1 = SigiloPay (8% + R$0,99)
-    $nominalFeePercent = ($userNominal === 'nominal2') ? 4.00 : 8.0;
-    $nominalFeeFixed   = ($userNominal === 'nominal2') ? 1.00 : 0.99;
+    // Taxa por nominal: nominal3 = MisticPay (7% + R$1,00), nominal2 = BRPix (4% + R$1,00), nominal1 = SigiloPay (8% + R$0,99)
+    if ($userNominal === 'nominal3') {
+        $nominalFeePercent = 7.00;
+        $nominalFeeFixed   = 1.00;
+    } elseif ($userNominal === 'nominal2') {
+        $nominalFeePercent = 4.00;
+        $nominalFeeFixed   = 1.00;
+    } else {
+        $nominalFeePercent = 8.00;
+        $nominalFeeFixed   = 0.99;
+    }
 
     // ── Seleciona gateway pelo nominal do usuário ─────────────────────
-    // nominal1 → SigiloPay (mais estável), nominal2 → BRPix (taxa menor)
-    if ($userNominal === 'nominal2') {
-        $activeGateway = $useBRPix ? 'brpix' : ($useSigiloPay ? 'sigilopay' : 'ironpay');
+    if ($userNominal === 'nominal3') {
+        $activeGateway = $useMisticPay ? 'misticpay' : ($useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : 'ironpay'));
+    } elseif ($userNominal === 'nominal2') {
+        $activeGateway = $useBRPix ? 'brpix' : ($useSigiloPay ? 'sigilopay' : ($useIronPay ? 'ironpay' : ($useMisticPay ? 'misticpay' : '')));
     } else {
-        // nominal1 (padrão): prefere SigiloPay → fallback BRPix → fallback IronPay
-        $activeGateway = $useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : 'ironpay');
+        $activeGateway = $useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : ($useIronPay ? 'ironpay' : ($useMisticPay ? 'misticpay' : '')));
     }
 
     write_log('info', "Nominal=$userNominal | Gateway selecionado=$activeGateway");
@@ -147,7 +178,7 @@ try {
         ];
 
         write_log('info', "IronPay Request: amount=$amount | externalId=$externalId");
-        $ipResult = IronPayService::createCharge($amount, $externalId, $customerData, 'Pagamento LunarPay');
+        $ipResult = IronPayService::createCharge($amount, $externalId, $customerData, 'Pagamento DiretoPay');
         write_log('info', "IronPay Response: HTTP={$ipResult['http_code']} | " . substr($ipResult['raw'] ?: '(empty)', 0, 500));
 
         if ($ipResult['curl_error']) {
@@ -172,8 +203,12 @@ try {
             $platformFee = $amount * ($user['commission_rate'] / 100);
             $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
 
-            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança LunarPay', $externalId, 'pix', $utmParams);
+            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança DiretoPay', $externalId, 'pix', $utmParams);
 
+            // Retorna o PIX instantaneamente para o cliente
+            sendResponseAndContinue(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
+
+            // Executa as notificações lentas em background
             if (class_exists('PushService')) {
                 try { PushService::notifyUser($userId, '⚡ PIX Gerado!', 'Cobrança de R$ ' . number_format($amount, 2, ',', '.') . ' gerada.', 'sale_generated'); } catch (Throwable $e) {}
             }
@@ -184,8 +219,7 @@ try {
                     WhatsAppService::notifyPixGenerated($user['whatsapp'], $amount, 'Cliente API', 'Cobrança', $txId);
                 }
             } catch (Throwable $e) {}
-
-            Response::success(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
+            exit;
         } else {
             $errMsg = $ipData['message'] ?? ($ipData['error'] ?? 'Erro de comunicação com o gateway');
             write_log('error', "IronPay FALHA: HTTP={$ipResult['http_code']} | $errMsg | response={$ipResult['raw']}");
@@ -202,7 +236,7 @@ try {
         $feeFixed   = $nominalFeeFixed;
 
         write_log('info', "BRPix Request: amount=$amount | externalId=$externalId");
-        $bpResult = BRPixService::createCharge($amount, $externalId, 'Pagamento LunarPay');
+        $bpResult = BRPixService::createCharge($amount, $externalId, 'Pagamento DiretoPay');
         write_log('info', "BRPix Response: HTTP={$bpResult['http_code']} | " . substr($bpResult['raw'] ?: '(empty)', 0, 500));
 
         if ($bpResult['curl_error']) {
@@ -230,8 +264,12 @@ try {
             $platformFee = $amount * ($user['commission_rate'] / 100);
             $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
 
-            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança LunarPay', $externalId, 'pix', $utmParams);
+            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança DiretoPay', $externalId, 'pix', $utmParams);
 
+            // Retorna o PIX instantaneamente para o cliente
+            sendResponseAndContinue(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
+
+            // Executa as notificações lentas em background
             if (class_exists('PushService')) {
                 try { PushService::notifyUser($userId, '⚡ PIX Gerado!', 'Cobrança de R$ ' . number_format($amount, 2, ',', '.') . ' gerada.', 'sale_generated'); } catch (Throwable $e) {}
             }
@@ -245,8 +283,7 @@ try {
             if (class_exists('PushService')) {
                 try { PushService::notifyAdmins('⚡ Nova Cobrança #' . $txId, 'R$ ' . number_format($amount, 2, ',', '.') . ' — ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {}
             }
-
-            Response::success(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
+            exit;
         } else {
             $errMsg = $bpData['message'] ?? ($bpData['error'] ?? 'Erro de comunicação com o gateway');
             write_log('error', "BRPix FALHA: HTTP={$bpResult['http_code']} | $errMsg | response={$bpResult['raw']}");
@@ -284,9 +321,9 @@ try {
                 'x-secret-key: ' . $sigiloSecretKey,
                 'Content-Type: application/json',
                 'Accept: application/json',
-                'User-Agent: Mozilla/5.0 (compatible; LunarPay/2.0; +https://lunarpay.site)',
+                'User-Agent: Mozilla/5.0 (compatible; DiretoPay/2.0; +https://diretopay.com.br)',
             ],
-            CURLOPT_USERAGENT => 'Mozilla/5.0 (compatible; LunarPay/2.0; +https://lunarpay.site)',
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (compatible; DiretoPay/2.0; +https://diretopay.com.br)',
             CURLOPT_TIMEOUT        => 30,
             CURLOPT_SSL_VERIFYPEER => true,
         ]);
@@ -330,8 +367,12 @@ try {
             $platformFee = $amount * ($user['commission_rate'] / 100);
             $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
 
-            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança LunarPay', $externalId, 'pix', $utmParams);
+            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança DiretoPay', $externalId, 'pix', $utmParams);
 
+            // Retorna o PIX instantaneamente para o cliente
+            sendResponseAndContinue(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
+
+            // Executa as notificações lentas em background
             if (class_exists('PushService')) {
                 try { PushService::notifyUser($userId, '⚡ PIX Gerado!', 'Cobrança de R$ ' . number_format($amount, 2, ',', '.') . ' gerada.', 'sale_generated'); } catch (Throwable $e) {}
             }
@@ -345,8 +386,7 @@ try {
             if (class_exists('PushService')) {
                 try { PushService::notifyAdmins('⚡ Nova Cobrança #' . $txId, 'R$ ' . number_format($amount, 2, ',', '.') . ' — ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {}
             }
-
-            Response::success(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
+            exit;
         } else {
             $errMsg     = $spRes['message'] ?? ($spRes['errorCode'] ?? 'Erro de comunicação com o gateway');
             $errDetails = isset($spRes['details']) ? json_encode($spRes['details']) : '';
@@ -358,7 +398,87 @@ try {
         }
     }
 
-    // SigiloPay é o único gateway — se chegou aqui sem retornar, algo está errado
+    // ── GATEWAY: MisticPay ────────────────────────────────────────────
+    if ($activeGateway === 'misticpay') {
+        if (!defined('MISTICPAY_CLIENT_ID'))     define('MISTICPAY_CLIENT_ID',     $misticpayClientId);
+        if (!defined('MISTICPAY_CLIENT_SECRET')) define('MISTICPAY_CLIENT_SECRET', $misticpayClientSecret);
+
+        $feePercent = $nominalFeePercent;
+        $feeFixed   = $nominalFeeFixed;
+
+        $customerData = [
+            'name'     => !empty($user['full_name']) ? $user['full_name'] : 'Cliente',
+            'email'    => $user['email'] ?? '',
+            'phone'    => $user['phone'] ?? '',
+            'document' => (!empty($user['cpf']) && $user['cpf'] !== '000.000.000-00') ? $user['cpf'] : '00000000000',
+        ];
+
+        write_log('info', "MisticPay Request: amount=$amount | externalId=$externalId");
+        $webhookUrl = getFullUrl('misticpay_webhook.php');
+        $mpResult = MisticPayService::createCharge($amount, $externalId, $customerData, 'Pagamento DiretoPay', $webhookUrl);
+        write_log('info', "MisticPay Response: HTTP={$mpResult['http_code']} | " . substr($mpResult['raw'] ?: '(empty)', 0, 500));
+
+        if ($mpResult['curl_error']) {
+            throw new Exception('Falha na conexão com o gateway de pagamento. Tente novamente.');
+        }
+
+        $mpData = $mpResult['data'];
+        $mpCode = $mpResult['http_code'];
+
+        if (($mpCode === 200 || $mpCode === 201) && !empty($mpData['data']['transactionId'])) {
+            $pixId   = (string)$mpData['data']['transactionId'];
+            $pixCode = $mpData['data']['copyPaste'] ?? '';
+            $b64raw  = $mpData['data']['qrCodeBase64'] ?? '';
+
+            if (!empty($b64raw)) {
+                $qrImage = strpos($b64raw, 'data:') === 0 ? $b64raw : 'data:image/png;base64,' . $b64raw;
+            } elseif (!empty($pixCode)) {
+                $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($pixCode);
+            } else {
+                $qrImage = '';
+            }
+
+            $gatewayFee  = MisticPayService::calculateFee($amount, $feePercent, $feeFixed);
+            $platformFee = $amount * ($user['commission_rate'] / 100);
+            $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
+
+            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança DiretoPay', $externalId, 'pix', $utmParams);
+
+            // Retorna o PIX instantaneamente para o cliente
+            sendResponseAndContinue(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
+
+            // Executa as notificações lentas em background
+            if (class_exists('PushService')) {
+                try { PushService::notifyUser($userId, '⚡ PIX Gerado!', 'Cobrança de R$ ' . number_format($amount, 2, ',', '.') . ' gerada.', 'sale_generated'); } catch (Throwable $e) {}
+            }
+            $txId = (int)$pdo->lastInsertId();
+            try { TelegramService::notifyNewCharge($amount, $user['full_name'] ?? 'N/A', $txId); } catch (Throwable $e) {}
+            try {
+                $waClassExists = class_exists('WhatsAppService');
+                $waEnabled = $waClassExists ? WhatsAppService::isEnabled() : false;
+                $waPhone = $user['whatsapp'] ?? '';
+                write_log('info', "WA Debug MisticPay: class=$waClassExists | enabled=$waEnabled | phone=$waPhone | txId=$txId");
+                if ($waClassExists && $waEnabled && !empty($waPhone)) {
+                    $waResult = WhatsAppService::notifyPixGenerated($waPhone, $amount, 'Cliente API', 'Cobrança', $txId);
+                    write_log('info', "WA notifyPixGenerated resultado: " . ($waResult ? 'SUCESSO' : 'FALHOU'));
+                } else {
+                    write_log('warning', "WA nao enviado: class=$waClassExists | enabled=$waEnabled | phone=" . ($waPhone ?: 'VAZIO'));
+                }
+            } catch (Throwable $e) {
+                write_log('error', "WA Excecao ao enviar PIX gerado: " . $e->getMessage());
+            }
+            if (class_exists('PushService')) {
+                try { PushService::notifyAdmins('⚡ Nova Cobrança #' . $txId, 'R$ ' . number_format($amount, 2, ',', '.') . ' — ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {}
+            }
+            exit;
+        } else {
+            $errMsg = $mpData['message'] ?? ($mpData['error'] ?? 'Erro de comunicação com o gateway');
+            write_log('error', "MisticPay FALHA: HTTP={$mpResult['http_code']} | $errMsg | response={$mpResult['raw']}");
+            throw new Exception('Erro ao processar pagamento: ' . $errMsg);
+        }
+    }
+
+    // Se chegou aqui sem retornar, algo está errado no processamento do gateway
     throw new Exception('Erro inesperado no processamento do gateway.');
 
 } catch (Throwable $e) {

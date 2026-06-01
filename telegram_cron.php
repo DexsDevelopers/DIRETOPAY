@@ -15,9 +15,9 @@ require_once __DIR__ . '/includes/TelegramService.php';
 try { require_once __DIR__ . '/includes/WhatsAppService.php'; } catch (Throwable $e) {}
 
 // ── Autenticação ──────────────────────────────────────────────────────────────
-$expectedSecret = defined('TELEGRAM_WEBHOOK_SECRET') ? TELEGRAM_WEBHOOK_SECRET : '';
+$expectedSecret = defined('TELEGRAM_WEBHOOK_SECRET') ? TELEGRAM_WEBHOOK_SECRET : (defined('TELEGRAM_USER_BOT_SECRET') ? TELEGRAM_USER_BOT_SECRET : '');
 $incomingSecret = $_GET['secret'] ?? '';
-if ($expectedSecret && $incomingSecret !== $expectedSecret) {
+if (empty($expectedSecret) || $incomingSecret !== $expectedSecret) {
     http_response_code(403); exit('Forbidden');
 }
 
@@ -35,7 +35,6 @@ $usersStmt = $pdo->query("
             OR (whatsapp IS NOT NULL AND whatsapp != '')
           )
       AND status = 'approved'
-      AND is_admin = 0
       AND is_demo = 0
 ");
 $users = $usersStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -80,7 +79,7 @@ function getMorningPhrase(): string {
         "☀️ <b>Bom dia!</b> Seu concorrente ainda está dormindo. Você já está aqui. Diferença de mentalidade. 🧠",
         "🐓 <b>Bom dia!</b> O galo cantou, o café esfriou, mas o PIX não espera ninguém. Bora! ☕�",
         "🌅 <b>Bom dia!</b> Hoje pode ser o dia que você vai contar pra família no jantar. Ou não. Depende de você. 😂",
-        "� <b>Bom dia!</b> O universo não garante nada, mas a LunarPay garante o PIX instantâneo. Foca no que importa! �",
+        "� <b>Bom dia!</b> O universo não garante nada, mas a DiretoPay garante o PIX instantâneo. Foca no que importa! �",
         "🧠 <b>Bom dia!</b> Estatística: 100% das pessoas que desistiram cedo não venderam naquele dia. Não seja estatística! �",
         "☀️ <b>Bom dia!</b> Você acordou. O mercado também. Quem chega primeiro, fica com a venda. Bora! 🎯",
         "🌞 <b>Bom dia!</b> Hoje o sol nasceu. Suas vendas também podem nascer — basta divulgar! �",
@@ -187,18 +186,16 @@ if ($mode === 'morning') {
         $phrase = getMorningPhrase();
         $tip    = getRandomMotivationalTip();
         $msg    = $phrase . $div . "\n\n" . $tip . "\n\n"
-                . "🌙 <i>LunarPay • " . date('H:i') . "</i>";
+                . "🌙 <i>DiretoPay • " . date('H:i') . "</i>";
         try {
             $sentTg = false;
-            $sentWa = false;
+            // WhatsApp desativado para mensagens em massa (Bom dia/Boa tarde/etc.)
+            // Enviar para múltiplos números simultâneos pode causar banimento da conta.
+            // Use apenas o Telegram para esse tipo de disparo.
             if (!empty($user['telegram_chat_id'])) {
                 $sentTg = TelegramService::sendToUser($user['telegram_chat_id'], $msg);
             }
-            if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
-                $waMsg = WhatsAppService::formatHtmlToWhatsApp($msg);
-                $sentWa = WhatsAppService::send($user['whatsapp'], $waMsg);
-            }
-            if ($sentTg || $sentWa) $sent++;
+            if ($sentTg) $sent++;
             else $skip++;
 
             $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, created_at) VALUES (?,?,?,?,NOW())")
@@ -220,19 +217,15 @@ elseif ($mode === 'afternoon') {
             : "\n\n📊 <i>Nenhuma venda ainda hoje. A tarde é sua!</i>";
         $msg = $phrase . $statsLine . $div . "\n\n"
              . getRandomMotivationalTip() . "\n\n"
-             . "🌙 <i>LunarPay • " . date('H:i') . "</i>";
+             . "🌙 <i>DiretoPay • " . date('H:i') . "</i>";
         $siteMsg = $sales > 0 ? "{$sales} venda(s) até agora — " . fBRL((float)$stats['net_volume']) . " no bolso! Bora mais! 🔥" : "Nenhuma venda ainda. A tarde é onde os fortes viram o jogo! 🎯";
         try {
             $sentTg = false;
-            $sentWa = false;
+            // WhatsApp desativado para mensagens em massa (Bom dia/Boa tarde/etc.)
             if (!empty($user['telegram_chat_id'])) {
                 $sentTg = TelegramService::sendToUser($user['telegram_chat_id'], $msg);
             }
-            if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
-                $waMsg = WhatsAppService::formatHtmlToWhatsApp($msg);
-                $sentWa = WhatsAppService::send($user['whatsapp'], $waMsg);
-            }
-            if ($sentTg || $sentWa) $sent++;
+            if ($sentTg) $sent++;
             else $skip++;
 
             $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, created_at) VALUES (?,?,?,?,NOW())")
@@ -255,19 +248,15 @@ elseif ($mode === 'evening') {
             : '';
         $msg = $phrase . $statsLine . "\n\n"
              . getRandomMotivationalTip() . $div . "\n\n"
-             . "🌙 <i>LunarPay • " . date('H:i') . "</i>";
+             . "🌙 <i>DiretoPay • " . date('H:i') . "</i>";
         $siteMsg = $sales > 0 ? "{$sales} venda(s) hoje — " . fBRL((float)$stats['net_volume']) . " líquido. Dorme com esse sorriso! 😁" : "Hoje foi tranquilo. Amanhã você muda o placar! 💪";
         try {
             $sentTg = false;
-            $sentWa = false;
+            // WhatsApp desativado para mensagens em massa (Bom dia/Boa tarde/etc.)
             if (!empty($user['telegram_chat_id'])) {
                 $sentTg = TelegramService::sendToUser($user['telegram_chat_id'], $msg);
             }
-            if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
-                $waMsg = WhatsAppService::formatHtmlToWhatsApp($msg);
-                $sentWa = WhatsAppService::send($user['whatsapp'], $waMsg);
-            }
-            if ($sentTg || $sentWa) $sent++;
+            if ($sentTg) $sent++;
             else $skip++;
 
             $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, created_at) VALUES (?,?,?,?,NOW())")
@@ -318,19 +307,15 @@ elseif ($mode === 'daily_summary') {
              . "\n<b>🏦 SALDO DISPONÍVEL:</b> " . fBRL($balance) . "\n\n"
              . $summary . $div . "\n\n"
              . getRandomMotivationalTip() . "\n\n"
-             . "🌙 <i>LunarPay • Resumo automático • " . date('H:i') . "</i>";
+             . "🌙 <i>DiretoPay • Resumo automático • " . date('H:i') . "</i>";
 
         try {
             $sentTg = false;
-            $sentWa = false;
+            // WhatsApp desativado para mensagens em massa (resumo diário)
             if (!empty($user['telegram_chat_id'])) {
                 $sentTg = TelegramService::sendToUser($user['telegram_chat_id'], $msg);
             }
-            if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
-                $waMsg = WhatsAppService::formatHtmlToWhatsApp($msg);
-                $sentWa = WhatsAppService::send($user['whatsapp'], $waMsg);
-            }
-            if ($sentTg || $sentWa) $sent++;
+            if ($sentTg) $sent++;
             else $skip++;
 
             usleep(150000);

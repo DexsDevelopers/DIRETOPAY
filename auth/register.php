@@ -12,8 +12,12 @@ if ($isJsonRequest) {
     header('Content-Type: application/json');
 }
 
-if (isLoggedIn() && $_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: ../dashboard.php");
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    if (isLoggedIn()) {
+        header("Location: /dashboard");
+    } else {
+        header("Location: /register");
+    }
     exit;
 }
 
@@ -47,20 +51,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header("Location: register.php?error=rate_limit"); exit;
     }
 
+    // Se for uma requisição JSON (comum em SPAs/APIs), decodificar o body bruto se o $_POST estiver vazio
+    if (empty($_POST) && $isJsonRequest) {
+        $rawInput = file_get_contents('php://input');
+        $jsonData = json_decode($rawInput, true);
+        if ($jsonData) {
+            $_POST['email'] = $jsonData['email'] ?? '';
+            $_POST['password'] = $jsonData['password'] ?? '';
+            $_POST['full_name'] = $jsonData['full_name'] ?? '';
+            $_POST['pix_key'] = $jsonData['pix_key'] ?? '';
+            $_POST['preferred_nominal'] = $jsonData['preferred_nominal'] ?? 'nominal1';
+            $_POST['withdraw_preference'] = $jsonData['withdraw_preference'] ?? 'accumulate';
+        }
+    }
+
     $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'] ?? '';
     $full_name = strip_tags(trim($_POST['full_name'] ?? ''));
     $pix_key = strip_tags(trim($_POST['pix_key'] ?? ''));
 
-    // ── Validação de nome contra injeção ─────────────────────────────
-    $injectionPatterns = ["'", '"', '--', ';', 'SLEEP', 'SELECT', 'DROP', 'INSERT', 'UPDATE', 'DELETE', 'UNION', 'EXEC', '<script', '0x'];
+    // ── Validação rigorosa contra injeção e contas de pentest ──────────
+    $injectionPatterns = ["'", '"', '--', ';', 'SLEEP', 'SELECT', 'DROP', 'INSERT', 'UPDATE', 'DELETE', 'UNION', 'EXEC', '<script', '0x', '#'];
     foreach ($injectionPatterns as $pattern) {
-        if (stripos($full_name, $pattern) !== false) {
-            write_log('SECURITY', 'Tentativa de injection no nome', ['ip' => $clientIp, 'name' => $full_name]);
-            if ($isJsonRequest) { echo json_encode(['success' => false, 'error' => 'Nome inválido. Use apenas letras e espaços.']); exit; }
+        if (stripos($full_name, $pattern) !== false || stripos($email, $pattern) !== false) {
+            write_log('SECURITY', 'Tentativa de injection no cadastro', ['ip' => $clientIp, 'name' => $full_name, 'email' => $email]);
+            if ($isJsonRequest) { echo json_encode(['success' => false, 'error' => 'Cadastro rejeitado por motivos de segurança.']); exit; }
             header("Location: register.php?error=invalid_name"); exit;
         }
     }
+
+    $pentestKeywords = ['pentest', 'bugbounty', 'sqltest', 'bbadmin', 'bbtest', 'admintest'];
+    foreach ($pentestKeywords as $keyword) {
+        if (stripos($full_name, $keyword) !== false || stripos($email, $keyword) !== false) {
+            write_log('SECURITY', 'Cadastro bloqueado: palavra reservada detectada', ['ip' => $clientIp, 'name' => $full_name, 'email' => $email]);
+            if ($isJsonRequest) { echo json_encode(['success' => false, 'error' => 'Cadastro não permitido.']); exit; }
+            header("Location: register.php?error=invalid_name"); exit;
+        }
+    }
+
     if (!preg_match('/^[\p{L}\s\.\-]{2,80}$/u', $full_name)) {
         if ($isJsonRequest) { echo json_encode(['success' => false, 'error' => 'Nome deve conter apenas letras (2–80 caracteres).']); exit; }
         header("Location: register.php?error=invalid_name"); exit;
@@ -127,9 +155,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $defTaxStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'default_user_tax'");
     $defaultTax = (float)($defTaxStmt->fetchColumn() ?: '5.0');
 
+    $preferred_nominal = strip_tags(trim($_POST['preferred_nominal'] ?? 'nominal1'));
+    if (!in_array($preferred_nominal, ['nominal1', 'nominal2', 'nominal3'])) {
+        $preferred_nominal = 'nominal1';
+    }
+
+    $withdraw_preference = strip_tags(trim($_POST['withdraw_preference'] ?? 'accumulate'));
+    if (!in_array($withdraw_preference, ['accumulate', 'auto_direct'])) {
+        $withdraw_preference = 'accumulate';
+    }
+
+    // Se nominal3, o saque é automático por padrão
+    if ($preferred_nominal === 'nominal3') {
+        $withdraw_preference = 'auto_direct';
+    }
+
     try {
-        $stmt = $pdo->prepare("INSERT INTO users (email, password, full_name, pix_key, status, affiliate_id, referral_token, commission_rate, registration_ip, preferred_nominal) VALUES (?, ?, ?, ?, 'approved', ?, ?, ?, ?, 'nominal1')");
-        $stmt->execute([$email, $hash, $full_name, $pix_key, $affiliateId, bin2hex(random_bytes(8)), $defaultTax, $clientIp]);
+        $stmt = $pdo->prepare("INSERT INTO users (email, password, full_name, pix_key, status, affiliate_id, referral_token, commission_rate, registration_ip, preferred_nominal, withdraw_preference) VALUES (?, ?, ?, ?, 'approved', ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$email, $hash, $full_name, $pix_key, $affiliateId, bin2hex(random_bytes(8)), $defaultTax, $clientIp, $preferred_nominal, $withdraw_preference]);
         $newUserId = $pdo->lastInsertId();
 
         // Verificar se o hash foi salvo corretamente (detectar truncamento)
@@ -168,6 +211,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Notificar Admin via Telegram
         try { TelegramService::notifyNewUser($full_name, $email, $_SERVER['REMOTE_ADDR'] ?? ''); } catch (Throwable $e) {}
 
+        // Notificar Admin via WhatsApp
+        try {
+            require_once '../includes/WhatsAppService.php';
+            WhatsAppService::notifyNewUser($full_name, $email, $_SERVER['REMOTE_ADDR'] ?? '');
+        } catch (Throwable $e) {}
+
         // Notificar Admin (Push + In-App)
         if (class_exists('PushService')) {
             try { PushService::notifyAdmins('👤 Novo Cadastro', $full_name . ' — ' . $email, 'info'); } catch (Throwable $e) {}
@@ -197,7 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <link rel="icon" type="image/png" href="../logo_lunarpay.png">
+    <link rel="icon" type="image/png" href="../logo_diretopay.png">
     <title>Ghost Pix - Cadastro</title>
     <link rel="stylesheet" href="../style.css?v=125.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

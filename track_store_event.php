@@ -3,6 +3,36 @@ require_once 'includes/db.php';
 require_once 'includes/TelegramService.php';
 try { require_once 'includes/WhatsAppService.php'; } catch (Throwable $e) {}
 
+function is_bot() {
+    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    if (empty($userAgent)) {
+        return true;
+    }
+    $bots = [
+        'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider', 'yandexbot',
+        'sogou', 'exabot', 'facebot', 'facebookexternalhit', 'ia_archiver',
+        'twitterbot', 'telegrambot', 'whatsapp', 'linkedinbot', 'embedly',
+        'quora link preview', 'showyoubot', 'outbrain', 'pinterest',
+        'developers.google.com', 'slackbot', 'vkshare', 'redditbot', 'applebot', 
+        'semrushbot', 'dotbot', 'screaming frog', 'ahrefsbot', 'mj12bot', 
+        'curl', 'wget', 'python', 'headless', 'lighthouse', 'guzzle', 
+        'insomnia', 'postman', 'node-fetch', 'axios'
+    ];
+    $uaLower = strtolower($userAgent);
+    foreach ($bots as $bot) {
+        if (strpos($uaLower, $bot) !== false) {
+            return true;
+        }
+    }
+    return false;
+}
+
+if (is_bot()) {
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'bot' => true]);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     exit;
@@ -66,7 +96,7 @@ try {
                  . "😕 Um visitante iniciou mas não finalizou o pagamento.\n"
                  . ($extra ? "🛍 <b>Produto:</b> " . htmlspecialchars($extra) . "\n\n" : "\n")
                  . "💡 <i>Considere otimizar sua página de vendas!</i>"
-                 . "\n\n🌙 <i>LunarPay • " . date('H:i') . "</i>";
+                 . "\n\n🌙 <i>DiretoPay • " . date('H:i') . "</i>";
             try { TelegramService::sendToUser($tgChatId, $msg); } catch (Throwable $e) {}
         }
 
@@ -77,7 +107,7 @@ try {
                      . "😕 Um visitante iniciou mas não finalizou o pagamento.\n"
                      . ($extra ? "🛍 *Produto:* " . $extra . "\n\n" : "\n")
                      . "💡 _Considere otimizar sua página de vendas!_"
-                     . "\n\n🌙 _LunarPay • " . date('H:i') . "_";
+                     . "\n\n🌙 _DiretoPay • " . date('H:i') . "_";
                 WhatsAppService::send($seller['whatsapp'], $msg);
             }
         } catch (Throwable $e) {}

@@ -26,7 +26,7 @@ define('TELEGRAM_USER_BOT_SECRET', '');   // Secret para webhook (qualquer strin
 define('TELEGRAM_USER_BOT_USERNAME', ''); // Username do bot (sem @)
 
 // 7K Community Bot — DM automática de venda
-define('SEVEN_K_WEBHOOK_SECRET', 'lunarpay_7kchat_webhook_2026'); // Deve ser igual ao LUNAR_WEBHOOK_SECRET no .env do 7kchat.site
+define('SEVEN_K_WEBHOOK_SECRET', 'diretopay_7kchat_webhook_2026'); // Deve ser igual ao LUNAR_WEBHOOK_SECRET no .env do 7kchat.site
 
 // Gmail SMTP Configuration
 define('MAIL_HOST', 'smtp.gmail.com');

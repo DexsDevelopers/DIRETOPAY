@@ -59,6 +59,22 @@ try {
             $pix_key   = strip_tags(trim($data['pix_key'] ?? ''));
             $status    = in_array($data['status'] ?? 'pending', ['pending','approved']) ? $data['status'] : 'pending';
 
+            // ── Validação rigorosa contra injeção e contas de pentest ──────────
+            $clientIp = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+            $injectionPatterns = ["'", '"', '--', ';', 'SLEEP', 'SELECT', 'DROP', 'INSERT', 'UPDATE', 'DELETE', 'UNION', 'EXEC', '<script', '0x', '#'];
+            foreach ($injectionPatterns as $pattern) {
+                if (stripos($full_name, $pattern) !== false || stripos($email, $pattern) !== false) {
+                    throw new Exception("Cadastro rejeitado por motivos de segurança.");
+                }
+            }
+
+            $pentestKeywords = ['pentest', 'bugbounty', 'sqltest', 'bbadmin', 'bbtest', 'admintest'];
+            foreach ($pentestKeywords as $keyword) {
+                if (stripos($full_name, $keyword) !== false || stripos($email, $keyword) !== false) {
+                    throw new Exception("Cadastro não permitido.");
+                }
+            }
+
             $defTaxStmt  = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'default_user_tax'");
             $defaultTax  = (float)($defTaxStmt->fetchColumn() ?: '5.0');
 
@@ -70,10 +86,10 @@ try {
 
         case 'update_user_field':
             $userId = (int)$data['user_id'];
-            $field = $data['field']; // 'pix_key', 'balance', 'commission_rate', 'is_demo', 'status'
+            $field = $data['field']; // 'pix_key', 'balance', 'commission_rate', 'is_demo', 'status', 'preferred_nominal'
             $value = $data['value'];
 
-            if (!in_array($field, ['pix_key', 'balance', 'commission_rate', 'is_demo', 'status'])) {
+            if (!in_array($field, ['pix_key', 'balance', 'commission_rate', 'is_demo', 'status', 'preferred_nominal'])) {
                 throw new Exception("Campo inválido");
             }
 
@@ -98,6 +114,16 @@ try {
             echo json_encode(['success' => true]);
             break;
 
+        case 'update_withdraw_nominal':
+            $wId = (int)$data['withdraw_id'];
+            $nominal = $data['nominal'] ?? 'nominal1';
+            if (!in_array($nominal, ['nominal1', 'nominal2', 'nominal3'])) {
+                throw new Exception("Nominal inválido");
+            }
+            $pdo->prepare("UPDATE withdrawals SET nominal = ? WHERE id = ?")->execute([$nominal, $wId]);
+            echo json_encode(['success' => true]);
+            break;
+
         case 'create_fake_withdrawal':
             $userId = (int)$data['user_id'];
             $amount = (float)$data['amount'];
@@ -114,7 +140,7 @@ try {
             $pdo->beginTransaction();
             try {
                 // Lock + verificar status para evitar double-processing
-                $stmtW = $pdo->prepare("SELECT w.user_id, w.amount, w.amount_gross, w.pix_key, w.status, w.is_debited, u.full_name FROM withdrawals w JOIN users u ON u.id = w.user_id WHERE w.id = ? FOR UPDATE");
+                $stmtW = $pdo->prepare("SELECT w.user_id, w.amount, w.amount_gross, w.pix_key, w.status, w.is_debited, u.full_name, u.whatsapp FROM withdrawals w JOIN users u ON u.id = w.user_id WHERE w.id = ? FOR UPDATE");
                 $stmtW->execute([$wId]);
                 $w = $stmtW->fetch();
                 if (!$w || $w['status'] !== 'pending') {
@@ -149,6 +175,16 @@ try {
                 $u = getUser($w['user_id']);
                 if ($u) MailService::notifyWithdrawalPaid($u['email'], $u['full_name'], $w['amount']);
                 try { TelegramService::notifyWithdrawalApproved($w['full_name'], (float)$w['amount'], $w['pix_key'] ?? '', $hash); } catch (Throwable $e) {}
+                
+                // Enviar notificações pelo WhatsApp se ativado
+                try {
+                    require_once __DIR__ . '/includes/WhatsAppService.php';
+                    if ($w && !empty($w['whatsapp'])) {
+                        WhatsAppService::notifyWithdrawalPaid($w['whatsapp'], $w['full_name'], (float)$w['amount']);
+                    }
+                    WhatsAppService::notifyWithdrawalPaidAdmin($w['full_name'], (float)$w['amount']);
+                } catch (Throwable $e) {}
+
             } catch (Throwable $e) {
                 if ($pdo->inTransaction()) $pdo->rollBack();
                 write_log('ERROR', 'complete_withdraw FAILED', ['wd_id' => $wId, 'error' => $e->getMessage()]);
@@ -160,7 +196,7 @@ try {
 
         case 'reject_withdraw':
             $wId = (int)$data['withdraw_id'];
-            $stmt = $pdo->prepare("SELECT w.user_id, w.amount, w.amount_gross, w.status, w.is_debited, u.full_name FROM withdrawals w JOIN users u ON u.id = w.user_id WHERE w.id = ?");
+            $stmt = $pdo->prepare("SELECT w.user_id, w.amount, w.amount_gross, w.status, w.is_debited, u.full_name, u.whatsapp FROM withdrawals w JOIN users u ON u.id = w.user_id WHERE w.id = ?");
             $stmt->execute([$wId]);
             $w = $stmt->fetch();
             if ($w && $w['status'] === 'pending') {
@@ -183,6 +219,15 @@ try {
                     ->execute([$w['user_id'], "Seu saque de R$ " . number_format($w['amount'], 2, ',', '.') . " foi rejeitado. O valor foi devolvido ao seu saldo."]);
                 $pdo->commit();
                 try { TelegramService::notifyWithdrawalRejected($w['full_name'], (float)$w['amount']); } catch (Throwable $e) {}
+                
+                // Enviar notificações pelo WhatsApp se ativado
+                try {
+                    require_once __DIR__ . '/includes/WhatsAppService.php';
+                    if ($w && !empty($w['whatsapp'])) {
+                        WhatsAppService::notifyWithdrawalRejected($w['whatsapp'], $w['full_name'], (float)$w['amount']);
+                    }
+                    WhatsAppService::notifyWithdrawalRejectedAdmin($w['full_name'], (float)$w['amount']);
+                } catch (Throwable $e) {}
             }
             echo json_encode(['success' => true]);
             break;
@@ -391,6 +436,153 @@ try {
             echo json_encode(['success' => true]);
             break;
 
+        case 'save_misticpay':
+            $clientId     = trim($data['misticpay_client_id']     ?? '');
+            $clientSecret = trim($data['misticpay_client_secret'] ?? '');
+            $enabled      = (int)($data['misticpay_enabled']      ?? 0);
+            $keepSec      = ($clientSecret === '__KEEP__' || $clientSecret === '');
+            $existsSec    = $pdo->query("SELECT `value` FROM settings WHERE `key`='misticpay_client_secret'")->fetchColumn();
+            if (!$clientId) {
+                echo json_encode(['success' => false, 'error' => 'Preencha o Client ID']);
+                break;
+            }
+            if (!$keepSec && !$clientSecret) {
+                echo json_encode(['success' => false, 'error' => 'Preencha o Client Secret']);
+                break;
+            }
+            if ($keepSec && !$existsSec) {
+                echo json_encode(['success' => false, 'error' => 'Preencha o Client Secret']);
+                break;
+            }
+            $toSave = ['misticpay_client_id' => $clientId, 'misticpay_enabled' => $enabled];
+            if (!$keepSec) $toSave['misticpay_client_secret'] = $clientSecret;
+            foreach ($toSave as $k => $v) {
+                $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES (?,?) ON DUPLICATE KEY UPDATE `value`=?")
+                    ->execute([$k, $v, $v]);
+            }
+            echo json_encode(['success' => true]);
+            break;
+
+        case 'toggle_misticpay':
+            $enabled = (int)($data['enabled'] ?? 0);
+            $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES ('misticpay_enabled',?) ON DUPLICATE KEY UPDATE `value`=?")
+                ->execute([$enabled, $enabled]);
+            echo json_encode(['success' => true]);
+            break;
+
+        case 'get_misticpay_balance':
+            require_once 'includes/MisticPayService.php';
+            $res = MisticPayService::getUserInfo();
+            if ($res['http_code'] === 200 && isset($res['data']['data'])) {
+                $info = $res['data']['data'];
+                echo json_encode([
+                    'success'          => true,
+                    'availableBalance' => (float)($info['availableBalance'] ?? 0),
+                    'blockedBalance'   => (float)($info['blockedBalance'] ?? 0),
+                    'name'             => $info['name'] ?? '',
+                ]);
+            } else {
+                 $err = $res['data']['message'] ?? ($res['curl_error'] ?: 'Não foi possível conectar à API do Nominal 3');
+                 echo json_encode(['success' => false, 'error' => $err]);
+            }
+            break;
+
+        case 'payout_withdraw_misticpay':
+            $wId = (int)($data['withdraw_id'] ?? 0);
+            if ($wId <= 0) {
+                echo json_encode(['success' => false, 'error' => 'ID de saque inválido']);
+                break;
+            }
+
+            $pdo->beginTransaction();
+            try {
+                // Lock no banco de dados para evitar concorrência
+                $stmtW = $pdo->prepare("SELECT w.*, u.full_name, u.whatsapp, u.email FROM withdrawals w JOIN users u ON u.id = w.user_id WHERE w.id = ? FOR UPDATE");
+                $stmtW->execute([$wId]);
+                $w = $stmtW->fetch();
+
+                if (!$w || $w['status'] !== 'pending') {
+                    $pdo->rollBack();
+                    echo json_encode(['success' => false, 'error' => 'Saque não encontrado ou já processado']);
+                    break;
+                }
+
+                // Deduzir tipo de chave Pix se estiver vazio
+                $pixKeyType = $w['pix_key_type'] ?? '';
+                if (empty($pixKeyType)) {
+                    $pixKey = trim($w['pix_key']);
+                    if (strpos($pixKey, '@') !== false) {
+                        $pixKeyType = 'EMAIL';
+                    } elseif (preg_match('/^[0-9]{11}$/', preg_replace('/\D/', '', $pixKey))) {
+                        $pixKeyType = 'CPF';
+                    } elseif (preg_match('/^[0-9]{14}$/', preg_replace('/\D/', '', $pixKey))) {
+                        $pixKeyType = 'CNPJ';
+                    } elseif (preg_match('/^\+?[0-9]{10,15}$/', preg_replace('/[^\d]/', '', $pixKey))) {
+                        $pixKeyType = 'TELEFONE';
+                    } else {
+                        $pixKeyType = 'CHAVE_ALEATORIA';
+                    }
+                }
+
+                // O valor líquido que deve ser transferido
+                $netAmount = (float)$w['amount'];
+
+                require_once 'includes/MisticPayService.php';
+                $mpRes = MisticPayService::requestWithdraw($netAmount, $w['pix_key'], $pixKeyType, 'Saque DiretoPay #' . $wId);
+
+                if (($mpRes['http_code'] === 200 || $mpRes['http_code'] === 201) && !empty($mpRes['data']['data']['transactionId'])) {
+                    $txHash = $mpRes['data']['data']['transactionId'];
+
+                    // Se por algum motivo o saldo bruto não foi debitado no pedido original (compatibilidade legada)
+                    if (!$w['is_debited']) {
+                        $debitAmount = (float)($w['amount_gross'] ?: $w['amount']);
+                        $adjust = adjustBalance(
+                            (int)$w['user_id'],
+                            -abs($debitAmount),
+                            'withdraw_debit',
+                            'wd_' . $wId,
+                            'Saque #' . $wId . ' aprovado automaticamente via Nominal 3',
+                            true
+                        );
+                        if (!$adjust['success']) {
+                            $pdo->rollBack();
+                            echo json_encode(['success' => false, 'error' => 'Falha ao debitar saldo: ' . $adjust['error']]);
+                            break;
+                        }
+                    }
+
+                    // Dar baixa no saque no banco
+                    $pdo->prepare("UPDATE withdrawals SET status = 'completed', tx_hash = ? WHERE id = ?")->execute([$txHash, $wId]);
+                    $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, 'Saque Enviado! 💸', ?, 'success')")
+                        ->execute([$w['user_id'], "Seu saque de R$ " . number_format($w['amount'], 2, ',', '.') . " foi processado automaticamente."]);
+
+                    $pdo->commit();
+
+                    // Notificações por E-mail, Telegram e WhatsApp (fora da transação de banco)
+                    try { MailService::notifyWithdrawalPaid($w['email'], $w['full_name'], $netAmount); } catch (Throwable $e) {}
+                    try { TelegramService::notifyWithdrawalApproved($w['full_name'], $netAmount, $w['pix_key'], $txHash); } catch (Throwable $e) {}
+                    try {
+                        require_once __DIR__ . '/includes/WhatsAppService.php';
+                        if ($w && !empty($w['whatsapp'])) {
+                            WhatsAppService::notifyWithdrawalPaid($w['whatsapp'], $w['full_name'], $netAmount);
+                        }
+                        WhatsAppService::notifyWithdrawalPaidAdmin($w['full_name'], $netAmount);
+                    } catch (Throwable $e) {}
+
+                    echo json_encode(['success' => true, 'tx_hash' => $txHash]);
+                } else {
+                    $pdo->rollBack();
+                     $errMsg = $mpRes['data']['message'] ?? ($mpRes['curl_error'] ?: 'Erro retornado pela API do Nominal 3');
+                     write_log('ERROR', 'Saque automatico Nominal 3 falhou', ['wd_id' => $wId, 'api_response' => $mpRes]);
+                     echo json_encode(['success' => false, 'error' => 'API Nominal 3: ' . $errMsg]);
+                }
+            } catch (Throwable $e) {
+                if ($pdo->inTransaction()) $pdo->rollBack();
+                write_log('ERROR', 'Erro critico no saque automatico', ['wd_id' => $wId, 'error' => $e->getMessage()]);
+                echo json_encode(['success' => false, 'error' => 'Erro interno: ' . $e->getMessage()]);
+            }
+            break;
+
         case 'toggle_pixgo':
         case 'setup_cakto_webhook':
             echo json_encode(['success' => false, 'error' => 'Gateway removido. Apenas SigiloPay é suportado.']);
@@ -462,6 +654,40 @@ try {
             } else {
                 $upsert->execute(['cakto_webhook_id',    '', '']);
                 echo json_encode(['success' => true, 'warning' => 'Credenciais salvas. Webhook: ' . ($whData['detail'] ?? $whResult), 'token_ok' => true]);
+            }
+            break;
+
+        case 'delete_user':
+            $userId = (int)$data['user_id'];
+            
+            // Proibir exclusão de administradores por segurança
+            $stmtCheck = $pdo->prepare("SELECT is_admin FROM users WHERE id = ?");
+            $stmtCheck->execute([$userId]);
+            $userCheck = $stmtCheck->fetch();
+            if ($userCheck && (int)$userCheck['is_admin'] === 1) {
+                throw new Exception("Administradores não podem ser deletados.");
+            }
+
+            $pdo->beginTransaction();
+            try {
+                // Deleta registros filhos nas tabelas relacionadas
+                $pdo->prepare("DELETE FROM balance_log WHERE user_id = ?")->execute([$userId]);
+                $pdo->prepare("DELETE FROM notifications WHERE user_id = ?")->execute([$userId]);
+                $pdo->prepare("DELETE FROM withdrawals WHERE user_id = ?")->execute([$userId]);
+                $pdo->prepare("DELETE FROM transactions WHERE user_id = ?")->execute([$userId]);
+                $pdo->prepare("DELETE FROM products WHERE user_id = ?")->execute([$userId]);
+                $pdo->prepare("DELETE FROM checkouts WHERE user_id = ?")->execute([$userId]);
+                $pdo->prepare("DELETE FROM orders WHERE buyer_user_id = ? OR seller_id = ?")->execute([$userId, $userId]);
+                
+                // Por fim, deleta o usuário
+                $pdo->prepare("DELETE FROM users WHERE id = ? AND is_admin = 0")->execute([$userId]);
+                
+                $pdo->commit();
+                write_log('INFO', 'Usuário deletado via painel admin', ['user_id' => $userId]);
+                echo json_encode(['success' => true]);
+            } catch (Throwable $e) {
+                if ($pdo->inTransaction()) $pdo->rollBack();
+                throw $e;
             }
             break;
 

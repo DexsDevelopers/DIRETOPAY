@@ -56,7 +56,7 @@ foreach ($rows as $t) {
         'badge'          => $badgeClass,
         'customer_name'  => (function($n) {
             $legacy = ['Recarga Ghost Pix', 'Ghost Pix', 'Recarga GhostPay', 'GhostPay'];
-            return in_array($n, $legacy) ? 'Cobrança LunarPay' : ($n ?: 'Sem nome');
+            return in_array($n, $legacy) ? 'Cobrança DiretoPay' : ($n ?: 'Sem nome');
         })($t['customer_name'] ?? ''),
         'qr_image'       => $t['qr_image'] ?? '',
         'pix_code'       => $t['pix_code'] ?? '',

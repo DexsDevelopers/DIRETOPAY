@@ -15,7 +15,7 @@ try { $pdo->exec("ALTER TABLE users ADD COLUMN crypto_address VARCHAR(255) DEFAU
 try { $pdo->exec("ALTER TABLE users ADD COLUMN crypto_network VARCHAR(20) DEFAULT ''"); } catch (PDOException $e) {}
 try { $pdo->exec("ALTER TABLE users ADD COLUMN whatsapp VARCHAR(20) DEFAULT NULL"); } catch (PDOException $e) {}
 
-$stmt = $pdo->prepare("SELECT balance, commission_rate, pix_key, status, is_demo, is_admin, full_name, email, referral_token, withdraw_method, crypto_address, crypto_network, api_key, whatsapp, utmify_api_token, seven_k_id, preferred_nominal FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT balance, commission_rate, pix_key, status, is_demo, is_admin, full_name, email, referral_token, withdraw_method, crypto_address, crypto_network, api_key, whatsapp, utmify_api_token, seven_k_id, preferred_nominal, withdraw_preference FROM users WHERE id = ?");
 $stmt->execute([$userId]);
 $user = $stmt->fetch();
 
@@ -208,6 +208,7 @@ echo json_encode([
         'seven_k_id' => $user['seven_k_id'] ?? null,
         'commission_rate' => $user['commission_rate'] ?? null,
         'preferred_nominal' => $user['preferred_nominal'] ?? 'nominal1',
+        'withdraw_preference' => $user['withdraw_preference'] ?? 'accumulate',
         'is_admin' => (bool)$user['is_admin'],
         'avatar_url' => (function() use ($userId) {
             $dir = __DIR__ . '/uploads/avatars/';

@@ -21,7 +21,7 @@ $referrals = $stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="theme-color" content="#000000">
-    <link rel="icon" type="image/png" href="logo_lunarpay.png">
+    <link rel="icon" type="image/png" href="logo_diretopay.png">
     <title>Ghost Pix - Afiliados</title>
     <link rel="stylesheet" href="style.css?v=125.0">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -50,16 +50,10 @@ $referrals = $stmt->fetchAll();
 
                 <!-- Comissão Atual -->
                 <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+                    <div class="stat-icon"><i class="fas fa-coins"></i></div>
                     <span class="stat-label">Sua Comissão</span>
-                    <div class="stat-value">
-                        <?php 
-                        $affRateStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'affiliate_commission_rate'");
-                        $affRate = $affRateStmt->fetchColumn();
-                        echo $affRate ? $affRate : '10';
-                        ?>%
-                    </div>
-                    <div class="stat-sub">Sobre o lucro da taxa</div>
+                    <div class="stat-value">R$ 0,05</div>
+                    <div class="stat-sub">+ R$ 5,00 a cada 100 tx</div>
                 </div>
             </div>
 
@@ -94,7 +88,7 @@ $referrals = $stmt->fetchAll();
                     <ul style="margin: 1rem 0; padding-left: 1.2rem; color: var(--text-2); font-size: 0.9rem; line-height: 1.6;">
                         <li>Indique novos usuários pelo seu link exclusivo.</li>
                         <li>Eles se cadastram e começam a transacionar.</li>
-                        <li>Você ganha uma porcentagem do lucro da plataforma.</li>
+                        <li>Você ganha R$ 0,05 fixo por transação de indicados + R$ 5,00 de bônus a cada 100 vendas.</li>
                         <li>O saldo é creditado instantaneamente na sua conta.</li>
                     </ul>
                 </div>

@@ -48,10 +48,41 @@ function GatewayCard({ gateway }) {
     const [enabled, setEnabled] = useState(gateway.enabled);
     const [showSecrets, setShowSecrets] = useState({});
 
+    // Mistic Pay Balance query states
+    const [balanceData, setBalanceData] = useState(null);
+    const [loadingBalance, setLoadingBalance] = useState(false);
+    const [balanceError, setBalanceError] = useState(null);
+
     const post = async (fd) => {
         const res = await fetch(ACTIONS, { method: 'POST', body: fd });
         return res.json();
     };
+
+    const loadBalance = async () => {
+        if (gateway.id !== 'misticpay') return;
+        setLoadingBalance(true);
+        setBalanceError(null);
+        try {
+            const fd = new FormData();
+            fd.append('action', 'get_misticpay_balance');
+            const res = await post(fd);
+            if (res.success) {
+                setBalanceData(res);
+            } else {
+                setBalanceError(res.error || 'Erro ao carregar saldo');
+            }
+        } catch (e) {
+            setBalanceError(e.message);
+        } finally {
+            setLoadingBalance(false);
+        }
+    };
+
+    useEffect(() => {
+        if (gateway.id === 'misticpay' && enabled && open) {
+            loadBalance();
+        }
+    }, [open, enabled]);
 
     const handleToggle = async (next) => {
         setToggling(true);
@@ -78,7 +109,11 @@ function GatewayCard({ gateway }) {
             Object.entries(form).forEach(([k, v]) => fd.append(k, v));
             fd.append(gateway.enabledKey, enabled ? '1' : '0');
             const d = await post(fd);
-            if (d.success) { setStatus({ ok: true }); if (!enabled) setEnabled(true); }
+            if (d.success) { 
+                setStatus({ ok: true }); 
+                if (!enabled) setEnabled(true);
+                if (gateway.id === 'misticpay') loadBalance();
+            }
             else setStatus({ ok: false, msg: d.error || 'Erro ao salvar' });
         } catch (e) { setStatus({ ok: false, msg: e.message }); }
         finally { setSaving(false); }
@@ -150,6 +185,50 @@ function GatewayCard({ gateway }) {
                         className="overflow-hidden"
                     >
                         <div className={`mx-5 mb-5 rounded-2xl border border-gray-100 bg-gray-50 p-4`}>
+                            {gateway.id === 'misticpay' && (
+                                <div className="mb-4 bg-emerald-500/5 border border-emerald-500/10 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                    <div>
+                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Nominal 3 Wallet</p>
+                                        {loadingBalance ? (
+                                            <div className="flex items-center gap-2 text-xs text-gray-400">
+                                                <RefreshCw size={12} className="animate-spin text-emerald-500" /> Carregando saldos da API...
+                                            </div>
+                                        ) : balanceError ? (
+                                            <p className="text-xs text-red-400 font-bold">Erro: {balanceError}</p>
+                                        ) : balanceData ? (
+                                            <div className="flex items-center gap-4 flex-wrap">
+                                                <div>
+                                                    <span className="text-[10px] text-gray-400 font-bold block">Disponível</span>
+                                                    <span className="text-lg font-black text-emerald-500">R$ {Number(balanceData.availableBalance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                </div>
+                                                <div className="border-l border-gray-200/50 pl-4">
+                                                    <span className="text-[10px] text-gray-400 font-bold block">Bloqueado</span>
+                                                    <span className="text-lg font-black text-gray-400">R$ {Number(balanceData.blockedBalance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                </div>
+                                                {balanceData.name && (
+                                                    <div className="border-l border-gray-200/50 pl-4 hidden sm:block">
+                                                        <span className="text-[10px] text-gray-400 font-bold block">Conta</span>
+                                                        <span className="text-xs font-bold text-gray-500">{balanceData.name}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <p className="text-xs text-gray-400 font-medium">Habilite o gateway e abra para ver o saldo.</p>
+                                        )}
+                                    </div>
+                                    {enabled && (
+                                        <button
+                                            onClick={loadBalance}
+                                            disabled={loadingBalance}
+                                            className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 px-3 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 self-start md:self-center flex items-center gap-1 active:scale-95"
+                                        >
+                                            <RefreshCw size={11} className={loadingBalance ? 'animate-spin' : ''} />
+                                            Atualizar Saldo
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Credenciais</p>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                                 {gateway.fields.map(field => (
@@ -219,7 +298,8 @@ export default function AdminGatewaysPage() {
     const sigiloEnabled = gateways?.sigilopay?.enabled === true;
     const brpixEnabled   = gateways?.brpix?.enabled === true;
     const ironpayEnabled  = gateways?.ironpay?.enabled === true;
-    const activeCount     = (sigiloEnabled ? 1 : 0) + (brpixEnabled ? 1 : 0) + (ironpayEnabled ? 1 : 0);
+    const misticpayEnabled = gateways?.misticpay?.enabled === true;
+    const activeCount     = (sigiloEnabled ? 1 : 0) + (brpixEnabled ? 1 : 0) + (ironpayEnabled ? 1 : 0) + (misticpayEnabled ? 1 : 0);
 
     const gatewayDefs = [
         {
@@ -229,7 +309,7 @@ export default function AdminGatewaysPage() {
             color: 'blue',
             Icon: Shield,
             enabled: sigiloEnabled,
-            webhookUrl: 'lunarpay.site/sigilopay_webhook.php',
+            webhookUrl: 'diretopay.com.br/sigilopay_webhook.php',
             hasForm: true,
             saveAction: 'save_sigilopay',
             toggleAction: 'toggle_sigilopay',
@@ -250,7 +330,7 @@ export default function AdminGatewaysPage() {
             color: 'green',
             Icon: CheckCircle,
             enabled: brpixEnabled,
-            webhookUrl: 'lunarpay.site/brpix_webhook.php',
+            webhookUrl: 'diretopay.com.br/brpix_webhook.php',
             hasForm: true,
             saveAction: 'save_brpix',
             toggleAction: 'toggle_brpix',
@@ -271,7 +351,7 @@ export default function AdminGatewaysPage() {
             color: 'purple',
             Icon: CheckCircle,
             enabled: ironpayEnabled,
-            webhookUrl: 'lunarpay.site/ironpay_webhook.php',
+            webhookUrl: 'diretopay.com.br/ironpay_webhook.php',
             hasForm: true,
             saveAction: 'save_ironpay',
             toggleAction: 'toggle_ironpay',
@@ -285,6 +365,27 @@ export default function AdminGatewaysPage() {
                 { key: 'ironpay_token',        label: 'API Token',     placeholder: 'hHRg6hOra...', secret: true  },
                 { key: 'ironpay_offer_hash',   label: 'Offer Hash',    placeholder: '7becb...',     secret: false },
                 { key: 'ironpay_product_hash', label: 'Product Hash',  placeholder: '7tjdfk...',    secret: false },
+            ],
+        },
+        {
+            id: 'misticpay',
+            name: 'Nominal 3',
+            description: 'Gateway PIX focado em baixas taxas e liquidação instantânea — cash-in',
+            color: 'emerald',
+            Icon: CheckCircle,
+            enabled: misticpayEnabled,
+            webhookUrl: 'diretopay.com.br/misticpay_webhook.php',
+            hasForm: true,
+            saveAction: 'save_misticpay',
+            toggleAction: 'toggle_misticpay',
+            enabledKey: 'misticpay_enabled',
+            initialForm: {
+                misticpay_client_id:     gateways?.misticpay?.client_id || '',
+                misticpay_client_secret: gateways?.misticpay?.has_secret ? '__KEEP__' : '',
+            },
+            fields: [
+                { key: 'misticpay_client_id',     label: 'Client ID',     placeholder: 'Client ID da API', secret: false },
+                { key: 'misticpay_client_secret', label: 'Client Secret', placeholder: '••••••••••••••••', secret: true },
             ],
         },
     ];

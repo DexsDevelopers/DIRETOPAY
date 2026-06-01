@@ -1,9 +1,9 @@
-﻿<?php
+<?php
 /**
  * telegram_daily_report.php — Relatório diário automático via Telegram
  *
  * Configurar como cron job no servidor para rodar às 23:55 diariamente:
- *   55 23 * * * curl -s "https://LUNARPAY.site/telegram_daily_report.php?secret=SEU_SECRET" > /dev/null
+ *   55 23 * * * curl -s "https://DIRETOPAY.site/telegram_daily_report.php?secret=SEU_SECRET" > /dev/null
  *
  * Ou usar um serviço como cron-job.org para chamar a URL diariamente.
  *
@@ -14,16 +14,30 @@ require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/TelegramService.php';
 
 // Autenticação: aceita secret via GET ou flag interna
-$expectedSecret = defined('TELEGRAM_WEBHOOK_SECRET') ? TELEGRAM_WEBHOOK_SECRET : (defined('PIXGO_WEBHOOK_SECRET') ? PIXGO_WEBHOOK_SECRET : '');
+$expectedSecret = defined('TELEGRAM_WEBHOOK_SECRET') ? TELEGRAM_WEBHOOK_SECRET : (defined('TELEGRAM_USER_BOT_SECRET') ? TELEGRAM_USER_BOT_SECRET : '');
 $incomingSecret = $_GET['secret'] ?? '';
 $isInternal     = defined('DAILY_REPORT_INTERNAL') && DAILY_REPORT_INTERNAL === true;
 
-if (!$isInternal && $expectedSecret && $incomingSecret !== $expectedSecret) {
+if (!$isInternal && (empty($expectedSecret) || $incomingSecret !== $expectedSecret)) {
     http_response_code(403);
     exit('Forbidden');
 }
 
 $targetDate = $_GET['date'] ?? date('Y-m-d');
+
+// Impedir envios duplicados no mesmo dia (apenas para requisições externas/cron)
+$stmt = $pdo->prepare("SELECT `value` FROM settings WHERE `key` = 'last_daily_report_date'");
+$stmt->execute();
+$lastReportDate = $stmt->fetchColumn();
+
+if (!$isInternal && $lastReportDate === $targetDate) {
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => false,
+        'message' => 'Relatório diário já foi enviado hoje.'
+    ]);
+    exit;
+}
 
 // ── Buscar estatísticas do dia ──────────────────────────────────────────────
 
@@ -156,10 +170,23 @@ if ($salesCount === 0 && $newUsers === 0) {
     $msg .= "💪 <i>Dia produtivo. Seguimos crescendo!</i>\n";
 }
 
-$msg .= "{$div}\n🤖 <i>LunarPay • Relatório automático • " . date('H:i') . "</i>";
+$msg .= "{$div}\n🤖 <i>DiretoPay • Relatório automático • " . date('H:i') . "</i>";
 
-// Enviar
+// Enviar Telegram
 $sent = TelegramService::send($msg);
+
+if ($sent) {
+    $stmt = $pdo->prepare("INSERT INTO settings (`key`, `value`) VALUES ('last_daily_report_date', ?) ON DUPLICATE KEY UPDATE `value` = ?");
+    $stmt->execute([$targetDate, $targetDate]);
+}
+
+// Enviar WhatsApp (se ativo)
+try {
+    require_once __DIR__ . '/includes/WhatsAppService.php';
+    if (WhatsAppService::isEnabled()) {
+        WhatsAppService::sendAdmin(WhatsAppService::formatHtmlToWhatsApp($msg));
+    }
+} catch (Throwable $e) {}
 
 // Resposta HTTP
 if (!$isInternal) {

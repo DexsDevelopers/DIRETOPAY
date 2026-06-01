@@ -27,9 +27,29 @@ try {
     if (!$checkout) throw new Exception('Checkout não encontrado ou inativo.');
 
     // Total
-    $stmt = $pdo->prepare("SELECT SUM(price) as total FROM checkout_items WHERE checkout_id = ?");
-    $stmt->execute([$checkoutId]);
-    $totalAmount = (float)$stmt->fetchColumn();
+    $customSettings = [];
+    if (!empty($checkout['custom_settings'])) {
+        $customSettings = json_decode($checkout['custom_settings'], true);
+    }
+
+    $allowItemSelection = (bool)($customSettings['allow_item_selection'] ?? false);
+
+    if ($allowItemSelection) {
+        $selectedItemIds = $input['selected_item_ids'] ?? [];
+        if (empty($selectedItemIds) || !is_array($selectedItemIds)) {
+            throw new Exception('Selecione pelo menos um produto.');
+        }
+        $selectedItemIds = array_map('intval', $selectedItemIds);
+        $inQuery = implode(',', array_fill(0, count($selectedItemIds), '?'));
+        $stmtParams = array_merge($selectedItemIds, [$checkoutId]);
+        $stmt = $pdo->prepare("SELECT SUM(price) as total FROM checkout_items WHERE id IN ($inQuery) AND checkout_id = ?");
+        $stmt->execute($stmtParams);
+        $totalAmount = (float)$stmt->fetchColumn();
+    } else {
+        $stmt = $pdo->prepare("SELECT SUM(price) as total FROM checkout_items WHERE checkout_id = ?");
+        $stmt->execute([$checkoutId]);
+        $totalAmount = (float)$stmt->fetchColumn();
+    }
     if ($totalAmount < 5) throw new Exception('Valor mínimo para cartão: R$ 5,00.');
 
     // Vendedor

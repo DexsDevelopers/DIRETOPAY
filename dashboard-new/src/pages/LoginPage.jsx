@@ -31,7 +31,7 @@ function FloatingPill({ Icon, label, delay, float: floatY }) {
             <motion.div
                 animate={{ y: [0, floatY, 0] }}
                 transition={{ delay: delay + 0.5, duration: 3.5 + delay * 0.4, repeat: Infinity, ease: 'easeInOut' }}
-                className="flex items-center gap-2.5 bg-white border border-pink-100 hover:border-primary/30 rounded-full px-4 py-2.5 shadow-[0_4px_20px_rgba(192,0,106,0.08)] hover:shadow-[0_4px_28px_rgba(192,0,106,0.16)] transition-all whitespace-nowrap"
+                className="flex items-center gap-2.5 bg-white border border-pink-100 hover:border-primary/30 rounded-full px-4 py-2.5 shadow-[0_4px_20px_rgba(30,164,101,0.08)] hover:shadow-[0_4px_28px_rgba(30,164,101,0.16)] transition-all whitespace-nowrap"
             >
                 <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <Icon size={12} className="text-primary" />
@@ -149,9 +149,9 @@ export default function LoginPage() {
             <svg className="hidden lg:block absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="rgb(192,0,106)" stopOpacity="0" />
-                        <stop offset="50%" stopColor="rgb(192,0,106)" stopOpacity="0.12" />
-                        <stop offset="100%" stopColor="rgb(192,0,106)" stopOpacity="0" />
+                        <stop offset="0%" stopColor="rgb(30,164,101)" stopOpacity="0" />
+                        <stop offset="50%" stopColor="rgb(30,164,101)" stopOpacity="0.12" />
+                        <stop offset="100%" stopColor="rgb(30,164,101)" stopOpacity="0" />
                     </linearGradient>
                 </defs>
                 <line x1="18%" y1="13%" x2="50%" y2="50%" stroke="url(#lineGrad)" strokeWidth="0.8" />
@@ -185,10 +185,10 @@ export default function LoginPage() {
                             <Shield className="text-primary" size={32} />
                         </div>
                         <h1 className="text-4xl font-black mb-2 tracking-tight text-gray-900">Bem-vindo de <span className="text-primary italic">Volta</span></h1>
-                        <p className="text-gray-500 font-medium text-sm px-4">Acesse sua central de comando blindada LunarPay.</p>
+                        <p className="text-gray-500 font-medium text-sm px-4">Acesse sua central de comando blindada DiretoPay.</p>
                     </div>
 
-                    <div className="bg-white border border-pink-100 shadow-[0_20px_60px_rgba(192,0,106,0.1)] p-8 md:p-10 rounded-[48px] relative overflow-hidden">
+                    <div className="bg-white border border-pink-100 shadow-[0_20px_60px_rgba(30,164,101,0.1)] p-8 md:p-10 rounded-[48px] relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full blur-[50px] -z-10" />
 
                         {resetSuccess && (
