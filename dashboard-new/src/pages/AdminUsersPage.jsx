@@ -160,7 +160,7 @@ export default function AdminUsersPage() {
                                 placeholder="Nome, e-mail ou pix..."
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-200 rounded-2xl py-3 pl-12 pr-6 text-sm focus:outline-none focus:border-purple-500/30 transition-all font-medium text-gray-900"
+                                className="w-full bg-gray-50 border border-gray-200 rounded-2xl py-3 pl-12 pr-6 text-sm focus:outline-none focus:border-emerald-500/30 transition-all font-medium text-gray-900"
                             />
                         </div>
                         <select
@@ -200,7 +200,7 @@ export default function AdminUsersPage() {
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-0.5">
                                         <h4 className="text-[15px] font-bold text-gray-900 truncate">{user.full_name}</h4>
-                                        {user.is_demo === 1 && <span className="text-[7px] bg-purple-500/15 text-purple-500 px-1.5 py-0.5 rounded font-black shrink-0 tracking-wider">DEMO</span>}
+                                        {user.is_demo === 1 && <span className="text-[7px] bg-emerald-500/15 text-emerald-500 px-1.5 py-0.5 rounded font-black shrink-0 tracking-wider">DEMO</span>}
                                     </div>
                                     <p className="text-[11px] text-gray-400 font-medium">#{user.id} • {user.email}</p>
                                 </div>
@@ -235,7 +235,7 @@ export default function AdminUsersPage() {
                                         "text-[9px] font-black",
                                         user.withdraw_method === 'btc'  ? 'text-orange-400' :
                                         user.withdraw_method === 'usdt' ? 'text-teal-400' :
-                                        'text-purple-500'
+                                        'text-emerald-500'
                                     )}>
                                         {user.withdraw_method === 'btc' ? '₿ BTC' : user.withdraw_method === 'usdt' ? 'USDT' : 'PIX'}
                                     </span>
@@ -245,7 +245,7 @@ export default function AdminUsersPage() {
                                     <select
                                         value={user.preferred_nominal || 'nominal1'}
                                         onChange={e => handleAction('update_user_field', { user_id: user.id, field: 'preferred_nominal', value: e.target.value })}
-                                        className="bg-transparent text-[9px] font-black text-purple-500 focus:outline-none cursor-pointer text-center"
+                                        className="bg-transparent text-[9px] font-black text-emerald-500 focus:outline-none cursor-pointer text-center"
                                     >
                                         <option value="nominal1" style={{color: '#000'}}>Nominal 1</option>
                                         <option value="nominal2" style={{color: '#000'}}>Nominal 2</option>
@@ -305,7 +305,7 @@ export default function AdminUsersPage() {
                                             <span className="text-[10px] font-black text-gray-400">#{user.id}</span>
                                             <span className="font-bold text-gray-900">{user.full_name}</span>
                                             {user.is_demo === 1 && (
-                                                <span className="text-[9px] bg-purple-500/10 text-purple-500 border border-purple-500/20 px-2 py-0.5 rounded-full w-fit mt-1 font-black">DEMO</span>
+                                                <span className="text-[9px] bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-2 py-0.5 rounded-full w-fit mt-1 font-black">DEMO</span>
                                             )}
                                         </div>
                                     </td>
@@ -316,7 +316,7 @@ export default function AdminUsersPage() {
                                                 "text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full w-fit border",
                                                 user.withdraw_method === 'btc'  ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' :
                                                 user.withdraw_method === 'usdt' ? 'bg-teal-500/10 text-teal-400 border-teal-500/20' :
-                                                'bg-purple-500/10 text-purple-500 border-purple-500/20'
+                                                'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
                                             )}>
                                                 {user.withdraw_method === 'btc' ? '₿ Bitcoin' : user.withdraw_method === 'usdt' ? '💲 USDT' : '⚡ PIX'}
                                             </span>
@@ -327,7 +327,7 @@ export default function AdminUsersPage() {
                                                         onBlur={e => e.target.value !== user.pix_key && handleAction('update_user_field', { user_id: user.id, field: 'pix_key', value: e.target.value })}
                                                         className="bg-transparent border-none text-[11px] text-gray-500 p-0 focus:outline-none focus:text-gray-900 transition-colors"
                                                     />
-                                                    <CreditCard size={10} className="text-gray-200 group-hover:text-purple-500 transition-colors" />
+                                                    <CreditCard size={10} className="text-gray-200 group-hover:text-emerald-500 transition-colors" />
                                                 </div>
                                             ) : (
                                                 <span className="text-[11px] text-gray-500 font-mono truncate max-w-[180px]" title={user.crypto_address}>
@@ -353,7 +353,7 @@ export default function AdminUsersPage() {
                                     </td>
                                     <td className="p-6">
                                         <div className="flex justify-center">
-                                            <div className="flex items-center gap-1 bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 focus-within:border-purple-500/30 transition-all">
+                                            <div className="flex items-center gap-1 bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 focus-within:border-emerald-500/30 transition-all">
                                                 <span className="text-[10px] font-bold text-gray-400">R$</span>
                                                 <input
                                                     type="number" step="0.01" defaultValue={user.balance}
@@ -391,8 +391,8 @@ export default function AdminUsersPage() {
                                     <td className="p-6 pr-10">
                                         <div className="flex justify-end gap-2">
                                             <button onClick={() => { if (confirm(`Resetar senha de ${user.full_name}?`)) handleAction('reset_user_password', { user_id: user.id }); }} className="p-2.5 bg-amber-500/10 rounded-xl text-amber-500 hover:bg-amber-500 hover:text-white transition-all border border-amber-500/20" title="Resetar Senha"><KeyRound size={16} /></button>
-                                            <button onClick={() => setShowFakeWithdrawModal({ userId: user.id, name: user.full_name, pix: user.pix_key })} className="p-2.5 bg-gray-100 rounded-xl text-gray-400 hover:bg-purple-500/10 hover:text-purple-500 transition-all border border-gray-200" title="Saque Fake"><Zap size={16} /></button>
-                                            <button onClick={() => handleAction('update_user_field', { user_id: user.id, field: 'is_demo', value: user.is_demo ? 0 : 1 })} className={cn('p-2.5 rounded-xl transition-all border', user.is_demo ? 'bg-purple-500/10 text-purple-500 border-purple-500/20 hover:bg-purple-500 hover:text-white' : 'bg-gray-100 text-gray-400 border-gray-200 hover:bg-gray-200 hover:text-gray-900')} title={user.is_demo ? 'Desativar Demo' : 'Ativar Demo'}>{user.is_demo ? <Eye size={16} /> : <EyeOff size={16} />}</button>
+                                            <button onClick={() => setShowFakeWithdrawModal({ userId: user.id, name: user.full_name, pix: user.pix_key })} className="p-2.5 bg-gray-100 rounded-xl text-gray-400 hover:bg-emerald-500/10 hover:text-emerald-500 transition-all border border-gray-200" title="Saque Fake"><Zap size={16} /></button>
+                                            <button onClick={() => handleAction('update_user_field', { user_id: user.id, field: 'is_demo', value: user.is_demo ? 0 : 1 })} className={cn('p-2.5 rounded-xl transition-all border', user.is_demo ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500 hover:text-white' : 'bg-gray-100 text-gray-400 border-gray-200 hover:bg-gray-200 hover:text-gray-900')} title={user.is_demo ? 'Desativar Demo' : 'Ativar Demo'}>{user.is_demo ? <Eye size={16} /> : <EyeOff size={16} />}</button>
                                             {user.status !== 'approved' && <button onClick={() => handleAction('update_user_field', { user_id: user.id, field: 'status', value: 'approved' })} className="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all border border-emerald-500/20" title="Aprovar"><CheckCircle size={16} /></button>}
                                             {user.status !== 'blocked' && <button onClick={() => handleAction('update_user_field', { user_id: user.id, field: 'status', value: 'blocked' })} className="p-2.5 bg-red-500/10 rounded-xl text-red-500 hover:bg-red-500 hover:text-white transition-all border border-red-500/20" title="Bloquear"><XCircle size={16} /></button>}
                                         </div>
@@ -438,7 +438,7 @@ export default function AdminUsersPage() {
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2 text-[11px] text-gray-400">
-                                    <code className="bg-gray-50 px-2 py-1 rounded-lg text-purple-500 text-[11px] font-mono border border-gray-100 truncate">{w.pix_key}</code>
+                                    <code className="bg-gray-50 px-2 py-1 rounded-lg text-emerald-500 text-[11px] font-mono border border-gray-100 truncate">{w.pix_key}</code>
                                     <button onClick={() => navigator.clipboard.writeText(w.pix_key)} className="p-1.5 bg-gray-100 rounded-lg text-gray-400 shrink-0"><Save size={10} /></button>
                                     <span className="ml-auto shrink-0">{new Date(w.created_at).toLocaleDateString('pt-BR')} {new Date(w.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
                                 </div>
@@ -477,7 +477,7 @@ export default function AdminUsersPage() {
                                         </td>
                                         <td className="p-6">
                                             <div className="flex items-center gap-3">
-                                                <code className="bg-gray-50 px-4 py-2 rounded-xl text-purple-500 text-xs font-mono border border-gray-100">
+                                                <code className="bg-gray-50 px-4 py-2 rounded-xl text-emerald-500 text-xs font-mono border border-gray-100">
                                                     {w.pix_key}
                                                 </code>
                                                 <button

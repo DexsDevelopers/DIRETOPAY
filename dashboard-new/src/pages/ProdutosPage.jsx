@@ -239,7 +239,7 @@ export default function ProdutosPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map(p => (
-            <div key={p.id} className="bg-white border border-gray-100 rounded-2xl overflow-hidden hover:border-purple-200 hover:shadow-sm transition-all group">
+            <div key={p.id} className="bg-white border border-gray-100 rounded-2xl overflow-hidden hover:border-emerald-200 hover:shadow-sm transition-all group">
               {p.image_url ? (
                 <img src={p.image_url} alt={p.name} className="w-full h-40 object-cover" onError={e => { e.target.style.display = 'none'; }} />
               ) : (

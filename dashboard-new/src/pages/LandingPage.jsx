@@ -67,7 +67,7 @@ function GrainOverlay() {
 function ShimmerButton({ children, className = '', ...props }) {
     return (
         <div className="relative group inline-flex" {...props}>
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-600 to-rose-500 rounded-2xl blur opacity-50 group-hover:opacity-80 transition duration-500 group-hover:duration-200 animate-pulse" />
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-600 to-green-500 rounded-2xl blur opacity-50 group-hover:opacity-80 transition duration-500 group-hover:duration-200 animate-pulse" />
             <div className={`relative ${className}`}>{children}</div>
         </div>
     );
@@ -107,7 +107,7 @@ function Typewriter({ words, className = '' }) {
 function AnimatedBorderCard({ children, className = '' }) {
     return (
         <div className={`relative group ${className}`}>
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-600 via-rose-500 to-pink-700 rounded-3xl opacity-0 group-hover:opacity-30 blur transition duration-500" />
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-600 via-teal-500 to-green-700 rounded-3xl opacity-0 group-hover:opacity-30 blur transition duration-500" />
             <div className="relative h-full">{children}</div>
         </div>
     );
@@ -138,10 +138,10 @@ function DashboardMockup() {
             >
                 <div className="flex items-center justify-between mb-5 pb-4 border-b border-white/5">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-pink-600 to-rose-700 rounded-xl flex items-center justify-center font-bold text-white">L</div>
+                        <div className="w-10 h-10 bg-gradient-to-br from-emerald-600 to-green-700 rounded-xl flex items-center justify-center font-bold text-white">D</div>
                         <div>
                             <div className="text-xs text-gray-400">Bem-vindo,</div>
-                            <div className="font-semibold text-white">Lunar Member 👋</div>
+                            <div className="font-semibold text-white">Direto Member 👋</div>
                         </div>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-400">
@@ -162,13 +162,13 @@ function DashboardMockup() {
                     {[40, 65, 45, 80, 55, 90, 70].map((h, i) => (
                         <motion.div key={i} initial={{ height: 0 }} animate={{ height: `${h}%` }}
                             transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
-                            className="flex-1 bg-gradient-to-t from-rose-700 to-pink-500 rounded-t opacity-70" />
+                            className="flex-1 bg-gradient-to-t from-green-700 to-emerald-500 rounded-t opacity-70" />
                     ))}
                 </div>
             </motion.div>
             <motion.div key={currentSale} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                className="absolute -bottom-4 -left-4 bg-[#0f0008]/95 border border-pink-900/30 rounded-2xl p-4 backdrop-blur-xl flex items-center gap-4 z-10 shadow-2xl">
-                <div className="w-12 h-12 bg-gradient-to-br from-pink-600 to-rose-700 rounded-xl flex items-center justify-center">
+                className="absolute -bottom-4 -left-4 bg-[#0a0f0c]/95 border border-emerald-900/30 rounded-2xl p-4 backdrop-blur-xl flex items-center gap-4 z-10 shadow-2xl">
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-600 to-green-700 rounded-xl flex items-center justify-center">
                     <Check className="text-white" size={24} />
                 </div>
                 <div>
@@ -239,7 +239,7 @@ function RankingItem({ position, name, sales, amount, avatar, type }) {
         gold:    'from-yellow-400 to-orange-400',
         silver:  'from-gray-400   to-gray-500',
         bronze:  'from-orange-400 to-orange-600',
-        regular: 'from-pink-600   to-rose-700'
+        regular: 'from-emerald-600   to-rose-700'
     };
     return (
         <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
@@ -313,10 +313,10 @@ function StatItem({ label, value }) {
 function AccordionItem({ title, content }) {
     const [isOpen, setIsOpen] = useState(false);
     return (
-        <div className="border-b border-pink-100 last:border-0">
+        <div className="border-b border-emerald-100 last:border-0">
             <button onClick={() => setIsOpen(!isOpen)} className="w-full py-8 flex items-center justify-between text-left group">
                 <span className="text-lg md:text-xl font-bold text-gray-700 group-hover:text-gray-900 transition-colors pr-8">{title}</span>
-                <div className={cn("w-10 h-10 rounded-full border border-pink-100 flex items-center justify-center transition-all duration-500 bg-pink-50", isOpen && "rotate-180 border-primary/30 bg-primary/10")}>
+                <div className={cn("w-10 h-10 rounded-full border border-emerald-100 flex items-center justify-center transition-all duration-500 bg-emerald-50", isOpen && "rotate-180 border-primary/30 bg-primary/10")}>
                     <ChevronDown className={cn("text-gray-400 transition-colors", isOpen && "text-primary")} size={20} />
                 </div>
             </button>
@@ -333,7 +333,7 @@ function ThemeToggle() {
     const { isDark, toggleTheme } = useTheme();
     return (
         <button onClick={toggleTheme} title={isDark ? 'Claro' : 'Escuro'}
-            className="relative flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-pink-100 bg-white/60 backdrop-blur-sm hover:bg-pink-50 hover:border-pink-200 transition-all group">
+            className="relative flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-emerald-100 bg-white/60 backdrop-blur-sm hover:bg-emerald-50 hover:border-emerald-200 transition-all group">
             <span className={`transition-all duration-300 ${isDark ? 'text-amber-500 rotate-0' : 'text-gray-400 -rotate-12'}`}>
                 {isDark ? <Sun size={15} /> : <Moon size={15} />}
             </span>
@@ -366,7 +366,7 @@ export default function LandingPage() {
             <GrainOverlay />
             
             {/* Announcement Bar */}
-            <div className={`sticky top-0 z-[60] backdrop-blur-2xl border-b py-2 px-4 sm:px-6 ${isDark ? 'bg-[#0f0f16]/95 border-white/5' : 'bg-white/97 border-purple-100/80'}`}>
+            <div className={`sticky top-0 z-[60] backdrop-blur-2xl border-b py-2 px-4 sm:px-6 ${isDark ? 'bg-[#0f0f16]/95 border-white/5' : 'bg-white/97 border-emerald-100/80'}`}>
                 <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
                     <div className="flex items-center gap-2 shrink-0">
                         <span className="relative flex h-2 w-2">
@@ -388,12 +388,11 @@ export default function LandingPage() {
             {/* Navbar — full-width no topo, pill flutuante ao rolar */}
             <nav className={`fixed z-50 flex items-center justify-between transition-all duration-500
                 ${scrolled
-                    ? 'left-1/2 -translate-x-1/2 top-3 w-[94%] sm:w-[90%] max-w-6xl h-14 sm:h-16 rounded-[32px] px-5 sm:px-8 border shadow-[0_8px_32px_rgba(30,164,101,0.12)] backdrop-blur-3xl ' + (isDark ? 'bg-[#0f0f16]/95 border-white/10' : 'bg-white/95 border-pink-100')
+                    ? 'left-1/2 -translate-x-1/2 top-3 w-[94%] sm:w-[90%] max-w-6xl h-14 sm:h-16 rounded-[32px] px-5 sm:px-8 border shadow-[0_8px_32px_rgba(30,164,101,0.12)] backdrop-blur-3xl ' + (isDark ? 'bg-[#0f0f16]/95 border-white/10' : 'bg-white/95 border-emerald-100')
                     : 'left-0 translate-x-0 top-[38px] sm:top-[38px] w-full h-16 sm:h-20 rounded-none px-6 sm:px-16 border-b border-transparent backdrop-blur-sm ' + (isDark ? 'bg-[#0a0a0f]/80' : 'bg-white/80')
                 }`}>
                 <div className="flex items-center gap-2 sm:gap-3">
-                    <img src={isDark ? "/logo_premium.png?v=3" : "/logo_white.jpg?v=3"} alt="DiretoPay" className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl shadow-[0_0_16px_rgba(30,164,101,0.3)]" />
-                    <span className={`font-black text-base sm:text-lg tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Lunar<span className="text-primary">Pay</span></span>
+                    <img src={isDark ? "/logo_premium.png?v=3" : "/logo_white.jpg?v=3"} alt="DiretoPay" className="h-6 sm:h-8 w-auto" />
                 </div>
                 <div className="hidden lg:flex items-center gap-8 text-[12px] font-semibold text-gray-500">
                     <a href="#" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Início</a>
@@ -405,7 +404,7 @@ export default function LandingPage() {
                 <div className="flex items-center gap-2 sm:gap-3">
                     <ThemeToggle />
                     <Link to="/login" className={`hidden sm:block text-[12px] font-semibold px-4 py-2 rounded-full border transition-all hover:border-primary hover:text-primary ${isDark ? 'text-gray-300 border-white/15' : 'text-gray-600 border-gray-200'}`}>Login</Link>
-                    <Link to="/register" className="bg-gradient-to-r from-pink-600 to-rose-700 text-white text-[11px] sm:text-[12px] font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-full hover:opacity-90 transition-all active:scale-95 shadow-[0_4px_16px_rgba(30,164,101,0.35)] whitespace-nowrap">Cadastre-se</Link>
+                    <Link to="/register" className="bg-gradient-to-r from-emerald-600 to-green-700 text-white text-[11px] sm:text-[12px] font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-full hover:opacity-90 transition-all active:scale-95 shadow-[0_4px_16px_rgba(30,164,101,0.35)] whitespace-nowrap">Cadastre-se</Link>
                 </div>
             </nav>
 
@@ -421,17 +420,17 @@ export default function LandingPage() {
                 <Particles count={22} />
                 {/* fade bottom para suavizar saída do grid */}
                 <div className={`absolute bottom-0 inset-x-0 h-40 pointer-events-none ${isDark ? 'bg-gradient-to-t from-[#0a0a0f]' : 'bg-gradient-to-t from-[#F8F8FC]'} to-transparent`} />
-                <div className={`absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[100px] pointer-events-none ${isDark ? 'bg-gradient-to-bl from-rose-900/20 to-pink-900/10 opacity-40' : 'bg-gradient-to-bl from-pink-100 to-rose-50 opacity-60'}`} />
-                <div className={`absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-[80px] pointer-events-none ${isDark ? 'bg-gradient-to-tr from-rose-900/15 to-transparent opacity-30' : 'bg-gradient-to-tr from-pink-50 to-transparent opacity-40'}`} />
+                <div className={`absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[100px] pointer-events-none ${isDark ? 'bg-gradient-to-bl from-emerald-950/20 to-green-950/10 opacity-40' : 'bg-gradient-to-bl from-emerald-100 to-rose-50 opacity-60'}`} />
+                <div className={`absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-[80px] pointer-events-none ${isDark ? 'bg-gradient-to-tr from-emerald-950/15 to-transparent opacity-30' : 'bg-gradient-to-tr from-emerald-50 to-transparent opacity-40'}`} />
                 
                 <div className="max-w-7xl mx-auto relative z-10">
                     <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
                         {/* Lado Esquerdo */}
                         <div className="space-y-6 sm:space-y-8 text-center lg:text-left">
                             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }}
-                                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${isDark ? 'bg-rose-950/40 border-rose-500/40' : 'bg-primary/5 border-primary/15'}`}>
+                                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${isDark ? 'bg-emerald-950/40 border-emerald-500/40' : 'bg-primary/5 border-primary/15'}`}>
                                 <div className={`w-2 h-2 shrink-0 rounded-full ${isDark ? 'bg-emerald-400' : 'bg-emerald-500'} animate-pulse`} />
-                                <span className={`text-xs sm:text-sm font-black tracking-tight ${isDark ? 'text-pink-300' : 'text-primary'}`}>+3.000 Sellers que confiam em nós!</span>
+                                <span className={`text-xs sm:text-sm font-black tracking-tight ${isDark ? 'text-emerald-300' : 'text-primary'}`}>+3.000 Sellers que confiam em nós!</span>
                             </motion.div>
 
                             <div className="space-y-6">
@@ -439,8 +438,8 @@ export default function LandingPage() {
                                     className={`text-[2.2rem] sm:text-5xl lg:text-6xl font-[1000] leading-[1.1] tracking-[-0.03em] ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                     O lado invisível que faz{' '}
                                     <Typewriter
-                                        words={['sua operação crescer!', 'suas vendas explodirem!', 'seu lucro decolar!', 'você ficar anônimo!']}
-                                        className="bg-gradient-to-r from-pink-600 to-rose-700 bg-clip-text text-transparent"
+                                        words={['sua operação decolar!', 'seus lucros multiplicarem!', 'sua conversão explodir!', 'sua empresa escalar!']}
+                                        className="bg-gradient-to-r from-emerald-600 to-green-700 bg-clip-text text-transparent"
                                     />
                                 </motion.h1>
                                 <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
@@ -452,7 +451,7 @@ export default function LandingPage() {
                             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 }}
                                 className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                                 <ShimmerButton className="w-full sm:w-auto">
-                                <Link to="/register" className="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-rose-700 text-white h-14 px-8 rounded-2xl flex items-center justify-center font-black hover:opacity-90 transition-all active:scale-95 group">
+                                <Link to="/register" className="w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-green-700 text-white h-14 px-8 rounded-2xl flex items-center justify-center font-black hover:opacity-90 transition-all active:scale-95 group">
                                     <ShieldCheck className="mr-2 shrink-0" size={20} />
                                     Quero entrar na DiretoPay
                                     <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform shrink-0" size={18} />
@@ -488,7 +487,7 @@ export default function LandingPage() {
             <section className={`relative py-28 px-6 overflow-hidden ${isDark ? 'bg-[#0d0d14]' : 'bg-[#faf9ff]'}`}>
                 {/* decorative glows */}
                 <div className={`absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none ${isDark ? 'bg-yellow-500/5' : 'bg-yellow-300/20'}`} />
-                <div className={`absolute bottom-0 right-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none ${isDark ? 'bg-pink-700/8' : 'bg-pink-300/20'}`} />
+                <div className={`absolute bottom-0 right-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none ${isDark ? 'bg-emerald-700/8' : 'bg-emerald-300/20'}`} />
                 <div className={`absolute top-1/2 left-0 w-72 h-72 rounded-full blur-[100px] pointer-events-none ${isDark ? 'bg-emerald-900/10' : 'bg-emerald-100/40'}`} />
                 <div className="max-w-7xl mx-auto relative z-10">
                     <div className="text-center max-w-3xl mx-auto mb-16">
@@ -502,10 +501,10 @@ export default function LandingPage() {
                             className="text-gray-500 text-lg">Reconhecemos sua performance com prêmios exclusivos. Cada marco é uma conquista celebrada.</motion.p>
                     </div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <AwardCard icon={Medal} amount="100 Mil" name="Lunar Platinum" desc="Para quem transforma os primeiros 100 mil em apenas o começo." color="platinum" delay={0.1} />
-                        <AwardCard icon={Trophy} amount="500 Mil" name="Lunar Gold" desc="Reconhece a ousadia de quem encara grandes desafios." color="gold" delay={0.2} />
-                        <AwardCard icon={Crown} amount="1 Milhão" name="Lunar Wine" desc="Celebra a excelência rara e sofisticação estratégica." color="wine" delay={0.3} />
-                        <AwardCard icon={Gem} amount="5 Milhões" name="Lunar Emerald" desc="Para quem chega aos 5 milhões não por acaso, mas por legado." color="emerald" delay={0.4} />
+                        <AwardCard icon={Medal} amount="100 Mil" name="Direto Platinum" desc="Para quem transforma os primeiros 100 mil em apenas o começo." color="platinum" delay={0.1} />
+                        <AwardCard icon={Trophy} amount="500 Mil" name="Direto Gold" desc="Reconhece a ousadia de quem encara grandes desafios." color="gold" delay={0.2} />
+                        <AwardCard icon={Crown} amount="1 Milhão" name="Direto Wine" desc="Celebra a excelência rara e sofisticação estratégica." color="wine" delay={0.3} />
+                        <AwardCard icon={Gem} amount="5 Milhões" name="Direto Emerald" desc="Para quem chega aos 5 milhões não por acaso, mas por legado." color="emerald" delay={0.4} />
                     </div>
                 </div>
             </section>
@@ -516,7 +515,7 @@ export default function LandingPage() {
                     <div className="grid lg:grid-cols-2 gap-10 sm:gap-16 items-center">
                         <div>
                             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-black mb-6">
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-black mb-6">
                                 <Network size={16} /> Multi-Adquirentes
                             </motion.div>
                             <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
@@ -538,9 +537,9 @@ export default function LandingPage() {
                             </motion.div>
                         </div>
                         <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-                            className="relative rounded-3xl overflow-hidden bg-[#0f0008] border border-pink-900/30 p-5 sm:p-8 shadow-2xl">
+                            className="relative rounded-3xl overflow-hidden bg-[#0a0f0c] border border-emerald-900/30 p-5 sm:p-8 shadow-2xl">
 
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-rose-700/10 rounded-full blur-[60px] pointer-events-none" />
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-700/10 rounded-full blur-[60px] pointer-events-none" />
 
                             <div className="flex items-center gap-2 mb-6">
                                 <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shrink-0" />
@@ -560,10 +559,10 @@ export default function LandingPage() {
 
                                 {/* Seta — horizontal no sm+, vertical no mobile */}
                                 <div className="hidden sm:flex flex-1 items-center">
-                                    <div className="flex-1 h-px bg-gradient-to-r from-white/20 to-rose-600/60" />
-                                    <ArrowRight size={14} className="text-pink-400 shrink-0" />
+                                    <div className="flex-1 h-px bg-gradient-to-r from-white/20 to-emerald-600/60" />
+                                    <ArrowRight size={14} className="text-emerald-400 shrink-0" />
                                 </div>
-                                <div className="flex sm:hidden items-center justify-center text-pink-400">
+                                <div className="flex sm:hidden items-center justify-center text-emerald-400">
                                     <ArrowRight size={14} className="rotate-90" />
                                 </div>
 
@@ -586,14 +585,14 @@ export default function LandingPage() {
                                                 <div className={`w-2 h-2 rounded-full shrink-0 ${active ? 'bg-emerald-400 animate-pulse' : 'bg-gray-600'}`} />
                                                 <span className={`font-bold text-sm ${active ? 'text-white' : 'text-gray-500'}`}>{label}</span>
                                             </div>
-                                            <span className={`text-[10px] font-black uppercase ${active ? 'text-pink-300' : 'text-gray-600'}`}>{status}</span>
+                                            <span className={`text-[10px] font-black uppercase ${active ? 'text-emerald-300' : 'text-gray-600'}`}>{status}</span>
                                         </motion.div>
                                     ))}
                                 </div>
 
                                 {/* Seta */}
                                 <div className="hidden sm:flex flex-1 items-center">
-                                    <div className="flex-1 h-px bg-gradient-to-r from-rose-600/60 to-emerald-500/60" />
+                                    <div className="flex-1 h-px bg-gradient-to-r from-emerald-600/60 to-green-500/60" />
                                     <ArrowRight size={14} className="text-emerald-400 shrink-0" />
                                 </div>
                                 <div className="flex sm:hidden items-center justify-center text-emerald-400">
@@ -638,7 +637,7 @@ export default function LandingPage() {
                             <Flame size={16} /> Competição Mensal
                         </motion.div>
                         <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
-                            className="text-3xl sm:text-5xl font-black mb-4">Na DiretoPay, sua performance importa!</motion.h2>
+                            className="text-3xl sm:text-5xl font-black mb-4">Na DiretoPay, seu faturamento importa!</motion.h2>
                         <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
                             className="text-gray-400 text-lg">Todos os meses, os sellers disputam o ranking para ganhar prêmios exclusivos. Vendeu mais? Sobe no ranking. Atingiu o topo? Premiação garantida!</motion.p>
                     </div>
@@ -710,10 +709,10 @@ export default function LandingPage() {
                             </div>
                             <div className="space-y-2 text-white/80">
                                 <p className="text-white/20">// Initialize your integration</p>
-                                <p><span className="text-purple-400">const</span> diretoPay = <span className="text-blue-400">new</span> <span className="text-purple-400">DiretoPay</span>{'({'} key: <span className="text-orange-400">'pk_live_...'</span> {'})'};</p>
+                                <p><span className="text-emerald-400">const</span> diretoPay = <span className="text-blue-400">new</span> <span className="text-emerald-400">DiretoPay</span>{'({'} key: <span className="text-orange-400">'pk_live_...'</span> {'})'};</p>
                                 <p>&nbsp;</p>
                                 <p className="text-white/20">// Generate an anonymous Pix</p>
-                                <p><span className="text-purple-400">await</span> diretoPay.<span className="text-blue-400">createTransaction</span>{'({'}</p>
+                                <p><span className="text-emerald-400">await</span> diretoPay.<span className="text-blue-400">createTransaction</span>{'({'}</p>
                                 <p className="pl-4">amount: <span className="text-orange-400">97.00</span>,</p>
                                 <p className="pl-4">customer: <span className="text-purple-300">'John Doe'</span></p>
                                 <p>{'})'};</p>
@@ -739,10 +738,10 @@ export default function LandingPage() {
             <section id="faq" className="py-16 sm:py-32 px-4 sm:px-6 bg-white">
                 <div className="max-w-4xl mx-auto space-y-20 text-center md:text-left">
                     <div className="space-y-4 text-center">
-                        <h2 className="text-4xl md:text-7xl font-black uppercase tracking-tighter text-gray-900">Respostas para <br /><span className="bg-gradient-to-r from-pink-600 to-rose-700 bg-clip-text text-transparent italic">suas dúvidas.</span></h2>
+                        <h2 className="text-4xl md:text-7xl font-black uppercase tracking-tighter text-gray-900">Respostas para <br /><span className="bg-gradient-to-r from-emerald-600 to-green-700 bg-clip-text text-transparent italic">suas dúvidas.</span></h2>
                         <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Suporte humanizado disponível 24/7</p>
                     </div>
-                    <div className="bg-gray-50 border border-pink-100 rounded-[28px] sm:rounded-[48px] p-5 sm:p-8 md:p-16">
+                    <div className="bg-gray-50 border border-emerald-100 rounded-[28px] sm:rounded-[48px] p-5 sm:p-8 md:p-16">
                         <AccordionItem title="O DiretoPay é realmente anônimo?" content="Sim. Utilizamos uma camada de abstração bancária onde seus dados pessoais ou da sua empresa nunca aparecem para o pagador final. O dinheiro cai na nossa conta de liquidação e é repassado instantaneamente para você." />
                         <AccordionItem title="Tem alguma taxa por transação?" content="Não! A DiretoPay não cobra taxa por transação. Você recebe o valor integral das suas vendas diretamente no seu saldo, sem surpresas e sem taxas escondidas." />
                         <AccordionItem title="Como funciona o sistema de saques?" content="Após a confirmação do pagamento pelo nosso sistema (que ocorre em milissegundos), o saldo fica disponível em sua conta DiretoPay. Você pode solicitar o saque via Pix para sua chave cadastrada a qualquer momento, sem taxas." />
@@ -753,13 +752,13 @@ export default function LandingPage() {
 
             {/* CTA Final */}
             <section className="py-16 sm:py-32 px-4 sm:px-6 bg-gray-50">
-                <div className="max-w-6xl mx-auto bg-gradient-to-br from-pink-600 via-rose-600 to-rose-800 p-8 sm:p-12 md:p-32 rounded-[32px] sm:rounded-[64px] relative overflow-hidden text-center">
+                <div className="max-w-6xl mx-auto bg-gradient-to-br from-emerald-600 via-emerald-800 to-green-950 p-8 sm:p-12 md:p-32 rounded-[32px] sm:rounded-[64px] relative overflow-hidden text-center">
                     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent_60%)] pointer-events-none" />
                     <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-white/5 rounded-full blur-[60px]" />
                     <div className="space-y-12 relative z-10">
-                        <h2 className="text-3xl sm:text-5xl md:text-8xl font-black leading-[0.95] tracking-[-0.04em] uppercase text-white">O futuro dos <span className="text-pink-200">pagamentos</span> é hoje.</h2>
+                        <h2 className="text-3xl sm:text-5xl md:text-8xl font-black leading-[0.95] tracking-[-0.04em] uppercase text-white">O futuro dos <span className="text-emerald-200">pagamentos</span> é hoje.</h2>
                         <div className="pt-6">
-                            <Link to="/register" className="inline-flex items-center justify-center bg-white text-primary h-14 sm:h-20 md:h-24 px-10 sm:px-16 md:px-20 rounded-[20px] sm:rounded-[32px] text-sm sm:text-xl md:text-2xl font-black hover:bg-pink-50 transition-all shadow-[0_20px_60px_rgba(0,0,0,0.2)] whitespace-nowrap active:scale-95">
+                            <Link to="/register" className="inline-flex items-center justify-center bg-white text-primary h-14 sm:h-20 md:h-24 px-10 sm:px-16 md:px-20 rounded-[20px] sm:rounded-[32px] text-sm sm:text-xl md:text-2xl font-black hover:bg-emerald-50 transition-all shadow-[0_20px_60px_rgba(0,0,0,0.2)] whitespace-nowrap active:scale-95">
                                 CRIAR CONTA AGORA
                             </Link>
                         </div>
@@ -770,15 +769,14 @@ export default function LandingPage() {
 
             {/* Footer */}
             <footer className="px-4 sm:px-8 pb-6 pt-2 bg-gray-50">
-                <div className="max-w-6xl mx-auto bg-white border border-pink-100 rounded-[28px] sm:rounded-[36px] px-6 sm:px-10 py-10 sm:py-12 shadow-sm">
+                <div className="max-w-6xl mx-auto bg-white border border-emerald-100 rounded-[28px] sm:rounded-[36px] px-6 sm:px-10 py-10 sm:py-12 shadow-sm">
                     {/* Top grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
 
                         {/* Col 1 - Brand */}
                         <div className="space-y-5 lg:col-span-1">
                             <div className="flex items-center gap-2">
-                                <img src={isDark ? "/logo_premium.png?v=3" : "/logo_white.jpg?v=3"} alt="DiretoPay" className="w-8 h-8 rounded-lg" />
-                                <span className="font-black text-base text-gray-900">Lunar<span className="text-primary">Pay</span></span>
+                                <img src={isDark ? "/logo_premium.png?v=3" : "/logo_white.jpg?v=3"} alt="DiretoPay" className="h-7 sm:h-8 w-auto" />
                             </div>
                             <p className="text-gray-500 text-sm leading-relaxed">O lado invisível que faz sua operação crescer!</p>
                             <div className="flex flex-col gap-2">

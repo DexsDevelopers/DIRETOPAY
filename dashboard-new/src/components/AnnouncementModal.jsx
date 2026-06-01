@@ -71,8 +71,8 @@ const AnnouncementModal = () => {
             {/* Header badge */}
             <div className="flex items-center justify-between px-5 pt-4 pb-2">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-purple-400/80">
+                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-400/80">
                   {total > 1 ? `Anúncio ${currentIndex + 1} de ${total}` : 'Anúncio'}
                 </span>
               </div>
@@ -155,7 +155,7 @@ const AnnouncementModal = () => {
                   <div
                     key={i}
                     className={`h-1 rounded-full transition-all duration-300 ${
-                      i === currentIndex ? 'w-6 bg-purple-500' : 'w-1.5 bg-gray-200'
+                      i === currentIndex ? 'w-6 bg-emerald-500' : 'w-1.5 bg-gray-200'
                     }`}
                   />
                 ))}

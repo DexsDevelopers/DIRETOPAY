@@ -18,7 +18,7 @@ const accounts = [
         iconBgLight: 'bg-primary/10 text-primary',
         description: 'A conta nominal mais estável da plataforma, com a maior taxa de conversão — acima de 70%. Ideal para quem busca consistência no recebimento com saque disponível de forma instantânea.',
         fees: [
-            { icon: <Percent size={11} />, label: '8% + R$0,99 / transação', color: 'dark:bg-violet-500/15 dark:text-violet-300 dark:border-violet-500/20 bg-violet-50 text-violet-700 border-violet-200' },
+            { icon: <Percent size={11} />, label: '8% + R$0,99 / transação', color: 'dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/20 bg-emerald-50 text-emerald-700 border-emerald-200' },
             { icon: <Zap size={11} />,      label: 'Saque instantâneo',       color: 'dark:bg-green-500/15 dark:text-green-300 dark:border-green-500/20 bg-green-50 text-green-700 border-green-200' },
             { icon: <TrendingUp size={11} />, label: '+70% conversão',         color: 'dark:bg-blue-500/15 dark:text-blue-300 dark:border-blue-500/20 bg-blue-50 text-blue-700 border-blue-200' },
             { icon: <ShieldCheck size={11} />, label: 'Alta estabilidade',     color: 'dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/20 bg-emerald-50 text-emerald-700 border-emerald-200' },
@@ -39,7 +39,7 @@ const accounts = [
         description: 'Conta nominal em fase de testes com taxa mais competitiva. Risco elevado de reembolso e MED (Mecanismo Especial de Devolução) durante o período de homologação.',
         warning: 'Risco de reembolso e MED ativo durante os testes. Use com cautela.',
         fees: [
-            { icon: <Percent size={11} />, label: '4,00% + R$1,00 / transação', color: 'dark:bg-violet-500/15 dark:text-violet-300 dark:border-violet-500/20 bg-violet-50 text-violet-700 border-violet-200' },
+            { icon: <Percent size={11} />, label: '4,00% + R$1,00 / transação', color: 'dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/20 bg-emerald-50 text-emerald-700 border-emerald-200' },
             { icon: <Zap size={11} />,      label: 'Saque disponível',           color: 'dark:bg-green-500/15 dark:text-green-300 dark:border-green-500/20 bg-green-50 text-green-700 border-green-200' },
         ],
     },
@@ -57,7 +57,7 @@ const accounts = [
         iconBgLight: 'bg-emerald-100 text-emerald-600',
         description: 'Conta nominal com repasse automático. Toda venda realizada é transferida na hora para a sua chave Pix cadastrada (após as taxas).',
         fees: [
-            { icon: <Percent size={11} />, label: '7,00% + R$1,00 / transação', color: 'dark:bg-violet-500/15 dark:text-violet-300 dark:border-violet-500/20 bg-violet-50 text-violet-700 border-violet-200' },
+            { icon: <Percent size={11} />, label: '7,00% + R$1,00 / transação', color: 'dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/20 bg-emerald-50 text-emerald-700 border-emerald-200' },
             { icon: <Zap size={11} />,      label: 'Repasse automático na hora',          color: 'dark:bg-green-500/15 dark:text-green-300 dark:border-green-500/20 bg-green-50 text-green-700 border-green-200' },
         ],
     },
@@ -283,13 +283,13 @@ export default function BankAccountsPage() {
                             className={cn(
                                 "cursor-pointer p-5 rounded-3xl border-2 transition-all flex flex-col items-center text-center gap-3 select-none",
                                 withdrawPref === 'accumulate'
-                                    ? "bg-purple-500/5 border-purple-500 shadow-[0_10px_20px_rgba(30,164,101,0.12)]"
+                                    ? "bg-emerald-500/5 border-emerald-500 shadow-[0_10px_20px_rgba(30,164,101,0.12)]"
                                     : isDark ? "bg-white/[0.03] border-white/[0.07] hover:border-white/[0.14]" : "bg-gray-50 border-gray-200 hover:border-gray-300"
                             )}
                         >
                             <div className={cn(
                                 "p-2.5 rounded-full transition-colors",
-                                withdrawPref === 'accumulate' ? "bg-purple-500 text-white" : isDark ? "bg-white/10 text-white/50" : "bg-gray-200 text-gray-500"
+                                withdrawPref === 'accumulate' ? "bg-emerald-500 text-white" : isDark ? "bg-white/10 text-white/50" : "bg-gray-200 text-gray-500"
                             )}>
                                 <PiggyBank size={18} />
                             </div>

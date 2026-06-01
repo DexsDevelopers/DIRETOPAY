@@ -66,8 +66,8 @@ export default function ResetPasswordPage() {
 
     return (
         <div className="min-h-screen bg-white text-gray-900 font-['Outfit'] flex flex-col relative overflow-hidden">
-            <div className="absolute top-[-5%] right-[-5%] w-[45%] h-[45%] bg-gradient-to-bl from-purple-100 to-violet-50 rounded-full blur-[100px] -z-10 opacity-70" />
-            <div className="absolute bottom-[-5%] left-[-5%] w-[35%] h-[35%] bg-gradient-to-tr from-purple-50 to-transparent rounded-full blur-[80px] -z-10 opacity-50" />
+            <div className="absolute top-[-5%] right-[-5%] w-[45%] h-[45%] bg-gradient-to-bl from-emerald-100 to-emerald-50 rounded-full blur-[100px] -z-10 opacity-70" />
+            <div className="absolute bottom-[-5%] left-[-5%] w-[35%] h-[35%] bg-gradient-to-tr from-emerald-50 to-transparent rounded-full blur-[80px] -z-10 opacity-50" />
 
             <div className="p-8">
                 <Link to="/login" className="inline-flex items-center gap-2 text-gray-400 hover:text-gray-900 transition-colors group">
@@ -95,7 +95,7 @@ export default function ResetPasswordPage() {
                             <p className="text-gray-500 text-sm">Solicite um novo link de redefinição de senha.</p>
                             <Link
                                 to="/forgot-password"
-                                className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-violet-600 text-white px-8 py-4 rounded-full font-black hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(124,58,237,0.3)]"
+                                className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-8 py-4 rounded-full font-black hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(30,164,101,0.3)]"
                             >
                                 Solicitar Novo Link <ArrowRight size={18} />
                             </Link>
@@ -118,7 +118,7 @@ export default function ResetPasswordPage() {
                                 {userName && <p className="text-gray-500 font-medium text-sm">Olá, {userName}! Crie sua nova senha abaixo.</p>}
                             </div>
 
-                            <div className="bg-white border border-purple-100 shadow-[0_20px_60px_rgba(124,58,237,0.1)] p-8 md:p-10 rounded-[48px] relative overflow-hidden">
+                            <div className="bg-white border border-emerald-100 shadow-[0_20px_60px_rgba(30,164,101,0.1)] p-8 md:p-10 rounded-[48px] relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full blur-[50px] -z-10" />
 
                                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -161,7 +161,7 @@ export default function ResetPasswordPage() {
                                     <button
                                         type="submit"
                                         disabled={saving}
-                                        className="w-full h-16 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-full font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(124,58,237,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="w-full h-16 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-full font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(30,164,101,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {saving ? 'Salvando...' : 'Salvar Nova Senha'} <ArrowRight size={20} />
                                     </button>

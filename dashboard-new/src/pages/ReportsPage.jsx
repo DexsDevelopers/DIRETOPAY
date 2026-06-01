@@ -297,7 +297,7 @@ function MetricCard({ title, value, change, icon }) {
     const isUp = hasComparison && change >= 0;
     const changeStr = !hasComparison ? null : change === 0 ? '0%' : `${isUp ? '+' : ''}${change}%`;
     return (
-        <div className="bg-white p-5 rounded-[24px] border border-gray-100 shadow-sm hover:shadow-md hover:border-purple-100 transition-all duration-300 group">
+        <div className="bg-white p-5 rounded-[24px] border border-gray-100 shadow-sm hover:shadow-md hover:border-emerald-100 transition-all duration-300 group">
             <div className="flex items-center justify-between mb-3">
                 <div className="p-2.5 rounded-xl bg-primary/10 text-primary group-hover:scale-110 transition-transform duration-300">
                     {icon}

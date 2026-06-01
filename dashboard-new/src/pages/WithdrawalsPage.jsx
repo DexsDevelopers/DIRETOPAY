@@ -109,7 +109,7 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-6">
 
-                    <div className="bg-white border border-purple-100 shadow-[0_4px_24px_rgba(124,58,237,0.08)] p-8 rounded-[40px] space-y-8 relative overflow-hidden">
+                    <div className="bg-white border border-emerald-100 shadow-[0_4px_24px_rgba(30,164,101,0.08)] p-8 rounded-[40px] space-y-8 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -z-10" />
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -166,7 +166,7 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
                             <button
                                 onClick={handleWithdraw}
                                 disabled={loading}
-                                className="w-full h-18 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-[24px] font-black text-xl flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(124,58,237,0.3)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                className="w-full h-18 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-[24px] font-black text-xl flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(30,164,101,0.3)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                             >
                                 {loading ? (
                                     <><Loader2 size={22} className="animate-spin" /> Processando...</>
@@ -212,7 +212,7 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
                 </div>
 
                 <div className="space-y-6">
-                    <div className="bg-white border border-purple-100 shadow-[0_4px_24px_rgba(124,58,237,0.08)] p-8 rounded-[40px]">
+                    <div className="bg-white border border-emerald-100 shadow-[0_4px_24px_rgba(30,164,101,0.08)] p-8 rounded-[40px]">
                         <h3 className="text-lg font-black mb-4 flex items-center justify-between text-gray-900">
                             <span className="flex items-center gap-2">
                                 <History size={18} className="text-primary" />

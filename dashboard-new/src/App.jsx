@@ -112,7 +112,7 @@ function DashboardLayout({ children, activeTab, setActiveTab, isSidebarOpen, set
       <AnnouncementModal />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         <AnnouncementBar />
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-100/40 rounded-full blur-[120px] -z-10 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-100/40 rounded-full blur-[120px] -z-10 pointer-events-none" />
 
         <Header
           userData={userData}

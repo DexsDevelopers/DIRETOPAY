@@ -1278,7 +1278,7 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
                     +3.000 Sellers que confiam em nós!
                 </div>
                 <h1 class="hero-title-v2">
-                    O lado invisível que faz <span>sua operação crescer!</span>
+                    A plataforma de pagamentos que escala com <span>sua operação crescer!</span>
                 </h1>
                 <p class="hero-subtitle-v2">
                     Receba via Pix com <strong>anonimato garantido</strong>. Sem exposição de CPF/CNPJ, 
@@ -1557,7 +1557,7 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
                     <img src="logo_premium.png" alt="Ghost Pix" class="gfooter-logo-img">
                     <span class="gfooter-logo-text">GHOST<span>PIX</span></span>
                 </div>
-                <p class="gfooter-tagline">O lado invisível que faz sua operação crescer!</p>
+                <p class="gfooter-tagline">A plataforma de pagamentos que escala com sua operação crescer!</p>
                 <div class="gfooter-social">
                     <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
                     <a href="#" target="_blank"><i class="fab fa-tiktok"></i></a>

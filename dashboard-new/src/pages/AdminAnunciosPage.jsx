@@ -112,7 +112,7 @@ const AdminAnunciosPage = () => {
     setPreview(url);
   };
 
-  const inputClass = "w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder:text-gray-300 focus:border-purple-500/50 focus:outline-none focus:ring-1 focus:ring-purple-500/30 transition";
+  const inputClass = "w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder:text-gray-300 focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/30 transition";
   const labelClass = "block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5";
 
   return (
@@ -121,7 +121,7 @@ const AdminAnunciosPage = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2.5">
-            <Megaphone size={22} className="text-purple-400" />
+            <Megaphone size={22} className="text-emerald-400" />
             Anúncios
           </h1>
           <p className="text-sm text-gray-500 mt-1">Gerencie anúncios exibidos aos usuários ao entrar na plataforma</p>
@@ -174,7 +174,7 @@ const AdminAnunciosPage = () => {
                   <label className={labelClass}>Imagem ou Vídeo</label>
                   <div
                     onClick={() => fileRef.current?.click()}
-                    className="relative w-full border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:border-purple-500/30 transition group overflow-hidden"
+                    className="relative w-full border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:border-emerald-500/30 transition group overflow-hidden"
                   >
                     {preview && !form.remove_media ? (
                       <div className="relative">
@@ -264,7 +264,7 @@ const AdminAnunciosPage = () => {
             <motion.div
               key={ann.id}
               layout
-              className="bg-white border border-gray-100 shadow-sm rounded-xl overflow-hidden hover:border-purple-200 transition"
+              className="bg-white border border-gray-100 shadow-sm rounded-xl overflow-hidden hover:border-emerald-200 transition"
             >
               <div className="flex flex-col sm:flex-row">
                 {/* Thumbnail */}
@@ -298,7 +298,7 @@ const AdminAnunciosPage = () => {
                   </div>
                   <div className="flex flex-wrap items-center gap-2 mt-3">
                     {ann.media_type !== 'none' && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                         {ann.media_type === 'image' ? <><Image size={9} className="inline mr-0.5" /> Imagem</> : <><Video size={9} className="inline mr-0.5" /> Vídeo</>}
                       </span>
                     )}

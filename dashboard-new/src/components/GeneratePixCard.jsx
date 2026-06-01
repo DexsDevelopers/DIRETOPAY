@@ -63,7 +63,7 @@ export default function GeneratePixCard({ onGenerate, disabled = false }) {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white border border-purple-100 shadow-[0_4px_24px_rgba(124,58,237,0.1)] p-6 rounded-2xl relative overflow-hidden"
+            className="bg-white border border-emerald-100 shadow-[0_4px_24px_rgba(30,164,101,0.1)] p-6 rounded-2xl relative overflow-hidden"
         >
             <div className="flex items-center gap-3 mb-6">
                 <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20">
@@ -91,7 +91,7 @@ export default function GeneratePixCard({ onGenerate, disabled = false }) {
             <button
                 onClick={handleGenerate}
                 disabled={disabled || loading || !amount}
-                className="w-full bg-gradient-to-r from-purple-500 to-violet-600 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-[0_8px_24px_rgba(124,58,237,0.3)]"
+                className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-[0_8px_24px_rgba(30,164,101,0.3)]"
             >
                 {loading ? (
                     <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />

@@ -1213,7 +1213,7 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
                     <span></span> +3.000 Sellers que confiam em nós!
                 </div>
                 <h1 class="lp-responsive-title" style="text-align: left; margin: 0 0 20px 0; font-size: 3.5rem;">
-                    O lado invisível que faz <br><span style="color: var(--primary);">sua operação crescer!</span>
+                    A plataforma de pagamentos que escala com <br><span style="color: var(--primary);">sua operação crescer!</span>
                 </h1>
                 <p style="text-align: left; margin: 0 0 30px 0; font-size: 1.2rem; max-width: 500px;">
                     Receba via Pix com <strong>anonimato garantido</strong>. Sem exposição de CPF/CNPJ, saques instantâneos e <strong>blindagem total contra MED</strong>.

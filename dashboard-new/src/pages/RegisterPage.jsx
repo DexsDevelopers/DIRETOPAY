@@ -80,8 +80,8 @@ export default function RegisterPage() {
     return (
         <div className="min-h-screen bg-white text-gray-900 font-['Outfit'] flex flex-col relative overflow-hidden">
             {/* Decorative blobs */}
-            <div className="absolute top-[-5%] right-[-5%] w-[50%] h-[50%] bg-gradient-to-bl from-pink-100 to-rose-50 rounded-full blur-[120px] -z-10 opacity-60" />
-            <div className="absolute bottom-[10%] left-[-10%] w-[40%] h-[40%] bg-gradient-to-tr from-pink-50 to-transparent rounded-full blur-[100px] -z-10 opacity-40" />
+            <div className="absolute top-[-5%] right-[-5%] w-[50%] h-[50%] bg-gradient-to-bl from-emerald-100 to-green-50 rounded-full blur-[120px] -z-10 opacity-60" />
+            <div className="absolute bottom-[10%] left-[-10%] w-[40%] h-[40%] bg-gradient-to-tr from-emerald-50 to-transparent rounded-full blur-[100px] -z-10 opacity-40" />
 
             <div className="p-8">
                 {step === 1 ? (
@@ -115,7 +115,7 @@ export default function RegisterPage() {
                         </p>
                     </div>
 
-                    <div className="bg-white border border-pink-100 shadow-[0_20px_60px_rgba(30,164,101,0.1)] p-10 rounded-[56px] relative overflow-hidden">
+                    <div className="bg-white border border-emerald-100 shadow-[0_20px_60px_rgba(30,164,101,0.1)] p-10 rounded-[56px] relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-[60px] -z-10" />
                         
                         <AnimatePresence mode="wait">
@@ -204,14 +204,14 @@ export default function RegisterPage() {
                                             </div>
                                         </div>
 
-                                        <div className="bg-pink-50 p-6 rounded-3xl border border-pink-100 flex gap-4">
+                                        <div className="bg-emerald-50 p-6 rounded-3xl border border-emerald-100 flex gap-4">
                                             <ShieldAlert className="text-primary/40 shrink-0" size={24} />
                                             <p className="text-[11px] text-gray-500 leading-relaxed font-medium">Ao criar sua conta, você concorda com nossos <span className="text-gray-900 font-bold">Termos de Uso</span> e nossa <span className="text-gray-900 font-bold">Política de Privacidade Blindada</span>.</p>
                                         </div>
 
                                         <button
                                             type="submit"
-                                            className="w-full h-16 bg-gradient-to-r from-pink-600 to-rose-700 text-white rounded-full font-black text-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(30,164,101,0.35)]"
+                                            className="w-full h-16 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-full font-black text-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(30,164,101,0.35)]"
                                         >
                                             Configurar Operação <ArrowRight size={24} />
                                         </button>
@@ -245,13 +245,13 @@ export default function RegisterPage() {
                                                     className={cn(
                                                         "cursor-pointer p-5 rounded-3xl border-2 transition-all flex items-start gap-4 select-none",
                                                         preferredNominal === 'nominal1'
-                                                            ? "bg-pink-500/5 border-pink-500 shadow-[0_10px_25px_rgba(236,72,153,0.12)]"
+                                                            ? "bg-emerald-500/5 border-emerald-500 shadow-[0_10px_25px_rgba(236,72,153,0.12)]"
                                                             : "bg-gray-50 border-gray-100 hover:border-gray-200"
                                                     )}
                                                 >
                                                     <div className={cn(
                                                         "p-3 rounded-2xl shrink-0 transition-colors",
-                                                        preferredNominal === 'nominal1' ? "bg-pink-500 text-white" : "bg-gray-200 text-gray-500"
+                                                        preferredNominal === 'nominal1' ? "bg-emerald-500 text-white" : "bg-gray-200 text-gray-500"
                                                     )}>
                                                         <ShieldAlert size={20} />
                                                     </div>
@@ -362,13 +362,13 @@ export default function RegisterPage() {
                                                         className={cn(
                                                             "cursor-pointer p-5 rounded-3xl border-2 transition-all flex flex-col items-center text-center gap-3 select-none",
                                                             withdrawPreference === 'accumulate'
-                                                                ? "bg-purple-500/5 border-purple-500 shadow-[0_10px_20px_rgba(30,164,101,0.12)]"
+                                                                ? "bg-emerald-500/5 border-emerald-500 shadow-[0_10px_20px_rgba(30,164,101,0.12)]"
                                                                 : "bg-gray-50 border-gray-100 hover:border-gray-200"
                                                         )}
                                                     >
                                                         <div className={cn(
                                                             "p-2.5 rounded-full transition-colors",
-                                                            withdrawPreference === 'accumulate' ? "bg-purple-500 text-white" : "bg-gray-200 text-gray-500"
+                                                            withdrawPreference === 'accumulate' ? "bg-emerald-500 text-white" : "bg-gray-200 text-gray-500"
                                                         )}>
                                                             <PiggyBank size={18} />
                                                         </div>
@@ -415,7 +415,7 @@ export default function RegisterPage() {
                                             <button
                                                 type="submit"
                                                 disabled={loading}
-                                                className="flex-[2] h-16 bg-gradient-to-r from-pink-600 to-rose-700 text-white rounded-full font-black text-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(30,164,101,0.35)] disabled:opacity-50"
+                                                className="flex-[2] h-16 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-full font-black text-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(30,164,101,0.35)] disabled:opacity-50"
                                             >
                                                 {loading ? 'Finalizando...' : 'Finalizar Cadastro'} <ArrowRight size={24} />
                                             </button>

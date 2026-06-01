@@ -782,8 +782,8 @@ export default function CheckoutBuilderPage() {
                         <ToggleRow icon={<Gift size={13} />} label="Ativar Order Bump" sub="Oferta extra dentro do checkout" value={cs.show_order_bump} onChange={v => setCSF('show_order_bump', v)} />
                         {cs.show_order_bump && (
                             <div className="space-y-3">
-                                <div className="bg-violet-50 border border-violet-100 rounded-xl p-3">
-                                    <p className="text-[10px] text-violet-600 font-bold">💡 Order Bumps aumentam o ticket médio em até 30%</p>
+                                <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3">
+                                    <p className="text-[10px] text-emerald-600 font-bold">💡 Order Bumps aumentam o ticket médio em até 30%</p>
                                 </div>
                                 <div>
                                     <label className={labelCls}>Título da Oferta</label>

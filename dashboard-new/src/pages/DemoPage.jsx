@@ -99,7 +99,7 @@ function SimulatedDashboard() {
                         <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
                             <Zap size={14} className="text-primary" />
                         </div>
-                        <span className="text-sm font-black tracking-tight">Lunar<span className="text-primary italic">PIX</span></span>
+                        <span className="text-sm font-black tracking-tight">Direto<span className="text-primary italic">PIX</span></span>
                         <span className="text-[9px] bg-primary/10 text-primary font-black px-2 py-0.5 rounded-full uppercase">Demo ao vivo</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -214,7 +214,7 @@ const STEPS = [
         icon: <Wallet size={24} />,
         title: 'Saque quando quiser',
         desc: 'Transfira seus lucros via PIX sem taxas. Rápido e direto na sua conta.',
-        color: 'from-purple-500/20 to-pink-500/20'
+        color: 'from-emerald-500/20 to-emerald-500/20'
     }
 ];
 
@@ -236,7 +236,7 @@ export default function DemoPage() {
                     <div className="w-7 h-7 rounded-lg bg-primary/20 flex items-center justify-center overflow-hidden">
                         <img src="/logo_premium.png?v=3" alt="DiretoPay" className="w-full h-full object-cover" />
                     </div>
-                    <span className="text-sm font-black tracking-tight">Lunar<span className="text-primary italic">Pay</span></span>
+                    <span className="text-sm font-black tracking-tight">Direto<span className="text-primary italic">Pay</span></span>
                 </Link>
                 <div className="flex items-center gap-3">
                     <Link to="/" className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-colors hidden sm:block">
@@ -488,7 +488,7 @@ export default function DemoPage() {
             <footer className="border-t border-white/5 px-6 py-8">
                 <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-2">
-                        <span className="text-sm font-black tracking-tight">Lunar<span className="text-primary italic">PIX</span></span>
+                        <span className="text-sm font-black tracking-tight">Direto<span className="text-primary italic">PIX</span></span>
                         <span className="text-[10px] text-white/20">© {new Date().getFullYear()}</span>
                     </div>
                     <div className="flex items-center gap-6 text-[10px] text-white/30 font-bold uppercase tracking-widest">

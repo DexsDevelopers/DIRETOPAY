@@ -200,7 +200,7 @@ export default function CuponsPage() {
                                         className={cn(
                                             "flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl border text-xs font-bold transition-all",
                                             form.type === t.id
-                                                ? 'bg-purple-400/10 border-purple-400/30 text-purple-400'
+                                                ? 'bg-emerald-400/10 border-emerald-400/30 text-emerald-400'
                                                 : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'
                                         )}
                                     >
@@ -243,7 +243,7 @@ export default function CuponsPage() {
                                     className={cn(
                                         "flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl border text-xs font-bold transition-all",
                                         form.scope === s.id
-                                            ? 'bg-purple-400/10 border-purple-400/30 text-purple-400'
+                                            ? 'bg-emerald-400/10 border-emerald-400/30 text-emerald-400'
                                             : 'bg-gray-50 border-gray-200 text-gray-400 hover:border-gray-300'
                                     )}
                                 >
@@ -309,10 +309,10 @@ export default function CuponsPage() {
 
                     {/* Preview */}
                     {form.value && (
-                        <div className="p-4 bg-purple-400/5 border border-purple-400/15 rounded-xl flex items-center gap-3">
-                            <Tag size={16} className="text-purple-400 shrink-0" />
+                        <div className="p-4 bg-emerald-400/5 border border-emerald-400/15 rounded-xl flex items-center gap-3">
+                            <Tag size={16} className="text-emerald-400 shrink-0" />
                             <div className="text-sm">
-                                <span className="font-black text-purple-400">
+                                <span className="font-black text-emerald-400">
                                     {form.code || 'XXXXXXXX'}
                                 </span>
                                 {' — '}
@@ -337,7 +337,7 @@ export default function CuponsPage() {
                             Cancelar
                         </button>
                         <button type="submit" disabled={saving}
-                            className="flex-1 py-3 rounded-xl bg-purple-400 text-white font-black hover:bg-purple-400/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-sm">
+                            className="flex-1 py-3 rounded-xl bg-emerald-400 text-white font-black hover:bg-emerald-400/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-sm">
                             {saving ? <><RefreshCw size={14} className="animate-spin" /> Criando...</> : <><Plus size={14} /> Criar Cupom</>}
                         </button>
                     </div>
@@ -347,7 +347,7 @@ export default function CuponsPage() {
             {/* Coupons List */}
             {loading ? (
                 <div className="flex items-center justify-center py-20">
-                    <RefreshCw size={24} className="animate-spin text-purple-400" />
+                    <RefreshCw size={24} className="animate-spin text-emerald-400" />
                 </div>
             ) : coupons.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
@@ -370,7 +370,7 @@ export default function CuponsPage() {
                         return (
                             <div key={c.id} className={cn(
                                 "bg-white border shadow-sm rounded-2xl p-5 transition-all",
-                                c.active ? "border-gray-100 hover:border-purple-200" : "border-gray-100 opacity-60"
+                                c.active ? "border-gray-100 hover:border-emerald-200" : "border-gray-100 opacity-60"
                             )}>
                                 <div className="flex flex-wrap items-start gap-4">
                                     {/* Code + badges */}
@@ -393,8 +393,8 @@ export default function CuponsPage() {
                                         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
                                             <span className="flex items-center gap-1">
                                                 {c.type === 'percent'
-                                                    ? <><Percent size={11} className="text-purple-400" /> <strong className="text-purple-400">{parseFloat(c.value).toFixed(0)}% desconto</strong></>
-                                                    : <><DollarSign size={11} className="text-purple-400" /> <strong className="text-purple-400">{fmtBRL(c.value)} desconto</strong></>
+                                                    ? <><Percent size={11} className="text-emerald-400" /> <strong className="text-emerald-400">{parseFloat(c.value).toFixed(0)}% desconto</strong></>
+                                                    : <><DollarSign size={11} className="text-emerald-400" /> <strong className="text-emerald-400">{fmtBRL(c.value)} desconto</strong></>
                                                 }
                                             </span>
                                             <span className="flex items-center gap-1">
@@ -424,7 +424,7 @@ export default function CuponsPage() {
                                                     <div
                                                         className={cn(
                                                             "h-full rounded-full transition-all",
-                                                            usesPercent >= 100 ? 'bg-red-400' : usesPercent >= 80 ? 'bg-orange-400' : 'bg-purple-400'
+                                                            usesPercent >= 100 ? 'bg-red-400' : usesPercent >= 80 ? 'bg-orange-400' : 'bg-emerald-400'
                                                         )}
                                                         style={{ width: `${usesPercent}%` }}
                                                     />
@@ -442,9 +442,9 @@ export default function CuponsPage() {
                                             title={c.active ? 'Desativar' : 'Ativar'}
                                         >
                                             {actionLoading === c.id
-                                                ? <RefreshCw size={32} className="animate-spin text-purple-400" />
+                                                ? <RefreshCw size={32} className="animate-spin text-emerald-400" />
                                                 : c.active
-                                                    ? <ToggleRight size={36} className="text-purple-400" />
+                                                    ? <ToggleRight size={36} className="text-emerald-400" />
                                                     : <ToggleLeft size={36} className="text-gray-300" />
                                             }
                                         </button>

@@ -38,7 +38,7 @@ function ApiTableRows({ apis, actionLoading, onToggle, onDelete, onSwitchType, e
                     <span className={cn(
                         "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border",
                         api.status === 'active'
-                            ? 'bg-purple-500/10 text-purple-500 border-purple-500/20'
+                            ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
                             : 'bg-gray-100 text-gray-400 border-gray-200'
                     )}>
                         {api.status === 'active' ? 'Ativo' : 'Inativo'}
@@ -90,12 +90,12 @@ function ApiCardsMobile({ apis, actionLoading, onToggle, onDelete, onSwitchType,
                     <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
                             <h4 className="text-[14px] font-bold text-gray-900 truncate">{api.name}</h4>
-                            <code className="text-[10px] text-purple-400/50">pk_...{api.api_key.slice(-6)}</code>
+                            <code className="text-[10px] text-emerald-400/50">pk_...{api.api_key.slice(-6)}</code>
                         </div>
                         <span className={cn(
                             "px-2.5 py-1 rounded-lg text-[9px] font-black uppercase shrink-0 tracking-wide",
                             api.status === 'active'
-                                ? 'bg-purple-500/15 text-purple-400'
+                                ? 'bg-emerald-500/15 text-emerald-400'
                                 : 'bg-gray-100 text-gray-400'
                         )}>
                             {api.status === 'active' ? 'Ativo' : 'Inativo'}
@@ -174,7 +174,7 @@ export default function AdminApisPage() {
     const adminApis = apis.filter(a => a.is_admin_only == 1);
 
     if (loading && apis.length === 0) {
-        return <div className="flex items-center justify-center h-full"><RefreshCw className="animate-spin text-purple-500" size={32} /></div>;
+        return <div className="flex items-center justify-center h-full"><RefreshCw className="animate-spin text-emerald-500" size={32} /></div>;
     }
 
     const tableHead = (

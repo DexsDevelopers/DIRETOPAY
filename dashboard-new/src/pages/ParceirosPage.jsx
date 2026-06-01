@@ -14,9 +14,9 @@ const parceiros = [
         badge: 'SSO Ativo',
         badgeColor: 'emerald',
         logo: '💬',
-        gradient: 'from-violet-500/20 to-purple-600/10',
-        borderColor: 'border-violet-500/20',
-        accentColor: 'text-violet-400',
+        gradient: 'from-emerald-500/20 to-emerald-600/10',
+        borderColor: 'border-emerald-500/20',
+        accentColor: 'text-emerald-400',
     },
     {
         id: 'diretopay-docs',

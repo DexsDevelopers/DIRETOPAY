@@ -89,7 +89,7 @@ export default function CheckoutsPage() {
 
                 <Link
                     to="/checkout-builder"
-                    className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-8 py-4 rounded-2xl font-black text-sm flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-[0_10px_40px_rgba(124,58,237,0.25)]"
+                    className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-8 py-4 rounded-2xl font-black text-sm flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-[0_10px_40px_rgba(30,164,101,0.25)]"
                 >
                     <Plus size={20} /> NOVO CHECKOUT
                 </Link>
@@ -128,7 +128,7 @@ export default function CheckoutsPage() {
                             layout
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-white border border-gray-100 group rounded-[32px] overflow-hidden flex flex-col p-8 transition-all shadow-sm hover:border-primary/20 hover:shadow-[0_20px_60px_rgba(124,58,237,0.12)]"
+                            className="bg-white border border-gray-100 group rounded-[32px] overflow-hidden flex flex-col p-8 transition-all shadow-sm hover:border-primary/20 hover:shadow-[0_20px_60px_rgba(30,164,101,0.12)]"
                         >
                             <div className="flex justify-between items-start mb-6">
                                 <div className="flex flex-col gap-1">

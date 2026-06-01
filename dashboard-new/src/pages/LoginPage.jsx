@@ -31,7 +31,7 @@ function FloatingPill({ Icon, label, delay, float: floatY }) {
             <motion.div
                 animate={{ y: [0, floatY, 0] }}
                 transition={{ delay: delay + 0.5, duration: 3.5 + delay * 0.4, repeat: Infinity, ease: 'easeInOut' }}
-                className="flex items-center gap-2.5 bg-white border border-pink-100 hover:border-primary/30 rounded-full px-4 py-2.5 shadow-[0_4px_20px_rgba(30,164,101,0.08)] hover:shadow-[0_4px_28px_rgba(30,164,101,0.16)] transition-all whitespace-nowrap"
+                className="flex items-center gap-2.5 bg-white border border-emerald-100 hover:border-primary/30 rounded-full px-4 py-2.5 shadow-[0_4px_20px_rgba(30,164,101,0.08)] hover:shadow-[0_4px_28px_rgba(30,164,101,0.16)] transition-all whitespace-nowrap"
             >
                 <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <Icon size={12} className="text-primary" />
@@ -124,8 +124,8 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen bg-white text-gray-900 font-['Outfit'] flex flex-col relative overflow-hidden">
             {/* Decorative blobs */}
-            <div className="absolute top-[-5%] right-[-5%] w-[45%] h-[45%] bg-gradient-to-bl from-pink-100 to-rose-50 rounded-full blur-[100px] -z-10 opacity-70" />
-            <div className="absolute bottom-[-5%] left-[-5%] w-[35%] h-[35%] bg-gradient-to-tr from-pink-50 to-transparent rounded-full blur-[80px] -z-10 opacity-50" />
+            <div className="absolute top-[-5%] right-[-5%] w-[45%] h-[45%] bg-gradient-to-bl from-emerald-100 to-green-50 rounded-full blur-[100px] -z-10 opacity-70" />
+            <div className="absolute bottom-[-5%] left-[-5%] w-[35%] h-[35%] bg-gradient-to-tr from-emerald-50 to-transparent rounded-full blur-[80px] -z-10 opacity-50" />
 
             {/* Floating Pills — left side (hidden on small screens) */}
             <div className="hidden lg:block pointer-events-none">
@@ -181,14 +181,14 @@ export default function LoginPage() {
                     className="w-full max-w-md"
                 >
                     <div className="text-center mb-10">
-                        <div className="w-16 h-16 bg-gradient-to-br from-pink-600/10 to-rose-700/10 border border-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_8px_30px_rgba(124,58,237,0.15)]">
+                        <div className="w-16 h-16 bg-gradient-to-br from-emerald-600/10 to-green-700/10 border border-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_8px_30px_rgba(30,164,101,0.15)]">
                             <Shield className="text-primary" size={32} />
                         </div>
                         <h1 className="text-4xl font-black mb-2 tracking-tight text-gray-900">Bem-vindo de <span className="text-primary italic">Volta</span></h1>
                         <p className="text-gray-500 font-medium text-sm px-4">Acesse sua central de comando blindada DiretoPay.</p>
                     </div>
 
-                    <div className="bg-white border border-pink-100 shadow-[0_20px_60px_rgba(30,164,101,0.1)] p-8 md:p-10 rounded-[48px] relative overflow-hidden">
+                    <div className="bg-white border border-emerald-100 shadow-[0_20px_60px_rgba(30,164,101,0.1)] p-8 md:p-10 rounded-[48px] relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full blur-[50px] -z-10" />
 
                         {resetSuccess && (
@@ -246,7 +246,7 @@ export default function LoginPage() {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full h-16 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-full font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(124,58,237,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full h-16 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-full font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(30,164,101,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {loading ? 'Salvando...' : 'Definir Nova Senha'} <ArrowRight size={20} />
                                 </button>
@@ -302,7 +302,7 @@ export default function LoginPage() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full h-16 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-full font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(124,58,237,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full h-16 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-full font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(30,164,101,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {loading ? 'Autenticando...' : 'Entrar no Painel'} <ArrowRight size={20} />
                             </button>

@@ -7,7 +7,7 @@ export default function StatCard({ label, value, icon, trend, loading = false, c
         <motion.div
             whileHover={{ translateY: -4 }}
             className={cn(
-                "bg-white border border-gray-100 shadow-[0_2px_16px_rgba(124,58,237,0.07)] p-6 rounded-3xl relative overflow-hidden group",
+                "bg-white border border-gray-100 shadow-[0_2px_16px_rgba(30,164,101,0.07)] p-6 rounded-3xl relative overflow-hidden group",
                 className
             )}
         >

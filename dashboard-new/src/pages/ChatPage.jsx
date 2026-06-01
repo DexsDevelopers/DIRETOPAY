@@ -289,21 +289,21 @@ export default function ChatPage() {
                                                 isMe
                                                     ? msg.sender_type === 'admin'
                                                         ? "bg-amber-500/15 border border-amber-500/20"
-                                                        : "bg-purple-500/15 border border-purple-500/20"
+                                                        : "bg-emerald-500/15 border border-emerald-500/20"
                                                     : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
                                             )}>
                                                 <div className="flex items-center gap-2 mb-0.5">
                                                     <span className={cn(
                                                         "text-[10px] font-black uppercase",
                                                         isMe
-                                                            ? msg.sender_type === 'admin' ? 'text-amber-400' : 'text-purple-500'
+                                                            ? msg.sender_type === 'admin' ? 'text-amber-400' : 'text-emerald-500'
                                                             : 'text-gray-400'
                                                     )}>{msg.sender_name}</span>
                                                 </div>
                                                 <p className="text-[13px] text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap break-words">{msg.message}</p>
                                                 <div className={cn("flex items-center gap-1 mt-1", isMe ? "justify-end" : "justify-start")}>
                                                     <span className="text-[9px] text-gray-400">{formatTime(msg.created_at)}</span>
-                                                    {isMe && <CheckCheck size={10} className={msg.read_at ? "text-purple-500" : "text-gray-300"} />}
+                                                    {isMe && <CheckCheck size={10} className={msg.read_at ? "text-emerald-500" : "text-gray-300"} />}
                                                 </div>
                                             </div>
                                         </div>

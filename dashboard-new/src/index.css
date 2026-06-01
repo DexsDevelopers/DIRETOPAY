@@ -33,8 +33,8 @@ body {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(124, 58, 237, 0.1);
-  box-shadow: 0 20px 60px rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(30, 164, 101, 0.1);
+  box-shadow: 0 20px 60px rgba(30, 164, 101, 0.08);
 }
 
 @utility lp-btn-primary {
@@ -51,7 +51,7 @@ body {
 }
 
 @utility lp-btn-outline {
-  background: #FFF0F5;
+  background: #f2faf6;
   color: #126b41;
   border-radius: 9999px;
   font-weight: 600;
@@ -123,14 +123,14 @@ html.dark .hover\:bg-white:hover      { background-color: #20202c !important; }
 html.dark .hover\:bg-gray-900\/10:hover { background-color: rgba(30,164,101,0.08) !important; }
 
 /* Ambient decorations */
-html.dark .bg-purple-100\/40  { background-color: rgba(30,164,101,0.07) !important; }
+html.dark .bg-emerald-100\/40  { background-color: rgba(30,164,101,0.07) !important; }
 html.dark .bg-primary/5      { background-color: rgba(30,164,101,0.05) !important; }
 html.dark .bg-primary/8      { background-color: rgba(30,164,101,0.09) !important; }
 html.dark .bg-primary/10     { background-color: rgba(30,164,101,0.1) !important; }
-html.dark .bg-violet-50/30   { background-color: rgba(30,164,101,0.06) !important; }
+html.dark .bg-emerald-50/30   { background-color: rgba(30,164,101,0.06) !important; }
 
 /* Card special backgrounds */
-html.dark .bg-purple-100      { background-color: rgba(30,164,101,0.08) !important; }
+html.dark .bg-emerald-100      { background-color: rgba(30,164,101,0.08) !important; }
 html.dark .bg-red-50          { background-color: rgba(239,68,68,0.06) !important; }
 html.dark .bg-orange-50       { background-color: rgba(249,115,22,0.06) !important; }
 html.dark .bg-emerald-50      { background-color: rgba(16,185,129,0.06) !important; }
@@ -141,10 +141,10 @@ html.dark .bg-amber-50        { background-color: rgba(245,158,11,0.06) !importa
 html.dark .border-gray-100    { border-color: #242432 !important; }
 html.dark .border-gray-200    { border-color: #2c2c3e !important; }
 html.dark .border-gray-300    { border-color: #38384e !important; }
-html.dark .border-purple-100  { border-color: rgba(30,164,101,0.15) !important; }
-html.dark .border-pink-100    { border-color: rgba(30,164,101,0.15) !important; }
-html.dark .bg-pink-50         { background-color: rgba(30,164,101,0.06) !important; }
-html.dark .bg-pink-100        { background-color: rgba(30,164,101,0.08) !important; }
+html.dark .border-emerald-100  { border-color: rgba(30,164,101,0.15) !important; }
+html.dark .border-emerald-100    { border-color: rgba(30,164,101,0.15) !important; }
+html.dark .bg-emerald-50         { background-color: rgba(30,164,101,0.06) !important; }
+html.dark .bg-emerald-100        { background-color: rgba(30,164,101,0.08) !important; }
 
 html.dark .divide-gray-100 > * + * { border-color: #242432 !important; }
 

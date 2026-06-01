@@ -122,7 +122,7 @@ export default function AffiliatePage() {
                                 "w-14 rounded-2xl flex items-center justify-center transition-all font-bold shrink-0",
                                 copied
                                     ? "bg-primary text-white"
-                                    : "bg-gradient-to-r from-purple-500 to-violet-600 text-white hover:scale-105"
+                                    : "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:scale-105"
                             )}
                         >
                             {copied ? <Check size={20} /> : <Copy size={20} />}
@@ -273,7 +273,7 @@ function StatCard({ icon, label, value, sub, highlight }) {
             "p-5 rounded-[24px] border backdrop-blur-md transition-all duration-300 group",
             highlight
                 ? "bg-primary/[0.05] border-primary/10 hover:border-primary/20"
-                : "bg-white border-gray-100 hover:border-purple-100 shadow-sm"
+                : "bg-white border-gray-100 hover:border-emerald-100 shadow-sm"
         )}>
             <div className={cn(
                 "p-2.5 rounded-xl w-fit mb-3 group-hover:scale-110 transition-transform duration-300",

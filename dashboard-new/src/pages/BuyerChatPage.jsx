@@ -113,7 +113,7 @@ export default function BuyerChatPage() {
                 </div>
                 <span className={cn(
                     "px-2.5 py-1 rounded-lg text-[9px] font-black uppercase shrink-0",
-                    room?.status === 'open' ? 'bg-purple-500/15 text-purple-500' : 'bg-gray-100 text-gray-400'
+                    room?.status === 'open' ? 'bg-emerald-500/15 text-emerald-500' : 'bg-gray-100 text-gray-400'
                 )}>{room?.status === 'open' ? 'Online' : 'Encerrado'}</span>
             </div>
 
@@ -160,13 +160,13 @@ export default function BuyerChatPage() {
                                         {isAdmin && <Crown size={9} className="text-amber-400" />}
                                         <span className={cn(
                                             "text-[10px] font-black uppercase",
-                                            isBuyer ? 'text-purple-500' : isAdmin ? 'text-amber-500' : 'text-primary'
+                                            isBuyer ? 'text-emerald-500' : isAdmin ? 'text-amber-500' : 'text-primary'
                                         )}>{msg.sender_name}</span>
                                     </div>
                                     <p className="text-[13px] text-gray-800 leading-relaxed whitespace-pre-wrap break-words">{msg.message}</p>
                                     <div className={cn("flex items-center gap-1 mt-1", isBuyer ? "justify-end" : "justify-start")}>
                                         <span className="text-[9px] text-gray-400">{formatTime(msg.created_at)}</span>
-                                        {isBuyer && <CheckCheck size={10} className={msg.read_at ? "text-purple-500" : "text-gray-300"} />}
+                                        {isBuyer && <CheckCheck size={10} className={msg.read_at ? "text-emerald-500" : "text-gray-300"} />}
                                     </div>
                                 </div>
                             </div>

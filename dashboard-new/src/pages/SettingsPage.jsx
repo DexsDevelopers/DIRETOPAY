@@ -1044,8 +1044,8 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                 {/* 7K Community */}
                                 <div className="rounded-3xl border border-gray-200 bg-white p-6 space-y-5 shadow-sm">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-2xl bg-violet-500/10 border border-gray-200 flex items-center justify-center">
-                                            <Users size={22} className="text-violet-500" />
+                                        <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-gray-200 flex items-center justify-center">
+                                            <Users size={22} className="text-emerald-500" />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2 flex-wrap">
@@ -1065,7 +1065,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                             <p className="text-xs text-gray-500 mt-0.5">Receba DMs automáticas no 7kchat.site a cada venda aprovada.</p>
                                         </div>
                                         <a href="https://7kchat.site" target="_blank" rel="noopener noreferrer"
-                                           className="shrink-0 flex items-center gap-1.5 text-xs font-black text-violet-500 hover:text-violet-600 transition-colors">
+                                           className="shrink-0 flex items-center gap-1.5 text-xs font-black text-emerald-500 hover:text-emerald-600 transition-colors">
                                             <ExternalLink size={13} /> 7kchat.site
                                         </a>
                                     </div>
@@ -1087,12 +1087,12 @@ export default function SettingsPage({ userData, onProfileSaved }) {
 
                                     <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
                                         <div className="flex items-center gap-2 px-5 py-3 border-b border-gray-800">
-                                            <Terminal size={13} className="text-violet-400" />
+                                            <Terminal size={13} className="text-emerald-400" />
                                             <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Como encontrar seu ID</span>
                                         </div>
                                         <div className="px-5 py-4 space-y-1">
                                             <p className="text-xs text-white/60 font-mono leading-relaxed">
-                                                <span className="text-violet-400/90">7kchat.site</span>
+                                                <span className="text-emerald-400/90">7kchat.site</span>
                                                 <span className="text-white/30 mx-1">→</span> Perfil
                                                 <span className="text-white/30 mx-1">→</span>
                                                 <span className="text-emerald-400/90">copie o número no final da URL</span>
@@ -1214,8 +1214,8 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                 {/* Toggle switch grande */}
                                 <div className={`flex items-center justify-between p-6 rounded-[24px] border ${ isDark ? 'bg-[#17171f] border-[#242432]' : 'bg-gray-50 border-gray-100' }`}>
                                     <div className="flex items-center gap-4">
-                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${ isDark ? 'bg-amber-400/10' : 'bg-violet-100' }`}>
-                                            {isDark ? <Moon size={22} className="text-amber-400" /> : <Sun size={22} className="text-violet-600" />}
+                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${ isDark ? 'bg-amber-400/10' : 'bg-emerald-100' }`}>
+                                            {isDark ? <Moon size={22} className="text-amber-400" /> : <Sun size={22} className="text-emerald-600" />}
                                         </div>
                                         <div>
                                             <p className="font-black text-gray-900">Tema atual: <span className="text-primary">{isDark ? 'Escuro' : 'Claro'}</span></p>

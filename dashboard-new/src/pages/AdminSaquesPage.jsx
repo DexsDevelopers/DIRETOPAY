@@ -119,7 +119,7 @@ export default function AdminSaquesPage() {
                     <div className="mt-3 pt-2 border-t border-gray-100/50 flex flex-col gap-1 text-[10px] font-bold text-gray-400">
                         <div className="flex justify-between">
                             <span>Nominal 1:</span>
-                            <span className="text-purple-500">R$ {fmt(stats?.pending_nominal1_amount)} ({stats?.pending_nominal1_count})</span>
+                            <span className="text-emerald-500">R$ {fmt(stats?.pending_nominal1_amount)} ({stats?.pending_nominal1_count})</span>
                         </div>
                         <div className="flex justify-between">
                             <span>Nominal 2:</span>
@@ -255,13 +255,13 @@ export default function AdminSaquesPage() {
                         {/* Mobile */}
                         <div className="md:hidden divide-y divide-gray-100">
                             {withdrawals.map(w => (
-                                <div key={w.id} className={`p-4 space-y-3 ${w.type === 'pix_transfer' ? 'bg-violet-50/40' : ''}`}>
+                                <div key={w.id} className={`p-4 space-y-3 ${w.type === 'pix_transfer' ? 'bg-emerald-50/40' : ''}`}>
                                     <div className="flex items-start justify-between gap-3">
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2 flex-wrap">
                                                 <p className="font-bold text-sm truncate text-gray-900">{w.full_name}</p>
                                                 {w.type === 'pix_transfer' && (
-                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black bg-violet-100 text-violet-600 border border-violet-200 uppercase">
+                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-600 border border-emerald-200 uppercase">
                                                         <QrCode size={9} /> PIX Personalizado
                                                     </span>
                                                 )}
@@ -269,7 +269,7 @@ export default function AdminSaquesPage() {
                                             <p className="text-[11px] text-gray-400 truncate">{w.email}</p>
                                             <p className="text-[10px] text-gray-400 mt-0.5">{new Date(w.created_at).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })}</p>
                                             {w.type === 'pix_transfer' && w.description && (
-                                                <p className="text-[10px] text-violet-500 font-medium mt-0.5">Descrição: {w.description}</p>
+                                                <p className="text-[10px] text-emerald-500 font-medium mt-0.5">Descrição: {w.description}</p>
                                             )}
                                             <div className="mt-1">
                                                 {w.status === 'pending' ? (
@@ -278,7 +278,7 @@ export default function AdminSaquesPage() {
                                                         onChange={e => handleAction('update_withdraw_nominal', { withdraw_id: w.id, nominal: e.target.value })}
                                                         className={cn(
                                                             "px-2 py-0.5 rounded-lg text-[9px] font-black uppercase border cursor-pointer outline-none bg-white",
-                                                            w.nominal === 'nominal3' ? "text-emerald-400 border-emerald-500/20" : (w.nominal === 'nominal2' ? "text-cyan-400 border-cyan-500/20" : "text-purple-400 border-purple-500/20")
+                                                            w.nominal === 'nominal3' ? "text-emerald-400 border-emerald-500/20" : (w.nominal === 'nominal2' ? "text-cyan-400 border-cyan-500/20" : "text-emerald-400 border-emerald-500/20")
                                                         )}
                                                     >
                                                         <option value="nominal1">Nominal 1</option>
@@ -288,7 +288,7 @@ export default function AdminSaquesPage() {
                                                 ) : (
                                                     <span className={cn(
                                                         "inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase border",
-                                                        w.nominal === 'nominal3' ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : (w.nominal === 'nominal2' ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" : "bg-purple-500/10 text-purple-400 border border-purple-500/20")
+                                                        w.nominal === 'nominal3' ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : (w.nominal === 'nominal2' ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20")
                                                     )}>
                                                         {w.nominal === 'nominal3' ? 'Nominal 3' : (w.nominal === 'nominal2' ? 'Nominal 2' : 'Nominal 1')}
                                                     </span>
@@ -372,19 +372,19 @@ export default function AdminSaquesPage() {
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
                                     {withdrawals.map(w => (
-                                        <tr key={w.id} className={cn('transition-colors', w.type === 'pix_transfer' ? 'bg-violet-50/30 hover:bg-violet-50/60' : w.status === 'pending' ? 'hover:bg-amber-50' : 'hover:bg-gray-50')}>
+                                        <tr key={w.id} className={cn('transition-colors', w.type === 'pix_transfer' ? 'bg-emerald-50/30 hover:bg-emerald-50/60' : w.status === 'pending' ? 'hover:bg-amber-50' : 'hover:bg-gray-50')}>
                                             <td className="p-5 pl-6">
                                                 <div className="flex items-center gap-2 flex-wrap">
                                                     <p className="font-bold text-sm text-gray-900">{w.full_name}</p>
                                                     {w.type === 'pix_transfer' && (
-                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black bg-violet-100 text-violet-600 border border-violet-200 uppercase shrink-0">
+                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-600 border border-emerald-200 uppercase shrink-0">
                                                             <QrCode size={9} /> PIX Personalizado
                                                         </span>
                                                     )}
                                                 </div>
                                                 <p className="text-[11px] text-gray-400">{w.email}</p>
                                                 {w.type === 'pix_transfer' && w.description && (
-                                                    <p className="text-[10px] text-violet-500 font-medium mt-0.5">Desc: {w.description}</p>
+                                                    <p className="text-[10px] text-emerald-500 font-medium mt-0.5">Desc: {w.description}</p>
                                                 )}
                                                 <div className="mt-1">
                                                     {w.status === 'pending' ? (
@@ -393,7 +393,7 @@ export default function AdminSaquesPage() {
                                                             onChange={e => handleAction('update_withdraw_nominal', { withdraw_id: w.id, nominal: e.target.value })}
                                                             className={cn(
                                                                 "px-2 py-0.5 rounded-lg text-[9px] font-black uppercase border cursor-pointer outline-none bg-white",
-                                                                w.nominal === 'nominal3' ? "text-emerald-400 border-emerald-500/20" : (w.nominal === 'nominal2' ? "text-cyan-400 border-cyan-500/20" : "text-purple-400 border-purple-500/20")
+                                                                w.nominal === 'nominal3' ? "text-emerald-400 border-emerald-500/20" : (w.nominal === 'nominal2' ? "text-cyan-400 border-cyan-500/20" : "text-emerald-400 border-emerald-500/20")
                                                             )}
                                                         >
                                                             <option value="nominal1">Nominal 1</option>
@@ -403,7 +403,7 @@ export default function AdminSaquesPage() {
                                                     ) : (
                                                         <span className={cn(
                                                             "inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase border",
-                                                            w.nominal === 'nominal3' ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : (w.nominal === 'nominal2' ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" : "bg-purple-500/10 text-purple-400 border border-purple-500/20")
+                                                            w.nominal === 'nominal3' ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : (w.nominal === 'nominal2' ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20")
                                                         )}>
                                                             {w.nominal === 'nominal3' ? 'Nominal 3' : (w.nominal === 'nominal2' ? 'Nominal 2' : 'Nominal 1')}
                                                         </span>

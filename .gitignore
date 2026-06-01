@@ -6,3 +6,6 @@ node_modules/
 .env
 *.log
 deploy.log
+ssh_credentials.txt
+scratch/
+logo nova/

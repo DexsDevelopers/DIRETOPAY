@@ -67,7 +67,7 @@
 </head>
 <body>
     <nav class="nav">
-        <a href="/index.php" class="nav-logo">Lunar<span>Pay</span></a>
+        <a href="/index.php" class="nav-logo">Direto<span>Pay</span></a>
         <a href="/index.php" class="nav-back">← Voltar ao início</a>
     </nav>
 
