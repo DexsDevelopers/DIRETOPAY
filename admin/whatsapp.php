@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once '../includes/db.php';
-require_once '../includes/WhatsAppService.php';
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/WhatsAppService.php';
 
 if (!isAdmin()) {
     redirect('../auth/login.php');

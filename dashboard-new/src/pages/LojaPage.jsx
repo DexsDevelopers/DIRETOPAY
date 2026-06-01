@@ -158,7 +158,7 @@ export default function LojaPage() {
             <Sparkles size={22} className="text-primary" />
           </div>
           <div>
-            <p className="font-black text-base">Vitrine PixGhost</p>
+            <p className="font-black text-base">Vitrine DiretoPay</p>
             <p className="text-sm text-gray-500">Ative seus produtos na vitrine global e alcance mais compradores</p>
           </div>
         </div>

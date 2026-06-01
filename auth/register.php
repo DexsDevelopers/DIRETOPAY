@@ -1,8 +1,8 @@
 <?php
-require_once '../includes/db.php';
-require_once '../includes/MailService.php';
-require_once '../includes/TelegramService.php';
-try { require_once '../includes/PushService.php'; } catch (Throwable $e) {}
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/MailService.php';
+require_once __DIR__ . '/../includes/TelegramService.php';
+try { require_once __DIR__ . '/../includes/PushService.php'; } catch (Throwable $e) {}
 
 $isJsonRequest = strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false;
 
@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Notificar Admin via WhatsApp
         try {
-            require_once '../includes/WhatsAppService.php';
+            require_once __DIR__ . '/../includes/WhatsAppService.php';
             WhatsAppService::notifyNewUser($full_name, $email, $_SERVER['REMOTE_ADDR'] ?? '');
         } catch (Throwable $e) {}
 

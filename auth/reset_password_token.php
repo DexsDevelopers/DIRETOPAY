@@ -1,5 +1,5 @@
 <?php
-require_once '../includes/db.php';
+require_once __DIR__ . '/../includes/db.php';
 
 header('Content-Type: application/json');
 error_reporting(0);

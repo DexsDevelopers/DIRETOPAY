@@ -1,6 +1,6 @@
 <?php
 /**
- * GHOST PIX - Push Service
+ * DiretoPay - Push Service
  * Implementação nativa simplificada do protocolo Web Push (VAPID)
  */
 

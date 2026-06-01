@@ -706,7 +706,7 @@ export default function CriarProdutoPage() {
         <div className={`${sectionCls} !space-y-0`}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-bold text-gray-900">Exibir na Vitrine PixGhost</p>
+              <p className="font-bold text-gray-900">Exibir na Vitrine DiretoPay</p>
               <p className="text-xs text-gray-500 mt-1">Seu produto ficará visível para todos os usuários da plataforma</p>
             </div>
             <button

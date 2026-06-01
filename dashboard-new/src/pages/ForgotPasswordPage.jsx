@@ -129,7 +129,7 @@ export default function ForgotPasswordPage() {
             </div>
 
             <footer className="p-8 text-center">
-                <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">GHOST PIX v2.0 • Security FIRST</p>
+                <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">DiretoPay v2.0 • Security FIRST</p>
             </footer>
         </div>
     );

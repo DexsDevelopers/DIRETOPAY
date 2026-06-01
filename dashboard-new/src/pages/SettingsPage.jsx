@@ -48,7 +48,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
     };
 
     const handleCopyCurl = () => {
-        const curl = `curl -X POST https://pixghost.site/api.php \\
+        const curl = `curl -X POST https://diretopay.com.br/api.php \\
   -H "Authorization: Bearer ${apiToken || 'SUA_API_KEY'}" \\
   -H "Content-Type: application/json" \\
   -d '{"amount": 25.00, "customer_name": "Cliente Teste"}'`;
@@ -353,7 +353,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">E-mail Principal</label>
-                                            <input type="email" defaultValue={userData?.email || "vendedor@ghostpix.site"} disabled className="w-full bg-gray-100 border border-gray-200 rounded-full px-6 py-4 font-bold text-gray-500 opacity-50 cursor-not-allowed" />
+                                            <input type="email" defaultValue={userData?.email || "vendedor@diretopay.com.br"} disabled className="w-full bg-gray-100 border border-gray-200 rounded-full px-6 py-4 font-bold text-gray-500 opacity-50 cursor-not-allowed" />
                                         </div>
                                     </div>
 
@@ -753,7 +753,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                             </button>
                                         </div>
                                         <pre className="p-5 text-xs text-white/50 font-mono leading-relaxed overflow-x-auto">
-{`curl -X POST https://pixghost.site/api.php \\
+{`curl -X POST https://diretopay.com.br/api.php \\
   -H "Authorization: Bearer ${apiToken ? (showToken ? apiToken : '••••••••••••') : 'SUA_API_KEY'}" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -769,7 +769,7 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                     <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-2">
                                         <Globe size={18} className="text-primary" />
                                         <p className="text-xs font-black text-gray-700">Base URL</p>
-                                        <p className="text-[11px] font-mono text-gray-400">https://pixghost.site/api.php</p>
+                                        <p className="text-[11px] font-mono text-gray-400">https://diretopay.com.br/api.php</p>
                                     </div>
                                     <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-2">
                                         <Shield size={18} className="text-primary" />

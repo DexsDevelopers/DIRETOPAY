@@ -388,7 +388,7 @@ export default function VitrinePage() {
         <div className="relative">
           <div className="flex items-center gap-2 text-primary mb-2">
             <Sparkles size={18} />
-            <span className="text-xs font-black uppercase tracking-widest">Vitrine PixGhost</span>
+            <span className="text-xs font-black uppercase tracking-widest">Vitrine DiretoPay</span>
           </div>
           <h1 className="text-3xl font-black tracking-tight mb-2">Explore & <span className="text-primary italic">Compre</span></h1>
           <p className="text-gray-500 max-w-lg">Descubra produtos exclusivos de vendedores verificados. Compre, revenda e acompanhe suas entregas.</p>

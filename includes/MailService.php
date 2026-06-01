@@ -27,7 +27,7 @@ class MailService {
         <body style='font-family: Arial, sans-serif; background-color: #000; color: #fff; padding: 20px;'>
             <div style='max-width: 600px; margin: 0 auto; background: #111; border: 1px solid #4ade80; border-radius: 15px; padding: 30px;'>
                 <div style='text-align: center; margin-bottom: 20px;'>
-                    <h2 style='color: #4ade80; margin: 0;'>GHOST PIX</h2>
+                    <h2 style='color: #4ade80; margin: 0;'>DiretoPay</h2>
                 </div>
                 <div style='line-height: 1.6; font-size: 16px;'>
                     {$message}
