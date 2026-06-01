@@ -1,18 +1,71 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-    ArrowRight, CheckCircle, Zap, Shield, Rocket, MessageCircle,
-    ChevronDown, ExternalLink, Code2, Globe, BarChart3, Layers, Sparkles,
     ShieldCheck, Store, Sun, Moon, Play, Trophy, Medal, Crown, Gem,
-    Network, User, Landmark, Check, Flame, Gift, Lock
+    Network, User, Landmark, Check, Flame, Gift, Lock, ArrowRight,
+    CheckCircle, Zap, Code2, ExternalLink, ChevronDown, Star,
+    Layers, BarChart3, Rocket, Globe, Activity, ArrowUpRight, HelpCircle,
+    Smartphone, Server, RefreshCw, Cpu, Award, DollarSign, Users, ChevronRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
 import { useTheme } from '../contexts/ThemeContext';
 
-// ===== EFEITOS UIVERSE =====
+// ===== MILITARY-GRADE AWARDS METADATA =====
+const MILESTONE_PLATES = [
+    {
+        id: '10k',
+        amount: '10K',
+        title: 'Clube de Entrada',
+        badge: 'Bronze Tier',
+        desc: 'O passaporte de validação digital.',
+        subdesc: 'Ao atingir R$ 10.000 transacionados na DiretoPay, você oficializa sua entrada no mercado com a placa física exclusiva de Bronze. Uma conquista simbólica do seu primeiro marco de escala.',
+        image: '/assets/placa-10k-D-keX8kW.webp',
+        perks: ['Acesso ao canal do Telegram VIP', 'Suporte prioritário via chat', 'Certificado digital de validação']
+    },
+    {
+        id: '100k',
+        amount: '100K',
+        title: 'Clube dos 6 Dígitos',
+        badge: 'Silver Tier',
+        desc: 'A consolidação da sua estrutura de vendas.',
+        subdesc: 'Alcançar R$ 100.000 faturados demonstra consistência e profissionalismo. Receba a placa de Prata Escovada com acabamento industrial premium na sua casa.',
+        image: '/assets/placa-100k-L8htTMxu.webp',
+        perks: ['Isenção de taxa de saque por 30 dias', 'Acesso antecipado a novos produtos beta', 'Suporte gerencial exclusivo']
+    },
+    {
+        id: '250k',
+        amount: '250K',
+        title: 'Alta Performance',
+        badge: 'Gold Tier',
+        desc: 'O nível onde apenas os consistentes operam.',
+        subdesc: 'Bater R$ 250.000 na DiretoPay te garante o troféu Ouro Premium. Um marco visual para o seu escritório de que seu funil de vendas é altamente lucrativo.',
+        image: '/assets/placa-250k-p9cuG3oH.webp',
+        perks: ['Gerente de Contas dedicado no WhatsApp', 'Redução personalizada da taxa fixa do Pix', 'Painel de relatórios avançados ativado']
+    },
+    {
+        id: '500k',
+        amount: '500K',
+        title: 'Meio Milhão',
+        badge: 'Platinum Tier',
+        desc: 'Preparando sua operação para o topo do mercado.',
+        subdesc: 'Com R$ 500.000 transacionados, você ganha a Placa de Platina de Luxo e consultoria exclusiva de otimização de checkout diretamente com nosso time de engenharia financeira.',
+        image: '/assets/placa-500k-Dywjx6p8.webp',
+        perks: ['Taxas Pix VIP sob medida', 'Consultoria de otimização de conversão', 'Webhooks redundantes dedicados']
+    },
+    {
+        id: '1m',
+        amount: '1M',
+        title: 'Clube Black Milionário',
+        badge: 'Black Diamond',
+        desc: 'O Olimpo absoluto do e-commerce brasileiro.',
+        subdesc: 'Um milhão de reais transacionados! A placa Black definitiva é entregue em uma caixa de luxo personalizada, marcando sua consolidação definitiva entre os maiores do mercado.',
+        image: '/assets/placa-1milhao-D7KkbHhg.webp',
+        perks: ['Taxa Pix exclusiva a partir de 0.89%', 'Encontros de Mastermind presenciais', 'Acesso à infraestrutura de servidores dedicados']
+    }
+];
 
-/* 1. Spotlight cursor glow */
+// ===== CURSOR SPOTLIGHT EFFECT =====
 function SpotlightCursor() {
     const [pos, setPos] = useState({ x: -999, y: -999 });
     useEffect(() => {
@@ -22,18 +75,18 @@ function SpotlightCursor() {
     }, []);
     return (
         <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden"
-            style={{ background: `radial-gradient(600px circle at ${pos.x}px ${pos.y}px, rgba(30,164,101,0.07), transparent 40%)` }}
+            style={{ background: `radial-gradient(500px circle at ${pos.x}px ${pos.y}px, rgba(16,185,129,0.05), transparent 40%)` }}
         />
     );
 }
 
-/* 2. Floating particles hero */
-function Particles({ count = 18 }) {
+// ===== PARTICLES BACKGROUND =====
+function Particles({ count = 15 }) {
     const particles = Array.from({ length: count }, (_, i) => ({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
-        size: Math.random() * 3 + 1,
+        size: Math.random() * 2 + 1,
         duration: Math.random() * 8 + 6,
         delay: Math.random() * 4,
     }));
@@ -41,9 +94,9 @@ function Particles({ count = 18 }) {
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
             {particles.map(p => (
                 <motion.div key={p.id}
-                    className="absolute rounded-full bg-primary/20"
+                    className="absolute rounded-full bg-emerald-500/15"
                     style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size }}
-                    animate={{ y: [0, -30, 0], opacity: [0.2, 0.6, 0.2] }}
+                    animate={{ y: [0, -60, 0], opacity: [0.1, 0.4, 0.1] }}
                     transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
                 />
             ))}
@@ -51,10 +104,10 @@ function Particles({ count = 18 }) {
     );
 }
 
-/* 3. Grain texture overlay */
+// ===== GLOWING MESH OVERLAYS =====
 function GrainOverlay() {
     return (
-        <div className="pointer-events-none fixed inset-0 z-[9998] opacity-[0.025]"
+        <div className="pointer-events-none fixed inset-0 z-[9998] opacity-[0.012]"
             style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
                 backgroundSize: '128px'
@@ -63,31 +116,22 @@ function GrainOverlay() {
     );
 }
 
-/* 4. Shimmer button wrapper */
-function ShimmerButton({ children, className = '', ...props }) {
-    return (
-        <div className="relative group inline-flex" {...props}>
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-600 to-green-500 rounded-2xl blur opacity-50 group-hover:opacity-80 transition duration-500 group-hover:duration-200 animate-pulse" />
-            <div className={`relative ${className}`}>{children}</div>
-        </div>
-    );
-}
-
-/* 5. Typewriter */
+// ===== TYPEWRITER TITLE EFFECT =====
 function Typewriter({ words, className = '' }) {
     const [index, setIndex] = useState(0);
     const [displayed, setDisplayed] = useState('');
     const [deleting, setDeleting] = useState(false);
+    
     useEffect(() => {
         const word = words[index % words.length];
-        const speed = deleting ? 50 : 100;
+        const speed = deleting ? 35 : 70;
         const timeout = setTimeout(() => {
             if (!deleting && displayed.length < word.length) {
                 setDisplayed(word.slice(0, displayed.length + 1));
             } else if (deleting && displayed.length > 0) {
                 setDisplayed(displayed.slice(0, -1));
             } else if (!deleting) {
-                setTimeout(() => setDeleting(true), 1400);
+                setTimeout(() => setDeleting(true), 2500);
             } else {
                 setDeleting(false);
                 setIndex(i => i + 1);
@@ -95,913 +139,1176 @@ function Typewriter({ words, className = '' }) {
         }, speed);
         return () => clearTimeout(timeout);
     }, [displayed, deleting, index, words]);
+    
     return (
         <span className={className}>
             {displayed}
-            <span className="animate-pulse">|</span>
+            <span className="animate-pulse ml-0.5 text-emerald-400">|</span>
         </span>
     );
 }
 
-/* 6. Animated border card */
-function AnimatedBorderCard({ children, className = '' }) {
+// ===== INTERACTIVE SAVINGS CALCULATOR =====
+function SavingsCalculator() {
+    const { isDark } = useTheme();
+    const [revenue, setRevenue] = useState(75000);
+    const [ticket, setTicket] = useState(97);
+
+    // Dynamic fee rates based on monthly processing revenue
+    const getDiretoRate = (val) => {
+        if (val < 30000) return 0.0149; // 1.49% under 30k
+        if (val < 100000) return 0.0129; // 1.29% under 100k
+        if (val < 300000) return 0.0109; // 1.09% under 300k
+        return 0.0099; // 0.99% flat for high volume
+    };
+
+    const rateStandard = 0.0299; // Standard gateway Pix rate
+    const flatStandard = 1.00; // Standard flat fee per order
+
+    const transactions = Math.round(revenue / ticket);
+    const costStandard = (revenue * rateStandard) + (transactions * flatStandard);
+    
+    const rateDireto = getDiretoRate(revenue);
+    const costDireto = revenue * rateDireto; // No flat fee at DiretoPay
+
+    const monthlySavings = costStandard - costDireto;
+    const annualSavings = monthlySavings * 12;
+    // Estimated conversion increase thanks to instant routing failover (12% average)
+    const recoveredRevenue = revenue * 0.12;
+    const totalAdvantage = monthlySavings + recoveredRevenue;
+
     return (
-        <div className={`relative group ${className}`}>
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-600 via-teal-500 to-green-700 rounded-3xl opacity-0 group-hover:opacity-30 blur transition duration-500" />
-            <div className="relative h-full">{children}</div>
-        </div>
-    );
-}
+        <div className={`p-6 sm:p-8 rounded-[32px] border transition-all relative overflow-hidden ${
+            isDark 
+                ? 'bg-[#0b0c10]/95 border-white/5 shadow-2xl' 
+                : 'bg-white border-emerald-100 shadow-[0_15px_40px_rgba(16,185,129,0.04)]'
+        }`}>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-[40px] pointer-events-none" />
+            
+            <div className="mb-6">
+                <span className="text-[10px] font-black text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full uppercase tracking-wider">
+                    Calculadora de Eficiência
+                </span>
+                <h3 className={`text-xl sm:text-2xl font-black mt-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    Estime seus ganhos imediatos
+                </h3>
+                <p className="text-gray-500 text-xs mt-1">
+                    Compare os custos de transação do mercado e veja a diferença de faturamento líquido.
+                </p>
+            </div>
 
-// ===== COMPONENTES AUXILIARES =====
+            <div className="space-y-6">
+                {/* Revenue Slider */}
+                <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs font-bold">
+                        <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Faturamento Mensal</span>
+                        <span className="text-emerald-500 font-extrabold text-sm">
+                            R$ {revenue.toLocaleString('pt-BR')}
+                        </span>
+                    </div>
+                    <input 
+                        type="range" 
+                        min="5000" 
+                        max="500000" 
+                        step="5000"
+                        value={revenue}
+                        onChange={(e) => setRevenue(Number(e.target.value))}
+                        className="w-full h-1.5 bg-emerald-950/20 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                    />
+                    <div className="flex justify-between text-[9px] text-gray-500 font-bold">
+                        <span>R$ 5K</span>
+                        <span>R$ 100K</span>
+                        <span>R$ 250K</span>
+                        <span>R$ 500K+</span>
+                    </div>
+                </div>
 
-function DashboardMockup() {
-    const [currentSale, setCurrentSale] = useState(0);
-    const salesData = [
-        { amount: 'R$ 69,95' }, { amount: 'R$ 149,90' }, { amount: 'R$ 297,00' },
-        { amount: 'R$ 47,00' }, { amount: 'R$ 97,00' }
-    ];
+                {/* Ticket Selector */}
+                <div className="space-y-2">
+                    <span className={`block text-xs font-bold ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                        Ticket Médio do Produto
+                    </span>
+                    <div className="grid grid-cols-4 gap-2">
+                        {[47, 97, 197, 497].map((t) => (
+                            <button
+                                key={t}
+                                onClick={() => setTicket(t)}
+                                className={`py-2 rounded-xl text-xs font-bold border transition-all ${
+                                    ticket === t
+                                        ? 'bg-primary text-black border-primary font-black shadow-[0_4px_12px_rgba(30,164,101,0.2)]'
+                                        : isDark
+                                            ? 'bg-white/5 border-white/5 text-gray-400 hover:text-white'
+                                            : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
+                                }`}
+                            >
+                                R$ {t}
+                            </button>
+                        ))}
+                    </div>
+                </div>
 
-    useEffect(() => {
-        const interval = setInterval(() => setCurrentSale(p => (p + 1) % salesData.length), 4000);
-        return () => clearInterval(interval);
-    }, []);
+                {/* Performance Metrics Cards */}
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                    <div className={`p-4 rounded-2xl border text-center ${isDark ? 'bg-white/[0.01] border-white/5' : 'bg-gray-50/50 border-gray-100'}`}>
+                        <div className="text-[9px] text-gray-500 font-black uppercase tracking-wider mb-1">Custo Concorrentes</div>
+                        <div className="text-sm font-extrabold text-red-500">R$ {costStandard.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                        <div className="text-[8px] text-gray-400 mt-0.5 mt-1">Pix: 2.99% + R$ 1,00</div>
+                    </div>
+                    <div className={`p-4 rounded-2xl border text-center ${isDark ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-emerald-50/50 border-emerald-100'}`}>
+                        <div className="text-[9px] text-emerald-500 font-black uppercase tracking-wider mb-1">Custo DiretoPay</div>
+                        <div className="text-sm font-extrabold text-emerald-500">R$ {costDireto.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                        <div className="text-[8px] text-emerald-400/80 mt-1">Taxa Unificada: {(rateDireto * 100).toFixed(2)}%</div>
+                    </div>
+                </div>
 
-    return (
-        <div className="relative" style={{ perspective: '1000px' }}>
-            <motion.div
-                initial={{ opacity: 0, rotateY: -10 }}
-                animate={{ opacity: 1, rotateY: -5 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="bg-gradient-to-br from-[#1a0010] to-[#0f0008] border border-white/10 rounded-3xl p-6 shadow-2xl"
-                style={{ transformStyle: 'preserve-3d', animation: 'float 6s ease-in-out infinite' }}
-            >
-                <div className="flex items-center justify-between mb-5 pb-4 border-b border-white/5">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-emerald-600 to-green-700 rounded-xl flex items-center justify-center font-bold text-white">D</div>
+                {/* Final Advantage Summary Banner */}
+                <div className="bg-gradient-to-br from-emerald-600 to-green-800 p-5 rounded-2xl text-white relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-2xl" />
+                    <div className="flex justify-between items-center relative z-10">
                         <div>
-                            <div className="text-xs text-gray-400">Bem-vindo,</div>
-                            <div className="font-semibold text-white">Direto Member 👋</div>
+                            <div className="text-[9px] font-black uppercase tracking-widest text-emerald-200">Economia + Recuperação Mensal</div>
+                            <div className="text-xl sm:text-2xl font-black mt-0.5">
+                                + R$ {totalAdvantage.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
+                            </div>
+                            <div className="text-[9px] text-emerald-100/75 mt-0.5">
+                                Economia de R$ {monthlySavings.toLocaleString('pt-BR', { maximumFractionDigits: 0 })} + R$ {recoveredRevenue.toLocaleString('pt-BR', { maximumFractionDigits: 0 })} recuperados.
+                            </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                            <span className="text-[8px] font-black uppercase tracking-widest bg-black/25 px-2.5 py-1 rounded-full border border-white/10 block">
+                                R$ {annualSavings.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}/ano
+                            </span>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-gray-400">
-                        <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Online
-                    </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3 mb-5">
-                    <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-                        <div className="text-xs text-gray-400 mb-1">Faturamento Hoje</div>
-                        <div className="text-xl font-bold text-emerald-400">R$ 12.450,00</div>
-                    </div>
-                    <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-                        <div className="text-xs text-gray-400 mb-1">Vendas</div>
-                        <div className="text-xl font-bold text-white">847</div>
-                    </div>
-                </div>
-                <div className="bg-white/5 rounded-2xl p-4 h-24 flex items-end gap-2">
-                    {[40, 65, 45, 80, 55, 90, 70].map((h, i) => (
-                        <motion.div key={i} initial={{ height: 0 }} animate={{ height: `${h}%` }}
-                            transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
-                            className="flex-1 bg-gradient-to-t from-green-700 to-emerald-500 rounded-t opacity-70" />
-                    ))}
-                </div>
-            </motion.div>
-            <motion.div key={currentSale} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                className="absolute -bottom-4 -left-4 bg-[#0a0f0c]/95 border border-emerald-900/30 rounded-2xl p-4 backdrop-blur-xl flex items-center gap-4 z-10 shadow-2xl">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-600 to-green-700 rounded-xl flex items-center justify-center">
-                    <Check className="text-white" size={24} />
-                </div>
-                <div>
-                    <div className="text-xs text-gray-400">Venda realizada no Pix!</div>
-                    <div className="font-bold text-white">Comissão: {salesData[currentSale].amount}</div>
-                </div>
-                <div className="text-xs text-gray-500 ml-2">agora</div>
-            </motion.div>
-            <style>{`@keyframes float { 0%, 100% { transform: rotateY(-5deg) translateY(0); } 50% { transform: rotateY(-5deg) translateY(-15px); } }`}</style>
+            </div>
         </div>
     );
 }
 
-function AwardCard({ icon: Icon, amount, name, desc, color, delay }) {
+// ===== REAL-TIME FAILOVER CHECKOUT SIMULATOR =====
+function CheckoutSimulator() {
     const { isDark } = useTheme();
-    const [activePlate, setActivePlate] = useState(0);
-    const palette = {
-        platinum: { hex: isDark ? '#e2e8f0' : '#64748b', glow: 'rgba(100,116,139,0.15)', border: isDark ? 'rgba(226,232,240,0.2)' : 'rgba(100,116,139,0.25)', bg: isDark ? 'rgba(226,232,240,0.06)' : 'rgba(100,116,139,0.06)', badge: 'PLATINUM' },
-        gold:     { hex: '#f59e0b', glow: 'rgba(245,158,11,0.18)',  border: 'rgba(245,158,11,0.3)',   bg: isDark ? 'rgba(245,158,11,0.07)'  : 'rgba(245,158,11,0.06)',  badge: 'GOLD' },
-        wine:     { hex: '#1ea465', glow: 'rgba(30,164,101,0.20)',   border: 'rgba(30,164,101,0.3)',    bg: isDark ? 'rgba(30,164,101,0.08)'   : 'rgba(30,164,101,0.06)',   badge: 'WINE' },
-        emerald:  { hex: '#10b981', glow: 'rgba(16,185,129,0.18)',  border: 'rgba(16,185,129,0.3)',   bg: isDark ? 'rgba(16,185,129,0.07)'  : 'rgba(16,185,129,0.06)',  badge: 'EMERALD' },
+    const [simState, setSimState] = useState('idle'); // idle -> routing -> failover -> paying -> success
+    const [progress, setProgress] = useState(0);
+
+    const startSimulation = () => {
+        setSimState('routing');
+        setProgress(0);
     };
-    const p = palette[color];
-    const cardBg = isDark
-        ? `linear-gradient(160deg, ${p.bg}, #0d0d14)`
-        : `linear-gradient(160deg, ${p.bg}, #ffffff)`;
+
+    useEffect(() => {
+        let interval;
+        if (simState === 'routing') {
+            interval = setInterval(() => {
+                setProgress(p => {
+                    if (p >= 100) {
+                        clearInterval(interval);
+                        setTimeout(() => setSimState('failover'), 600);
+                        return 100;
+                    }
+                    return p + 15;
+                });
+            }, 100);
+        } else if (simState === 'failover') {
+            const timeout = setTimeout(() => {
+                setSimState('paying');
+            }, 2500);
+            return () => clearTimeout(timeout);
+        }
+        return () => clearInterval(interval);
+    }, [simState]);
+
     return (
-        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            transition={{ delay, duration: 0.5 }} whileHover={{ y: -8, scale: 1.02 }}
-            className="relative rounded-3xl p-px overflow-hidden group cursor-default"
-            style={{ background: `linear-gradient(135deg, ${p.border}, ${isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.9)'} 60%, ${p.border})` }}>
-            {/* inner card */}
-            <div className="relative rounded-3xl p-8 text-center h-full flex flex-col items-center"
-                style={{ background: cardBg }}>
-                {/* ambient glow */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-24 rounded-full blur-[40px] pointer-events-none"
-                    style={{ background: p.glow }} />
-                {/* badge */}
-                <div className="text-[9px] font-black tracking-[0.3em] mb-5 px-3 py-1 rounded-full border"
-                    style={{ color: p.hex, borderColor: p.border, background: p.bg }}>
-                    {p.badge}
-                </div>
-                {/* icon */}
-                <motion.div
-                    animate={{ boxShadow: [`0 0 16px ${p.glow}`, `0 0 36px ${p.glow}`, `0 0 16px ${p.glow}`] }}
-                    transition={{ repeat: Infinity, duration: 2.5, delay }}
-                    className="w-20 h-20 mb-6 rounded-2xl flex items-center justify-center"
-                    style={{ background: `linear-gradient(135deg, ${p.hex}22, ${p.hex}0a)`, border: `1px solid ${p.border}` }}>
-                    <Icon size={36} style={{ color: p.hex }} />
-                </motion.div>
-                {/* amount */}
-                <div className="text-3xl font-black mb-1" style={{ color: p.hex }}>{amount}</div>
-                <h3 className={`text-base font-black mb-3 ${isDark ? 'text-white' : 'text-gray-800'}`}>{name}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
+        <div className={`p-6 sm:p-8 rounded-[32px] border relative overflow-hidden flex flex-col justify-between h-full ${
+            isDark 
+                ? 'bg-[#08090d] border-white/5 shadow-2xl' 
+                : 'bg-white border-emerald-100 shadow-[0_15px_40px_rgba(16,185,129,0.04)]'
+        }`}>
+            <div className="mb-4">
+                <span className="text-[10px] font-black text-amber-500 bg-amber-500/10 px-3 py-1 rounded-full uppercase tracking-wider">
+                    Simulador Anti-Instabilidade
+                </span>
+                <h3 className={`text-xl font-black mt-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    Roteamento em Tempo Real
+                </h3>
+                <p className="text-gray-500 text-xs mt-1">
+                    Veja como a DiretoPay salva uma transação em menos de 1 segundo se uma adquirente cair.
+                </p>
             </div>
-        </motion.div>
+
+            {/* Mobile Mockup Card Container */}
+            <div className={`flex-1 min-h-[300px] border rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden transition-all duration-300 ${
+                isDark ? 'bg-black/40 border-white/5' : 'bg-gray-50/50 border-gray-100'
+            }`}>
+                <div className="absolute inset-x-0 top-0 h-1 bg-emerald-500/10" />
+
+                {/* MOCKUP HEADER */}
+                <div className="flex items-center justify-between pb-3 border-b border-white/5 text-[9px] font-bold text-gray-500 uppercase">
+                    <span className="flex items-center gap-1.5">
+                        <Smartphone size={10} /> Pix Checkout
+                    </span>
+                    <span className="flex items-center gap-1 text-emerald-400">
+                        <span className="w-1 h-1 bg-emerald-400 rounded-full animate-ping" />
+                        Conexão Criptografada
+                    </span>
+                </div>
+
+                {/* SIMULATION STATES SCREEN */}
+                <div className="my-auto py-4 flex flex-col items-center justify-center min-h-[200px]">
+                    <AnimatePresence mode="wait">
+                        {simState === 'idle' && (
+                            <motion.div 
+                                key="idle" 
+                                initial={{ opacity: 0, scale: 0.95 }} 
+                                animate={{ opacity: 1, scale: 1 }} 
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                className="w-full text-center space-y-4"
+                            >
+                                <div className="mx-auto w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center border border-emerald-500/20">
+                                    <Store size={22} />
+                                </div>
+                                <div>
+                                    <div className={`text-xs font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>Checkout de Exemplo</div>
+                                    <div className="text-[11px] text-gray-500 mt-1">Produto: Acesso Premium Vip</div>
+                                    <div className="text-base font-black text-emerald-500 mt-1">R$ 97,00</div>
+                                </div>
+                                <button 
+                                    onClick={startSimulation}
+                                    className="w-full bg-primary text-black font-black uppercase text-[10px] tracking-wider py-2.5 rounded-xl hover:brightness-110 active:scale-95 transition-all shadow-[0_4px_12px_rgba(16,185,129,0.2)]"
+                                >
+                                    Pagar com Pix
+                                </button>
+                            </motion.div>
+                        )}
+
+                        {simState === 'routing' && (
+                            <motion.div 
+                                key="routing" 
+                                initial={{ opacity: 0, y: 10 }} 
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="w-full text-center space-y-4"
+                            >
+                                <RefreshCw className="animate-spin text-emerald-500 mx-auto" size={28} />
+                                <div>
+                                    <div className={`text-xs font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>Roteamento Inteligente</div>
+                                    <div className="text-[10px] text-gray-400 mt-1">Analisando latência das adquirentes...</div>
+                                </div>
+                                <div className="w-full bg-emerald-950/20 h-1.5 rounded-full overflow-hidden">
+                                    <motion.div 
+                                        className="h-full bg-emerald-500" 
+                                        initial={{ width: 0 }} 
+                                        animate={{ width: `${progress}%` }} 
+                                    />
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {simState === 'failover' && (
+                            <motion.div 
+                                key="failover" 
+                                initial={{ opacity: 0, scale: 0.95 }} 
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                className="w-full space-y-3"
+                            >
+                                <div className="bg-amber-500/10 border border-amber-500/20 text-amber-500 rounded-xl p-3.5 flex items-start gap-2.5">
+                                    <Cpu className="shrink-0 text-amber-500 mt-0.5 animate-pulse" size={16} />
+                                    <div>
+                                        <div className="text-[10px] font-black uppercase tracking-wider">Falha no Gateway Alpha</div>
+                                        <p className="text-[9px] leading-relaxed text-gray-400 mt-1">
+                                            Queda de conexão detectada (Time-out). Redirecionando transação para adquirente secundária...
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center justify-center gap-1 text-[10px] text-gray-500 font-bold">
+                                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-ping" />
+                                    Failover acionado em 180ms
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {simState === 'paying' && (
+                            <motion.div 
+                                key="paying" 
+                                initial={{ opacity: 0, y: 10 }} 
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="w-full text-center space-y-3"
+                            >
+                                <div className="mx-auto w-24 h-24 bg-white p-2 rounded-xl flex items-center justify-center border border-gray-200">
+                                    <div className="w-full h-full bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQAQMAAAD2275QAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUHBAcMEww0a8lExQAAADpJREFUOMtjYGBgQAILGDBAgwEM4AGkGQYwAM1gAJsBB1AZMIDAQDrhBzAATvgBDIATfgAD4IQfgAgDAJkVC/wD391bAAAAAElFTkSuQmCC')] bg-cover" />
+                                </div>
+                                <div>
+                                    <div className="text-[10px] font-black text-emerald-400 uppercase">Pix Gerado via Gateway Beta!</div>
+                                    <p className="text-[9px] text-gray-500 mt-1">Copie o código abaixo para simular o pagamento.</p>
+                                </div>
+                                <button 
+                                    onClick={() => setSimState('success')}
+                                    className="w-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 font-bold uppercase text-[9px] tracking-wider py-2 rounded-xl hover:bg-emerald-500/20 active:scale-95 transition-all"
+                                >
+                                    Confirmar Pagamento Simulado
+                                </button>
+                            </motion.div>
+                        )}
+
+                        {simState === 'success' && (
+                            <motion.div 
+                                key="success" 
+                                initial={{ opacity: 0, scale: 0.95 }} 
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="w-full text-center space-y-4"
+                            >
+                                <div className="mx-auto w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center border border-emerald-500/40">
+                                    <CheckCircle size={22} className="animate-bounce" />
+                                </div>
+                                <div>
+                                    <div className="text-xs font-black text-emerald-500 uppercase tracking-wider">Aprovado e Liquidado!</div>
+                                    <div className="text-[10px] text-gray-500 mt-1">Split de saldo enviado ao dashboard</div>
+                                    <div className="text-[9px] text-gray-400/90 mt-1 bg-white/5 py-1 px-2.5 rounded-lg border border-white/5 w-fit mx-auto">
+                                        Split: R$ 87,30 (Seller) | R$ 9,70 (Afiliado)
+                                    </div>
+                                </div>
+                                <button 
+                                    onClick={() => setSimState('idle')}
+                                    className="w-full bg-white/5 border border-white/10 dark:text-gray-300 hover:text-white text-gray-700 font-bold uppercase text-[9px] tracking-wider py-2 rounded-xl hover:bg-white/10 active:scale-95 transition-all"
+                                >
+                                    Reiniciar Fluxo
+                                </button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+
+                {/* MOCKUP FOOTER */}
+                <div className="pt-2 border-t border-white/5 text-center text-[8px] text-gray-600 font-bold uppercase">
+                    Processado por DiretoPay Ltda
+                </div>
+            </div>
+        </div>
     );
 }
 
-function RankingItem({ position, name, sales, amount, avatar, type }) {
+// ===== RAKING BOARD / ELITE BOARD =====
+function LeaderboardRow({ rank, name, segment, approval, volume, badge, avatar, color }) {
     const { isDark } = useTheme();
-    const [activePlate, setActivePlate] = useState(0);
-    const badgeStyles = {
-        gold:    'bg-yellow-400/20 text-yellow-500 border-yellow-400/40',
-        silver:  'bg-gray-200/60  text-gray-500  border-gray-300/60',
-        bronze:  'bg-orange-400/20 text-orange-500 border-orange-400/40',
-        regular: 'bg-gray-100     text-gray-500  border-gray-200'
-    };
-    const avatarStyles = {
-        gold:    'from-yellow-400 to-orange-400',
-        silver:  'from-gray-400   to-gray-500',
-        bronze:  'from-orange-400 to-orange-600',
-        regular: 'from-emerald-600   to-rose-700'
-    };
     return (
-        <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-            whileHover={{ x: 4 }}
-            className="flex items-center gap-4 rounded-2xl px-5 py-4 transition-all"
-            style={isDark
-                ? { background: '#1a1a24', boxShadow: '6px 6px 16px #0d0d16, -6px -6px 16px #272732' }
-                : { background: '#e8e8f0', boxShadow: '6px 6px 16px #c4c4cc, -6px -6px 16px #ffffff' }}>
-            {/* Posição */}
-            <div className={`w-9 h-9 shrink-0 flex items-center justify-center font-black text-sm rounded-xl border ${badgeStyles[type]}`}>
-                {position}
+        <motion.div 
+            initial={{ opacity: 0, x: -10 }} 
+            whileInView={{ opacity: 1, x: 0 }} 
+            viewport={{ once: true }}
+            whileHover={{ x: 3 }}
+            className={`flex items-center gap-3 sm:gap-4 rounded-2xl px-4 py-3.5 transition-all border ${
+                isDark 
+                    ? 'bg-[#0b0c10]/80 border-white/5 hover:border-emerald-500/10' 
+                    : 'bg-white border-gray-100 shadow-sm hover:border-emerald-500/10'
+            }`}
+        >
+            {/* RANK BADGE */}
+            <div className={`w-7 h-7 shrink-0 flex items-center justify-center font-black text-xs rounded-lg border ${color}`}>
+                {rank}
             </div>
-            {/* Avatar */}
-            <div className={`w-11 h-11 shrink-0 bg-gradient-to-br ${avatarStyles[type]} rounded-xl flex items-center justify-center font-black text-white text-sm`}>
+
+            {/* AVATAR BOX */}
+            <div className="w-9 h-9 shrink-0 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center font-black text-emerald-400 text-xs">
                 {avatar}
             </div>
-            {/* Info */}
+
+            {/* MERCHANT INFO */}
             <div className="flex-1 min-w-0">
-                <div className="font-black text-gray-900 text-sm truncate">{name}</div>
-                <div className="text-xs text-gray-400 font-medium mt-0.5">{sales} vendas este mês</div>
+                <div className={`font-black text-xs sm:text-sm truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    {name}
+                </div>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="text-[8px] text-gray-500 font-black uppercase tracking-wider">{segment}</span>
+                    <span className="text-gray-700 text-[8px]">•</span>
+                    <span className="text-[8px] text-emerald-400 font-extrabold">{approval} Aprovação</span>
+                </div>
             </div>
-            {/* Valor */}
-            <div className="text-sm sm:text-base font-black text-emerald-500 shrink-0">{amount}</div>
+
+            {/* PERFORMANCE BADGES */}
+            <div className="text-right shrink-0">
+                <div className="text-xs sm:text-sm font-black text-emerald-500">{volume}</div>
+                <div className="text-[8px] text-gray-500 font-extrabold uppercase mt-0.5 tracking-wider">{badge}</div>
+            </div>
         </motion.div>
     );
 }
 
-function FeatureCard({ icon: Icon, title, desc, delay = 0 }) {
+// ===== PILLAR OPTIMIZED FEATURES =====
+function PillarCard({ icon: Icon, title, desc, delay = 0 }) {
     const { isDark } = useTheme();
-    const [activePlate, setActivePlate] = useState(0);
     return (
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            transition={{ delay, duration: 0.5 }}
-            whileHover={{ y: -6 }}
-            className="p-10 rounded-[40px] group relative overflow-hidden transition-all duration-300 cursor-default"
-            style={isDark ? {
-                background: '#1a1a24',
-                boxShadow: '10px 10px 30px #0d0d16, -10px -10px 30px #272732'
-            } : {
-                background: '#e8e8f0',
-                boxShadow: '10px 10px 30px #c4c4cc, -10px -10px 30px #ffffff'
-            }}>
-            <div className="absolute top-0 right-0 p-8 opacity-[0.04] group-hover:opacity-[0.08] transition-opacity">
-                <Icon size={120} className="text-primary" />
+        <motion.div 
+            initial={{ opacity: 0, y: 15 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            viewport={{ once: true }}
+            transition={{ delay, duration: 0.4 }}
+            whileHover={{ y: -4 }}
+            className={`p-6 rounded-[28px] group relative overflow-hidden transition-all duration-300 border ${
+                isDark 
+                    ? 'bg-[#0b0c10]/90 border-white/5 hover:border-emerald-500/25 shadow-2xl' 
+                    : 'bg-white border-gray-100 hover:border-emerald-500/25 shadow-sm'
+            }`}
+        >
+            <div className="absolute top-0 right-0 p-4 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
+                <Icon size={80} className="text-emerald-500" />
             </div>
-            {/* icon pill - neumorphic inset */}
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-primary mb-8 transition-all"
-                style={isDark ? {
-                    background: '#1a1a24',
-                    boxShadow: 'inset 4px 4px 10px #0d0d16, inset -4px -4px 10px #272732'
-                } : {
-                    background: '#e8e8f0',
-                    boxShadow: 'inset 4px 4px 10px #c4c4cc, inset -4px -4px 10px #ffffff'
-                }}>
-                <Icon size={26} />
+            <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-emerald-400 mb-5 border ${
+                isDark ? 'bg-white/[0.02] border-white/10' : 'bg-emerald-50 border-emerald-100'
+            }`}>
+                <Icon size={18} />
             </div>
-            <h3 className={`text-2xl font-black mb-4 tracking-tight group-hover:text-primary transition-colors ${isDark ? 'text-gray-100' : 'text-gray-800'}`}>{title}</h3>
-            <p className={`font-medium leading-relaxed transition-colors ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{desc}</p>
+            <h4 className={`text-base font-black mb-2 tracking-tight group-hover:text-emerald-500 transition-colors ${
+                isDark ? 'text-gray-100' : 'text-gray-800'
+            }`}>
+                {title}
+            </h4>
+            <p className={`text-[11px] font-semibold leading-relaxed ${
+                isDark ? 'text-gray-400' : 'text-gray-500'
+            }`}>
+                {desc}
+            </p>
         </motion.div>
     );
 }
 
-function StatItem({ label, value }) {
-    return (
-        <div className="text-center space-y-1">
-            <p className="text-3xl md:text-5xl font-black tracking-tighter bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">{value}</p>
-            <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-gray-400 whitespace-nowrap">{label}</p>
-        </div>
-    );
-}
-
+// ===== FAQ ACCORDION ITEM =====
 function AccordionItem({ title, content }) {
     const [isOpen, setIsOpen] = useState(false);
+    const { isDark } = useTheme();
     return (
-        <div className="border-b border-emerald-100 last:border-0">
-            <button onClick={() => setIsOpen(!isOpen)} className="w-full py-8 flex items-center justify-between text-left group">
-                <span className="text-lg md:text-xl font-bold text-gray-700 group-hover:text-gray-900 transition-colors pr-8">{title}</span>
-                <div className={cn("w-10 h-10 rounded-full border border-emerald-100 flex items-center justify-center transition-all duration-500 bg-emerald-50", isOpen && "rotate-180 border-primary/30 bg-primary/10")}>
-                    <ChevronDown className={cn("text-gray-400 transition-colors", isOpen && "text-primary")} size={20} />
+        <div className={`border-b last:border-0 ${isDark ? 'border-white/5' : 'border-emerald-100/30'}`}>
+            <button onClick={() => setIsOpen(!isOpen)} className="w-full py-5 flex items-center justify-between text-left group">
+                <span className={`text-sm sm:text-base font-black group-hover:text-emerald-400 transition-colors ${
+                    isDark ? 'text-gray-200' : 'text-gray-700'
+                }`}>
+                    {title}
+                </span>
+                <div className={cn("w-7 h-7 rounded-full border flex items-center justify-center transition-all duration-300 shrink-0 ml-4", 
+                    isDark ? 'border-white/10 bg-white/5' : 'border-emerald-100 bg-emerald-50/50',
+                    isOpen && "rotate-180 border-emerald-500/30 bg-emerald-500/10"
+                )}>
+                    <ChevronDown className={cn("text-gray-400 transition-colors", isOpen && "text-emerald-400")} size={14} />
                 </div>
             </button>
-            {isOpen && (
-                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="overflow-hidden">
-                    <p className="pb-8 text-gray-500 leading-relaxed max-w-2xl font-medium">{content}</p>
-                </motion.div>
-            )}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div 
+                        initial={{ height: 0, opacity: 0 }} 
+                        animate={{ height: "auto", opacity: 1 }} 
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                    >
+                        <p className="pb-5 text-[11px] sm:text-xs text-gray-500 leading-relaxed font-semibold">
+                            {content}
+                        </p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
 
+// ===== THEME TOGGLER =====
 function ThemeToggle() {
     const { isDark, toggleTheme } = useTheme();
     return (
-        <button onClick={toggleTheme} title={isDark ? 'Claro' : 'Escuro'}
-            className="relative flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-emerald-100 bg-white/60 backdrop-blur-sm hover:bg-emerald-50 hover:border-emerald-200 transition-all group">
-            <span className={`transition-all duration-300 ${isDark ? 'text-amber-500 rotate-0' : 'text-gray-400 -rotate-12'}`}>
-                {isDark ? <Sun size={15} /> : <Moon size={15} />}
+        <button onClick={toggleTheme} title={isDark ? 'Modo Claro' : 'Modo Escuro'}
+            className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-all duration-300 ${
+                isDark 
+                    ? 'border-white/10 bg-white/5 hover:bg-white/10' 
+                    : 'border-emerald-100 bg-emerald-50/50 hover:bg-emerald-50'
+            }`}
+        >
+            <span className={`transition-all duration-300 ${isDark ? 'text-amber-400 rotate-0' : 'text-gray-400 -rotate-12'}`}>
+                {isDark ? <Sun size={12} /> : <Moon size={12} />}
             </span>
-            <span className="hidden sm:block text-[10px] font-black uppercase tracking-widest text-gray-400 group-hover:text-gray-700 transition-colors">
+            <span className="hidden sm:block text-[8px] font-black uppercase tracking-wider text-gray-400 hover:text-gray-600 transition-colors">
                 {isDark ? 'Claro' : 'Escuro'}
             </span>
         </button>
     );
 }
 
-
-const MILESTONE_PLATES = [
-    {
-        id: '10k',
-        amount: '10K',
-        title: 'Ao você faturar',
-        badge: '10k',
-        desc: 'Primeira prova de que o jogo é real. Você saiu do zero.',
-        subdesc: 'Ao faturar R$ 10.000 na DiretoPay, você garante a nossa primeira placa física exclusiva para marcar o início da sua jornada.',
-        image: '/assets/placa-10k-D-keX8kW.webp'
-    },
-    {
-        id: '100k',
-        amount: '100K',
-        title: 'Ao você faturar',
-        badge: '100k',
-        desc: 'A consistência gera escala. Você provou que seu método funciona.',
-        subdesc: 'O marco dos seis dígitos faturados. Uma placa de metal premium para consolidar o crescimento do seu negócio.',
-        image: '/assets/placa-100k-L8htTMxu.webp'
-    },
-    {
-        id: '250k',
-        amount: '250K',
-        title: 'Ao você faturar',
-        badge: '250k',
-        desc: 'O caminho da consolidação. Seu negócio atinge o profissionalismo.',
-        subdesc: 'Bater R$ 250.000 faturados te coloca em um patamar de alto nível. Receba a placa de acrílico premium na sua casa.',
-        image: '/assets/placa-250k-p9cuG3oH.webp'
-    },
-    {
-        id: '500k',
-        amount: '500K',
-        title: 'Ao você faturar',
-        badge: '500k',
-        desc: 'Meio caminho para o milhão. Um feito para quem joga grande.',
-        subdesc: 'Meio milhão de reais faturados na DiretoPay. Você garante nossa placa de luxo exclusiva e mentoria direta com os fundadores.',
-        image: '/assets/placa-500k-Dywjx6p8.webp'
-    },
-    {
-        id: '1m',
-        amount: '1M',
-        title: 'Ao você faturar',
-        badge: '1M',
-        desc: 'O topo absoluto. O clube dos sete dígitos é o seu lugar.',
-        subdesc: 'Um milhão de reais faturados! O troféu Black definitivo para eternizar sua conquista no topo do mercado digital.',
-        image: '/assets/placa-1milhao-D7KkbHhg.webp'
-    }
-];
-
-// ===== COMPONENTE PRINCIPAL =====
-
+// ===== MAIN LANDING PAGE COMPONENT =====
 export default function LandingPage() {
-    const [onlineUsers, setOnlineUsers] = useState(2348);
+    const [onlineSellers, setOnlineSellers] = useState(1487);
     const [scrolled, setScrolled] = useState(false);
-    const { isDark } = useTheme();
     const [activePlate, setActivePlate] = useState(0);
+    const { isDark } = useTheme();
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setOnlineUsers(prev => prev + (Math.random() > 0.4 ? Math.floor(Math.random() * 5) : -Math.floor(Math.random() * 3)));
-        }, 3000);
-        const handleScroll = () => setScrolled(window.scrollY > 60);
+            setOnlineSellers(prev => prev + (Math.random() > 0.45 ? Math.floor(Math.random() * 3) : -Math.floor(Math.random() * 2)));
+        }, 4000);
+        const handleScroll = () => setScrolled(window.scrollY > 40);
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => { clearInterval(interval); window.removeEventListener('scroll', handleScroll); };
     }, []);
 
     return (
-        <div className={`min-h-screen font-['Outfit'] overflow-x-hidden selection:bg-primary selection:text-white ${isDark ? 'bg-[#0a0a0f] text-gray-100' : 'bg-white text-gray-900'}`}>
+        <div className={`min-h-screen font-['Outfit'] overflow-x-hidden selection:bg-primary selection:text-white ${
+            isDark ? 'bg-[#06070a] text-gray-100' : 'bg-white text-gray-900'
+        }`}>
             <SpotlightCursor />
             <GrainOverlay />
             
-            {/* Announcement Bar */}
-            <div className={`sticky top-0 z-[60] backdrop-blur-2xl border-b py-2 px-4 sm:px-6 ${isDark ? 'bg-[#0f0f16]/95 border-white/5' : 'bg-white/97 border-emerald-100/80'}`}>
-                <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
+            {/* FLOATING SELLERS HEADER */}
+            <div className={`sticky top-0 z-[60] backdrop-blur-2xl border-b py-2 px-4 sm:px-6 transition-all duration-300 ${
+                isDark ? 'bg-[#06070a]/95 border-white/5' : 'bg-white/95 border-emerald-50'
+            }`}>
+                <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2 shrink-0">
                         <span className="relative flex h-2 w-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                         </span>
-                        <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-primary">+{onlineUsers.toLocaleString('pt-BR')} <span className="hidden sm:inline">ao vivo</span></span>
+                        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-primary">
+                            +{onlineSellers.toLocaleString('pt-BR')} Sellers Transacionando
+                        </span>
                     </div>
-                    <p className={`text-[10px] sm:text-[11px] font-semibold truncate text-center flex-1 mx-2 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                        <span className="hidden sm:inline">🚀 </span>Canal Oficial no WhatsApp já está ativo!
+                    <p className={`text-[9px] sm:text-[10px] font-bold truncate text-center flex-1 mx-2 ${
+                        isDark ? 'text-gray-400' : 'text-gray-500'
+                    }`}>
+                        🚀 Liquidação redundante via Pix ativa sem interrupções.
                     </p>
                     <a href="https://whatsapp.com/channel/0029VbC56v0GZNComh5KQ73J" rel="noopener noreferrer" target="_blank"
-                        className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#25D366]/10 border border-[#25D366]/25 text-[#25D366] text-[9px] sm:text-[10px] font-black uppercase tracking-widest hover:bg-[#25D366]/20 transition-all whitespace-nowrap">
-                        Explorar <ArrowRight size={10} />
+                        className="shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-primary text-[8px] sm:text-[9px] font-black uppercase tracking-widest hover:bg-emerald-500/20 transition-all whitespace-nowrap">
+                        Canal Oficial <ArrowRight size={10} />
                     </a>
                 </div>
             </div>
 
-            {/* Navbar — full-width no topo, pill flutuante ao rolar */}
+            {/* DYNAMIC FLOATING NAVBAR */}
             <nav className={`fixed z-50 flex items-center justify-between transition-all duration-500
                 ${scrolled
-                    ? 'left-1/2 -translate-x-1/2 top-3 w-[94%] sm:w-[90%] max-w-6xl h-14 sm:h-16 rounded-[32px] px-5 sm:px-8 border shadow-[0_8px_32px_rgba(30,164,101,0.12)] backdrop-blur-3xl ' + (isDark ? 'bg-[#0f0f16]/95 border-white/10' : 'bg-white/95 border-emerald-100')
-                    : 'left-0 translate-x-0 top-[38px] sm:top-[38px] w-full h-16 sm:h-20 rounded-none px-6 sm:px-16 border-b border-transparent backdrop-blur-sm ' + (isDark ? 'bg-[#0a0a0f]/80' : 'bg-white/80')
+                    ? 'left-1/2 -translate-x-1/2 top-3 w-[94%] sm:w-[90%] max-w-6xl h-14 sm:h-16 rounded-full px-5 sm:px-8 border shadow-[0_8px_32px_rgba(16,185,129,0.06)] backdrop-blur-3xl ' + (isDark ? 'bg-[#08090d]/90 border-white/10' : 'bg-white/90 border-emerald-100')
+                    : 'left-0 translate-x-0 top-[34px] w-full h-16 sm:h-20 rounded-none px-6 sm:px-12 border-b border-transparent backdrop-blur-sm ' + (isDark ? 'bg-[#06070a]/70' : 'bg-white/70')
                 }`}>
-                <div className="flex items-center gap-2 sm:gap-3">
-                    <img src={isDark ? "/logo_premium.png?v=3" : "/logo_white.jpg?v=3"} alt="DiretoPay" className="h-6 sm:h-8 w-auto" />
+                <div className="flex items-center">
+                    <img src={isDark ? "/logo_premium.png?v=3" : "/logo_white.jpg?v=3"} alt="DiretoPay Logo" className="h-6 sm:h-7 w-auto" />
                 </div>
-                <div className="hidden lg:flex items-center gap-8 text-[12px] font-semibold text-gray-500">
-                    <a href="#" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Início</a>
-                    <a href="#solucoes" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Benefícios</a>
-                    <a href="#" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Premiações</a>
-                    <Link to="/docs" className={`hover:text-primary transition-colors flex items-center gap-1.5 ${isDark ? 'text-gray-400' : ''}`}>API Docs <Code2 size={13} /></Link>
-                    <a href="#faq" className={`hover:text-gray-900 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>FAQ</a>
+                
+                <div className="hidden lg:flex items-center gap-8 text-[11px] font-black uppercase tracking-wider text-gray-500">
+                    <a href="#" className={`hover:text-emerald-500 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Início</a>
+                    <a href="#tecnologia" className={`hover:text-emerald-500 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Roteamento</a>
+                    <a href="#calculadora" className={`hover:text-emerald-500 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Economia</a>
+                    <a href="#trofeus" className={`hover:text-emerald-500 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Recompensas</a>
+                    <Link to="/docs" className={`hover:text-emerald-500 transition-colors flex items-center gap-1 ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>
+                        API Docs <Code2 size={12} />
+                    </Link>
+                    <a href="#faq" className={`hover:text-emerald-500 transition-colors ${isDark ? 'text-gray-400 hover:text-white' : ''}`}>Dúvidas</a>
                 </div>
+
                 <div className="flex items-center gap-2 sm:gap-3">
                     <ThemeToggle />
-                    <Link to="/login" className={`hidden sm:block text-[12px] font-semibold px-4 py-2 rounded-full border transition-all hover:border-primary hover:text-primary ${isDark ? 'text-gray-300 border-white/15' : 'text-gray-600 border-gray-200'}`}>Login</Link>
-                    <Link to="/register" className="bg-gradient-to-r from-emerald-600 to-green-700 text-white text-[11px] sm:text-[12px] font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-full hover:opacity-90 transition-all active:scale-95 shadow-[0_4px_16px_rgba(30,164,101,0.35)] whitespace-nowrap">Cadastre-se</Link>
+                    <Link to="/login" className={`hidden sm:block text-[10px] font-black uppercase tracking-wider px-4 py-2 rounded-xl border transition-all hover:border-emerald-500 hover:text-emerald-500 ${
+                        isDark ? 'text-gray-300 border-white/15' : 'text-gray-600 border-gray-200'
+                    }`}>
+                        Entrar
+                    </Link>
+                    <Link to="/register" className="bg-primary text-black text-[10px] font-black uppercase tracking-wider px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl hover:brightness-110 transition-all shadow-[0_4px_16px_rgba(16,185,129,0.2)] whitespace-nowrap">
+                        Registrar
+                    </Link>
                 </div>
             </nav>
 
-            {/* Hero Section V2 */}
-            <section className={`pt-36 sm:pt-44 pb-16 sm:pb-24 px-4 sm:px-6 relative overflow-hidden ${isDark ? 'bg-[#0a0a0f]' : 'bg-[#F8F8FC]'}`}
+            {/* HERO SECTION - MODERN MESH GRIDS */}
+            <section className={`pt-32 sm:pt-40 pb-16 sm:pb-24 px-4 sm:px-6 relative overflow-hidden ${
+                isDark ? 'bg-[#06070a]' : 'bg-[#fcfdfc]'
+            }`}
                 style={isDark ? {
-                    backgroundImage: 'linear-gradient(0deg, transparent 24%, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.03) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03) 76%, transparent 77%), linear-gradient(90deg, transparent 24%, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.03) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03) 76%, transparent 77%)',
-                    backgroundSize: '55px 55px'
+                    backgroundImage: 'linear-gradient(0deg, transparent 24%, rgba(255,255,255,0.01) 25%, rgba(255,255,255,0.01) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.01) 75%, rgba(255,255,255,0.01) 76%, transparent 77%), linear-gradient(90deg, transparent 24%, rgba(255,255,255,0.01) 25%, rgba(255,255,255,0.01) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.01) 75%, rgba(255,255,255,0.01) 76%, transparent 77%)',
+                    backgroundSize: '75px 75px'
                 } : {
-                    backgroundImage: 'linear-gradient(0deg, transparent 24%, #E1E1E8 25%, #E1E1E8 26%, transparent 27%, transparent 74%, #E1E1E8 75%, #E1E1E8 76%, transparent 77%), linear-gradient(90deg, transparent 24%, #E1E1E8 25%, #E1E1E8 26%, transparent 27%, transparent 74%, #E1E1E8 75%, #E1E1E8 76%, transparent 77%)',
-                    backgroundSize: '55px 55px'
+                    backgroundImage: 'linear-gradient(0deg, transparent 24%, #ebfaee 25%, #ebfaee 26%, transparent 27%, transparent 74%, #ebfaee 75%, #ebfaee 76%, transparent 77%), linear-gradient(90deg, transparent 24%, #ebfaee 25%, #ebfaee 26%, transparent 27%, transparent 74%, #ebfaee 75%, #ebfaee 76%, transparent 77%)',
+                    backgroundSize: '75px 75px'
                 }}>
-                <Particles count={22} />
-                {/* fade bottom para suavizar saída do grid */}
-                <div className={`absolute bottom-0 inset-x-0 h-40 pointer-events-none ${isDark ? 'bg-gradient-to-t from-[#0a0a0f]' : 'bg-gradient-to-t from-[#F8F8FC]'} to-transparent`} />
-                <div className={`absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[100px] pointer-events-none ${isDark ? 'bg-gradient-to-bl from-emerald-950/20 to-green-950/10 opacity-40' : 'bg-gradient-to-bl from-emerald-100 to-rose-50 opacity-60'}`} />
-                <div className={`absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-[80px] pointer-events-none ${isDark ? 'bg-gradient-to-tr from-emerald-950/15 to-transparent opacity-30' : 'bg-gradient-to-tr from-emerald-50 to-transparent opacity-40'}`} />
+                <Particles count={20} />
+                <div className={`absolute bottom-0 inset-x-0 h-32 pointer-events-none ${
+                    isDark ? 'bg-gradient-to-t from-[#06070a]' : 'bg-gradient-to-t from-[#fcfdfc]'
+                } to-transparent`} />
+                <div className={`absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[130px] pointer-events-none ${
+                    isDark ? 'bg-emerald-950/10 opacity-30' : 'bg-emerald-100/40 opacity-40'
+                }`} />
                 
                 <div className="max-w-7xl mx-auto relative z-10">
-                    <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
-                        {/* Lado Esquerdo */}
-                        <div className="space-y-6 sm:space-y-8 text-center lg:text-left">
-                            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }}
-                                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${isDark ? 'bg-emerald-950/40 border-emerald-500/40' : 'bg-primary/5 border-primary/15'}`}>
-                                <div className={`w-2 h-2 shrink-0 rounded-full ${isDark ? 'bg-emerald-400' : 'bg-emerald-500'} animate-pulse`} />
-                                <span className={`text-xs sm:text-sm font-black tracking-tight ${isDark ? 'text-emerald-300' : 'text-primary'}`}>+3.000 Sellers que confiam em nós!</span>
+                    <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                        
+                        {/* HERO COPYWRITING */}
+                        <div className="lg:col-span-7 space-y-6 sm:space-y-8 text-center lg:text-left">
+                            <motion.div 
+                                initial={{ opacity: 0, scale: 0.95 }} 
+                                animate={{ opacity: 1, scale: 1 }} 
+                                transition={{ duration: 0.5 }}
+                                className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-wider ${
+                                    isDark ? 'bg-emerald-950/20 border-emerald-500/20 text-emerald-300' : 'bg-emerald-50 border-emerald-100 text-emerald-700'
+                                }`}
+                            >
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                Infraestrutura Invisível para Processamento de Volume
                             </motion.div>
 
-                            <div className="space-y-6">
-                                <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                                    className={`text-[2.2rem] sm:text-5xl lg:text-6xl font-[1000] leading-[1.1] tracking-[-0.03em] ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                    O lado invisível que faz{' '}
+                            <div className="space-y-4">
+                                <motion.h1 
+                                    initial={{ opacity: 0, y: 20 }} 
+                                    animate={{ opacity: 1, y: 0 }} 
+                                    transition={{ delay: 0.1 }}
+                                    className={`text-3xl sm:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight uppercase ${
+                                        isDark ? 'text-white' : 'text-gray-900'
+                                    }`}
+                                >
+                                    Seu checkout Pix <br />
+                                    operando com{' '}
                                     <Typewriter
-                                        words={['sua operação decolar!', 'seus lucros multiplicarem!', 'sua conversão explodir!', 'sua empresa escalar!']}
-                                        className="bg-gradient-to-r from-emerald-600 to-green-700 bg-clip-text text-transparent"
+                                        words={['redundância total!', 'uptime máximo!', 'split imediato!', 'segurança blindada!']}
+                                        className="bg-gradient-to-r from-emerald-400 via-emerald-500 to-green-600 bg-clip-text text-transparent italic"
                                     />
                                 </motion.h1>
-                                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
-                                    className="text-gray-500 text-base sm:text-lg max-w-lg mx-auto lg:mx-0 font-medium leading-relaxed">
-                                    Receba via Pix com <strong>anonimato garantido</strong>. Sem exposição de CPF/CNPJ, saques instantâneos e <strong>blindagem total contra MED</strong>.
+                                <motion.p 
+                                    initial={{ opacity: 0 }} 
+                                    animate={{ opacity: 1 }} 
+                                    transition={{ delay: 0.2 }}
+                                    className="text-gray-500 text-xs sm:text-sm max-w-lg mx-auto lg:mx-0 font-bold leading-relaxed"
+                                >
+                                    A DiretoPay conecta seu negócio diretamente com as maiores credenciadoras financeiras do país. Roteamento inteligente v2 com contingência em milissegundos e Split integrado para produtores e afiliados.
                                 </motion.p>
                             </div>
 
-                            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 }}
-                                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                                <ShimmerButton className="w-full sm:w-auto">
-                                <Link to="/register" className="w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-green-700 text-white h-14 px-8 rounded-2xl flex items-center justify-center font-black hover:opacity-90 transition-all active:scale-95 group">
-                                    <ShieldCheck className="mr-2 shrink-0" size={20} />
-                                    Quero entrar na DiretoPay
-                                    <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform shrink-0" size={18} />
+                            {/* CTAS */}
+                            <motion.div 
+                                initial={{ opacity: 0, scale: 0.95 }} 
+                                animate={{ opacity: 1, scale: 1 }} 
+                                transition={{ delay: 0.3 }}
+                                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3"
+                            >
+                                <Link to="/register" className="w-full sm:w-auto bg-primary text-black h-12 px-8 rounded-xl flex items-center justify-center font-black hover:brightness-110 active:scale-95 transition-all gap-2 text-[10px] uppercase tracking-wider shadow-[0_4px_16px_rgba(16,185,129,0.25)]">
+                                    Começar Operação <ArrowRight size={13} />
                                 </Link>
-                                </ShimmerButton>
-                                <a href="#solucoes" className="w-full sm:w-auto bg-gray-50 border border-gray-200 h-14 px-8 rounded-2xl text-gray-700 font-black hover:bg-gray-100 transition-all active:scale-95 flex items-center justify-center gap-2">
-                                    <Play size={18} className="shrink-0" />
-                                    Ver como funciona
+                                <a href="#tecnologia" className={`w-full sm:w-auto border h-12 px-8 rounded-xl font-black hover:bg-white/5 active:scale-95 transition-all flex items-center justify-center gap-2 text-[10px] uppercase tracking-wider ${
+                                    isDark ? 'text-gray-300 border-white/10 hover:border-white/20' : 'text-gray-700 border-gray-200 hover:bg-gray-50'
+                                }`}>
+                                    Ver Detalhes Técnicos
                                 </a>
                             </motion.div>
 
-                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}
-                                className="flex flex-wrap justify-center lg:justify-start gap-3">
-                                {[{ icon: ShieldCheck, text: '100% Anônimo' }, { icon: Zap, text: 'Saque Instantâneo' }, { icon: Lock, text: 'Anti-MED' }, { icon: User, text: 'Sem Documentos' }].map((item, i) => (
-                                    <div key={i} className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold ${isDark ? 'bg-white/5 border-white/10 text-gray-400' : 'bg-white border-gray-200 text-gray-600'}`}>
-                                        <item.icon size={14} className="text-primary shrink-0" />
+                            {/* CORE HIGHLIGHTS */}
+                            <motion.div 
+                                initial={{ opacity: 0, y: 15 }} 
+                                animate={{ opacity: 1, y: 0 }} 
+                                transition={{ delay: 0.4 }}
+                                className="flex flex-wrap justify-center lg:justify-start gap-2.5 pt-2"
+                            >
+                                {[
+                                    { icon: ShieldCheck, text: 'LGPD & PCI Compliance' },
+                                    { icon: Zap, text: 'Split 100% Automatizado' },
+                                    { icon: Lock, text: 'Contingência Anti-Bloqueio' },
+                                    { icon: Landmark, text: 'Saques Automáticos' }
+                                ].map((item, i) => (
+                                    <div key={i} className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-[10px] font-bold ${
+                                        isDark ? 'bg-white/5 border-white/10 text-gray-400' : 'bg-white border-gray-200 text-gray-600'
+                                    }`}>
+                                        <item.icon size={12} className="text-emerald-400 shrink-0" />
                                         {item.text}
                                     </div>
                                 ))}
                             </motion.div>
                         </div>
 
-                        {/* Lado Direito - Dashboard: só desktop */}
-                        <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, duration: 0.8 }}
-                            className="relative hidden lg:block">
-                            <DashboardMockup />
+                        {/* HERO VISUAL CHECKOUT SIMULATOR */}
+                        <motion.div 
+                            initial={{ opacity: 0, x: 20 }} 
+                            animate={{ opacity: 1, x: 0 }} 
+                            transition={{ delay: 0.25, duration: 0.6 }}
+                            className="lg:col-span-5 relative hidden lg:block"
+                        >
+                            <CheckoutSimulator />
                         </motion.div>
                     </div>
                 </div>
             </section>
 
-            {/* Awards Section */}
-            <section className={`relative py-28 px-6 overflow-hidden ${isDark ? 'bg-[#0d0d14]' : 'bg-[#faf9ff]'}`}>
-                {/* decorative glows */}
-                <div className={`absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none ${isDark ? 'bg-yellow-500/5' : 'bg-yellow-300/20'}`} />
-                <div className={`absolute bottom-0 right-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none ${isDark ? 'bg-emerald-700/8' : 'bg-emerald-300/20'}`} />
-                
-                <div className="max-w-6xl mx-auto relative z-10">
-                    <div className="text-center max-w-3xl mx-auto mb-16">
-                        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-sm font-black mb-6">
-                            <Trophy size={16} /> Programa de Recompensas
-                        </motion.div>
-                        <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
-                            className={`text-3xl sm:text-5xl font-black mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>A DiretoPay vibra a cada meta batida!</motion.h2>
-                        <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
-                            className="text-gray-500 text-lg">Reconhecemos sua performance com prêmios exclusivos. Cada marco é uma conquista celebrada.</motion.p>
-                    </div>
+            {/* SECTION: API & SMART ROUTING DEMO */}
+            <section id="tecnologia" className={`py-20 px-6 border-y ${
+                isDark ? 'bg-[#08090d] border-white/5' : 'bg-white border-gray-100'
+            }`}>
+                <div className="max-w-7xl mx-auto">
+                    <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                        <div className="space-y-6">
+                            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-wider">
+                                <Network size={12} /> Contingência Instantânea
+                            </span>
+                            <h2 className={`text-2xl sm:text-4xl font-black uppercase leading-tight tracking-tight ${
+                                isDark ? 'text-white' : 'text-gray-900'
+                            }`}>
+                                Evite perdas por quedas de adquirente. <br />
+                                <span className="text-emerald-500 italic">Roteamento de alta precisão.</span>
+                            </h2>
+                            <p className="text-gray-500 text-xs sm:text-sm font-semibold leading-relaxed max-w-xl">
+                                Nosso ecossistema monitora a integridade de processamento das maiores instituições bancárias a cada segundo. Caso uma falha ocorra, a requisição é redirecionada silenciosamente para outra operadora de split, garantindo que o Pix do cliente aprove sem lentidão ou recusas.
+                            </p>
 
-                    {/* Interactive Plate Carousel Block */}
-                    <div className={`grid lg:grid-cols-2 gap-12 items-center p-8 sm:p-12 rounded-[40px] border ${isDark ? 'bg-[#13131c]/60 border-white/5' : 'bg-white border-gray-200'} shadow-2xl relative`}>
-                        {/* Lado Esquerdo - Informacoes */}
-                        <div className="space-y-8 flex flex-col justify-center">
-                            <div>
-                                <span className="text-xs font-black text-gray-400 uppercase tracking-widest">
-                                    {MILESTONE_PLATES[activePlate].title}
-                                </span>
-                                
-                                <div className="mt-3 flex items-center gap-3">
-                                    <motion.div 
-                                        key={activePlate}
-                                        initial={{ scale: 0.9, opacity: 0 }}
-                                        animate={{ scale: 1, opacity: 1 }}
-                                        className={`px-6 py-2 text-3xl sm:text-4xl font-[1000] rounded-2xl w-fit tracking-tight border ${
-                                            isDark 
-                                                ? 'bg-emerald-950/30 text-primary border-emerald-500/30 shadow-[0_0_20px_rgba(30,164,101,0.15)]'
-                                                : 'bg-emerald-50 text-primary border-emerald-200'
-                                        }`}
-                                    >
-                                        {MILESTONE_PLATES[activePlate].amount}
-                                    </motion.div>
-                                </div>
+                            <div className="grid grid-cols-2 gap-2.5 pt-2">
+                                {[
+                                    'Multi-Adquirencia Nativa',
+                                    'Uptime de 99.98% Medido',
+                                    'Tempo de Resposta < 80ms',
+                                    'Webhooks Sincronizados'
+                                ].map((item, i) => (
+                                    <div key={i} className={`flex items-center gap-2 px-3 py-3 rounded-xl border ${
+                                        isDark ? 'bg-white/[0.01] border-white/5' : 'bg-gray-50 border-gray-200'
+                                    }`}>
+                                        <CheckCircle size={14} className="text-emerald-400 shrink-0" />
+                                        <span className={`font-black text-[10px] uppercase tracking-wider ${
+                                            isDark ? 'text-gray-300' : 'text-gray-700'
+                                        }`}>{item}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        
+                        {/* DIAGRAM PANEL */}
+                        <div className={`relative rounded-3xl overflow-hidden border p-6 sm:p-8 shadow-2xl ${
+                            isDark ? 'bg-[#0b0c10] border-white/5' : 'bg-[#fafbfa] border-gray-200'
+                        }`}>
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-emerald-500/5 rounded-full blur-[60px] pointer-events-none" />
+                            
+                            <div className="flex items-center justify-between mb-5 pb-3 border-b border-white/5 text-[9px] font-black uppercase text-gray-500">
+                                <span>Fluxo de Pagamento</span>
+                                <span className="text-emerald-400">Roteamento Ativo</span>
                             </div>
 
-                            {/* Card com o premio */}
-                            <motion.div
-                                key={`perk-${activePlate}`}
-                                initial={{ x: -20, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                transition={{ duration: 0.4 }}
-                                className={`p-6 rounded-3xl border flex gap-4 ${
-                                    isDark ? 'bg-white/[0.02] border-white/5' : 'bg-gray-50 border-gray-100'
-                                }`}
-                            >
-                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${
-                                    isDark ? 'bg-emerald-500/10 text-primary' : 'bg-emerald-50 text-primary'
-                                }`}>
-                                    <Trophy size={20} className="fill-current" />
+                            <div className="space-y-4 relative z-10">
+                                {/* CUSTOMER */}
+                                <div className="flex items-center justify-between p-3 rounded-xl border border-white/5 bg-white/5">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-xs">A</div>
+                                        <div>
+                                            <div className="text-[10px] font-bold text-white">Consumidor Final</div>
+                                            <div className="text-[8px] text-gray-500">Geração do QR Code</div>
+                                        </div>
+                                    </div>
+                                    <span className="text-[8px] font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">PIX COP-COL</span>
                                 </div>
-                                <div className="space-y-1">
-                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Você recebe</span>
-                                    <p className={`text-sm sm:text-base font-black leading-snug ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                        {MILESTONE_PLATES[activePlate].desc}
-                                    </p>
-                                    <p className="text-xs text-gray-500 leading-normal mt-2 font-medium">
-                                        {MILESTONE_PLATES[activePlate].subdesc}
-                                    </p>
-                                </div>
-                            </motion.div>
 
-                            {/* Controles de Navegacao */}
-                            <div className="flex flex-col gap-4">
-                                {/* Tab list */}
-                                <div className="flex flex-wrap gap-2">
-                                    {MILESTONE_PLATES.map((plate, index) => (
-                                        <button
-                                            key={plate.id}
-                                            onClick={() => setActivePlate(index)}
-                                            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all ${
-                                                activePlate === index
-                                                    ? 'bg-primary text-black border-primary shadow-[0_4px_12px_rgba(30,164,101,0.25)]'
-                                                    : isDark
-                                                        ? 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
-                                                        : 'bg-gray-100 border-gray-200 text-gray-500 hover:text-gray-900'
-                                            }`}
-                                        >
-                                            {plate.amount}
-                                        </button>
+                                {/* GATEWAYS */}
+                                <div className="pl-4 border-l border-emerald-500/30 space-y-3">
+                                    {[
+                                        { name: 'Adquirente A (Principal)', status: 'Indisponível (502 Timeout)', color: 'text-red-500 bg-red-500/10 border-red-500/20' },
+                                        { name: 'Adquirente B (Segurança)', status: 'Acionada e Ativa (Aprovado em 220ms)', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' }
+                                    ].map((g, idx) => (
+                                        <div key={idx} className={`p-2.5 rounded-xl border text-[9px] font-bold ${g.color}`}>
+                                            <div className="flex items-center justify-between">
+                                                <span>{g.name}</span>
+                                                <span className="text-[8px] uppercase tracking-wider font-extrabold">{g.status}</span>
+                                            </div>
+                                        </div>
                                     ))}
                                 </div>
 
-                                {/* Dots */}
-                                <div className="flex items-center gap-2 pt-2">
-                                    {MILESTONE_PLATES.map((_, index) => (
+                                {/* MERCHANT WALLET */}
+                                <div className="flex items-center justify-between p-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">✓</div>
+                                        <div>
+                                            <div className="text-[10px] font-bold text-white">Split e Liquidação</div>
+                                            <div className="text-[8px] text-emerald-400/80">Saldo disponível em conta na hora</div>
+                                        </div>
+                                    </div>
+                                    <span className="text-[8px] font-black text-white bg-emerald-500 px-2.5 py-0.5 rounded-full">SAQUE PIX LIBERADO</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* SECTION: INTERACTIVE SAVINGS CALCULATOR */}
+            <section id="calculadora" className="py-24 px-4 sm:px-6 max-w-5xl mx-auto grid lg:grid-cols-12 gap-12 items-center">
+                <div className="lg:col-span-5 space-y-6">
+                    <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-wider">
+                        <DollarSign size={12} /> Custos Transparentes
+                    </span>
+                    <h2 className={`text-2xl sm:text-4xl font-black uppercase leading-tight tracking-tight ${
+                        isDark ? 'text-white' : 'text-gray-900'
+                    }`}>
+                        Chega de taxas ocultas e tarifas de saque abusivas.
+                    </h2>
+                    <p className="text-gray-500 text-xs sm:text-sm font-semibold leading-relaxed">
+                        Nossa precificação diminui automaticamente de acordo com o crescimento do seu volume mensal de vendas. Sem mensalidade, sem custo de integração, sem pegadinhas. Pague apenas uma porcentagem justa por Pix liquidado com sucesso.
+                    </p>
+                    <div className="space-y-3 font-semibold text-gray-500 text-xs">
+                        <div className="flex gap-2.5"><CheckCircle className="text-emerald-500 shrink-0" size={16} /><p>Taxa decrescente até 0.99% flat.</p></div>
+                        <div className="flex gap-2.5"><CheckCircle className="text-emerald-500 shrink-0" size={16} /><p>Tarifa zero para transferência ou liquidação Pix.</p></div>
+                        <div className="flex gap-2.5"><CheckCircle className="text-emerald-500 shrink-0" size={16} /><p>Antecipação automática sem juros embutidos.</p></div>
+                    </div>
+                </div>
+                <div className="lg:col-span-7">
+                    <SavingsCalculator />
+                </div>
+            </section>
+
+            {/* SECTION: MILESTONE AWARDS / TROPHY VAULT */}
+            <section id="trofeus" className={`py-24 px-6 overflow-hidden relative ${
+                isDark ? 'bg-[#06070a]' : 'bg-[#fafbfa]'
+            }`}>
+                <div className={`absolute top-0 right-1/4 w-[400px] h-[400px] rounded-full blur-[140px] pointer-events-none ${
+                    isDark ? 'bg-emerald-950/5 opacity-20' : 'bg-emerald-100/30'
+                }`} />
+                
+                <div className="max-w-6xl mx-auto relative z-10">
+                    <div className="text-center max-w-2xl mx-auto mb-16">
+                        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 text-[10px] font-black uppercase tracking-wider mb-6">
+                            <Trophy size={12} /> Troféus Físicos
+                        </span>
+                        <h2 className={`text-3xl sm:text-4xl font-black uppercase tracking-tight mb-4 ${
+                            isDark ? 'text-white' : 'text-gray-900'
+                        }`}>
+                            Galeria de Metas e Conquistas
+                        </h2>
+                        <p className="text-gray-500 text-xs sm:text-sm font-semibold leading-relaxed">
+                            Alcançar volume de vendas é uma marca histórica. Para homenagear os sellers que movimentam a economia digital, enviamos nossas placas físicas exclusivas diretamente para sua empresa.
+                        </p>
+                    </div>
+
+                    {/* DYNAMIC TROPHY WRAPPER */}
+                    <div className={`grid lg:grid-cols-2 gap-10 p-6 sm:p-10 rounded-[32px] border ${
+                        isDark ? 'bg-[#0b0c10]/70 border-white/5' : 'bg-white border-emerald-100 shadow-xl'
+                    }`}>
+                        
+                        {/* LEFT COLUMN - PLATE DISPLAY */}
+                        <div className="flex flex-col items-center justify-center relative min-h-[320px]">
+                            <div className="absolute inset-0 bg-primary/5 rounded-full blur-[70px] pointer-events-none animate-pulse" />
+                            
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={activePlate}
+                                    initial={{ scale: 0.9, opacity: 0, rotateY: -15 }}
+                                    animate={{ scale: 1, opacity: 1, rotateY: 0 }}
+                                    exit={{ scale: 0.9, opacity: 0, rotateY: 15 }}
+                                    transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                                    className="relative w-full max-w-[200px] aspect-[3/4] flex items-center justify-center"
+                                >
+                                    <img
+                                        src={MILESTONE_PLATES[activePlate].image}
+                                        alt={MILESTONE_PLATES[activePlate].title}
+                                        className="w-full h-full object-contain filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.55)]"
+                                    />
+                                </motion.div>
+                            </AnimatePresence>
+
+                            <div className="mt-8 flex items-center gap-2 text-[9px] font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full uppercase tracking-wider">
+                                <Award size={12} className="fill-current" />
+                                Mais de 500 troféus fabricados e entregues
+                            </div>
+                        </div>
+
+                        {/* RIGHT COLUMN - METRICS & DETAILS */}
+                        <div className="flex flex-col justify-between space-y-8">
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[10px] font-black uppercase text-gray-500 tracking-wider">Metas de Faturamento</span>
+                                    <span className="text-gray-700 font-bold">•</span>
+                                    <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">{MILESTONE_PLATES[activePlate].badge}</span>
+                                </div>
+                                <h3 className={`text-2xl font-black uppercase ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                    {MILESTONE_PLATES[activePlate].title}
+                                </h3>
+                                <div className="text-lg font-black text-emerald-500">
+                                    A partir de R$ {MILESTONE_PLATES[activePlate].amount} transacionados
+                                </div>
+                                <p className="text-xs text-gray-500 leading-relaxed font-semibold">
+                                    {MILESTONE_PLATES[activePlate].subdesc}
+                                </p>
+                            </div>
+
+                            {/* PERKS INCLUDED */}
+                            <div className="space-y-2">
+                                <span className="text-[9px] font-black uppercase text-gray-500 tracking-wider block mb-1">Privilégios Inclusos:</span>
+                                <div className="grid sm:grid-cols-2 gap-2 text-[10px] font-bold text-gray-400">
+                                    {MILESTONE_PLATES[activePlate].perks.map((p, idx) => (
+                                        <div key={idx} className="flex items-center gap-1.5">
+                                            <Check size={11} className="text-emerald-400 shrink-0" />
+                                            <span>{p}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* TABS CONTROLS */}
+                            <div className="space-y-4 pt-2">
+                                <div className="flex flex-wrap gap-1.5">
+                                    {MILESTONE_PLATES.map((p, idx) => (
                                         <button
-                                            key={index}
-                                            onClick={() => setActivePlate(index)}
-                                            className={`h-2.5 rounded-full transition-all duration-300 ${
-                                                activePlate === index 
-                                                    ? 'w-6 bg-primary' 
-                                                    : 'w-2.5 bg-gray-400/40 hover:bg-gray-400/70'
+                                            key={p.id}
+                                            onClick={() => setActivePlate(idx)}
+                                            className={`px-3 py-2 rounded-xl text-[9px] font-black uppercase tracking-wider border transition-all ${
+                                                activePlate === idx
+                                                    ? 'bg-primary text-black border-primary shadow-[0_4px_12px_rgba(30,164,101,0.25)]'
+                                                    : isDark
+                                                        ? 'bg-white/5 border-white/5 text-gray-400 hover:text-white'
+                                                        : 'bg-gray-100 border-gray-200 text-gray-500 hover:text-gray-900'
                                             }`}
-                                            title={`Ver placa ${MILESTONE_PLATES[index].amount}`}
+                                        >
+                                            {p.amount}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                    {MILESTONE_PLATES.map((_, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => setActivePlate(idx)}
+                                            className={`h-1.5 rounded-full transition-all duration-300 ${
+                                                activePlate === idx ? 'w-6 bg-primary' : 'w-1.5 bg-gray-600'
+                                            }`}
                                         />
                                     ))}
                                 </div>
                             </div>
                         </div>
-
-                        {/* Lado Direito - Imagem da Placa */}
-                        <div className="flex flex-col items-center justify-center relative">
-                            {/* Ambient glow behind image */}
-                            <div className="absolute inset-0 bg-primary/10 rounded-full blur-[80px] pointer-events-none" />
-
-                            <motion.div
-                                key={`image-${activePlate}`}
-                                initial={{ scale: 0.9, opacity: 0, y: 10 }}
-                                animate={{ scale: 1, opacity: 1, y: 0 }}
-                                transition={{ type: "spring", stiffness: 100, damping: 15 }}
-                                className="relative w-full max-w-[280px] aspect-[3/4] flex items-center justify-center"
-                            >
-                                <img
-                                    src={MILESTONE_PLATES[activePlate].image}
-                                    alt={`Placa de ${MILESTONE_PLATES[activePlate].amount} faturados DiretoPay`}
-                                    className="w-full h-full object-contain filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] select-none pointer-events-none"
-                                />
-                            </motion.div>
-
-                            {/* Entregas tag */}
-                            <div className="mt-8 flex items-center gap-2 text-[10px] sm:text-xs font-black text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full uppercase tracking-wider">
-                                <Trophy size={14} className="fill-current" />
-                                Mais de 500 placas já entregues para nossos sellers!
-                            </div>
-                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* Multi-Adquirentes Section */}
-            <section className={`py-16 sm:py-24 px-4 sm:px-6 ${isDark ? 'bg-[#0a0a0f]' : 'bg-white'}`}>
-                <div className="max-w-7xl mx-auto">
-                    <div className="grid lg:grid-cols-2 gap-10 sm:gap-16 items-center">
-                        <div>
-                            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-black mb-6">
-                                <Network size={16} /> Multi-Adquirentes
-                            </motion.div>
-                            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
-                                className="text-3xl sm:text-4xl font-black mb-6 leading-tight">
-                                Adquirente falhou?<br /><span className="text-primary">A DiretoPay encontra outra rota na mesma hora.</span>
-                            </motion.h2>
-                            <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
-                                className="text-gray-400 text-lg mb-8 leading-relaxed">
-                                Deixe a DiretoPay encontrar a rota com maior chance de aprovação enquanto você foca em vender! Nosso sistema inteligente alterna automaticamente entre múltiplos processadores.
-                            </motion.p>
-                            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }}
-                                className="grid grid-cols-2 gap-4">
-                                {['Fácil', 'Rápido', 'Seguro', 'Eficaz'].map((item, i) => (
-                                    <div key={i} className={`flex items-center gap-3 px-5 py-4 rounded-xl border ${isDark ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200'}`}>
-                                        <CheckCircle size={20} className="text-emerald-400" />
-                                        <span className="font-bold text-gray-700">{item}</span>
-                                    </div>
-                                ))}
-                            </motion.div>
-                        </div>
-                        <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-                            className="relative rounded-3xl overflow-hidden bg-[#0a0f0c] border border-emerald-900/30 p-5 sm:p-8 shadow-2xl">
-
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-700/10 rounded-full blur-[60px] pointer-events-none" />
-
-                            <div className="flex items-center gap-2 mb-6">
-                                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shrink-0" />
-                                <span className="text-[10px] sm:text-xs font-black text-gray-400 uppercase tracking-widest">Roteamento Inteligente em Tempo Real</span>
-                            </div>
-
-                            {/* Mobile: stacked layout */}
-                            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-2 relative z-10">
-
-                                {/* Cliente */}
-                                <div className="flex sm:flex-col items-center gap-3 sm:gap-2">
-                                    <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center">
-                                        <User size={20} className="text-gray-300" />
-                                    </div>
-                                    <span className="text-xs font-bold text-gray-400">Cliente</span>
-                                </div>
-
-                                {/* Seta — horizontal no sm+, vertical no mobile */}
-                                <div className="hidden sm:flex flex-1 items-center">
-                                    <div className="flex-1 h-px bg-gradient-to-r from-white/20 to-emerald-600/60" />
-                                    <ArrowRight size={14} className="text-emerald-400 shrink-0" />
-                                </div>
-                                <div className="flex sm:hidden items-center justify-center text-emerald-400">
-                                    <ArrowRight size={14} className="rotate-90" />
-                                </div>
-
-                                {/* Adquirentes */}
-                                <div className="flex flex-col gap-2 w-full sm:w-auto sm:min-w-[150px]">
-                                    {[
-                                        { label: 'Gateway A', active: false, status: 'Offline' },
-                                        { label: 'Gateway B', active: true, status: 'Ativo ✓' },
-                                        { label: 'Gateway C', active: false, status: 'Stand-by' },
-                                    ].map(({ label, active, status }) => (
-                                        <motion.div key={label}
-                                            animate={active ? { scale: [1, 1.02, 1] } : {}}
-                                            transition={{ repeat: Infinity, duration: 2 }}
-                                            className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-all ${
-                                                active
-                                                    ? 'bg-rose-700/20 border-rose-600/80 shadow-[0_0_20px_rgba(30,164,101,0.25)]'
-                                                    : 'bg-white/5 border-white/10 opacity-40'
-                                            }`}>
-                                            <div className="flex items-center gap-2">
-                                                <div className={`w-2 h-2 rounded-full shrink-0 ${active ? 'bg-emerald-400 animate-pulse' : 'bg-gray-600'}`} />
-                                                <span className={`font-bold text-sm ${active ? 'text-white' : 'text-gray-500'}`}>{label}</span>
-                                            </div>
-                                            <span className={`text-[10px] font-black uppercase ${active ? 'text-emerald-300' : 'text-gray-600'}`}>{status}</span>
-                                        </motion.div>
-                                    ))}
-                                </div>
-
-                                {/* Seta */}
-                                <div className="hidden sm:flex flex-1 items-center">
-                                    <div className="flex-1 h-px bg-gradient-to-r from-emerald-600/60 to-green-500/60" />
-                                    <ArrowRight size={14} className="text-emerald-400 shrink-0" />
-                                </div>
-                                <div className="flex sm:hidden items-center justify-center text-emerald-400">
-                                    <ArrowRight size={14} className="rotate-90" />
-                                </div>
-
-                                {/* Resultado */}
-                                <div className="flex sm:flex-col items-center gap-3 sm:gap-2">
-                                    <motion.div
-                                        animate={{ boxShadow: ['0 0 12px rgba(16,185,129,0.2)', '0 0 28px rgba(16,185,129,0.4)', '0 0 12px rgba(16,185,129,0.2)'] }}
-                                        transition={{ repeat: Infinity, duration: 2 }}
-                                        className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/60 flex items-center justify-center">
-                                        <Check size={20} className="text-emerald-400" />
-                                    </motion.div>
-                                    <span className="text-xs font-bold text-emerald-400">Aprovado</span>
-                                </div>
-                            </div>
-
-                            <div className="mt-6 pt-5 border-t border-white/5 grid grid-cols-3 gap-3 text-center">
-                                {[
-                                    { label: 'Uptime', value: '99.9%' },
-                                    { label: 'Latência', value: '<80ms' },
-                                    { label: 'Fallback', value: 'Auto' },
-                                ].map(s => (
-                                    <div key={s.label}>
-                                        <div className="text-base sm:text-lg font-black text-white">{s.value}</div>
-                                        <div className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">{s.label}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </motion.div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Ranking Section */}
-            <section className={`py-24 px-6 ${isDark ? 'bg-[#0a0a0f]' : ''}`} style={isDark ? {} : { background: '#e8e8f0' }}>
+            {/* SECTION: ELITE LEADERBOARD */}
+            <section className={`py-24 px-6 border-t ${
+                isDark ? 'bg-[#08090d] border-white/5' : 'bg-white border-gray-100'
+            }`}>
                 <div className="max-w-4xl mx-auto">
-                    <div className="text-center max-w-3xl mx-auto mb-16">
-                        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-black mb-6">
-                            <Flame size={16} /> Competição Mensal
-                        </motion.div>
-                        <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
-                            className="text-3xl sm:text-5xl font-black mb-4">Na DiretoPay, seu faturamento importa!</motion.h2>
-                        <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
-                            className="text-gray-400 text-lg">Todos os meses, os sellers disputam o ranking para ganhar prêmios exclusivos. Vendeu mais? Sobe no ranking. Atingiu o topo? Premiação garantida!</motion.p>
+                    <div className="text-center max-w-2xl mx-auto mb-16">
+                        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-wider mb-6">
+                            <Flame size={12} /> Elite da DiretoPay
+                        </span>
+                        <h2 className={`text-3xl sm:text-4xl font-black uppercase tracking-tight mb-4 ${
+                            isDark ? 'text-white' : 'text-gray-900'
+                        }`}>
+                            Ecossistema dos Grandes Sellers
+                        </h2>
+                        <p className="text-gray-500 text-xs sm:text-sm font-semibold leading-relaxed">
+                            Nossa infraestrutura foi desenhada para operações que exigem escala constante. Confira os volumes de faturamento aprovados de alguns dos nossos principais parceiros neste mês.
+                        </p>
                     </div>
-                    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                        className={`rounded-3xl p-8 ${isDark ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-200'} shadow-xl`}>
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-                            <div className="flex items-center gap-3">
-                                <Trophy size={28} className="text-yellow-400 shrink-0" />
-                                <h3 className="text-xl sm:text-2xl font-black">Top Sellers - Maio 2025</h3>
+
+                    <div className={`p-4 sm:p-6 rounded-[32px] border ${
+                        isDark ? 'bg-black/30 border-white/5' : 'bg-gray-50/50 border-gray-100'
+                    }`}>
+                        <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+                            <div className="flex items-center gap-2">
+                                <Users size={16} className="text-emerald-400" />
+                                <h3 className={`text-base font-black ${isDark ? 'text-white' : 'text-gray-900'}`}>Leaderboard de Operações</h3>
                             </div>
-                            <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-xs font-black w-fit">
-                                <Gift size={14} /> Prêmios todos os meses
-                            </div>
+                            <span className="text-[8px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full">
+                                Atualizado em tempo real
+                            </span>
                         </div>
+
+                        <div className="space-y-2.5">
+                            <LeaderboardRow rank="1" name="Marcos R. (Vendas Digitais)" segment="Infoprodutos" approval="99.8%" volume="R$ 1.284.940" badge="Elite Black" avatar="MR" color="text-yellow-400 border-yellow-400/20" />
+                            <LeaderboardRow rank="2" name="Ana L. (DropScale Ltda)" segment="Dropshipping" approval="99.5%" volume="R$ 847.300" badge="Diamond Tier" avatar="AL" color="text-gray-400 border-gray-400/20" />
+                            <LeaderboardRow rank="3" name="João S. (EducaPlay)" segment="SaaS & Ensino" approval="99.9%" volume="R$ 512.450" badge="Gold Tier" avatar="JS" color="text-orange-400 border-orange-400/20" />
+                            <LeaderboardRow rank="4" name="Clara F. (Digital Hub)" segment="E-commerce" approval="99.3%" volume="R$ 294.100" badge="Silver Tier" avatar="CF" color="text-emerald-400 border-emerald-500/20" />
+                            <LeaderboardRow rank="5" name="Rafael P. (Metodologia Escala)" segment="Mentoria" approval="99.6%" volume="R$ 114.900" badge="Bronze Tier" avatar="RP" color="text-emerald-400 border-emerald-500/20" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* SECTION: PILLARS & BENEFITS */}
+            <section className={`py-24 px-6 overflow-hidden relative ${
+                isDark ? 'bg-[#06070a]' : 'bg-[#fafbfa]'
+            }`}>
+                <div className="max-w-7xl mx-auto space-y-16">
+                    <div className={`flex flex-col md:flex-row md:items-end justify-between gap-6 border-b pb-8 ${
+                        isDark ? 'border-white/5' : 'border-emerald-100/30'
+                    }`}>
                         <div className="space-y-3">
-                            <RankingItem position="1" name="Marcos R." sales="1.247" amount="R$ 89.420,00" avatar="MR" type="gold" />
-                            <RankingItem position="2" name="Ana L." sales="982" amount="R$ 67.890,00" avatar="AL" type="silver" />
-                            <RankingItem position="3" name="João S." sales="756" amount="R$ 54.230,00" avatar="JS" type="bronze" />
-                            <RankingItem position="4" name="Carla F." sales="634" amount="R$ 45.120,00" avatar="CF" type="regular" />
-                            <RankingItem position="5" name="Rafael P." sales="523" amount="R$ 38.450,00" avatar="RP" type="regular" />
+                            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest block">Pilares da Operação</span>
+                            <h2 className={`text-2xl sm:text-4xl font-black uppercase tracking-tight ${
+                                isDark ? 'text-white' : 'text-gray-900'
+                            }`}>
+                                Tecnologia desenhada para converter
+                            </h2>
                         </div>
-                    </motion.div>
-                </div>
-            </section>
-
-            {/* Solutions Section */}
-            <section id="solucoes" className={`py-32 px-6 ${isDark ? 'bg-[#0a0a0f]' : ''}`} style={isDark ? {} : { background: '#e8e8f0' }}>
-                <div className="max-w-7xl mx-auto space-y-20">
-                    <div className={`flex flex-col md:flex-row md:items-end justify-between gap-8 border-b pb-16 ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
-                        <div className="space-y-4">
-                            <p className="text-[11px] font-black text-primary uppercase tracking-[0.4em]">Soluções Corporativas</p>
-                            <h2 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter ${isDark ? 'text-white' : 'text-gray-900'}`}>Projetado para <br /> <span className="text-primary italic">quem joga grande.</span></h2>
-                        </div>
-                        <p className={`max-w-xs font-bold leading-relaxed text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Eliminamos as barreiras entre sua venda e seu lucro com tecnologia de ponta.</p>
+                        <p className="max-w-xs text-xs font-semibold leading-relaxed text-gray-500">
+                            Focamos em velocidade de carregamento, roteamento redundante e split transparente para maximizar o seu lucro líquido.
+                        </p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <AnimatedBorderCard><FeatureCard icon={ShieldCheck} title="Anonimato Bancário" desc="Seus dados pessoais ou da sua empresa nunca são revelados ao pagador. Total descrição para o seu negócio." delay={0.1} /></AnimatedBorderCard>
-                        <AnimatedBorderCard><FeatureCard icon={Zap} title="Conversão Extrema" desc="Checkout otimizado para o Pix. Experiência de um clique que reduz o abandono em até 45%." delay={0.2} /></AnimatedBorderCard>
-                        <AnimatedBorderCard><FeatureCard icon={Layers} title="DiretoPay - Dashboard Premium" desc="Gerencie múltiplos projetos e fluxos financeiros em uma única dashboard integrada e centralizada." delay={0.3} /></AnimatedBorderCard>
-                        <AnimatedBorderCard><FeatureCard icon={BarChart3} title="Analytics em Real-time" desc="Acompanhe cada centavo que entra. Insights detalhados de conversão e comportamento do cliente." delay={0.4} /></AnimatedBorderCard>
-                        <AnimatedBorderCard><FeatureCard icon={Rocket} title="Saques Sem Taxas" desc="Transferências ultra-rápidas e gratuitas para sua conta bancária de preferência logo após o processamento." delay={0.5} /></AnimatedBorderCard>
-                        <AnimatedBorderCard><FeatureCard icon={Globe} title="Infraestrutura Global" desc="Servidores distribuídos para garantir que seu link esteja sempre no ar, 24 horas por dia, 7 dias por semana." delay={0.6} /></AnimatedBorderCard>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <PillarCard icon={ShieldCheck} title="Privacidade Garantida" desc="Criptografia militar de transações para blindagem completa da sua operação de vendas." delay={0.05} />
+                        <PillarCard icon={Zap} title="Carregamento Flash" desc="Checkout otimizado que carrega instantaneamente, evitando perdas de clientes por lag de tela." delay={0.1} />
+                        <PillarCard icon={Layers} title="Painel Multifuncional" desc="Dashboard completo para gerenciar splits, taxas, afiliados e saques em uma única tela." delay={0.15} />
+                        <PillarCard icon={BarChart3} title="Relatórios Granulares" desc="Acompanhe com precisão o volume de Pix pendentes, gerados, pagos e abandonos de checkout." delay={0.2} />
+                        <PillarCard icon={Rocket} title="Split em Tempo Real" desc="Divisão automatizada da comissão do coprodutor e do afiliado diretamente no ato da compra." delay={0.25} />
+                        <PillarCard icon={Globe} title="SLA de 99.98% de Uptime" desc="Sua API sempre no ar devido ao nosso sistema distribuído geograficamente em múltiplos servidores." delay={0.3} />
                     </div>
                 </div>
             </section>
 
-            {/* API Section */}
-            <section id="tecnologia" className="py-16 sm:py-32 px-4 sm:px-6 bg-white">
-                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-20 items-center">
-                    <div className="space-y-10">
-                        <div className="bg-primary/10 w-fit px-4 py-1.5 rounded-lg border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">Developers First</div>
-                        <h2 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">A API que <br /> <span className="text-gray-300 italic tracking-[-0.05em]">você sempre quis.</span></h2>
-                        <div className="space-y-6 text-gray-500 text-lg font-medium max-w-lg">
-                            <div className="flex gap-4"><CheckCircle className="text-primary shrink-0" size={24} /><p>Endpoints simplificados e RESTful</p></div>
-                            <div className="flex gap-4"><CheckCircle className="text-primary shrink-0" size={24} /><p>Autenticação via Bearer Token de alta segurança</p></div>
-                            <div className="flex gap-4"><CheckCircle className="text-primary shrink-0" size={24} /><p>Webhooks redundantes e configuráveis</p></div>
+            {/* SECTION: DEVELOPER TERMINAL DEMO */}
+            <section id="tecnologia" className={`py-20 px-4 sm:px-6 border-y ${
+                isDark ? 'bg-[#08090d] border-white/5' : 'bg-white border-gray-100'
+            }`}>
+                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                    <div className="lg:col-span-6 space-y-6">
+                        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-wider">
+                            Developers First
+                        </span>
+                        <h2 className={`text-2xl sm:text-4xl font-black uppercase tracking-tight ${
+                            isDark ? 'text-white' : 'text-gray-900'
+                        }`}>
+                            Integração limpa. <br /> API REST padronizada.
+                        </h2>
+                        <div className="space-y-4 text-gray-500 text-xs sm:text-sm font-semibold">
+                            <div className="flex gap-3"><CheckCircle className="text-emerald-500 shrink-0" size={16} /><p>Endpoints rápidos com resposta em formato JSON.</p></div>
+                            <div className="flex gap-3"><CheckCircle className="text-emerald-500 shrink-0" size={16} /><p>Autenticação via chave Bearer token para segurança total.</p></div>
+                            <div className="flex gap-3"><CheckCircle className="text-emerald-500 shrink-0" size={16} /><p>Webhooks automáticos com lógica de retry integrado.</p></div>
                         </div>
-                        <Link to="/docs" className="inline-flex items-center gap-2 px-10 py-5 bg-gray-50 border border-gray-200 rounded-2xl font-black text-lg hover:bg-gray-100 transition-all group">
-                            LER DOCUMENTAÇÃO <ExternalLink className="opacity-40 group-hover:opacity-100 transition-opacity" size={20} />
+                        <Link to="/docs" className={`inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-wider border transition-all ${
+                            isDark ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
+                        }`}>
+                            Explorar API Docs <ExternalLink size={12} />
                         </Link>
                     </div>
-                    <div className="relative group">
-                        <div className="absolute inset-0 bg-primary/15 blur-[80px] opacity-30 group-hover:opacity-50 transition-opacity rounded-full" />
-                        <div className="bg-[#0f0f14] border border-white/10 rounded-[32px] sm:rounded-[48px] p-6 sm:p-10 font-mono text-xs sm:text-sm leading-relaxed shadow-2xl relative overflow-hidden overflow-x-auto">
-                            <div className="flex gap-2 mb-8">
-                                <div className="w-3 h-3 rounded-full bg-red-500/30 border border-red-500/50" />
-                                <div className="w-3 h-3 rounded-full bg-yellow-500/30 border border-yellow-500/50" />
-                                <div className="w-3 h-3 rounded-full bg-green-500/30 border border-green-500/50" />
+
+                    {/* MOCK TERMINAL BLOCK */}
+                    <div className="lg:col-span-6 relative group">
+                        <div className="absolute inset-0 bg-emerald-500/5 blur-[60px] opacity-25 rounded-full" />
+                        <div className={`border rounded-2xl p-5 sm:p-6 font-mono text-[10px] sm:text-xs leading-relaxed shadow-xl relative overflow-hidden overflow-x-auto ${
+                            isDark ? 'bg-[#0b0c10] border-white/5 text-white/80' : 'bg-[#0a0b10] border-gray-900 text-white/90'
+                        }`}>
+                            <div className="flex gap-1.5 mb-5">
+                                <div className="w-2 h-2 rounded-full bg-red-500/50" />
+                                <div className="w-2 h-2 rounded-full bg-yellow-500/50" />
+                                <div className="w-2 h-2 rounded-full bg-green-500/50" />
                             </div>
-                            <div className="space-y-2 text-white/80">
-                                <p className="text-white/20">// Initialize your integration</p>
-                                <p><span className="text-emerald-400">const</span> diretoPay = <span className="text-blue-400">new</span> <span className="text-emerald-400">DiretoPay</span>{'({'} key: <span className="text-orange-400">'pk_live_...'</span> {'})'};</p>
+                            <div className="space-y-1 text-gray-400">
+                                <p className="text-gray-600">// Importe e inicialize a biblioteca da DiretoPay</p>
+                                <p><span className="text-emerald-400">import</span> {'{'} DiretoClient {'}'} <span className="text-emerald-400">from</span> <span className="text-orange-400">"@diretopay/sdk"</span>;</p>
+                                <p><span className="text-emerald-400">const</span> client = <span className="text-blue-400">new</span> <span className="text-emerald-400">DiretoClient</span>{'({'} apiKey: <span className="text-orange-400">"dp_live_sec_..."</span> {'})'};</p>
                                 <p>&nbsp;</p>
-                                <p className="text-white/20">// Generate an anonymous Pix</p>
-                                <p><span className="text-emerald-400">await</span> diretoPay.<span className="text-blue-400">createTransaction</span>{'({'}</p>
-                                <p className="pl-4">amount: <span className="text-orange-400">97.00</span>,</p>
-                                <p className="pl-4">customer: <span className="text-purple-300">'John Doe'</span></p>
-                                <p>{'})'};</p>
+                                <p className="text-gray-600">// Criação da transação com Split habilitado</p>
+                                <p><span className="text-emerald-400">const</span> pix = <span className="text-emerald-400">await</span> client.<span className="text-blue-400">createPixOrder</span>{'({'}</p>
+                                <p className="pl-4">amount: <span className="text-orange-400">19700</span>, <span className="text-gray-600">// R$ 197,00</span></p>
+                                <p className="pl-4">description: <span className="text-orange-400">"Mentoria Premium"</span>,</p>
+                                <p className="pl-4">split: {'['}</p>
+                                <p className="pl-8">{'{'} role: <span className="text-orange-400">"affiliate"</span>, percent: <span className="text-orange-400">30</span> {'}'}</p>
+                                <p className="pl-4">{']'}</p>
+                                <p>{'});'}</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Partners */}
-            <section className="py-20 border-y border-gray-100 overflow-hidden bg-gray-50">
-                <div className="max-w-7xl mx-auto px-6">
-                    <p className="text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.5em] mb-16">Empresas e Empreendedores que confiam</p>
-                    <div className="flex flex-wrap justify-center gap-x-12 gap-y-10 md:gap-24 opacity-30 hover:opacity-70 transition-all duration-700">
-                        {['TECHFLOW', 'ZENITH', 'NEXUS-X', 'CRYPTO-GEN', 'PULSE-PAY', 'DIRETOPAY-STT'].map(p => (
-                            <span key={p} className="text-xl md:text-3xl font-[1000] italic tracking-tighter text-gray-600 whitespace-nowrap">{p}</span>
-                        ))}
+            {/* SECTION: FAQ DÚVIDAS */}
+            <section id="faq" className={`py-24 px-4 sm:px-6 ${isDark ? 'bg-[#06070a]' : 'bg-white'}`}>
+                <div className="max-w-3xl mx-auto space-y-12">
+                    <div className="space-y-2.5 text-center">
+                        <h2 className={`text-2xl sm:text-4xl font-black uppercase tracking-tight ${
+                            isDark ? 'text-white' : 'text-gray-900'
+                        }`}>
+                            Perguntas Frequentes
+                        </h2>
+                        <p className="text-gray-500 font-extrabold uppercase tracking-wider text-[10px]">
+                            Central de Ajuda e Suporte
+                        </p>
+                    </div>
+
+                    <div className={`border rounded-[32px] p-5 sm:p-8 ${
+                        isDark ? 'bg-[#0b0c10]/40 border-white/5' : 'bg-emerald-50/10 border-emerald-100'
+                    }`}>
+                        <AccordionItem title="Como a DiretoPay protege os dados das minhas vendas?" content="Utilizamos canais criptografados de ponta a ponta e redundância geograficamente distribuída de servidores. Todos os seus dados de faturamento e taxas acordadas permanecem protegidos sob rígidos protocolos de sigilo bancário." />
+                        <AccordionItem title="Qual é o tempo de repasse/saque do Pix?" content="A liberação do Pix ocorre em D+0. Assim que a transação é confirmada e liquidada pela adquirente secundária, o saldo fica disponível em seu painel operacional para saque imediato via Pix para sua chave cadastrada." />
+                        <AccordionItem title="Existe split automatizado de afiliados?" content="Sim. Oferecemos suporte completo a Split de pagamentos direto na API. Você pode configurar porcentagens fixas de split para coprodutores, afiliados ou parceiros de tráfego na própria chamada de checkout." />
+                        <AccordionItem title="Preciso pagar mensalidade ou taxa de setup?" content="Não. A DiretoPay não cobra custos mensais, tarifas de integração ou mensalidades ocultas. Você paga apenas uma pequena porcentagem fixa sobre o volume de Pix transacionados e aprovados com sucesso." />
+                        <AccordionItem title="Como funciona o suporte técnico?" content="Nossa equipe técnica atende desenvolvedores via documentação oficial e canal dedicado de suporte. Para contas corporativas de alto volume (acima de R$ 50k/mês), oferecemos gerente de contas dedicado no WhatsApp." />
                     </div>
                 </div>
             </section>
 
-            {/* FAQ Section */}
-            <section id="faq" className="py-16 sm:py-32 px-4 sm:px-6 bg-white">
-                <div className="max-w-4xl mx-auto space-y-20 text-center md:text-left">
-                    <div className="space-y-4 text-center">
-                        <h2 className="text-4xl md:text-7xl font-black uppercase tracking-tighter text-gray-900">Respostas para <br /><span className="bg-gradient-to-r from-emerald-600 to-green-700 bg-clip-text text-transparent italic">suas dúvidas.</span></h2>
-                        <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Suporte humanizado disponível 24/7</p>
-                    </div>
-                    <div className="bg-gray-50 border border-emerald-100 rounded-[28px] sm:rounded-[48px] p-5 sm:p-8 md:p-16">
-                        <AccordionItem title="O DiretoPay é realmente anônimo?" content="Sim. Utilizamos uma camada de abstração bancária onde seus dados pessoais ou da sua empresa nunca aparecem para o pagador final. O dinheiro cai na nossa conta de liquidação e é repassado instantaneamente para você." />
-                        <AccordionItem title="Tem alguma taxa por transação?" content="Não! A DiretoPay não cobra taxa por transação. Você recebe o valor integral das suas vendas diretamente no seu saldo, sem surpresas e sem taxas escondidas." />
-                        <AccordionItem title="Como funciona o sistema de saques?" content="Após a confirmação do pagamento pelo nosso sistema (que ocorre em milissegundos), o saldo fica disponível em sua conta DiretoPay. Você pode solicitar o saque via Pix para sua chave cadastrada a qualquer momento, sem taxas." />
-                        <AccordionItem title="Posso integrar com qualquer site ou bot?" content="Com certeza. Nossa API REST é agnóstica de linguagem e plataforma. Seja em um bot de Telegram, um dashboard customizado ou um e-commerce em WordPress, a integração é fluida e documentada." />
-                    </div>
-                </div>
-            </section>
-
-            {/* CTA Final */}
-            <section className="py-16 sm:py-32 px-4 sm:px-6 bg-gray-50">
-                <div className="max-w-6xl mx-auto bg-gradient-to-br from-emerald-600 via-emerald-800 to-green-950 p-8 sm:p-12 md:p-32 rounded-[32px] sm:rounded-[64px] relative overflow-hidden text-center">
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent_60%)] pointer-events-none" />
-                    <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-white/5 rounded-full blur-[60px]" />
-                    <div className="space-y-12 relative z-10">
-                        <h2 className="text-3xl sm:text-5xl md:text-8xl font-black leading-[0.95] tracking-[-0.04em] uppercase text-white">O futuro dos <span className="text-emerald-200">pagamentos</span> é hoje.</h2>
-                        <div className="pt-6">
-                            <Link to="/register" className="inline-flex items-center justify-center bg-white text-primary h-14 sm:h-20 md:h-24 px-10 sm:px-16 md:px-20 rounded-[20px] sm:rounded-[32px] text-sm sm:text-xl md:text-2xl font-black hover:bg-emerald-50 transition-all shadow-[0_20px_60px_rgba(0,0,0,0.2)] whitespace-nowrap active:scale-95">
-                                CRIAR CONTA AGORA
+            {/* SECTION: HERO CALL TO ACTION BANNER */}
+            <section className={`py-20 px-4 sm:px-6 ${isDark ? 'bg-[#06070a]' : 'bg-[#fafdfa]'}`}>
+                <div className="max-w-6xl mx-auto bg-gradient-to-br from-emerald-600 via-emerald-800 to-green-950 p-8 sm:p-16 rounded-[32px] relative overflow-hidden text-center shadow-2xl">
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.06),transparent_60%)] pointer-events-none" />
+                    <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-[70px]" />
+                    <div className="space-y-6 relative z-10">
+                        <h2 className="text-2xl sm:text-4xl md:text-5xl font-black uppercase text-white leading-none">
+                            Pronto para processar com <br />
+                            <span className="text-emerald-200 italic">redundância real?</span>
+                        </h2>
+                        <p className="text-white/60 text-xs sm:text-sm max-w-md mx-auto font-bold leading-relaxed">
+                            Crie sua conta em 1 minuto e integre sua operação à infraestrutura Pix mais estável do mercado digital.
+                        </p>
+                        <div className="pt-2">
+                            <Link to="/register" className="inline-flex items-center justify-center bg-white text-emerald-800 h-13 px-8 rounded-xl text-xs font-black hover:bg-emerald-50 transition-all active:scale-95 shadow-xl uppercase tracking-wider">
+                                Ativar Minha Conta <ChevronRight size={13} />
                             </Link>
                         </div>
-                        <p className="text-white/50 font-bold uppercase tracking-[0.2em] text-[10px]">Leva menos de 1 minuto para começar.</p>
+                        <p className="text-white/40 font-black uppercase tracking-wider text-[8px]">
+                            Sem compromisso de volume mínimo.
+                        </p>
                     </div>
                 </div>
             </section>
 
-            {/* Footer */}
-            <footer className="px-4 sm:px-8 pb-6 pt-2 bg-gray-50">
-                <div className="max-w-6xl mx-auto bg-white border border-emerald-100 rounded-[28px] sm:rounded-[36px] px-6 sm:px-10 py-10 sm:py-12 shadow-sm">
-                    {/* Top grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
-
-                        {/* Col 1 - Brand */}
-                        <div className="space-y-5 lg:col-span-1">
-                            <div className="flex items-center gap-2">
-                                <img src={isDark ? "/logo_premium.png?v=3" : "/logo_white.jpg?v=3"} alt="DiretoPay" className="h-7 sm:h-8 w-auto" />
-                            </div>
-                            <p className="text-gray-500 text-sm leading-relaxed">O lado invisível que faz sua operação crescer!</p>
-                            <div className="flex flex-col gap-2">
-                                <a href="#" className="flex items-center gap-2 text-primary text-sm font-semibold hover:underline">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                                    LinkedIn
-                                </a>
-                                <a href="https://instagram.com/user.diretopay" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-primary text-sm font-semibold hover:underline">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
-                                    @user.diretopay
-                                </a>
-                            </div>
+            {/* MODERNIZED FOOTER */}
+            <footer className={`px-4 sm:px-6 pb-8 pt-2 ${isDark ? 'bg-[#06070a]' : 'bg-gray-50'}`}>
+                <div className={`max-w-6xl mx-auto border rounded-[32px] px-6 sm:px-8 py-8 shadow-sm ${
+                    isDark ? 'bg-[#08090d] border-white/5' : 'bg-white border-emerald-100'
+                }`}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8 text-[11px] font-bold">
+                        
+                        {/* BRAND IDENTIFICATION */}
+                        <div className="space-y-3">
+                            <img src={isDark ? "/logo_premium.png?v=3" : "/logo_white.jpg?v=3"} alt="DiretoPay Logo" className="h-6 w-auto" />
+                            <p className="text-gray-500 leading-relaxed font-semibold">
+                                Plataforma robusta de intermediação de pagamentos com foco em checkout Pix simplificado, split automatizado e contingência de servidores.
+                            </p>
                         </div>
 
-                        {/* Col 2 - Páginas */}
-                        <div className="space-y-4">
-                            <p className="text-[11px] font-black text-gray-800 uppercase tracking-[0.2em]">Páginas</p>
-                            <ul className="space-y-3 text-sm text-gray-500">
-                                <li><a href="#" className="hover:text-primary transition-colors">Início</a></li>
-                                <li><a href="#solucoes" className="hover:text-primary transition-colors">Benefícios</a></li>
-                                <li><a href="#" className="hover:text-primary transition-colors">Premiações</a></li>
-                                <li><a href="#" className="hover:text-primary transition-colors">Quem Somos</a></li>
-                                <li><a href="#faq" className="hover:text-primary transition-colors">FAQ</a></li>
+                        {/* NAV LINKS */}
+                        <div className="space-y-3">
+                            <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Navegação</p>
+                            <ul className="space-y-1.5 text-gray-400 font-semibold">
+                                <li><a href="#" className="hover:text-emerald-500 transition-colors">Início</a></li>
+                                <li><a href="#tecnologia" className="hover:text-emerald-500 transition-colors">Roteamento</a></li>
+                                <li><a href="#calculadora" className="hover:text-emerald-500 transition-colors">Economia</a></li>
+                                <li><a href="#trofeus" className="hover:text-emerald-500 transition-colors">Recompensas</a></li>
                             </ul>
                         </div>
 
-                        {/* Col 3 - Informação */}
-                        <div className="space-y-4">
-                            <p className="text-[11px] font-black text-gray-800 uppercase tracking-[0.2em]">Informação</p>
-                            <ul className="space-y-3 text-sm text-gray-500">
-                                <li><a href="/suporte.php" className="hover:text-primary transition-colors">Suporte</a></li>
-                                <li><a href="/privacidade.php" className="hover:text-primary transition-colors">Pol. de Privacidade</a></li>
-                                <li><a href="/termos.php" className="hover:text-primary transition-colors">Termos de Uso</a></li>
-                                <li><a href="/sobre.php" className="hover:text-primary transition-colors">Sobre Nós</a></li>
-                                <li><Link to="/docs" className="hover:text-primary transition-colors">API Docs</Link></li>
+                        {/* SUPPORT API */}
+                        <div className="space-y-3">
+                            <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Tecnologia</p>
+                            <ul className="space-y-1.5 text-gray-400 font-semibold">
+                                <li><Link to="/docs" className="hover:text-emerald-500 transition-colors">API References</Link></li>
+                                <li><Link to="/termos" className="hover:text-emerald-500 transition-colors">Termos de Serviço</Link></li>
+                                <li><Link to="/privacidade" className="hover:text-emerald-500 transition-colors">Privacidade</Link></li>
                             </ul>
                         </div>
 
-                        {/* Col 4 - App Stores */}
-                        <div className="space-y-3 flex flex-col justify-start">
-                            <a href="#" className="flex items-center gap-3 bg-primary text-white rounded-xl px-5 py-3 hover:bg-secondary transition-colors w-full sm:w-auto">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-                                <div className="text-left leading-tight">
-                                    <div className="text-[9px] opacity-80">Disponível na</div>
-                                    <div className="text-sm font-bold">App Store</div>
-                                </div>
-                            </a>
-                            <a href="#" className="flex items-center gap-3 bg-primary text-white rounded-xl px-5 py-3 hover:bg-secondary transition-colors w-full sm:w-auto">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.3.17.64.24.99.19l12.2-12.2L12.92 8.3 3.18 23.76zm17.95-11.71L18.4 10.6l-3.4 3.4 3.4 3.4 2.77-1.54c.79-.44.79-1.63-.04-2.81zM2.4.46C2.15.72 2 1.1 2 1.6v20.8c0 .5.15.88.4 1.14l.06.06 11.65-11.65v-.3L2.46.4 2.4.46zm10.53 10.88l3.4-3.4-2.56-4.46L2.4.46C2.15.72 2 1.1 2 1.6v.08l10.93 9.66z"/></svg>
-                                <div className="text-left leading-tight">
-                                    <div className="text-[9px] opacity-80">Disponível no</div>
-                                    <div className="text-sm font-bold">Google Play</div>
-                                </div>
-                            </a>
+                        {/* EMAIL CHANNELS */}
+                        <div className="space-y-3">
+                            <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Canais de Contato</p>
+                            <ul className="space-y-1.5 text-gray-400 font-semibold">
+                                <li>Email: <a href="mailto:contato@diretopay.com.br" className="hover:text-emerald-500 transition-colors">contato@diretopay.com.br</a></li>
+                                <li>Atendimento: <a href="https://wa.me/5511988627674" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-500 transition-colors">WhatsApp Suporte</a></li>
+                            </ul>
                         </div>
                     </div>
-
-                    {/* Bottom bar */}
-                    <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-100 pt-6 gap-3">
-                        <p className="text-gray-400 text-sm">© 2026 DiretoPay · CNPJ [CNPJ]</p>
-                        <Link to="/register" className="text-sm text-gray-400 hover:text-primary transition-colors font-medium">Criar Conta DiretoPay →</Link>
+                    
+                    <div className={`border-t pt-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[10px] text-gray-400 font-semibold ${
+                        isDark ? 'border-white/5' : 'border-emerald-100/50'
+                    }`}>
+                        <span>© {new Date().getFullYear()} DiretoPay. Todos os direitos reservados.</span>
+                        <div className="flex gap-4">
+                            <a href="https://instagram.com/user.diretopay" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-500 transition-colors">Instagram</a>
+                            <a href="#" className="hover:text-emerald-500 transition-colors">LinkedIn</a>
+                        </div>
                     </div>
                 </div>
             </footer>
