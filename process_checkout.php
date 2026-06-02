@@ -74,7 +74,7 @@ try {
         throw new Exception('O recebedor não possui chave PIX configurada.');
     }
 
-    // ── Gateway: SigiloPay ───────────────────────────────────────────
+    // ── Gateway Selection ───────────────────────────────────────────────
     $getSetting = function(string $key) use ($pdo): string {
         $s = $pdo->prepare("SELECT `value` FROM settings WHERE `key` = ?");
         $s->execute([$key]);
@@ -82,107 +82,155 @@ try {
         return ($val === false) ? '' : (string)$val;
     };
 
-    $sigiloEnabled   = $getSetting('sigilopay_enabled') === '1';
-    $sigiloPublicKey = $getSetting('sigilopay_public_key');
-    $sigiloSecretKey = $getSetting('sigilopay_secret_key');
-
-    if (!$sigiloEnabled || !$sigiloPublicKey || !$sigiloSecretKey) {
-        throw new Exception('Gateway de pagamento não configurado. Contate o administrador.');
-    }
+    $ezzyEnabled   = $getSetting('ezzybanking_enabled') === '1';
+    $sigiloEnabled = $getSetting('sigilopay_enabled') === '1';
 
     $externalId = 'chk_' . $checkoutId . '_' . time();
+    $pixId = '';
+    $pixCode = '';
+    $qrImage = '';
+    $gatewayName = '';
+    $gatewayFee = 0.00;
 
-    $spPayload = [
-        'identifier'  => $externalId,
-        'amount'      => $totalAmount,
-        'client'      => [
-            'name'     => empty($customerName) ? 'Cliente Checkout' : $customerName,
-            'email'    => (!empty($user['email'])) ? $user['email'] : 'comprador@diretopay.site',
-            'phone'    => '(11) 9 0000-0000',
-            'document' => !empty($customerDocument) ? preg_replace('/[^0-9]/', '', $customerDocument) : '147.143.016-24',
-        ],
-        'callbackUrl' => getFullUrl('sigilopay_webhook.php'),
-    ];
+    // ── Gateway: Ezzy Banking ───────────────────────────────────────────
+    if ($ezzyEnabled) {
+        require_once 'includes/EzzyBankingService.php';
+        
+        $customer = [
+            'name' => empty($customerName) ? 'Cliente Checkout' : $customerName,
+            'email' => (!empty($user['email'])) ? $user['email'] : 'comprador@diretopay.site',
+            'phone' => '(11) 9 0000-0000',
+            'document' => !empty($customerDocument) ? preg_replace('/[^0-9]/', '', $customerDocument) : '14714301624',
+        ];
 
-    write_log('info', "Checkout SigiloPay Request: amount=$totalAmount | externalId=$externalId");
+        write_log('info', "Checkout Ezzy Banking Request: amount=$totalAmount | externalId=$externalId");
 
-    $ch = curl_init('https://app.sigilopay.com.br/api/v1/gateway/pix/receive');
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST           => true,
-        CURLOPT_POSTFIELDS     => json_encode($spPayload),
-        CURLOPT_HTTPHEADER     => [
-            'x-public-key: ' . $sigiloPublicKey,
-            'x-secret-key: ' . $sigiloSecretKey,
-            'Content-Type: application/json',
-            'Accept: application/json',
-            'User-Agent: Mozilla/5.0 (compatible; DiretoPay/2.0; +https://diretopay.site)',
-        ],
-        CURLOPT_TIMEOUT        => 30,
-        CURLOPT_SSL_VERIFYPEER => true,
-    ]);
-    $spResponse = curl_exec($ch);
-    $spHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $spCurlError = curl_error($ch);
-    curl_close($ch);
+        $ezzyResponse = EzzyBankingService::createPixCharge(
+            $totalAmount,
+            $externalId,
+            $customer,
+            getFullUrl('ezzybanking_webhook.php'),
+            'Pagamento DiretoPay'
+        );
 
-    write_log('info', "Checkout SigiloPay Response: HTTP=$spHttpCode | " . substr($spResponse ?: '(empty)', 0, 300));
-
-    if ($spResponse === false) {
-        throw new Exception("Falha na conexão com gateway de pagamento: $spCurlError");
-    }
-
-    $spRes = json_decode($spResponse, true);
-
-    if (($spHttpCode === 200 || $spHttpCode === 201) && isset($spRes['transactionId'])) {
-        $pixId   = $spRes['transactionId'];
-        $pixData = $spRes['pix'] ?? [];
-        $pixCode = $pixData['code'] ?? ($pixData['qrCode'] ?? ($pixData['emv'] ?? ''));
-        $b64raw  = $pixData['base64'] ?? ($pixData['qrCodeBase64'] ?? '');
-        if (!empty($b64raw)) {
-            $qrImage = strpos($b64raw, 'data:') === 0 ? $b64raw : 'data:image/png;base64,' . $b64raw;
-        } elseif (!empty($pixCode)) {
-            $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($pixCode);
+        if ($ezzyResponse['ok'] && isset($ezzyResponse['data']['transaction_id'])) {
+            $pixId = $ezzyResponse['data']['transaction_id'];
+            $pixCode = $ezzyResponse['data']['pix_code'] ?? $ezzyResponse['data']['qr_code'] ?? '';
+            $qrImage = !empty($pixCode) ? 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($pixCode) : '';
+            $gatewayName = 'Ezzy Banking';
+            $gatewayFee = (float)($getSetting('ezzybanking_fee_fixed') ?: 0.99) + ($totalAmount * (float)($getSetting('ezzybanking_fee_percent') ?: 5) / 100);
         } else {
-            $qrImage = '';
+            throw new Exception('Ezzy Banking: ' . ($ezzyResponse['error'] ?? 'Erro desconhecido'));
         }
-
-        if (!empty($spRes['token'])) {
-            $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES ('sigilopay_webhook_token',?) ON DUPLICATE KEY UPDATE `value`=?")
-                ->execute([$spRes['token'], $spRes['token']]);
-        }
-
-        $gatewayFee  = (float)($spRes['fee'] ?? round($totalAmount * 0.08 + 0.99, 2));
-        $platformFee = $totalAmount * ($user['commission_rate'] / 100);
-        $netAmount   = max(0, $totalAmount - $gatewayFee - $platformFee);
-
-        saveTransaction($userId, $totalAmount, $netAmount, $pixId, $pixCode, $qrImage, null, $customerName, $externalId, 'pix');
-        $txId = (int)$pdo->lastInsertId();
-        try { TelegramService::notifyNewCharge($totalAmount, $user['full_name'] ?? 'N/A', $txId); } catch (Throwable $e) {}
-        if (class_exists('PushService')) { try { PushService::notifyAdmins('⚡ Checkout #' . $txId, 'R$ ' . number_format($totalAmount, 2, ',', '.') . ' — ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {} }
-
-        // Notificar VENDEDOR via User Bot que PIX foi gerado no produto dele
-        if (!empty($user['telegram_chat_id'])) {
-            $checkoutName = $checkout['name'] ?? $checkout['title'] ?? ('Checkout #' . $checkoutId);
-            try { TelegramService::notifyPixGenerated($user['telegram_chat_id'], $totalAmount, $customerName, $checkoutName, $txId); } catch (Throwable $e) {}
-        }
-
-        // Notificar VENDEDOR via WhatsApp que PIX foi gerado no produto dele
-        try {
-            if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
-                $checkoutName = $checkout['name'] ?? $checkout['title'] ?? ('Checkout #' . $checkoutId);
-                WhatsAppService::notifyPixGenerated($user['whatsapp'], $totalAmount, $customerName, $checkoutName, $txId);
-            }
-        } catch (Throwable $e) {}
-
-        ob_end_clean();
-        echo json_encode(['success' => true, 'pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $totalAmount]);
-        exit;
-    } else {
-        $errMsg = $spRes['message'] ?? ($spRes['errorCode'] ?? 'Erro de comunicação com gateway');
-        write_log('error', "Checkout SigiloPay FALHA: HTTP=$spHttpCode | $errMsg | $spResponse");
-        throw new Exception("Não foi possível gerar a cobrança: $errMsg");
     }
+    // ── Gateway: SigiloPay (fallback) ───────────────────────────────────
+    elseif ($sigiloEnabled) {
+        $sigiloPublicKey = $getSetting('sigilopay_public_key');
+        $sigiloSecretKey = $getSetting('sigilopay_secret_key');
+
+        if (!$sigiloPublicKey || !$sigiloSecretKey) {
+            throw new Exception('Gateway de pagamento não configurado. Contate o administrador.');
+        }
+
+        $spPayload = [
+            'identifier'  => $externalId,
+            'amount'      => $totalAmount,
+            'client'      => [
+                'name'     => empty($customerName) ? 'Cliente Checkout' : $customerName,
+                'email'    => (!empty($user['email'])) ? $user['email'] : 'comprador@diretopay.site',
+                'phone'    => '(11) 9 0000-0000',
+                'document' => !empty($customerDocument) ? preg_replace('/[^0-9]/', '', $customerDocument) : '147.143.016-24',
+            ],
+            'callbackUrl' => getFullUrl('sigilopay_webhook.php'),
+        ];
+
+        write_log('info', "Checkout SigiloPay Request: amount=$totalAmount | externalId=$externalId");
+
+        $ch = curl_init('https://app.sigilopay.com.br/api/v1/gateway/pix/receive');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => json_encode($spPayload),
+            CURLOPT_HTTPHEADER     => [
+                'x-public-key: ' . $sigiloPublicKey,
+                'x-secret-key: ' . $sigiloSecretKey,
+                'Content-Type: application/json',
+                'Accept: application/json',
+                'User-Agent: Mozilla/5.0 (compatible; DiretoPay/2.0; +https://diretopay.site)',
+            ],
+            CURLOPT_TIMEOUT        => 30,
+            CURLOPT_SSL_VERIFYPEER => true,
+        ]);
+        $spResponse = curl_exec($ch);
+        $spHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $spCurlError = curl_error($ch);
+        curl_close($ch);
+
+        write_log('info', "Checkout SigiloPay Response: HTTP=$spHttpCode | " . substr($spResponse ?: '(empty)', 0, 300));
+
+        if ($spResponse === false) {
+            throw new Exception("Falha na conexão com gateway de pagamento: $spCurlError");
+        }
+
+        $spRes = json_decode($spResponse, true);
+
+        if (($spHttpCode === 200 || $spHttpCode === 201) && isset($spRes['transactionId'])) {
+            $pixId   = $spRes['transactionId'];
+            $pixData = $spRes['pix'] ?? [];
+            $pixCode = $pixData['code'] ?? ($pixData['qrCode'] ?? ($pixData['emv'] ?? ''));
+            $b64raw  = $pixData['base64'] ?? ($pixData['qrCodeBase64'] ?? '');
+            if (!empty($b64raw)) {
+                $qrImage = strpos($b64raw, 'data:') === 0 ? $b64raw : 'data:image/png;base64,' . $b64raw;
+            } elseif (!empty($pixCode)) {
+                $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($pixCode);
+            } else {
+                $qrImage = '';
+            }
+
+            if (!empty($spRes['token'])) {
+                $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES ('sigilopay_webhook_token',?) ON DUPLICATE KEY UPDATE `value`=?")
+                    ->execute([$spRes['token'], $spRes['token']]);
+            }
+
+            $gatewayName = 'SigiloPay';
+            $gatewayFee = (float)($spRes['fee'] ?? round($totalAmount * 0.08 + 0.99, 2));
+        } else {
+            throw new Exception('SigiloPay: ' . ($spRes['error'] ?? 'Erro desconhecido'));
+        }
+    } else {
+        throw new Exception('Nenhum gateway de pagamento configurado. Contate o administrador.');
+    }
+
+    // ── Save Transaction ────────────────────────────────────────────────
+    $platformFee = $totalAmount * ($user['commission_rate'] / 100);
+    $netAmount   = max(0, $totalAmount - $gatewayFee - $platformFee);
+
+    saveTransaction($userId, $totalAmount, $netAmount, $pixId, $pixCode, $qrImage, null, $customerName, $externalId, 'pix');
+    $txId = (int)$pdo->lastInsertId();
+    
+    // Atualizar gateway usado
+    $pdo->prepare("UPDATE transactions SET gateway = ? WHERE id = ?")->execute([$gatewayName, $txId]);
+
+    try { TelegramService::notifyNewCharge($totalAmount, $user['full_name'] ?? 'N/A', $txId); } catch (Throwable $e) {}
+    if (class_exists('PushService')) { try { PushService::notifyAdmins('⚡ Checkout #' . $txId, 'R$ ' . number_format($totalAmount, 2, ',', '.') . ' — ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {} }
+
+    // Notificar VENDEDOR via User Bot que PIX foi gerado no produto dele
+    if (!empty($user['telegram_chat_id'])) {
+        $checkoutName = $checkout['name'] ?? $checkout['title'] ?? ('Checkout #' . $checkoutId);
+        try { TelegramService::notifyPixGenerated($user['telegram_chat_id'], $totalAmount, $customerName, $checkoutName, $txId); } catch (Throwable $e) {}
+    }
+
+    // Notificar VENDEDOR via WhatsApp que PIX foi gerado no produto dele
+    try {
+        if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
+            $checkoutName = $checkout['name'] ?? $checkout['title'] ?? ('Checkout #' . $checkoutId);
+            WhatsAppService::notifyPixGenerated($user['whatsapp'], $totalAmount, $customerName, $checkoutName, $txId);
+        }
+    } catch (Throwable $e) {}
+
+    ob_end_clean();
+    echo json_encode(['success' => true, 'pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $totalAmount]);
+    exit;
 
 } catch (Exception $e) {
     if (ob_get_level() > 0) ob_end_clean();

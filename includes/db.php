@@ -1022,5 +1022,29 @@ function processAffiliateCommission(int $merchantId, int $transactionId): bool {
         return false;
     }
 }
+
+// ─── AUTO-MIGRAÇÃO: Ezzy Banking Settings ─────────────────────────────────
+try {
+    $pdo->exec("CREATE TABLE IF NOT EXISTS settings (
+        `key` VARCHAR(100) PRIMARY KEY,
+        `value` TEXT
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+} catch (PDOException $e) {}
+
+$ezzySettings = [
+    'ezzybanking_enabled' => '0',
+    'ezzybanking_api_key' => '',
+    'ezzybanking_api_secret' => '',
+    'ezzybanking_webhook_secret' => '',
+    'ezzybanking_fee_percent' => '5',
+    'ezzybanking_fee_fixed' => '0.99',
+];
+
+foreach ($ezzySettings as $key => $value) {
+    try {
+        $stmt = $pdo->prepare("INSERT IGNORE INTO settings (`key`, `value`) VALUES (?, ?)");
+        $stmt->execute([$key, $value]);
+    } catch (PDOException $e) {}
+}
 ?>
 

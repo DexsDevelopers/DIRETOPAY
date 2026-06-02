@@ -116,15 +116,15 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
     <title>DiretoPay - Plataforma de Pagamentos</title>
     
     <!-- React Build Assets -->
-    <script type="module" crossorigin src="/assets/dashboard-react/index-DZhxu7kN.js?v=27"></script>
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js?v=27">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js?v=27">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-router-Dg8CQPxv.js?v=27">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-motion-BCgFC3qs.js?v=27">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-icons-Ch5mnukh.js?v=27">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-react-B6YjI7Jz.js?v=27">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/utils-DCsqA19A.js?v=27">
-    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-q6uKCNEI.css?v=27">
+    <script type="module" crossorigin src="/assets/dashboard-react/index-DZhxu7kN.js?v=28"></script>
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js?v=28">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js?v=28">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-router-Dg8CQPxv.js?v=28">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-motion-BCgFC3qs.js?v=28">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-icons-Ch5mnukh.js?v=28">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-react-B6YjI7Jz.js?v=28">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/utils-DCsqA19A.js?v=28">
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-q6uKCNEI.css?v=28">
     
     <!-- React Checkout Chunk Preload -->
     <?php if ($requestPath && strpos($requestPath, '/p/') === 0): ?>
