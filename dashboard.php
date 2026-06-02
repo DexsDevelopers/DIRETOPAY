@@ -19,19 +19,21 @@ if (!$isAuth) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Ghost Pix" />
+    <meta name="apple-mobile-web-app-title" content="DiretoPay" />
     <link rel="apple-touch-icon" href="/logo_premium.png" />
     <meta name="csrf-token" content="<?php echo csrf_token(); ?>">
     <script>window.__AUTH__ = true;</script>
-    <title>Ghost Pix - Dashboard Premium</title>
+    <title>DiretoPay — Dashboard</title>
     
     <!-- React Build Assets -->
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js?v=12">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js?v=12">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-react-CIFpnPib.js?v=12">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-motion-BKEh_tME.js?v=12">
-    <script type="module" crossorigin src="/assets/dashboard-react/index-CEna3Vp7.js?v=12"></script>
-    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-Dv6a6K4u.css?v=12">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js?v=13">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js?v=13">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-react-B6YjI7Jz.js?v=13">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-motion-CSww8jv2.js?v=13">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-router-Dg8CQPxv.js?v=13">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-icons-C4QezHMH.js?v=13">
+    <script type="module" crossorigin src="/assets/dashboard-react/index-CnQwFgJd.js?v=13"></script>
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-tXMbmrmQ.css?v=13">
     
     <!-- Preload fonts to avoid layout shift -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">

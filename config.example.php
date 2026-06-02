@@ -1,5 +1,5 @@
 <?php
-// Ghost Pix — Template de Configuração
+// DiretoPay — Template de Configuração
 // Renomeie este arquivo para config.php e preencha seus dados.
 // NUNCA envie o seu config.php real para o GitHub!
 
@@ -33,5 +33,5 @@ define('MAIL_HOST', 'smtp.gmail.com');
 define('MAIL_PORT', 587);
 define('MAIL_USER', ''); // Seu e-mail do Gmail
 define('MAIL_PASS', ''); // Sua Senha de App do Google (16 caracteres)
-define('MAIL_FROM_NAME', 'Ghost Pix');
+define('MAIL_FROM_NAME', 'DiretoPay');
 ?>

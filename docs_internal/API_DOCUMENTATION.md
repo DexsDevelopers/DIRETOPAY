@@ -1,6 +1,6 @@
-# Documentação da API Ghost Pix
+# Documentação da API DiretoPay
 
-O Ghost Pix pode ser integrado ao seu sistema para processar pagamentos Pix com total anonimato e blindagem.
+A DiretoPay pode ser integrada ao seu sistema para processar pagamentos Pix de forma rápida e segura.
 
 ## 1. Gerar Cobrança (Pix)
 

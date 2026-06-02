@@ -59,7 +59,7 @@ try {
     } else {
         $headers = getallheaders();
         $authHeader = $headers['Authorization'] ?? ($headers['authorization'] ?? '');
-        if (preg_match('/Bearer\s+((?:ghost_|direto_)\S+)/', $authHeader, $matches)) {
+        if (preg_match('/Bearer\s+(direto_\S+)/', $authHeader, $matches)) {
             $apiKey = $matches[1];
             $stmt = $pdo->prepare("SELECT id FROM users WHERE api_key = ? AND status = 'approved'");
             $stmt->execute([$apiKey]);

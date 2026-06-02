@@ -286,7 +286,7 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($webhookPayload));
-                curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json', 'User-Agent: GhostPix-Webhook/1.0', 'X-GhostPix-Event: payment.completed']);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json', 'User-Agent: DiretoPay-Webhook/1.0', 'X-DiretoPay-Event: payment.completed']);
                 curl_setopt($ch, CURLOPT_TIMEOUT, 10);
                 
                 $out = curl_exec($ch);
@@ -407,7 +407,7 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($ch, CURLOPT_POST, true);
                     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($webhookPayload));
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json', 'User-Agent: GhostPix-Webhook/1.0', 'X-GhostPix-Event: payment.completed']);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json', 'User-Agent: DiretoPay-Webhook/1.0', 'X-DiretoPay-Event: payment.completed']);
                     curl_setopt($ch, CURLOPT_TIMEOUT, 10);
                     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 

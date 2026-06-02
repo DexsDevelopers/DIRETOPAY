@@ -149,8 +149,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($ref) {
             $affiliateId = $ref['id'];
         }
-    } elseif (isset($_COOKIE['ghost_pix_ref'])) {
-        $refToken = $_COOKIE['ghost_pix_ref'];
+    } elseif (isset($_COOKIE['diretopay_ref'])) {
+        $refToken = $_COOKIE['diretopay_ref'];
         $stmtRef = $pdo->prepare("SELECT id FROM users WHERE referral_token = ?");
         $stmtRef->execute([$refToken]);
         $ref = $stmtRef->fetch();

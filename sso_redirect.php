@@ -1,6 +1,6 @@
 <?php
 /**
- * SSO Redirect - Ghost Pix → 7K CHAT
+ * SSO Redirect - DiretoPay → 7K CHAT
  * Generates a signed token and redirects user to Academy
  */
 require_once 'includes/db.php';
@@ -20,7 +20,7 @@ if (!$user) {
     exit;
 }
 
-$ssoSecret   = defined('SSO_SECRET')   ? SSO_SECRET   : 'ghostpix_7kchat_sso_2026_secure_key';
+$ssoSecret   = defined('SSO_SECRET')   ? SSO_SECRET   : 'diretopay_7kchat_sso_2026_secure_key';
 $academyUrl  = defined('ACADEMY_URL')  ? ACADEMY_URL  : 'https://7kchat.site';
 
 // Fetch total revenue to sync with 7K
@@ -32,7 +32,7 @@ $payload = [
     'email' => $user['email'],
     'name' => $user['full_name'],
     'total_revenue' => $totalRevenue,
-    'from' => 'ghostpix',
+    'from' => 'diretopay',
     'ts' => time(),
     'nonce' => bin2hex(random_bytes(16))
 ];

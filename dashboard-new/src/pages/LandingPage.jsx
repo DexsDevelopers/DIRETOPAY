@@ -739,6 +739,28 @@ export default function LandingPage() {
                         
                         {/* HERO COPYWRITING */}
                         <div className="lg:col-span-7 space-y-6 sm:space-y-8 text-center lg:text-left">
+                            
+                            {/* NO DOCS / PERSONAL DATA BANNER */}
+                            <motion.div
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5 }}
+                                className={cn(
+                                    "mx-auto lg:mx-0 max-w-lg border rounded-2xl p-4 flex items-center gap-3 text-left shadow-sm",
+                                    isDark 
+                                        ? "bg-emerald-500/10 border-emerald-500/20 text-white" 
+                                        : "bg-emerald-50/60 border-emerald-200/60 text-gray-800"
+                                )}
+                            >
+                                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0 border border-emerald-500/30">
+                                    <ShieldCheck size={20} />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest leading-none">Sem Burocracia</p>
+                                    <p className={cn("font-extrabold text-sm leading-snug mt-1", isDark ? "text-white" : "text-gray-900")}>Não pedimos documentos e nenhum dado pessoal. Cadastrou, gerou!</p>
+                                </div>
+                            </motion.div>
+
                             <motion.div 
                                 initial={{ opacity: 0, scale: 0.95 }} 
                                 animate={{ opacity: 1, scale: 1 }} 
@@ -773,7 +795,7 @@ export default function LandingPage() {
                                     transition={{ delay: 0.2 }}
                                     className="text-gray-500 text-xs sm:text-sm max-w-lg mx-auto lg:mx-0 font-bold leading-relaxed"
                                 >
-                                    A DiretoPay conecta seu negócio diretamente com as maiores credenciadoras financeiras do país. Roteamento inteligente v2 com contingência em milissegundos e Split integrado para produtores e afiliados.
+                                    A infraestrutura Pix definitiva para processamento de alto volume. Roteamento inteligente com contingência instantânea em milissegundos e Split de afiliados integrado.
                                 </motion.p>
                             </div>
 
@@ -831,9 +853,16 @@ export default function LandingPage() {
             </section>
 
             {/* SECTION: API & SMART ROUTING DEMO */}
-            <section id="tecnologia" className={`py-20 px-6 border-y ${
-                isDark ? 'bg-[#08090d] border-white/5' : 'bg-white border-gray-100'
-            }`}>
+            <motion.section 
+                id="tecnologia" 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-120px" }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className={`py-20 px-6 border-y ${
+                    isDark ? 'bg-[#08090d] border-white/5' : 'bg-white border-gray-100'
+                }`}
+            >
                 <div className="max-w-7xl mx-auto">
                     <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                         <div className="space-y-6">
@@ -847,7 +876,7 @@ export default function LandingPage() {
                                 <span className="text-emerald-500 italic">Roteamento de alta precisão.</span>
                             </h2>
                             <p className="text-gray-500 text-xs sm:text-sm font-semibold leading-relaxed max-w-xl">
-                                Nosso ecossistema monitora a integridade de processamento das maiores instituições bancárias a cada segundo. Caso uma falha ocorra, a requisição é redirecionada silenciosamente para outra operadora de split, garantindo que o Pix do cliente aprove sem lentidão ou recusas.
+                                Nosso sistema monitora as adquirentes em tempo real. Se houver qualquer falha ou lentidão, a cobrança é roteada automaticamente para outra credenciadora, garantindo que sua venda aprove sem recusas.
                             </p>
 
                             <div className="grid grid-cols-2 gap-2.5 pt-2">
@@ -923,10 +952,17 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* SECTION: INTERACTIVE SAVINGS CALCULATOR */}
-            <section id="calculadora" className="py-24 px-4 sm:px-6 max-w-5xl mx-auto grid lg:grid-cols-12 gap-12 items-center">
+            <motion.section 
+                id="calculadora" 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-120px" }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="py-24 px-4 sm:px-6 max-w-5xl mx-auto grid lg:grid-cols-12 gap-12 items-center"
+            >
                 <div className="lg:col-span-5 space-y-6">
                     <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-wider">
                         <DollarSign size={12} /> Custos Transparentes
@@ -934,10 +970,10 @@ export default function LandingPage() {
                     <h2 className={`text-2xl sm:text-4xl font-black uppercase leading-tight tracking-tight ${
                         isDark ? 'text-white' : 'text-gray-900'
                     }`}>
-                        Chega de taxas ocultas e tarifas de saque abusivas.
+                        Menos Taxas. Mais Lucro.
                     </h2>
                     <p className="text-gray-500 text-xs sm:text-sm font-semibold leading-relaxed">
-                        Nossa precificação diminui automaticamente de acordo com o crescimento do seu volume mensal de vendas. Sem mensalidade, sem custo de integração, sem pegadinhas. Pague apenas uma porcentagem justa por Pix liquidado com sucesso.
+                        Taxas decrescentes de acordo com o seu faturamento mensal. Sem custos fixos, pegadinhas ou tarifas de saque. Pague somente por vendas aprovadas.
                     </p>
                     <div className="space-y-3 font-semibold text-gray-500 text-xs">
                         <div className="flex gap-2.5"><CheckCircle className="text-emerald-500 shrink-0" size={16} /><p>Taxa decrescente até 0.99% flat.</p></div>
@@ -948,12 +984,19 @@ export default function LandingPage() {
                 <div className="lg:col-span-7">
                     <SavingsCalculator />
                 </div>
-            </section>
+            </motion.section>
 
             {/* SECTION: MILESTONE AWARDS / TROPHY VAULT */}
-            <section id="trofeus" className={`py-24 px-6 overflow-hidden relative ${
-                isDark ? 'bg-[#06070a]' : 'bg-[#fafbfa]'
-            }`}>
+            <motion.section 
+                id="trofeus" 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-120px" }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className={`py-24 px-6 overflow-hidden relative ${
+                    isDark ? 'bg-[#06070a]' : 'bg-[#fafbfa]'
+                }`}
+            >
                 <div className={`absolute top-0 right-1/4 w-[400px] h-[400px] rounded-full blur-[140px] pointer-events-none ${
                     isDark ? 'bg-emerald-950/5 opacity-20' : 'bg-emerald-100/30'
                 }`} />
@@ -966,10 +1009,10 @@ export default function LandingPage() {
                         <h2 className={`text-3xl sm:text-4xl font-black uppercase tracking-tight mb-4 ${
                             isDark ? 'text-white' : 'text-gray-900'
                         }`}>
-                            Galeria de Metas e Conquistas
+                            Suas Metas Viram Troféus Físicos
                         </h2>
                         <p className="text-gray-500 text-xs sm:text-sm font-semibold leading-relaxed">
-                            Alcançar volume de vendas é uma marca histórica. Para homenagear os sellers que movimentam a economia digital, enviamos nossas placas físicas exclusivas diretamente para sua empresa.
+                            Valorizamos sua escala de faturamento. Ao atingir marcos de vendas, enviamos placas exclusivas diretamente para o seu escritório para celebrar a consistência da sua operação.
                         </p>
                     </div>
 
@@ -1063,7 +1106,7 @@ export default function LandingPage() {
                                             onClick={() => setActivePlate(idx)}
                                             className={`h-1.5 rounded-full transition-all duration-300 ${
                                                 activePlate === idx ? 'w-6 bg-primary' : 'w-1.5 bg-gray-600'
-                                            }`}
+                                             }`}
                                         />
                                     ))}
                                 </div>
@@ -1071,12 +1114,18 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* SECTION: ELITE LEADERBOARD */}
-            <section className={`py-24 px-6 border-t ${
-                isDark ? 'bg-[#08090d] border-white/5' : 'bg-white border-gray-100'
-            }`}>
+            <motion.section 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-120px" }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className={`py-24 px-6 border-t ${
+                    isDark ? 'bg-[#08090d] border-white/5' : 'bg-white border-gray-100'
+                }`}
+            >
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center max-w-2xl mx-auto mb-16">
                         <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-wider mb-6">
@@ -1085,10 +1134,10 @@ export default function LandingPage() {
                         <h2 className={`text-3xl sm:text-4xl font-black uppercase tracking-tight mb-4 ${
                             isDark ? 'text-white' : 'text-gray-900'
                         }`}>
-                            Ecossistema dos Grandes Sellers
+                            O Ecossistema da Escala
                         </h2>
                         <p className="text-gray-500 text-xs sm:text-sm font-semibold leading-relaxed">
-                            Nossa infraestrutura foi desenhada para operações que exigem escala constante. Confira os volumes de faturamento aprovados de alguns dos nossos principais parceiros neste mês.
+                            Desenhado para processamento robusto e constante. Veja o volume faturado em tempo real pelos nossos principais parceiros de alta performance.
                         </p>
                     </div>
 
@@ -1114,12 +1163,18 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* SECTION: PILLARS & BENEFITS */}
-            <section className={`py-24 px-6 overflow-hidden relative ${
-                isDark ? 'bg-[#06070a]' : 'bg-[#fafbfa]'
-            }`}>
+            <motion.section 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-120px" }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className={`py-24 px-6 overflow-hidden relative ${
+                    isDark ? 'bg-[#06070a]' : 'bg-[#fafbfa]'
+                }`}
+            >
                 <div className="max-w-7xl mx-auto space-y-16">
                     <div className={`flex flex-col md:flex-row md:items-end justify-between gap-6 border-b pb-8 ${
                         isDark ? 'border-white/5' : 'border-emerald-100/30'
@@ -1129,11 +1184,11 @@ export default function LandingPage() {
                             <h2 className={`text-2xl sm:text-4xl font-black uppercase tracking-tight ${
                                 isDark ? 'text-white' : 'text-gray-900'
                             }`}>
-                                Tecnologia desenhada para converter
+                                Tecnologia Desenha Para Converter
                             </h2>
                         </div>
                         <p className="max-w-xs text-xs font-semibold leading-relaxed text-gray-500">
-                            Focamos em velocidade de carregamento, roteamento redundante e split transparente para maximizar o seu lucro líquido.
+                            Velocidade máxima, contingência automática e splits transparentes para o seu faturamento líquido decolar.
                         </p>
                     </div>
 
@@ -1146,12 +1201,19 @@ export default function LandingPage() {
                         <PillarCard icon={Globe} title="SLA de 99.98% de Uptime" desc="Sua API sempre no ar devido ao nosso sistema distribuído geograficamente em múltiplos servidores." delay={0.3} />
                     </div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* SECTION: DEVELOPER TERMINAL DEMO */}
-            <section id="tecnologia" className={`py-20 px-4 sm:px-6 border-y ${
-                isDark ? 'bg-[#08090d] border-white/5' : 'bg-white border-gray-100'
-            }`}>
+            <motion.section 
+                id="tecnologia" 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-120px" }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className={`py-20 px-4 sm:px-6 border-y ${
+                    isDark ? 'bg-[#08090d] border-white/5' : 'bg-white border-gray-100'
+                }`}
+            >
                 <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
                     <div className="lg:col-span-6 space-y-6">
                         <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-wider">
@@ -1202,7 +1264,7 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* SECTION: FAQ DÚVIDAS */}
             <section id="faq" className={`py-24 px-4 sm:px-6 ${isDark ? 'bg-[#06070a]' : 'bg-white'}`}>

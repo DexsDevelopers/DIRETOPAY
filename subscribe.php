@@ -66,8 +66,8 @@ try {
     // ── Generate first PIX charge ─────────────────────────────────────────
     if ($currentKey === 'SUA_API_KEY_AQUI' || empty($currentKey)) {
         // Simulation mode
-        $pixCode = '00020126360014br.gov.bcb.pix0114000000000000005204000053039865802BR5925GHOSTPIX6009SAOPAULO62070503***6304ABCD';
-        $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=GHOSTPIX_SUB_NEW_' . $subscriptionId;
+        $pixCode = '00020126360014br.gov.bcb.pix0114000000000000005204000053039865802BR5925DIRETOPAY6009SAOPAULO62070503***6304ABCD';
+        $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=DIRETOPAY_SUB_NEW_' . $subscriptionId;
         $pixId   = 'sim_sub_first_' . time();
         $pixgoFee    = $amount * (8 / 100) + 0.99;
         $platformFee = $amount * ($product['commission_rate'] / 100);

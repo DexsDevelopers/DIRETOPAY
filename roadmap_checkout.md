@@ -1,11 +1,11 @@
-# Roadmap: Checkout Transparente Ghost Pix 🚀
+# Roadmap: Checkout Transparente DiretoPay 🚀
 
-O objetivo é permitir que o lojista gere pagamentos PIX diretamente em seu site sem redirecionamentos, utilizando a infraestrutura do Ghost Pix como middleware de blindagem.
+O objetivo é permitir que o lojista gere pagamentos PIX diretamente em seu site sem redirecionamentos, utilizando a infraestrutura da DiretoPay como middleware.
 
 ## 🏗️ Arquitetura Proposta
 
 1.  **Frontend Hook**: Um pequeno script JS (`ghost-checkout.js`) que o lojista include no site.
-2.  **API Silenciosa**: Endpoint no Ghost Pix que processa a criação da cobrança e retorna o QR Code/Copia e Cola.
+2.  **API Silenciosa**: Endpoint na DiretoPay que processa a criação da cobrança e retorna o QR Code/Copia e Cola.
 3.  **Real-time Status**: Uso do `check_status.php` via polling ou WebSockets (futuro) para atualizar a tela do cliente assim que o pagamento for detectado.
 
 ## 📅 Fases de Implementação

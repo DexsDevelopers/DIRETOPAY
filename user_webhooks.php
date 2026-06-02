@@ -137,7 +137,7 @@ switch ($action) {
             'pix_id' => 'test_' . bin2hex(random_bytes(8)),
             'amount' => 25.00,
             'amount_net' => 24.00,
-            'customer_name' => 'Teste Ghost Pix',
+            'customer_name' => 'Teste DiretoPay',
             'status' => 'paid',
             'timestamp' => date('Y-m-d H:i:s')
         ];
@@ -154,8 +154,8 @@ switch ($action) {
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($testPayload));
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json',
-            'User-Agent: GhostPix-Webhook/1.0',
-            'X-GhostPix-Event: test'
+            'User-Agent: DiretoPay-Webhook/1.0',
+            'X-DiretoPay-Event: test'
         ]);
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);

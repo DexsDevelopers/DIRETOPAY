@@ -29,7 +29,7 @@ try {
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/png" href="logo_diretopay.png">
     <link rel="manifest" href="manifest.json">
-    <title>Solicitar Saque - Ghost Pix</title>
+    <title>Solicitar Saque - DiretoPay</title>
     <link rel="stylesheet" href="style.css?v=125.0">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -53,7 +53,7 @@ try {
                             <span class="currency">R$</span><?php echo number_format($availableBalance, 2, ',', '.'); ?>
                         </div>
                         <p class="card-hint center" style="color:var(--green); font-weight:600; margin-top: 0.5rem;">
-                            <i class="fas fa-shield-halved"></i> Saldo Protegido por Ghost Pix
+                            <i class="fas fa-shield-halved"></i> Saldo Protegido pela DiretoPay
                         </p>
                     </div>
 

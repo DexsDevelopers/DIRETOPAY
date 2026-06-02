@@ -1,6 +1,6 @@
 <?php
 /**
- * SSO Login - Receives token from 7K CHAT → logs into Ghost Pix
+ * SSO Login - Receives token from 7K CHAT → logs into DiretoPay
  */
 require_once 'includes/db.php';
 
@@ -11,7 +11,7 @@ if (empty($token)) {
     exit;
 }
 
-$ssoSecret = defined('SSO_SECRET') ? SSO_SECRET : 'ghostpix_7kchat_sso_2026_secure_key';
+$ssoSecret = defined('SSO_SECRET') ? SSO_SECRET : 'diretopay_7kchat_sso_2026_secure_key';
 
 // Parse token
 $parts = explode('.', $token);

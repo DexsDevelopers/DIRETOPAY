@@ -58,7 +58,7 @@ $resetLink = get_trusted_base_url() . "/auth/reset_password.php?token=" . $token
 // Enviar email
 $emailBody = "
     <h3 style='color: #fff; margin-bottom: 15px;'>Olá, {$user['full_name']}!</h3>
-    <p style='color: #ccc;'>Você solicitou a alteração da sua senha na Ghost Pix.</p>
+    <p style='color: #ccc;'>Você solicitou a alteração da sua senha na DiretoPay.</p>
     <p style='color: #ccc;'>Clique no botão abaixo para definir uma nova senha:</p>
     <div style='text-align: center; margin: 30px 0;'>
         <a href='{$resetLink}' style='display: inline-block; background: #4ade80; color: #000; font-weight: bold; padding: 14px 32px; border-radius: 12px; text-decoration: none; font-size: 16px;'>
@@ -70,7 +70,7 @@ $emailBody = "
     <p style='color: #555; font-size: 11px; margin-top: 20px;'>Link direto: {$resetLink}</p>
 ";
 
-$sent = MailService::send($user['email'], 'Ghost Pix — Redefinição de Senha', $emailBody);
+$sent = MailService::send($user['email'], 'DiretoPay — Redefinição de Senha', $emailBody);
 
 if ($sent) {
     $_SESSION[$cacheKey] = time();

@@ -1,7 +1,7 @@
 <?php
 require_once 'includes/db.php';
 
-echo "<h1>Ghost Pix - Migração de Banco de Dados V3</h1>";
+echo "<h1>DiretoPay - Migração de Banco de Dados V3</h1>";
 
 try {
     // 1. Adicionar api_key na tabela users
