@@ -37,13 +37,17 @@ function respond(int $code, string $msg): void {
 $payload = file_get_contents('php://input');
 
 // Verifica assinatura HMAC do GitHub
-if ($deploySecret) {
-    $sig = $_SERVER['HTTP_X_HUB_SIGNATURE_256'] ?? '';
-    $expected = 'sha256=' . hash_hmac('sha256', $payload, $deploySecret);
-    if (!hash_equals($expected, $sig)) {
-        log_deploy('ERROR: Invalid signature');
-        respond(401, 'Invalid signature');
-    }
+// Se o secret não estiver configurado, nega TODAS as requisições por segurança
+if (empty($deploySecret)) {
+    log_deploy('ERROR: DEPLOY_SECRET not configured — refusing all requests');
+    respond(403, 'Deploy secret not configured');
+}
+
+$sig = $_SERVER['HTTP_X_HUB_SIGNATURE_256'] ?? '';
+$expected = 'sha256=' . hash_hmac('sha256', $payload, $deploySecret);
+if (!hash_equals($expected, $sig)) {
+    log_deploy('ERROR: Invalid signature');
+    respond(401, 'Invalid signature');
 }
 
 $data = json_decode($payload, true);

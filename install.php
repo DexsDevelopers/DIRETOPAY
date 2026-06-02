@@ -3,6 +3,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require_once 'includes/db.php';
+if (!isAdmin()) { http_response_code(403); exit('Unauthorized - must be logged in as admin'); }
 
 echo "<h2>Iniciando Instalação do Banco de Dados...</h2>";
 

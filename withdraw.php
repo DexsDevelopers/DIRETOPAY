@@ -149,6 +149,6 @@ try {
 } catch (Exception $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
     write_log('ERROR', 'Erro ao processar saque', ['error' => $e->getMessage(), 'user_id' => $userId]);
-    echo json_encode(['error' => 'Erro ao processar saque: ' . $e->getMessage()]);
+    echo json_encode(['error' => 'Erro ao processar saque. Contate o suporte.']);
 }
 
