@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Wallet, ArrowUpRight, ShieldCheck, History, Loader2, CheckCircle, XCircle, Clock, RefreshCw, CreditCard, AlertTriangle, Info, ChevronDown, ChevronUp } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 const BADGE = {
-    approved: 'bg-primary/10 text-primary border-primary/20',
-    pending:  'bg-orange-500/10 text-orange-400 border-orange-500/20',
-    rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
+    approved: 'bg-emerald-500/10 text-emerald-500',
+    pending:  'bg-amber-500/10 text-amber-500',
+    rejected: 'bg-red-500/10 text-red-400',
 };
 
 export default function WithdrawalsPage({ balance, availableForWithdraw, pendingWithdrawals, userData }) {
+    const { isDark } = useTheme();
     const [amount, setAmount] = useState('');
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
@@ -83,164 +85,133 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
         }
     };
 
+    const card = `rounded-xl border p-5 ${isDark ? 'bg-[#111117] border-white/[0.07]' : 'bg-white border-gray-100'}`;
+
     return (
-        <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
+        <div className="space-y-5 pb-10">
+            {/* Header */}
             <div>
-                <h1 className="text-3xl font-black tracking-tight text-gray-900 flex items-center gap-3">
-                    <Wallet className="text-primary" size={32} />
-                    Solicitar <span className="text-primary italic">Saque</span>
-                </h1>
-                <p className="text-gray-500 font-medium">Transfira seus lucros para sua conta bancária de forma segura.</p>
+                <h1 className={`text-[18px] font-bold tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Saques</h1>
+                <p className="text-[12px] text-gray-400 mt-0.5">Transfira seu saldo para sua conta PIX</p>
             </div>
 
-            {/* Aviso: chave Pix nova — sem tom de golpe, bom para conversão */}
-            <div className="rounded-3xl border-2 border-amber-200 bg-amber-50 p-5 flex gap-4 items-start">
-                <div className="flex-shrink-0 w-9 h-9 rounded-2xl bg-amber-100 flex items-center justify-center mt-0.5">
-                    <Info size={18} className="text-amber-500" />
-                </div>
-                <div>
-                    <p className="font-black text-amber-800 text-sm mb-0.5">Por que minha taxa está ajustada?</p>
-                    <p className="text-amber-700 text-[13px] leading-relaxed">
-                        Sua conta utiliza uma <strong>chave Pix recém-cadastrada</strong>. O sistema aplica automaticamente taxas ligeiramente superiores durante o período inicial de validação da chave — isso é <strong>completamente normal</strong> e não indica nenhuma pendência. Seu saldo continua sendo transferido normalmente.
-                    </p>
-                </div>
+            {/* Info banner */}
+            <div className={`rounded-xl border p-4 flex gap-3 items-start ${isDark ? 'bg-amber-500/5 border-amber-500/20' : 'bg-amber-50 border-amber-200'}`}>
+                <Info size={15} className="text-amber-500 shrink-0 mt-0.5" />
+                <p className={`text-[12.5px] leading-relaxed ${isDark ? 'text-amber-300' : 'text-amber-700'}`}>
+                    Sua conta usa uma <strong>chave PIX recente</strong>. Taxas iniciais são automáticas e não indicam pendência — completamente normal.
+                </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 space-y-6">
-
-                    <div className="bg-white border border-emerald-100 shadow-[0_4px_24px_rgba(30,164,101,0.08)] p-8 rounded-[40px] space-y-8 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -z-10" />
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <div>
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 block">Disponível para Saque</label>
-                                <div className="text-4xl font-black text-gray-900">R$ {displayAvailable}</div>
-                                {hasPending && (
-                                    <p className="text-[10px] text-orange-400/80 mt-1 font-bold">
-                                        ⏳ R$ {pendingWithdrawals} em saques pendentes
-                                    </p>
-                                )}
-                            </div>
-                            <div>
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 block">Status da Conta</label>
-                                <div className="flex items-center gap-2 text-primary font-bold">
-                                    <ShieldCheck size={18} />
-                                    Verificada & Blindada
-                                </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                {/* Form */}
+                <div className="lg:col-span-2 space-y-4">
+                    {/* Balance */}
+                    <div className={`${card} grid grid-cols-2 gap-5`}>
+                        <div>
+                            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-2">Disponível para saque</p>
+                            <p className={`text-[26px] font-bold tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>R$ {displayAvailable}</p>
+                            {hasPending && <p className="text-[11px] text-amber-500 mt-1">R$ {pendingWithdrawals} pendentes</p>}
+                        </div>
+                        <div className="flex flex-col justify-center">
+                            <div className="flex items-center gap-2 text-emerald-500">
+                                <ShieldCheck size={16} />
+                                <span className="text-[13px] font-medium">Conta verificada</span>
                             </div>
                         </div>
+                    </div>
 
+                    {/* Input form */}
+                    <div className={`${card} space-y-4`}>
                         {result && (
-                            <div className={`flex items-center gap-3 p-4 rounded-2xl text-sm font-bold ${result.success ? 'bg-primary/10 border border-primary/20 text-primary' : 'bg-red-500/10 border border-red-500/20 text-red-400'}`}>
-                                {result.success ? <CheckCircle size={18} /> : <XCircle size={18} />}
+                            <div className={`flex items-center gap-3 p-3.5 rounded-xl text-[13px] font-medium ${result.success ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-400'}`}>
+                                {result.success ? <CheckCircle size={15} /> : <XCircle size={15} />}
                                 {result.success ? result.message : result.error}
                             </div>
                         )}
 
-                        <div className="space-y-4">
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-gray-500 ml-2">Valor do Resgate</label>
-                                <div className="relative">
-                                    <span className="absolute left-6 top-1/2 -translate-y-1/2 text-primary font-black text-xl">R$</span>
-                                    <input
-                                        type="number"
-                                        value={amount}
-                                        onChange={(e) => setAmount(e.target.value)}
-                                        placeholder="0,00"
-                                        min={minWithdraw}
-                                        step="0.01"
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-[24px] py-6 pl-16 pr-8 text-2xl font-black text-gray-900 focus:outline-none focus:border-primary/50 focus:bg-white transition-all"
-                                    />
-                                </div>
-                                {amount && parseFloat(amount) >= minWithdraw ? (
-                                <div className="ml-2 space-y-0.5">
-                                    <p className="text-[10px] text-gray-400">Taxa plataforma: R$ 3,50 &nbsp;|&nbsp; Taxa de saque: R$ 4,00 + 0,2%</p>
-                                    <p className="text-[10px] text-gray-500 font-bold">Total de taxas: R$ {totalFee(parseFloat(amount)).toFixed(2).replace('.', ',')} &nbsp;→&nbsp; <span className="text-primary">Você recebe: R$ {netAmount(parseFloat(amount)).toFixed(2).replace('.', ',')}</span></p>
-                                </div>
-                            ) : (
-                                <p className="text-[10px] text-gray-400 ml-2">Mínimo na rota {userNominal.toUpperCase()}: R$ {minWithdraw.toFixed(2).replace('.', ',')} &nbsp;|&nbsp; Taxas: R$ 3,50 + R$ 4,00 + 0,2%</p>
-                            )}
+                        <div>
+                            <label className={`text-[11px] font-medium block mb-2 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Valor do saque</label>
+                            <div className="relative">
+                                <span className={`absolute left-4 top-1/2 -translate-y-1/2 text-[15px] font-bold ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>R$</span>
+                                <input
+                                    type="number"
+                                    value={amount}
+                                    onChange={(e) => setAmount(e.target.value)}
+                                    placeholder="0,00"
+                                    min={minWithdraw}
+                                    step="0.01"
+                                    className={`w-full rounded-xl py-3.5 pl-12 pr-4 text-[18px] font-bold border outline-none transition-all ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-gray-600 focus:border-emerald-500/40' : 'bg-gray-50 border-gray-200 text-gray-900 focus:border-emerald-400 focus:bg-white'}`}
+                                />
                             </div>
-
-                            <button
-                                onClick={handleWithdraw}
-                                disabled={loading}
-                                className="w-full h-18 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-[24px] font-black text-xl flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_12px_40px_rgba(30,164,101,0.3)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                            >
-                                {loading ? (
-                                    <><Loader2 size={22} className="animate-spin" /> Processando...</>
-                                ) : (
-                                    <>Confirmar Saque <ArrowUpRight size={24} /></>
+                            <div className="mt-2 flex items-center justify-between">
+                                <p className="text-[11px] text-gray-400">Mín. R$ {minWithdraw.toFixed(2).replace('.', ',')} · Taxa: R$ 3,50 + R$ 4,00 + 0,2%</p>
+                                {amount && parseFloat(amount) >= minWithdraw && (
+                                    <p className="text-[11px] text-emerald-500 font-medium">Você recebe: R$ {netAmount(parseFloat(amount)).toFixed(2).replace('.', ',')}</p>
                                 )}
-                            </button>
-
-                            <button
-                                onClick={() => setShowInfo(v => !v)}
-                                className="w-full flex items-center justify-between gap-2 px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 text-gray-400 hover:text-gray-600 text-xs font-bold transition-all"
-                            >
-                                <span className="flex items-center gap-2"><Info size={14} /> Informações sobre o saque</span>
-                                {showInfo ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                            </button>
-
-                            {showInfo && (
-                                <div className="space-y-4 rounded-2xl border border-gray-200 p-5 bg-gray-50">
-                                    <div className="flex gap-3 items-start">
-                                        <Clock size={16} className="text-primary shrink-0 mt-0.5" />
-                                        <p className="text-sm text-gray-600 leading-relaxed">
-                                            <strong className="text-gray-900">Tempo de processamento:</strong> Entre <strong className="text-primary">12:00 e 00:00</strong>, o saque cai em <strong className="text-primary">aproximadamente 1 hora</strong>. Fora desse horário pode demorar um pouco mais.
-                                        </p>
-                                    </div>
-                                    <div className="w-full h-px bg-gray-200" />
-                                    <div className="flex gap-3 items-start">
-                                        <CreditCard size={16} className="text-amber-500 shrink-0 mt-0.5" />
-                                        <p className="text-sm text-gray-600 leading-relaxed">
-                                            <strong className="text-amber-600">Cartão de crédito:</strong> Vendas via cartão ficam disponíveis para saque em <strong className="text-gray-900">aproximadamente 1 dia</strong>. Risco de chargeback — aguarde antes de sacar.
-                                        </p>
-                                    </div>
-                                    <div className="w-full h-px bg-gray-200" />
-                                    <div className="flex gap-3 items-start">
-                                        <AlertTriangle size={16} className="text-red-500 shrink-0 mt-0.5" />
-                                        <p className="text-sm text-gray-600 leading-relaxed">
-                                            <strong className="text-red-500">Risco de MED:</strong> Clientes (Nubank, PicPay etc.) podem solicitar reembolso do PIX no mesmo dia. Verifique na página de vendas se alguma transação foi marcada com MED.
-                                        </p>
-                                    </div>
-                                </div>
-                            )}
+                            </div>
                         </div>
+
+                        <button onClick={handleWithdraw} disabled={loading}
+                            className="w-full bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl py-3 font-semibold text-[14px] flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                            {loading ? <><Loader2 size={16} className="animate-spin" /> Processando...</> : <>Confirmar saque <ArrowUpRight size={16} /></>}
+                        </button>
+
+                        <button onClick={() => setShowInfo(v => !v)}
+                            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl border text-[12px] font-medium transition-all ${isDark ? 'border-white/8 text-gray-400 hover:text-gray-200 hover:bg-white/5' : 'border-gray-200 text-gray-400 hover:text-gray-600 hover:bg-gray-50'}`}>
+                            <span className="flex items-center gap-2"><Info size={13} /> Informações sobre o saque</span>
+                            {showInfo ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                        </button>
+
+                        {showInfo && (
+                            <div className={`rounded-xl border p-4 space-y-3 ${isDark ? 'border-white/[0.06] bg-white/[0.02]' : 'border-gray-100 bg-gray-50'}`}>
+                                {[
+                                    { icon: Clock,         color: 'text-emerald-500', title: 'Processamento', text: 'Entre 12h e 00h, cai em ~1 hora. Fora desse horário pode demorar mais.' },
+                                    { icon: CreditCard,    color: 'text-amber-500',   title: 'Vendas no cartão', text: 'Disponível para saque em ~1 dia. Aguarde para evitar chargeback.' },
+                                    { icon: AlertTriangle, color: 'text-red-400',     title: 'MED / Reembolso', text: 'Clientes podem solicitar reembolso no mesmo dia via Nubank, PicPay etc.' },
+                                ].map(({ icon: Icon, color, title, text }) => (
+                                    <div key={title} className="flex gap-3 items-start">
+                                        <Icon size={14} className={`${color} shrink-0 mt-0.5`} />
+                                        <p className={`text-[12px] leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                                            <strong className={isDark ? 'text-gray-200' : 'text-gray-800'}>{title}: </strong>{text}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
 
-                <div className="space-y-6">
-                    <div className="bg-white border border-emerald-100 shadow-[0_4px_24px_rgba(30,164,101,0.08)] p-8 rounded-[40px]">
-                        <h3 className="text-lg font-black mb-4 flex items-center justify-between text-gray-900">
-                            <span className="flex items-center gap-2">
-                                <History size={18} className="text-primary" />
-                                Histórico de Saques
-                            </span>
-                            <button onClick={fetchWithdrawals} title="Atualizar" className="p-1.5 rounded-full hover:bg-gray-100 transition-all">
-                                <RefreshCw size={14} className={`text-gray-400 ${loadingW ? 'animate-spin' : ''}`} />
-                            </button>
-                        </h3>
-                        <div className="space-y-4">
-                            {loadingW ? (
-                                <div className="flex justify-center py-6"><Loader2 size={20} className="animate-spin text-gray-300" /></div>
-                            ) : withdrawals.length > 0 ? (
-                                withdrawals.slice(0, 6).map((w) => (
-                                    <div key={w.id} className="flex items-center justify-between border-b border-gray-100 pb-4 last:border-0 last:pb-0">
-                                        <div>
-                                            <p className="text-sm font-bold text-gray-900">R$ {w.amount}</p>
-                                            <p className="text-[10px] text-gray-500">{w.date}</p>
-                                            {w.pix_key && <p className="text-[10px] text-gray-400 truncate max-w-[120px]">{w.pix_key}</p>}
-                                        </div>
-                                        <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider border ${BADGE[w.badge] ?? BADGE.pending}`}>{w.status}</span>
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="text-xs text-gray-400 text-center py-6">Nenhum saque solicitado ainda.</p>
-                            )}
+                {/* History */}
+                <div className={`${card} flex flex-col gap-4`}>
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <History size={14} className="text-emerald-500" />
+                            <span className={`text-[13px] font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>Histórico</span>
                         </div>
+                        <button onClick={fetchWithdrawals}
+                            className={`p-1.5 rounded-lg transition-all ${isDark ? 'text-gray-500 hover:text-gray-300 hover:bg-white/5' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'}`}>
+                            <RefreshCw size={13} className={loadingW ? 'animate-spin' : ''} />
+                        </button>
                     </div>
+
+                    {loadingW ? (
+                        <div className="flex justify-center py-8"><Loader2 size={18} className="animate-spin text-gray-400" /></div>
+                    ) : withdrawals.length > 0 ? (
+                        <div className="space-y-3">
+                            {withdrawals.slice(0, 8).map((w) => (
+                                <div key={w.id} className={`flex items-center justify-between pb-3 border-b last:border-0 last:pb-0 ${isDark ? 'border-white/[0.05]' : 'border-gray-100'}`}>
+                                    <div>
+                                        <p className={`text-[13px] font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>R$ {w.amount}</p>
+                                        <p className="text-[11px] text-gray-400 mt-0.5">{w.date}</p>
+                                    </div>
+                                    <span className={`text-[10px] font-semibold px-2 py-1 rounded-lg ${BADGE[w.badge] ?? BADGE.pending}`}>{w.status}</span>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-[12px] text-gray-400 text-center py-8">Nenhum saque solicitado ainda.</p>
+                    )}
                 </div>
             </div>
         </div>
