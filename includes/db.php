@@ -237,6 +237,16 @@ try {
         $pdo->exec("ALTER TABLE users ADD COLUMN withdraw_preference VARCHAR(20) NOT NULL DEFAULT 'accumulate'");
     } catch (PDOException $e) {}
 
+    // Auto-Migração: Coluna affiliate_id (quem indicou o usuário)
+    try {
+        $pdo->exec("ALTER TABLE users ADD COLUMN affiliate_id INT NULL DEFAULT NULL");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: Token de referência para afiliados
+    try {
+        $pdo->exec("ALTER TABLE users ADD COLUMN referral_token VARCHAR(64) NULL DEFAULT NULL");
+    } catch (PDOException $e) {}
+
     // Auto-Migração: Coluna nominal em withdrawals
     try {
         $pdo->exec("ALTER TABLE withdrawals ADD COLUMN nominal VARCHAR(20) DEFAULT 'nominal1'");
