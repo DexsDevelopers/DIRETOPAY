@@ -153,7 +153,7 @@
             </div>
             <div class="info-row">
                 <span class="info-label">Instagram</span>
-                <span class="info-value"><a href="https://instagram.com/user.diretopay_" target="_blank" style="color:#1ea465; text-decoration:none;">@user.diretopay_</a></span>
+                <span class="info-value"><a href="https://instagram.com/diretopay_" target="_blank" style="color:#1ea465; text-decoration:none;">@diretopay_</a></span>
             </div>
             <div class="info-row">
                 <span class="info-label">Horário Suporte</span>
@@ -178,11 +178,11 @@
                     <div class="contact-sub">contato@diretopay.com.br</div>
                 </div>
             </a>
-            <a href="https://instagram.com/user.diretopay_" target="_blank" rel="noopener noreferrer" class="contact-card">
+            <a href="https://instagram.com/diretopay_" target="_blank" rel="noopener noreferrer" class="contact-card">
                 <div class="contact-icon">📸</div>
                 <div>
                     <div class="contact-title">Instagram</div>
-                    <div class="contact-sub">@user.diretopay_</div>
+                    <div class="contact-sub">@diretopay_</div>
                 </div>
             </a>
             <a href="mailto:privacidade@diretopay.com.br" class="contact-card">

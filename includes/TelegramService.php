@@ -103,15 +103,16 @@ class TelegramService
         $gross    = number_format($amount,    2, ',', '.');
         $net      = number_format($netAmount, 2, ',', '.');
         $fee      = number_format($amount - $netAmount, 2, ',', '.');
+        $pct      = $amount > 0 ? number_format((($amount - $netAmount) / $amount) * 100, 1) : 0;
         $msg =
-            "� <b>VENDA CONFIRMADA</b>\n" . self::divider() . "\n\n"
-          . "💵 <b>Valor Bruto:</b>   R$ {$gross}\n"
-          . "💎 <b>Valor Líquido:</b> R$ {$net}\n"
-          . "📉 <b>Taxa Total:</b>    R$ {$fee}\n\n"
-          . "👤 <b>Pagador:</b>    {$customerName}\n"
-          . "🏪 <b>Vendedor:</b>   {$merchantName}\n"
-          . "🔗 <b>Origem:</b>     {$source}\n"
-          . "🆔 <b>TX:</b>         <code>#{$transactionId}</code>"
+            "✅ <b>VENDA CONFIRMADA</b>\n" . self::divider() . "\n\n"
+          . "💵 <b>Bruto:</b>   R$ {$gross}\n"
+          . "💎 <b>Líquido:</b> R$ {$net}\n"
+          . "📉 <b>Taxa:</b>    R$ {$fee} ({$pct}%)\n\n"
+          . "👤 <b>Pagador:</b>  " . htmlspecialchars($customerName) . "\n"
+          . "🏪 <b>Vendedor:</b> " . htmlspecialchars($merchantName) . "\n"
+          . "🔗 <b>Origem:</b>  {$source}\n"
+          . "🆔 <b>TX:</b>      <code>#{$transactionId}</code>"
           . self::footer();
         return self::send($msg);
     }
@@ -122,27 +123,37 @@ class TelegramService
         string $customerName = '', string $source = 'PIX'
     ): bool {
         $amountFmt = number_format($amount, 2, ',', '.');
-        $payerLine = $customerName ? "\n👤 <b>Pagador:</b>  {$customerName}" : '';
+        $payerLine = $customerName ? "\n👤 <b>Pagador:</b>   " . htmlspecialchars($customerName) : '';
         $msg =
             "⚡ <b>NOVA COBRANÇA GERADA</b>\n" . self::divider() . "\n\n"
           . "💵 <b>Valor:</b>    R$ {$amountFmt}"
           . $payerLine . "\n"
-          . "🏪 <b>Vendedor:</b> {$merchantName}\n"
+          . "🏪 <b>Vendedor:</b> " . htmlspecialchars($merchantName) . "\n"
           . "🔗 <b>Origem:</b>   {$source}\n"
-          . "🆔 <b>TX:</b>       <code>#{$transactionId}</code>"
+          . "🆔 <b>TX:</b>       <code>#{$transactionId}</code>\n\n"
+          . "⏳ <i>Aguardando pagamento...</i>"
           . self::footer();
         return self::send($msg);
     }
 
     // ─── NOVO CADASTRO ───────────────────────────────────────────────
-    public static function notifyNewUser(string $name, string $email, string $ip = ''): bool
-    {
-        $ipLine = $ip ? "\n🌐 <b>IP:</b>      <code>{$ip}</code>" : '';
+    public static function notifyNewUser(
+        string $name, string $email, string $ip = '',
+        string $pixKey = '', string $whatsapp = '', string $referredBy = ''
+    ): bool {
+        $ipLine  = $ip        ? "\n🌐 <b>IP:</b>        <code>{$ip}</code>"        : '';
+        $pixLine = $pixKey    ? "\n🔑 <b>PIX:</b>       <code>{$pixKey}</code>"    : '';
+        $waLine  = $whatsapp  ? "\n📱 <b>WhatsApp:</b>  <code>{$whatsapp}</code>"  : '';
+        $refLine = $referredBy ? "\n🔗 <b>Indicado por:</b> " . htmlspecialchars($referredBy) : '';
         $msg =
             "🆕 <b>NOVO CADASTRO</b>\n" . self::divider() . "\n\n"
-          . "� <b>Nome:</b>    {$name}\n"
+          . "👤 <b>Nome:</b>    " . htmlspecialchars($name) . "\n"
           . "📧 <b>E-mail:</b>  <code>{$email}</code>"
+          . $pixLine
+          . $waLine
           . $ipLine
+          . $refLine . "\n\n"
+          . "⏳ <i>Aguardando ativação na plataforma.</i>"
           . self::footer();
         return self::send($msg);
     }
@@ -154,19 +165,20 @@ class TelegramService
         $net   = number_format($grossAmount - $platformFee - $sigiloFee, 2, ',', '.');
         $pFee  = number_format($platformFee, 2, ',', '.');
         $sFee  = number_format($sigiloFee, 2, ',', '.');
-        
-        $nominalLabel = ($nominal === 'nominal2') ? 'BRPix (nominal2)' : 'SigiloPay (nominal1)';
-        
+        $nominalLabels = [
+            'nominal1' => 'SigiloPay', 'nominal2' => 'BRPix', 'nominal3' => 'Auto-Direto',
+        ];
+        $nominalLabel = $nominalLabels[$nominal] ?? $nominal;
         $msg =
-            "🏦 <b>SAQUE SOLICITADO</b>\n" . self::divider() . "\n\n"
-          . "👤 <b>Usuário:</b>       {$userName}\n"
-          . "💵 <b>Valor Bruto:</b>    R$ {$gross}\n"
-          . "📉 <b>Taxa SigiloPay:</b> R$ {$sFee}\n"
-          . "💰 <b>Meu Lucro:</b>      R$ {$pFee}\n"
-          . "💎 <b>Valor a Pagar:</b>  R$ {$net}\n"
+            "💸 <b>SAQUE SOLICITADO</b>\n" . self::divider() . "\n\n"
+          . "👤 <b>Usuário:</b>      " . htmlspecialchars($userName) . "\n"
+          . "💵 <b>Valor bruto:</b>  R$ {$gross}\n"
+          . "📉 <b>Taxa gateway:</b> R$ {$sFee}\n"
+          . "💰 <b>Taxa plataforma:</b> R$ {$pFee}\n"
+          . "💎 <b>A pagar:</b>      R$ {$net}\n"
           . "🔑 <b>Chave PIX:</b>   <code>{$pixKey}</code>\n"
-          . "🏦 <b>Nominal/Gateway:</b> <code>{$nominalLabel}</code>\n\n"
-          . "⚠️ <i>Aguardando aprovação manual.</i>"
+          . "🏦 <b>Gateway:</b>     {$nominalLabel}\n\n"
+          . "⚠️ <i>Use /saques no bot admin para processar.</i>"
           . self::footer();
         return self::send($msg);
     }
@@ -338,6 +350,67 @@ class TelegramService
               . "💰 Volume total: <b>R$ {$totalFmt}</b>"
               . self::footer();
 
+        return self::send($msg);
+    }
+
+    // ─── NOVO AFILIADO ────────────────────────────────────────────────
+    public static function notifyNewAffiliate(string $name, string $email, string $referrerName, float $commissionRate = 0): bool
+    {
+        $rateStr = $commissionRate > 0 ? "\n💸 <b>Comissão afiliado:</b> {$commissionRate}%" : '';
+        $msg =
+            "🔗 <b>NOVO AFILIADO CADASTRADO</b>\n" . self::divider() . "\n\n"
+          . "👤 <b>Nome:</b>       " . htmlspecialchars($name) . "\n"
+          . "📧 <b>E-mail:</b>    <code>{$email}</code>\n"
+          . "🏪 <b>Indicado por:</b> " . htmlspecialchars($referrerName)
+          . $rateStr . "\n\n"
+          . "⏳ <i>Aguardando ativação.</i>"
+          . self::footer();
+        return self::send($msg);
+    }
+
+    // ─── VENDA DE ALTO VALOR ─────────────────────────────────────────────
+    public static function notifyHighValue(float $amount, string $customerName, string $merchantName, int $transactionId, string $source = 'PIX'): bool
+    {
+        $amountFmt = number_format($amount, 2, ',', '.');
+        $msg =
+            "⭐ <b>VENDA DE ALTO VALOR</b>\n" . self::divider() . "\n\n"
+          . "💵 <b>Valor:</b>    R$ {$amountFmt}\n"
+          . "👤 <b>Pagador:</b>  " . htmlspecialchars($customerName) . "\n"
+          . "🏪 <b>Vendedor:</b> " . htmlspecialchars($merchantName) . "\n"
+          . "🔗 <b>Origem:</b>  {$source}\n"
+          . "🆔 <b>TX:</b>      <code>#{$transactionId}</code>"
+          . self::footer();
+        return self::send($msg);
+    }
+
+    // ─── NOVO PEDIDO DE PRODUTO ───────────────────────────────────────────
+    public static function notifyNewOrder(string $productName, string $sellerName, string $buyerName, float $amount, int $orderId): bool
+    {
+        $amountFmt = number_format($amount, 2, ',', '.');
+        $msg =
+            "🛍️ <b>NOVO PEDIDO</b>\n" . self::divider() . "\n\n"
+          . "📦 <b>Produto:</b>  " . htmlspecialchars($productName) . "\n"
+          . "💵 <b>Valor:</b>    R$ {$amountFmt}\n"
+          . "👤 <b>Comprador:</b> " . htmlspecialchars($buyerName ?: 'Anônimo') . "\n"
+          . "🏪 <b>Vendedor:</b> " . htmlspecialchars($sellerName) . "\n"
+          . "🆔 <b>Pedido:</b>   <code>#{$orderId}</code>"
+          . self::footer();
+        return self::send($msg);
+    }
+
+    // ─── NOVA ASSINATURA ─────────────────────────────────────────────────
+    public static function notifyNewSubscription(string $productName, string $sellerName, string $buyerName, float $amount, string $interval = 'monthly'): bool
+    {
+        $amountFmt = number_format($amount, 2, ',', '.');
+        $intervals = ['weekly' => 'Semanal', 'monthly' => 'Mensal', 'yearly' => 'Anual'];
+        $intervalLabel = $intervals[$interval] ?? $interval;
+        $msg =
+            "🔄 <b>NOVA ASSINATURA</b>\n" . self::divider() . "\n\n"
+          . "📦 <b>Produto:</b>    " . htmlspecialchars($productName) . "\n"
+          . "💵 <b>Valor:</b>      R$ {$amountFmt}/{$intervalLabel}\n"
+          . "👤 <b>Assinante:</b>  " . htmlspecialchars($buyerName ?: 'Anônimo') . "\n"
+          . "🏪 <b>Vendedor:</b>  " . htmlspecialchars($sellerName)
+          . self::footer();
         return self::send($msg);
     }
 

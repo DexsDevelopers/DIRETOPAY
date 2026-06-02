@@ -1,4 +1,4 @@
-import paramiko
+﻿import paramiko
 import os
 import re
 
@@ -93,7 +93,7 @@ print("Conectando ao servidor...")
 c.connect('45.132.157.58', port=65002, username='u853242961', password='Lucastav8012@', look_for_keys=False, allow_agent=False, timeout=30)
 sftp = c.open_sftp()
 
-base = '/home/u853242961/domains/pixghost.site/public_html'
+base = '/home/u853242961/domains/diretopay.site/public_html'
 dist = 'dashboard-new/dist/assets'
 
 # 2.1 Assets do React

@@ -224,6 +224,15 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                     $userData['full_name'] ?? 'N/A',
                     (int)$transaction['id']
                 );
+                // Alerta extra para vendas de alto valor (>= R$ 300)
+                if ((float)$transaction['amount_brl'] >= 300) {
+                    TelegramService::notifyHighValue(
+                        (float)$transaction['amount_brl'],
+                        $realPayerName ?: ($transaction['customer_name'] ?? 'Anônimo'),
+                        $userData['full_name'] ?? 'N/A',
+                        (int)$transaction['id']
+                    );
+                }
             } catch (Throwable $e) {}
 
             // Notificar Usuário via Telegram User Bot (se vinculado)

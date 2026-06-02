@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { History, QrCode, Trash2, Copy, Check, Clock, AlertTriangle, ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { cn } from '../lib/utils';
 
 function CountdownTimer({ secondsOld }) {
@@ -37,25 +38,34 @@ export default function TransactionsTable({ transactions = [], loading = false, 
         setTimeout(() => setCopiedId(null), 2000);
     };
 
+    const isDark = document.documentElement.classList.contains('dark');
+
+    const badge = (b) => {
+        if (b === 'approved' || b === 'paid')  return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
+        if (b === 'expired')                   return 'bg-red-500/10 text-red-500 border-red-500/20';
+        if (b === 'rejected')                  return 'bg-gray-500/10 text-gray-400 border-gray-500/20';
+        return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
+    };
+
     if (loading) {
         return (
-            <div className="bg-white border border-gray-100 rounded-3xl p-8 min-h-[400px] flex items-center justify-center">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-                    <p className="text-gray-400 font-medium font-['Outfit']">Sincronizando banco de dados...</p>
-                </div>
+            <div className={`p-10 min-h-[240px] flex flex-col items-center justify-center gap-4 ${isDark ? 'bg-[#111117]' : 'bg-white'}`}>
+                <div className="w-10 h-10 border-[3px] border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin" />
+                <p className={`text-[12px] font-medium ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Carregando transações...</p>
             </div>
         );
     }
 
     if (transactions.length === 0) {
         return (
-            <div className="bg-white border border-gray-100 rounded-3xl p-12 text-center">
-                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <History className="text-gray-300" size={32} />
+            <div className={`p-12 text-center ${isDark ? 'bg-[#111117]' : 'bg-white'}`}>
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'}`}>
+                    <History className="text-gray-400" size={22} />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Sem movimentação</h3>
-                <p className="text-gray-500 max-w-sm mx-auto">{showSeller ? 'Nenhuma venda na plataforma ainda.' : 'Suas vendas aparecerão aqui em tempo real.'}</p>
+                <h3 className={`text-[14px] font-bold mb-1 ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>Sem movimentação</h3>
+                <p className={`text-[12px] max-w-xs mx-auto ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                    {showSeller ? 'Nenhuma venda na plataforma ainda.' : 'Suas vendas aparecerão aqui em tempo real.'}
+                </p>
             </div>
         );
     }
@@ -63,167 +73,142 @@ export default function TransactionsTable({ transactions = [], loading = false, 
     return (
         <>
             {/* Mobile Cards */}
-            <div className="md:hidden space-y-2">
-                {transactions.map((tx) => (
-                    <div key={tx.id} onClick={() => onViewDetail && onViewDetail(tx)} className={`bg-white border border-gray-100 rounded-2xl p-4 space-y-3 shadow-sm ${onViewDetail ? 'cursor-pointer active:scale-[0.99]' : ''}`}>
+            <div className={`md:hidden divide-y ${isDark ? 'divide-white/[0.05]' : 'divide-gray-100'}`}>
+                {transactions.map((tx, i) => (
+                    <motion.div key={tx.id}
+                        initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.045, duration: 0.3, ease: [0.22,1,0.36,1] }}
+                        onClick={() => onViewDetail && onViewDetail(tx)}
+                        className={`p-4 space-y-3 transition-colors relative ${onViewDetail ? 'cursor-pointer' : ''} ${isDark ? 'hover:bg-white/[0.025]' : 'hover:bg-gray-50/60'}`}>
                         <div className="flex items-center justify-between gap-3">
                             <div className="flex-1 min-w-0">
-                                <span className="text-gray-900 font-bold text-sm block truncate">{tx.customer_name || 'Sem nome'}</span>
-                                <span className="text-gray-400 text-[10px] font-medium uppercase tracking-wider">#{tx.id} • {tx.date}</span>
+                                <span className={`text-[13px] font-bold block truncate ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
+                                    {tx.customer_name || 'Sem nome'}
+                                </span>
+                                <span className={`text-[10px] font-medium uppercase tracking-wider ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
+                                    #{tx.id} · {tx.date}
+                                </span>
                             </div>
                             <div className="flex flex-col items-end gap-1">
-                                <span className={cn(
-                                    "px-3 py-1 rounded-full text-[9px] font-black uppercase shrink-0",
-                                    tx.badge === 'approved' || tx.badge === 'paid' ? 'bg-primary/10 text-primary border border-primary/20' :
-                                        tx.badge === 'expired' ? 'bg-red-500/10 text-red-500 border border-red-500/20' :
-                                            'bg-orange-500/10 text-orange-500 border border-orange-500/20'
-                                )}>
+                                <span className={cn('px-2.5 py-1 rounded-lg text-[9px] font-black uppercase border', badge(tx.badge))}>
                                     {tx.status}
                                 </span>
                                 {!!tx.med && (
-                                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] font-black uppercase bg-red-500/15 text-red-400 border border-red-500/20 animate-pulse">
-                                        <AlertTriangle size={9} /> MED
+                                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-lg text-[8px] font-black uppercase bg-red-500/15 text-red-400 border border-red-500/20 animate-pulse">
+                                        <AlertTriangle size={8} /> MED
                                     </span>
                                 )}
                             </div>
                         </div>
                         {showSeller && tx.seller_name && (
-                            <span className="text-gray-600 font-semibold text-xs bg-gray-50 px-2.5 py-1 rounded-full border border-gray-200">{tx.seller_name}</span>
+                            <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border inline-block ${isDark ? 'bg-white/5 border-white/10 text-gray-300' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
+                                {tx.seller_name}
+                            </span>
                         )}
                         <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <span className="text-gray-900 font-black text-base">R$ {tx.amount_brl}</span>
+                            <div className="flex items-center gap-2.5">
+                                <span className={`text-[15px] font-black ${isDark ? 'text-white' : 'text-gray-900'}`}>R$ {tx.amount_brl}</span>
                                 {tx.badge === 'pending' && (
-                                    <div className="flex items-center gap-1 text-[11px] font-bold text-gray-400">
-                                        <Clock size={10} className="text-orange-500/50" />
+                                    <div className={`flex items-center gap-1 text-[11px] font-bold ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                                        <Clock size={10} className="text-orange-400/60" />
                                         <CountdownTimer secondsOld={tx.seconds_old} />
                                     </div>
                                 )}
                             </div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1.5">
                                 {tx.badge === 'pending' && (
-                                    <button
-                                        onClick={() => onViewQr && onViewQr({
-                                            id: tx.pix_id || tx.id,
-                                            amount: tx.amount_brl ? tx.amount_brl.replace(/\./g, '').replace(',', '.') : 0,
-                                            code: tx.pix_code || '',
-                                            image: tx.qr_image || '',
-                                            secondsOld: tx.seconds_old || 0,
-                                            createdAt: Date.now() - ((tx.seconds_old || 0) * 1000)
-                                        })}
-                                        className="p-2 rounded-full bg-primary/10 text-primary border border-primary/20"
-                                        title="Ver QR Code"
-                                    >
-                                        <QrCode size={16} />
+                                    <button onClick={(e) => { e.stopPropagation(); onViewQr && onViewQr({ id: tx.pix_id || tx.id, amount: tx.amount_brl ? tx.amount_brl.replace(/\./g, '').replace(',', '.') : 0, code: tx.pix_code || '', image: tx.qr_image || '', secondsOld: tx.seconds_old || 0, createdAt: Date.now() - ((tx.seconds_old || 0) * 1000) }); }}
+                                        className="p-2 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 active:scale-90" title="Ver QR Code">
+                                        <QrCode size={15} />
                                     </button>
                                 )}
-                                <button
-                                    onClick={() => handleCopy(tx.pix_code, tx.id)}
-                                    className="p-2 rounded-full bg-gray-50 text-gray-400 border border-gray-100"
-                                    title="Copiar Código"
-                                >
-                                    {copiedId === tx.id ? <Check size={16} className="text-primary" /> : <Copy size={16} />}
+                                <button onClick={(e) => { e.stopPropagation(); handleCopy(tx.pix_code, tx.id); }}
+                                    className={`p-2 rounded-xl border active:scale-90 ${isDark ? 'bg-white/5 border-white/10 text-gray-400' : 'bg-gray-50 border-gray-200 text-gray-500'}`} title="Copiar Código">
+                                    {copiedId === tx.id ? <Check size={15} className="text-emerald-500" /> : <Copy size={15} />}
                                 </button>
-                                <button
-                                    onClick={() => onDelete && onDelete(tx.id)}
-                                    className="p-2 rounded-full bg-red-50 text-red-400 border border-red-100"
-                                    title="Excluir"
-                                >
-                                    <Trash2 size={16} />
+                                <button onClick={(e) => { e.stopPropagation(); onDelete && onDelete(tx.id); }}
+                                    className="p-2 rounded-xl bg-red-500/8 text-red-400/60 border border-red-500/15 active:scale-90" title="Excluir">
+                                    <Trash2 size={15} />
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
                 ))}
             </div>
 
             {/* Desktop Table */}
             <div className="hidden md:block overflow-x-auto custom-scrollbar">
-                <table className="w-full text-left border-separate border-spacing-y-3">
+                <table className="w-full text-left">
                     <thead>
-                        <tr className="text-gray-500 text-[10px] uppercase tracking-[0.15em] font-black">
-                            <th className="px-6 py-2">Cliente / ID</th>
-                            {showSeller && <th className="px-6 py-2">Vendedor</th>}
-                            <th className="px-6 py-2">Valor Total</th>
-                            <th className="px-6 py-2 text-center">Status / Expiração</th>
-                            <th className="px-6 py-2 text-right">Ações</th>
+                        <tr className={`border-b ${isDark ? 'border-white/[0.05]' : 'border-gray-100'}`}>
+                            <th className={`px-5 py-3 text-[10px] font-black uppercase tracking-[0.12em] ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>Cliente / ID</th>
+                            {showSeller && <th className={`px-5 py-3 text-[10px] font-black uppercase tracking-[0.12em] ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>Vendedor</th>}
+                            <th className={`px-5 py-3 text-[10px] font-black uppercase tracking-[0.12em] ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>Valor</th>
+                            <th className={`px-5 py-3 text-[10px] font-black uppercase tracking-[0.12em] text-center ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>Status</th>
+                            <th className={`px-5 py-3 text-[10px] font-black uppercase tracking-[0.12em] text-right ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {transactions.map((tx) => (
-                            <tr key={tx.id} onClick={() => onViewDetail && onViewDetail(tx)} className={`group transition-all duration-500 ${onViewDetail ? 'cursor-pointer' : ''}`}>
-                                <td className="px-6 py-5 bg-white group-hover:bg-gray-50/70 rounded-l-[24px] border-y border-l border-gray-100">
-                                    <div className="flex flex-col gap-1">
-                                        <span className="text-gray-900 font-bold text-sm tracking-tight">{tx.customer_name || 'Sem nome'}</span>
-                                        <span className="text-gray-400 text-[10px] font-medium uppercase tracking-wider">#{tx.id} • {tx.date}</span>
-                                    </div>
+                        {transactions.map((tx, i) => (
+                            <motion.tr key={tx.id}
+                                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: i * 0.045, duration: 0.3, ease: [0.22,1,0.36,1] }}
+                                onClick={() => onViewDetail && onViewDetail(tx)}
+                                className={`group border-b transition-colors ${onViewDetail ? 'cursor-pointer' : ''} ${isDark ? 'border-white/[0.04] hover:bg-white/[0.025]' : 'border-gray-50 hover:bg-gray-50/70'}`}>
+                                <td className="px-5 py-4">
+                                    <p className={`text-[13px] font-bold leading-tight ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>{tx.customer_name || 'Sem nome'}</p>
+                                    <p className={`text-[10px] font-medium mt-0.5 ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>#{tx.id} · {tx.date}</p>
                                 </td>
                                 {showSeller && (
-                                    <td className="px-6 py-5 bg-white group-hover:bg-gray-50/70 border-y border-gray-100">
-                                        <span className="text-gray-600 font-semibold text-xs bg-gray-50 px-2.5 py-1 rounded-full border border-gray-200">{tx.seller_name || '—'}</span>
+                                    <td className="px-5 py-4">
+                                        <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border ${isDark ? 'bg-white/5 border-white/10 text-gray-400' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
+                                            {tx.seller_name || '—'}
+                                        </span>
                                     </td>
                                 )}
-                                <td className="px-6 py-5 bg-white group-hover:bg-gray-50/70 border-y border-gray-100">
-                                    <span className="text-gray-900 font-black text-base">R$ {tx.amount_brl}</span>
+                                <td className="px-5 py-4">
+                                    <span className={`text-[15px] font-black ${isDark ? 'text-white' : 'text-gray-900'}`}>R$ {tx.amount_brl}</span>
                                 </td>
-                                <td className="px-6 py-5 bg-white group-hover:bg-gray-50/70 border-y border-gray-100 text-center">
-                                    <div className="flex flex-col items-center gap-2">
-                                        <span className={cn(
-                                            "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.1em]",
-                                            tx.badge === 'approved' || tx.badge === 'paid' ? 'bg-primary/10 text-primary border border-primary/20' :
-                                                tx.badge === 'expired' ? 'bg-red-500/10 text-red-500 border border-red-500/20' :
-                                                    'bg-orange-500/10 text-orange-500 border border-orange-500/20'
-                                        )}>
+                                <td className="px-5 py-4 text-center">
+                                    <div className="flex flex-col items-center gap-1.5">
+                                        <span className={cn('px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-[0.08em] border', badge(tx.badge))}>
                                             {tx.status}
                                         </span>
                                         {!!tx.med && (
-                                            <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-black uppercase bg-red-500/15 text-red-400 border border-red-500/20 animate-pulse">
-                                                <AlertTriangle size={10} /> MED — Reembolso
+                                            <span className="flex items-center gap-1 px-2 py-0.5 rounded-lg text-[8px] font-black uppercase bg-red-500/15 text-red-400 border border-red-500/20 animate-pulse">
+                                                <AlertTriangle size={9} /> MED
                                             </span>
                                         )}
                                         {tx.badge === 'pending' && (
-                                            <div className="flex items-center gap-1.5 text-[11px] font-bold text-gray-400">
-                                                <Clock size={10} className="text-orange-500/50" />
+                                            <div className={`flex items-center gap-1 text-[10px] font-bold ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
+                                                <Clock size={9} className="text-orange-400/60" />
                                                 <CountdownTimer secondsOld={tx.seconds_old} />
                                             </div>
                                         )}
                                     </div>
                                 </td>
-                                <td className="px-6 py-5 bg-white group-hover:bg-gray-50/70 border-y border-r border-gray-100 rounded-r-[24px] text-right">
-                                    <div className="flex items-center justify-end gap-2.5">
+                                <td className="px-5 py-4 text-right">
+                                    <div className="flex items-center justify-end gap-1.5">
                                         {tx.badge === 'pending' && (
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); onViewQr && onViewQr({
-                                                    id: tx.pix_id || tx.id,
-                                                    amount: tx.amount_brl ? tx.amount_brl.replace(/\./g, '').replace(',', '.') : 0,
-                                                    code: tx.pix_code || '',
-                                                    image: tx.qr_image || '',
-                                                    secondsOld: tx.seconds_old || 0,
-                                                    createdAt: Date.now() - ((tx.seconds_old || 0) * 1000)
-                                                }); }}
-                                                className="p-2.5 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all duration-300 border border-primary/20 hover:border-primary active:scale-95"
-                                                title="Ver QR Code"
-                                            >
-                                                <QrCode size={18} />
+                                            <button onClick={(e) => { e.stopPropagation(); onViewQr && onViewQr({ id: tx.pix_id || tx.id, amount: tx.amount_brl ? tx.amount_brl.replace(/\./g, '').replace(',', '.') : 0, code: tx.pix_code || '', image: tx.qr_image || '', secondsOld: tx.seconds_old || 0, createdAt: Date.now() - ((tx.seconds_old || 0) * 1000) }); }}
+                                                className="p-2 rounded-xl bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all border border-emerald-500/20 hover:border-emerald-500 active:scale-90"
+                                                title="Ver QR Code">
+                                                <QrCode size={16} />
                                             </button>
                                         )}
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); handleCopy(tx.pix_code, tx.id); }}
-                                            className="p-2.5 rounded-full bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-gray-900 transition-all duration-300 border border-gray-200 active:scale-95"
-                                            title="Copiar Código"
-                                        >
-                                            {copiedId === tx.id ? <Check size={18} className="text-primary" /> : <Copy size={18} />}
+                                        <button onClick={(e) => { e.stopPropagation(); handleCopy(tx.pix_code, tx.id); }}
+                                            className={`p-2 rounded-xl transition-all border active:scale-90 ${isDark ? 'bg-white/5 border-white/10 text-gray-500 hover:bg-white/10 hover:text-gray-200' : 'bg-gray-50 border-gray-200 text-gray-400 hover:bg-gray-100 hover:text-gray-700'}`}
+                                            title="Copiar Código">
+                                            {copiedId === tx.id ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
                                         </button>
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); onDelete && onDelete(tx.id); }}
-                                            className="p-2.5 rounded-full bg-red-500/5 text-red-500/40 hover:bg-red-500 hover:text-white transition-all duration-300 border border-white/5 hover:border-red-500 active:scale-95"
-                                            title="Excluir Transação"
-                                        >
-                                            <Trash2 size={18} />
+                                        <button onClick={(e) => { e.stopPropagation(); onDelete && onDelete(tx.id); }}
+                                            className="p-2 rounded-xl bg-red-500/8 text-red-400/60 hover:bg-red-500 hover:text-white transition-all border border-red-500/15 hover:border-red-500 active:scale-90"
+                                            title="Excluir">
+                                            <Trash2 size={16} />
                                         </button>
                                     </div>
                                 </td>
-                            </tr>
+                            </motion.tr>
                         ))}
                     </tbody>
                 </table>

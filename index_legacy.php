@@ -1734,8 +1734,8 @@ if (isLoggedIn() && (isset($_GET['utm_source']) && $_GET['utm_source'] === 'pwa'
                 </div>
                 <p class="lp-brand-tagline">Feito por uma comunidade para uma comunidade.</p>
                 <div class="lp-social-icons">
-                    <a href="https://www.instagram.com/pixghost.site/" target="_blank" title="Instagram Ghost Pix"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@ghost.pix" target="_blank" title="TikTok Ghost Pix"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com/diretopay_/" target="_blank" title="Instagram DiretoPay"><i class="fab fa-instagram"></i></a>
+                    <a href="https://wa.me/5551996148568" target="_blank" title="WhatsApp Suporte"><i class="fab fa-whatsapp"></i></a>
                 </div>
             </div>
 

@@ -125,6 +125,8 @@ export default function SalesPage({ onViewQr, onDelete }) {
 
     const base = isDark ? 'border-white/[0.07] bg-[#111117]' : 'border-gray-100 bg-white';
 
+    const card = `rounded-2xl border ${isDark ? 'bg-[#111117] border-white/[0.07]' : 'bg-white border-gray-100'}`;
+
     return (
         <div className="space-y-5 pb-10">
             <AnimatePresence mode="wait">
@@ -134,20 +136,30 @@ export default function SalesPage({ onViewQr, onDelete }) {
             </AnimatePresence>
 
             {!selectedTx && (
-                <>
+                <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.38, ease: [0.22,1,0.36,1] }}
+                    className="space-y-5">
+
                     {/* Header */}
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <h1 className={`text-[18px] font-bold tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Vendas</h1>
-                            <p className="text-[12px] text-gray-400 mt-0.5">Todas as suas transações em tempo real</p>
+                            <div className="flex items-center gap-2 mb-1">
+                                <div className="w-[3px] h-4 rounded-full bg-emerald-500" />
+                                <p className={`text-[10.5px] font-black uppercase tracking-[0.15em] ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Transações</p>
+                            </div>
+                            <h1 className={`text-[22px] font-black tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Vendas</h1>
+                            <p className={`text-[12px] mt-0.5 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                                Todas as suas transações em tempo real
+                                {allTransactions.length > 0 && <span className="ml-1.5 text-emerald-500 font-semibold">({allTransactions.length})</span>}
+                            </p>
                         </div>
                         <div className="flex items-center gap-2">
                             <button onClick={fetchTransactions}
-                                className={`p-2 rounded-lg border transition-all ${isDark ? 'border-white/10 text-gray-400 hover:bg-white/5' : 'border-gray-200 text-gray-500 hover:bg-gray-50'}`}
+                                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[12px] font-semibold border transition-all hover:scale-[1.03] active:scale-95 ${isDark ? 'border-white/10 text-gray-400 hover:text-gray-100 hover:bg-white/5' : 'border-gray-200 text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
                                 title="Atualizar">
-                                <RefreshCw size={15} className={loadingTx ? 'animate-spin' : ''} />
+                                <RefreshCw size={13} className={loadingTx ? 'animate-spin' : ''} />
+                                <span className="hidden sm:inline">Atualizar</span>
                             </button>
-                            <button className={`p-2 rounded-lg border transition-all ${isDark ? 'border-white/10 text-gray-400 hover:bg-white/5' : 'border-gray-200 text-gray-500 hover:bg-gray-50'}`}
+                            <button className={`p-2 rounded-xl border transition-all hover:scale-[1.03] active:scale-95 ${isDark ? 'border-white/10 text-gray-400 hover:bg-white/5' : 'border-gray-200 text-gray-500 hover:bg-gray-50'}`}
                                 title="Exportar">
                                 <Download size={15} />
                             </button>
@@ -155,40 +167,38 @@ export default function SalesPage({ onViewQr, onDelete }) {
                     </div>
 
                     {/* Toolbar */}
-                    <div className={`rounded-xl border p-3 flex flex-col sm:flex-row gap-3 ${base}`}>
-                        {/* Search */}
+                    <div className={`${card} p-3 flex flex-col sm:flex-row gap-3`}>
                         <div className="relative flex-1">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
                             <input
                                 type="text"
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
-                                placeholder="Buscar por ID ou nome..."
-                                className={`w-full rounded-lg py-2 pl-9 pr-4 text-[13px] border outline-none transition-all ${isDark ? 'bg-white/5 border-white/10 text-gray-200 placeholder:text-gray-600 focus:border-white/20' : 'bg-gray-50 border-gray-200 text-gray-700 placeholder:text-gray-400 focus:border-gray-300 focus:bg-white'}`}
+                                placeholder="Buscar por ID, nome..."
+                                className={`w-full rounded-xl py-2.5 pl-9 pr-4 text-[13px] border outline-none transition-all ${isDark ? 'bg-white/5 border-white/10 text-gray-200 placeholder:text-gray-600 focus:border-emerald-500/40' : 'bg-gray-50 border-gray-200 text-gray-700 placeholder:text-gray-400 focus:border-emerald-400 focus:bg-white'}`}
                             />
                         </div>
-                        {/* Tabs */}
-                        <div className="flex items-center gap-1 flex-wrap">
+                        <div className={`flex items-center gap-1 flex-wrap p-1 rounded-xl ${isDark ? 'bg-white/[0.03]' : 'bg-gray-50'}`}>
                             {FILTERS.map(f => (
                                 <button key={f.key} onClick={() => setStatusFilter(f.key)}
-                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all ${
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold transition-all ${
                                         statusFilter === f.key
-                                            ? isDark ? 'bg-white/10 text-white' : 'bg-gray-100 text-gray-800'
+                                            ? isDark ? 'bg-white/10 text-white shadow-sm' : 'bg-white text-gray-800 shadow-sm'
                                             : isDark ? 'text-gray-500 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600'
                                     }`}>
-                                    {f.dot && <span className="w-1.5 h-1.5 rounded-full" style={{ background: f.dot }} />}
+                                    {f.dot && <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: f.dot }} />}
                                     {f.label}
-                                    <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-semibold ${
+                                    <span className={`text-[9.5px] px-1.5 py-0.5 rounded-md font-black ${
                                         statusFilter === f.key
-                                            ? isDark ? 'bg-white/15 text-gray-300' : 'bg-gray-200 text-gray-600'
-                                            : isDark ? 'bg-white/5 text-gray-600' : 'bg-gray-100 text-gray-400'
+                                            ? isDark ? 'bg-white/15 text-gray-300' : 'bg-gray-100 text-gray-600'
+                                            : isDark ? 'bg-white/5 text-gray-600' : 'bg-gray-100/80 text-gray-400'
                                     }`}>{counts[f.key]}</span>
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    <div className={`rounded-xl border overflow-hidden ${base}`}>
+                    <div className={`${card} overflow-hidden`}>
                         <TransactionsTable
                             transactions={filtered}
                             loading={loadingTx}
@@ -197,7 +207,7 @@ export default function SalesPage({ onViewQr, onDelete }) {
                             onViewDetail={setSelectedTx}
                         />
                     </div>
-                </>
+                </motion.div>
             )}
         </div>
     );

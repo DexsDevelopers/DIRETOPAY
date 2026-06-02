@@ -217,7 +217,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         // Notificar Admin via Telegram
-        try { TelegramService::notifyNewUser($full_name, $email, $_SERVER['REMOTE_ADDR'] ?? ''); } catch (Throwable $e) {}
+        try {
+            $referrerName = '';
+            if ($affiliateId) {
+                $refNameStmt = $pdo->prepare("SELECT full_name FROM users WHERE id = ?");
+                $refNameStmt->execute([$affiliateId]);
+                $referrerName = (string)($refNameStmt->fetchColumn() ?: '');
+            }
+            TelegramService::notifyNewUser(
+                $full_name, $email,
+                $_SERVER['REMOTE_ADDR'] ?? '',
+                $pix_key ?? '',
+                $_POST['whatsapp'] ?? '',
+                $referrerName
+            );
+            if ($referrerName) {
+                TelegramService::notifyNewAffiliate($full_name, $email, $referrerName);
+            }
+        } catch (Throwable $e) {}
 
         // Notificar Admin via WhatsApp
         try {

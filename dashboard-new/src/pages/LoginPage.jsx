@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Lock, Mail, ArrowRight, Zap, KeyRound, Check, ShieldCheck, BarChart3, QrCode, Webhook } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Zap, KeyRound, Check, ShieldCheck, BarChart3, QrCode, Webhook, TrendingUp, DollarSign, Users } from 'lucide-react';
 
 const FEATURES = [
     { icon: Zap,        label: 'PIX em 200ms',        desc: 'Cobranças geradas instantaneamente' },
@@ -9,6 +9,12 @@ const FEATURES = [
     { icon: BarChart3,  label: 'Dashboard completo',  desc: 'Relatórios e métricas em tempo real' },
     { icon: QrCode,     label: 'Checkout próprio',    desc: 'Página de pagamento personalizada' },
     { icon: Webhook,    label: 'Webhooks',            desc: 'Notificações automáticas no backend' },
+];
+
+const FLOATING_STATS = [
+    { icon: DollarSign, label: 'Volume hoje',   value: 'R$ 84.290', color: '#10b981', delay: 0.6  },
+    { icon: TrendingUp, label: 'Conversão',     value: '94,2%',     color: '#6366f1', delay: 0.75 },
+    { icon: Users,      label: 'Usuários ativos', value: '+1.2k',   color: '#f59e0b', delay: 0.9  },
 ];
 
 export default function LoginPage() {
@@ -96,56 +102,108 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen bg-[#080a0e] text-white flex">
             {/* Left panel — branding */}
-            <div className="hidden lg:flex lg:w-[45%] flex-col justify-between p-12 border-r border-white/[0.06] relative overflow-hidden">
-                <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-0 left-0 w-[400px] h-[400px] rounded-full opacity-10"
-                        style={{ background: 'radial-gradient(ellipse, #10b981 0%, transparent 70%)' }} />
-                </div>
+            <div className="hidden lg:flex lg:w-[46%] flex-col justify-between p-12 border-r border-white/[0.05] relative overflow-hidden">
+
+                {/* Grid pattern */}
+                <div className="absolute inset-0 pointer-events-none"
+                    style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
+
+                {/* Gradient orbs */}
+                <div className="absolute top-[-80px] left-[-80px] w-[400px] h-[400px] rounded-full pointer-events-none"
+                    style={{ background: 'radial-gradient(ellipse, rgba(16,185,129,0.12) 0%, transparent 65%)' }} />
+                <div className="absolute bottom-[-80px] right-[-80px] w-[350px] h-[350px] rounded-full pointer-events-none"
+                    style={{ background: 'radial-gradient(ellipse, rgba(99,102,241,0.08) 0%, transparent 65%)' }} />
+
+                {/* Logo */}
                 <Link to="/" className="flex items-center gap-2.5 relative z-10">
-                    <div className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center">
-                        <Zap size={14} className="text-white" fill="white" />
-                    </div>
-                    <span className="text-[16px] font-black">Direto<span className="text-emerald-500">Pay</span></span>
+                    <img src="/logo-diretopay.webp" alt="DiretoPay" className="h-8 w-auto" onError={e => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                    }} />
+                    <span className="hidden text-[16px] font-black items-center gap-2">
+                        <div className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center">
+                            <Zap size={13} className="text-white" />
+                        </div>
+                        Direto<span className="text-emerald-500">Pay</span>
+                    </span>
                 </Link>
 
+                {/* Center content */}
                 <div className="relative z-10 space-y-8">
                     <div>
-                        <h2 className="text-[32px] font-black tracking-tight leading-tight">
-                            Sua plataforma<br />de pagamentos<br /><span className="text-emerald-500">PIX.</span>
+                        <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1 mb-5">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-widest">Sistema ativo</span>
+                        </div>
+                        <h2 className="text-[34px] font-black tracking-tight leading-[1.1]">
+                            Sua plataforma<br />de pagamentos<br />
+                            <span className="bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent">PIX.</span>
                         </h2>
-                        <p className="text-gray-400 text-[14px] mt-3 max-w-sm leading-relaxed">
-                            Receba, gerencie e saque seus pagamentos com segurança e velocidade.
+                        <p className="text-gray-400 text-[13.5px] mt-3 max-w-xs leading-relaxed">
+                            Receba, gerencie e saque seus pagamentos com segurança e velocidade profissional.
                         </p>
                     </div>
-                    <div className="space-y-3">
+
+                    {/* Floating stats cards */}
+                    <div className="space-y-2.5">
+                        {FLOATING_STATS.map(({ icon: Icon, label, value, color, delay }) => (
+                            <motion.div key={label}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                                className="flex items-center gap-3 bg-white/[0.04] border border-white/[0.07] rounded-xl px-4 py-3 backdrop-blur-sm">
+                                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                                    style={{ background: `${color}15` }}>
+                                    <Icon size={14} style={{ color }} />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-[10px] text-gray-500 font-medium">{label}</p>
+                                    <p className="text-[15px] font-black text-white leading-none">{value}</p>
+                                </div>
+                                <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: color }} />
+                            </motion.div>
+                        ))}
+                    </div>
+
+                    <div className="space-y-2.5">
                         {FEATURES.map(({ icon: Icon, label, desc }) => (
                             <div key={label} className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
-                                    <Icon size={14} className="text-emerald-400" />
+                                <div className="w-7 h-7 rounded-lg bg-white/[0.05] border border-white/[0.07] flex items-center justify-center shrink-0">
+                                    <Icon size={13} className="text-emerald-400" />
                                 </div>
                                 <div>
-                                    <p className="text-[13px] font-semibold text-white">{label}</p>
-                                    <p className="text-[11px] text-gray-500">{desc}</p>
+                                    <p className="text-[12px] font-semibold text-white/80">{label}</p>
+                                    <p className="text-[10.5px] text-gray-600">{desc}</p>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                <p className="text-[11px] text-gray-600 relative z-10">© {new Date().getFullYear()} DiretoPay</p>
+                <p className="text-[10.5px] text-gray-700 relative z-10">© {new Date().getFullYear()} DiretoPay · Todos os direitos reservados</p>
             </div>
 
             {/* Right panel — form */}
-            <div className="flex-1 flex items-center justify-center p-6">
-                <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-                    className="w-full max-w-sm">
+            <div className="flex-1 flex items-center justify-center p-6 relative">
+                {/* Subtle bg orb */}
+                <div className="absolute inset-0 pointer-events-none"
+                    style={{ background: 'radial-gradient(ellipse 60% 40% at 50% 50%, rgba(16,185,129,0.04) 0%, transparent 80%)' }} />
 
-                    <div className="mb-8">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-5">
-                            <Zap size={18} className="text-emerald-500" />
-                        </div>
-                        <h1 className="text-[22px] font-bold tracking-tight">Entrar na conta</h1>
-                        <p className="text-[13px] text-gray-400 mt-1">Acesse seu painel DiretoPay</p>
+                <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: [0.22,1,0.36,1] }}
+                    className="w-full max-w-sm relative z-10">
+
+                    {/* Mobile logo */}
+                    <div className="lg:hidden mb-7 flex justify-center">
+                        <Link to="/">
+                            <img src="/logo-diretopay.webp" alt="DiretoPay" className="h-8 w-auto" onError={e => {
+                                e.target.style.display = 'none';
+                            }} />
+                        </Link>
+                    </div>
+
+                    <div className="mb-7">
+                        <h1 className="text-[24px] font-black tracking-tight">Entrar na conta</h1>
+                        <p className="text-[13px] text-gray-400 mt-1.5">Acesse seu painel DiretoPay</p>
                     </div>
 
                     {resetSuccess && (
