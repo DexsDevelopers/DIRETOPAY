@@ -96,13 +96,13 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
   <head>
     <base href="/">
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logo_diretopay.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/dashboard-react/favicon.svg" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="DiretoPay" />
-    <link rel="apple-touch-icon" href="/logo_diretopay.png" />
+    <link rel="apple-touch-icon" href="/assets/dashboard-react/favicon.svg" />
     <meta name="csrf-token" content="<?php echo csrf_token(); ?>">
     <script>
       window.__AUTH__ = <?php echo json_encode($isAuth); ?>;
@@ -113,19 +113,19 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
     <title>DiretoPay - Plataforma de Pagamentos</title>
     
     <!-- React Build Assets -->
-    <script type="module" crossorigin src="/assets/dashboard-react/index-CnQwFgJd.js?v=13"></script>
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js?v=13">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js?v=13">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-router-Dg8CQPxv.js?v=13">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-motion-CSww8jv2.js?v=13">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-icons-C4QezHMH.js?v=13">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-react-B6YjI7Jz.js?v=13">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/utils-DCsqA19A.js?v=13">
-    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-tXMbmrmQ.css?v=13">
+    <script type="module" crossorigin src="/assets/dashboard-react/index-UYBWyZCK.js?v=14"></script>
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js?v=14">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js?v=14">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-router-Dg8CQPxv.js?v=14">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-motion-CSww8jv2.js?v=14">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-icons-CmLW_ErE.js?v=14">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-react-B6YjI7Jz.js?v=14">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/utils-DCsqA19A.js?v=14">
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-BpDAp76v.css?v=14">
     
     <!-- React Checkout Chunk Preload -->
     <?php if ($requestPath && strpos($requestPath, '/p/') === 0): ?>
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/CheckoutPage-pndH8LZI.js?v=13">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/CheckoutPage-DDnW4sKw.js?v=14">
     <?php endif; ?>
     <!-- React Checkout Chunk Preload End -->
 
