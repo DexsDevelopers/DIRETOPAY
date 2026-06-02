@@ -174,6 +174,6 @@ subprocess.run(['git', 'add', '-A'], cwd=ROOT, shell=True)
 subprocess.run(['git', 'commit', '-m', f'deploy: dashboard v{new_v} — React build sync'], cwd=ROOT, shell=True)
 r = subprocess.run(['git', 'push', 'origin', 'main'], cwd=ROOT, shell=True)
 if r.returncode == 0:
-    print(f'✅ Deploy v{new_v} concluído! Acesse https://diretopay.com.br')
+    print(f'✅ Deploy v{new_v} concluído! Acesse https://diretopay.site')
 else:
     print('⚠️  Push falhou — verifique suas credenciais git')

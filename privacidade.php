@@ -54,7 +54,7 @@
 
         <h2>1. Controlador dos Dados</h2>
         <p>O controlador responsável pelo tratamento dos seus dados pessoais é a <strong>[RAZÃO SOCIAL DA EMPRESA]</strong>, inscrita no CNPJ sob o nº <strong>[CNPJ]</strong>, com sede em Av. Paulista, 1000 - Bela Vista, São Paulo - SP, 01310-100, doravante denominada <strong>"DiretoPay"</strong>.</p>
-        <p>Para exercer seus direitos ou esclarecer dúvidas sobre privacidade, entre em contato com nosso Encarregado de Proteção de Dados (DPO) pelo e-mail: <strong>privacidade@diretopay.com.br</strong></p>
+        <p>Para exercer seus direitos ou esclarecer dúvidas sobre privacidade, entre em contato com nosso Encarregado de Proteção de Dados (DPO) pelo e-mail: <strong>privacidade@diretopay.site</strong></p>
 
         <h2>2. Dados que Coletamos</h2>
         <p>Coletamos apenas os dados estritamente necessários para a prestação dos nossos serviços:</p>
@@ -104,7 +104,7 @@
             <div class="right-item"><h4>📦 Portabilidade</h4><p>Receber seus dados em formato estruturado</p></div>
             <div class="right-item"><h4>🔕 Revogação</h4><p>Retirar o consentimento a qualquer momento</p></div>
         </div>
-        <p>Para exercer qualquer direito, envie solicitação para <strong>privacidade@diretopay.com.br</strong>. Responderemos em até 15 dias úteis.</p>
+        <p>Para exercer qualquer direito, envie solicitação para <strong>privacidade@diretopay.site</strong>. Responderemos em até 15 dias úteis.</p>
 
         <h2>7. Segurança dos Dados</h2>
         <p>Adotamos medidas técnicas e organizacionais para proteger seus dados, incluindo:</p>
@@ -126,7 +126,7 @@
         <p>Esta Política pode ser atualizada periodicamente. Alterações significativas serão comunicadas por e-mail. A continuidade do uso da plataforma após a publicação implica aceite das novas condições.</p>
 
         <div class="highlight-box">
-            <p><strong>📧 Contato DPO:</strong> Para exercer seus direitos, reportar incidentes de segurança ou obter esclarecimentos, envie e-mail para <strong>privacidade@diretopay.com.br</strong> ou entre em contato pelo WhatsApp <strong>(51) 99614-8568</strong>.</p>
+            <p><strong>📧 Contato DPO:</strong> Para exercer seus direitos, reportar incidentes de segurança ou obter esclarecimentos, envie e-mail para <strong>privacidade@diretopay.site</strong> ou entre em contato pelo WhatsApp <strong>(51) 99614-8568</strong>.</p>
         </div>
 
         <div class="footer-doc">

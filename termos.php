@@ -49,7 +49,7 @@
         </div>
 
         <h2>1. Das Partes e Aceitação</h2>
-        <p>Estes Termos de Uso regem a relação entre a <strong>[RAZÃO SOCIAL DA EMPRESA]</strong>, inscrita no CNPJ sob o nº <strong>[CNPJ]</strong>, com sede em Av. Paulista, 1000 - Bela Vista, São Paulo - SP, 01310-100, doravante denominada <strong>"DiretoPay"</strong>, e o usuário pessoa física ou jurídica que acessa e utiliza a plataforma disponível em <strong>diretopay.com.br</strong>.</p>
+        <p>Estes Termos de Uso regem a relação entre a <strong>[RAZÃO SOCIAL DA EMPRESA]</strong>, inscrita no CNPJ sob o nº <strong>[CNPJ]</strong>, com sede em Av. Paulista, 1000 - Bela Vista, São Paulo - SP, 01310-100, doravante denominada <strong>"DiretoPay"</strong>, e o usuário pessoa física ou jurídica que acessa e utiliza a plataforma disponível em <strong>diretopay.site</strong>.</p>
         <p>Ao criar uma conta ou utilizar qualquer funcionalidade da plataforma, o usuário declara ter lido, compreendido e concordado integralmente com estes Termos, bem como com a nossa <a href="/privacidade.php" style="color:#1ea465">Política de Privacidade</a>.</p>
 
         <h2>2. Descrição dos Serviços</h2>

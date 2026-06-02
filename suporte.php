@@ -122,7 +122,7 @@ $user = $stmt->fetch();
                             <h4 style="margin-bottom: 0.3rem;">WhatsApp</h4>
                             <p style="font-size: 0.8rem; color: var(--text-2);">Atendimento Instantâneo</p>
                         </a>
-                        <a href="mailto:contato@diretopay.com.br" class="contact-method">
+                        <a href="mailto:contato@diretopay.site" class="contact-method">
                             <i class="far fa-envelope"></i>
                             <h4 style="margin-bottom: 0.3rem;">E-mail</h4>
                             <p style="font-size: 0.8rem; color: var(--text-2);">Suporte Corporativo</p>

@@ -163,7 +163,7 @@ function BannerForm({ initial, onSave, onCancel, loading }) {
                 <div className="md:col-span-2 space-y-1">
                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Link ao Clicar</label>
                     <input value={form.link_url} onChange={e => set('link_url', e.target.value)}
-                        placeholder="https://diretopay.com.br/loja (opcional)"
+                        placeholder="https://diretopay.site/loja (opcional)"
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-primary/40 font-mono text-xs" />
                 </div>
                 <div className="space-y-1">

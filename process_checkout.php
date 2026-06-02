@@ -97,7 +97,7 @@ try {
         'amount'      => $totalAmount,
         'client'      => [
             'name'     => empty($customerName) ? 'Cliente Checkout' : $customerName,
-            'email'    => (!empty($user['email'])) ? $user['email'] : 'comprador@diretopay.com.br',
+            'email'    => (!empty($user['email'])) ? $user['email'] : 'comprador@diretopay.site',
             'phone'    => '(11) 9 0000-0000',
             'document' => !empty($customerDocument) ? preg_replace('/[^0-9]/', '', $customerDocument) : '147.143.016-24',
         ],
@@ -116,7 +116,7 @@ try {
             'x-secret-key: ' . $sigiloSecretKey,
             'Content-Type: application/json',
             'Accept: application/json',
-            'User-Agent: Mozilla/5.0 (compatible; DiretoPay/2.0; +https://diretopay.com.br)',
+            'User-Agent: Mozilla/5.0 (compatible; DiretoPay/2.0; +https://diretopay.site)',
         ],
         CURLOPT_TIMEOUT        => 30,
         CURLOPT_SSL_VERIFYPEER => true,

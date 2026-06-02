@@ -54,7 +54,7 @@ $customer = [
 
 echo "<p>Enviando requisição de teste para Mistic Pay (Valor: R$ 2,00)...</p>";
 
-$res = MisticPayService::createCharge($amount, $externalId, $customer, 'Teste Diagnóstico DiretoPay Real', 'https://diretopay.com.br/misticpay_webhook.php');
+$res = MisticPayService::createCharge($amount, $externalId, $customer, 'Teste Diagnóstico DiretoPay Real', 'https://diretopay.site/misticpay_webhook.php');
 
 echo "<h3>Resposta da API Mistic Pay:</h3>";
 echo "<pre>HTTP Code: " . $res['http_code'] . "\n";

@@ -2,7 +2,7 @@
 /**
  * Mistic Pay Webhook Receiver
  * Processa eventos de depósito (Cash-In) enviados pela Mistic Pay.
- * Configure no dashboard Mistic Pay: URL = https://diretopay.com.br/misticpay_webhook.php
+ * Configure no dashboard Mistic Pay: URL = https://diretopay.site/misticpay_webhook.php
  */
 
 header('Content-Type: application/json');

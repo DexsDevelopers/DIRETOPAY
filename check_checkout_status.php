@@ -53,7 +53,7 @@ try {
                 'x-secret-key: ' . $sigiloSecretKey,
                 'Content-Type: application/json',
                 'Accept: application/json',
-                'User-Agent: Mozilla/5.0 (compatible; DiretoPay/2.0; +https://diretopay.com.br)',
+                'User-Agent: Mozilla/5.0 (compatible; DiretoPay/2.0; +https://diretopay.site)',
             ],
             CURLOPT_TIMEOUT        => 8,
             CURLOPT_SSL_VERIFYPEER => true,

@@ -624,7 +624,7 @@ try {
             $upsert->execute(['cakto_token_expiry',    (string)(time() + 35000), (string)(time() + 35000)]);
 
             // 3. Register webhook in Cakto
-            $webhookUrl  = 'https://diretopay.com.br/cakto_webhook.php';
+            $webhookUrl  = 'https://diretopay.site/cakto_webhook.php';
             $webhookBody = json_encode([
                 'name'   => 'DiretoPay - Compra Aprovada',
                 'url'    => $webhookUrl,

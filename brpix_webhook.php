@@ -2,7 +2,7 @@
 /**
  * BRPix Webhook Receiver
  * Processa eventos charge.paid enviados pela BRPix Solutions.
- * Configure no dashboard BRPix: URL = https://diretopay.com.br/brpix_webhook.php
+ * Configure no dashboard BRPix: URL = https://diretopay.site/brpix_webhook.php
  * Eventos: charge.paid
  */
 

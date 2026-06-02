@@ -111,7 +111,7 @@ try {
             'amount'      => $amount,
             'client'      => [
                 'name'     => $customerName,
-                'email'    => 'comprador@diretopay.com.br',
+                'email'    => 'comprador@diretopay.site',
                 'phone'    => '(11) 9 0000-0000',
                 'document' => $customerDoc ? preg_replace('/[^0-9]/', '', $customerDoc) : '14714301624',
             ],
@@ -123,8 +123,8 @@ try {
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS     => json_encode($spPayload),
-            CURLOPT_HTTPHEADER     => ['x-public-key: ' . $sigiloPublicKey, 'x-secret-key: ' . $sigiloSecretKey, 'Content-Type: application/json', 'Accept: application/json', 'User-Agent: Mozilla/5.0 (compatible; DiretoPay/2.0; +https://diretopay.com.br)'],
-            CURLOPT_USERAGENT      => 'Mozilla/5.0 (compatible; DiretoPay/2.0; +https://diretopay.com.br)',
+            CURLOPT_HTTPHEADER     => ['x-public-key: ' . $sigiloPublicKey, 'x-secret-key: ' . $sigiloSecretKey, 'Content-Type: application/json', 'Accept: application/json', 'User-Agent: Mozilla/5.0 (compatible; DiretoPay/2.0; +https://diretopay.site)'],
+            CURLOPT_USERAGENT      => 'Mozilla/5.0 (compatible; DiretoPay/2.0; +https://diretopay.site)',
             CURLOPT_TIMEOUT        => 30,
             CURLOPT_SSL_VERIFYPEER => true,
         ]);

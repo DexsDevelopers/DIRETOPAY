@@ -95,7 +95,7 @@ $body = [
     'transaction_origin' => 'api',
     'customer' => [
         'name'         => 'Teste DiretoPay',
-        'email'        => 'teste@diretopay.com.br',
+        'email'        => 'teste@diretopay.site',
         'phone_number' => '11900000000',
         'document'     => '09115751031',
     ],

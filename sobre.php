@@ -141,7 +141,7 @@
             </div>
             <div class="info-row">
                 <span class="info-label">E-mail</span>
-                <span class="info-value">contato@diretopay.com.br</span>
+                <span class="info-value">contato@diretopay.site</span>
             </div>
             <div class="info-row">
                 <span class="info-label">WhatsApp</span>
@@ -149,7 +149,7 @@
             </div>
             <div class="info-row">
                 <span class="info-label">Site</span>
-                <span class="info-value">https://diretopay.com.br</span>
+                <span class="info-value">https://diretopay.site</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Instagram</span>
@@ -171,11 +171,11 @@
                     <div class="contact-sub">(51) 99614-8568</div>
                 </div>
             </a>
-            <a href="mailto:contato@diretopay.com.br" class="contact-card">
+            <a href="mailto:contato@diretopay.site" class="contact-card">
                 <div class="contact-icon">📧</div>
                 <div>
                     <div class="contact-title">E-mail Geral</div>
-                    <div class="contact-sub">contato@diretopay.com.br</div>
+                    <div class="contact-sub">contato@diretopay.site</div>
                 </div>
             </a>
             <a href="https://instagram.com/diretopay_" target="_blank" rel="noopener noreferrer" class="contact-card">
@@ -185,11 +185,11 @@
                     <div class="contact-sub">@diretopay_</div>
                 </div>
             </a>
-            <a href="mailto:privacidade@diretopay.com.br" class="contact-card">
+            <a href="mailto:privacidade@diretopay.site" class="contact-card">
                 <div class="contact-icon">🔒</div>
                 <div>
                     <div class="contact-title">Privacidade (DPO)</div>
-                    <div class="contact-sub">privacidade@diretopay.com.br</div>
+                    <div class="contact-sub">privacidade@diretopay.site</div>
                 </div>
             </a>
         </div>

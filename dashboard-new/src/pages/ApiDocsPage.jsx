@@ -224,14 +224,14 @@ export default function ApiDocsPage() {
                             <h2 className="text-2xl font-black tracking-tight">Base URL</h2>
                         </div>
                         <p className="text-white/50">Todas as chamadas devem ser feitas sobre HTTPS.</p>
-                        <CodeBlock language="url" code={`https://diretopay.com.br`} />
+                        <CodeBlock language="url" code={`https://diretopay.site`} />
                         <table className="w-full text-sm">
                             <thead><tr className="text-left text-white/20 text-[10px] font-black uppercase tracking-widest border-b border-white/5">
                                 <th className="pb-3 pr-4">Ambiente</th><th className="pb-3 pr-4">URL</th><th className="pb-3">Descrição</th>
                             </tr></thead>
                             <tbody>
-                                <tr className="border-b border-white/5"><td className="py-3 pr-4 text-primary font-bold">Produção</td><td className="py-3 pr-4 font-mono text-xs text-white/50">https://diretopay.com.br/api.php</td><td className="py-3 text-white/40">Gerar cobranças reais</td></tr>
-                                <tr><td className="py-3 pr-4 text-primary font-bold">Status</td><td className="py-3 pr-4 font-mono text-xs text-white/50">https://diretopay.com.br/check_status.php</td><td className="py-3 text-white/40">Consultar status de transação</td></tr>
+                                <tr className="border-b border-white/5"><td className="py-3 pr-4 text-primary font-bold">Produção</td><td className="py-3 pr-4 font-mono text-xs text-white/50">https://diretopay.site/api.php</td><td className="py-3 text-white/40">Gerar cobranças reais</td></tr>
+                                <tr><td className="py-3 pr-4 text-primary font-bold">Status</td><td className="py-3 pr-4 font-mono text-xs text-white/50">https://diretopay.site/check_status.php</td><td className="py-3 text-white/40">Consultar status de transação</td></tr>
                             </tbody>
                         </table>
                     </section>
@@ -294,7 +294,7 @@ export default function ApiDocsPage() {
                         </div>
 
                         <TabbedCode tabs={[
-                            { label: 'cURL', code: `curl -X POST https://diretopay.com.br/api.php \\
+                            { label: 'cURL', code: `curl -X POST https://diretopay.site/api.php \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer SUA_API_KEY" \\
   -d '{
@@ -304,7 +304,7 @@ export default function ApiDocsPage() {
     },
     "callback_url": "https://seusite.com/webhook"
   }'` },
-                            { label: 'JavaScript', code: `const response = await fetch('https://diretopay.com.br/api.php', {
+                            { label: 'JavaScript', code: `const response = await fetch('https://diretopay.site/api.php', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -323,7 +323,7 @@ console.log(data.qr_image);     // URL da imagem QR` },
                             { label: 'Python', code: `import requests
 
 response = requests.post(
-    'https://diretopay.com.br/api.php',
+    'https://diretopay.site/api.php',
     headers={
         'Authorization': 'Bearer SUA_API_KEY'
     },
@@ -338,7 +338,7 @@ data = response.json()
 print(data['pix_code'])      # Código copia e cola
 print(data['qr_image'])      # URL da imagem QR` },
                             { label: 'PHP', code: `<?php
-$ch = curl_init('https://diretopay.com.br/api.php');
+$ch = curl_init('https://diretopay.site/api.php');
 curl_setopt_array($ch, [
     CURLOPT_POST => true,
     CURLOPT_RETURNTRANSFER => true,
@@ -369,7 +369,7 @@ var payload = new {
 
 var json = JsonSerializer.Serialize(payload);
 var content = new StringContent(json, Encoding.UTF8, "application/json");
-var response = await client.PostAsync("https://diretopay.com.br/api.php", content);
+var response = await client.PostAsync("https://diretopay.site/api.php", content);
 var result = await response.Content.ReadAsStringAsync();
 
 Console.WriteLine(result);` },
@@ -384,7 +384,7 @@ String body = """
   """;
 
 HttpRequest request = HttpRequest.newBuilder()
-    .uri(URI.create("https://diretopay.com.br/api.php"))
+    .uri(URI.create("https://diretopay.site/api.php"))
     .header("Content-Type", "application/json")
     .header("Authorization", "Bearer SUA_API_KEY")
     .POST(HttpRequest.BodyPublishers.ofString(body))
@@ -434,23 +434,23 @@ System.out.println(response.body());` },
                         </div>
 
                         <TabbedCode tabs={[
-                            { label: 'cURL', code: `curl "https://diretopay.com.br/check_status.php?pix_id=abc123-def456"` },
+                            { label: 'cURL', code: `curl "https://diretopay.site/check_status.php?pix_id=abc123-def456"` },
                             { label: 'JavaScript', code: `const res = await fetch(
-  'https://diretopay.com.br/check_status.php?pix_id=abc123-def456'
+  'https://diretopay.site/check_status.php?pix_id=abc123-def456'
 );
 const data = await res.json();
 console.log(data.status); // "pending", "paid", "expired"` },
                             { label: 'Python', code: `import requests
 
 res = requests.get(
-    'https://diretopay.com.br/check_status.php',
+    'https://diretopay.site/check_status.php',
     params={'pix_id': 'abc123-def456'}
 )
 print(res.json()['status'])  # "pending", "paid", "expired"` },
                             { label: 'PHP', code: `<?php
 $pixId = 'abc123-def456';
 $res = file_get_contents(
-    "https://diretopay.com.br/check_status.php?pix_id=$pixId"
+    "https://diretopay.site/check_status.php?pix_id=$pixId"
 );
 $data = json_decode($res, true);
 echo $data['status']; // "pending", "paid", "expired"` },
@@ -559,7 +559,7 @@ const app = express();
 app.use(express.json());
 
 const API_KEY = process.env.DIRETOPAY_API_KEY;
-const BASE = 'https://diretopay.com.br';
+const BASE = 'https://diretopay.site';
 
 // 1. Gerar cobrança
 app.post('/pay', async (req, res) => {
@@ -602,7 +602,7 @@ import requests, os
 
 app = Flask(__name__)
 API_KEY = os.environ['DIRETOPAY_API_KEY']
-BASE = 'https://diretopay.com.br'
+BASE = 'https://diretopay.site'
 
 # 1. Gerar cobrança
 @app.route('/pay', methods=['POST'])
@@ -644,7 +644,7 @@ use Illuminate\\Support\\Facades\\Route;
 Route::post('/pay', function (Request $request) {
     $response = Http::withHeaders([
         'Authorization' => 'Bearer ' . env('DIRETOPAY_API_KEY'),
-    ])->post('https://diretopay.com.br/api.php', [
+    ])->post('https://diretopay.site/api.php', [
         'amount' => $request->amount,
         'customer' => ['name' => $request->name ?? ''],
         'callback_url' => url('/api/webhook/diretopay'),
@@ -687,7 +687,7 @@ export default function PaymentPage() {
     // Polling para verificar pagamento
     const interval = setInterval(async () => {
       const statusRes = await fetch(
-        \`https://diretopay.com.br/check_status.php?pix_id=\${data.pixId}\`
+        \`https://diretopay.site/check_status.php?pix_id=\${data.pixId}\`
       );
       const status = await statusRes.json();
       if (status.status === 'paid') {

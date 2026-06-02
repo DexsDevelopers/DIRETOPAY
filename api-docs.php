@@ -249,7 +249,7 @@ require_once 'includes/db.php';
 &nbsp;&nbsp;<span class="code-string">"net/http"</span><br>
 )<br><br>
 <span class="code-keyword">func</span> main() {<br>
-&nbsp;&nbsp;url := <span class="code-string">"https://diretopay.com.br/api.php"</span><br>
+&nbsp;&nbsp;url := <span class="code-string">"https://diretopay.site/api.php"</span><br>
 &nbsp;&nbsp;minhaChave := <span class="code-string">"direto_SUA_CHAVE_AQUI"</span><br><br>
 &nbsp;&nbsp;dados := <span class="code-keyword">map</span>[<span class="code-keyword">string</span>]<span class="code-keyword">interface</span>{}{ <span class="code-string">"amount"</span>: <span class="code-string">100.00</span> }<br>
 &nbsp;&nbsp;corpo, _ := json.Marshal(dados)<br><br>
@@ -269,7 +269,7 @@ require_once 'includes/db.php';
                             <div class="code-block">
 <span class="code-keyword">const</span> axios = <span class="code-keyword">require</span>(<span class="code-string">'axios'</span>);<br><br>
 <span class="code-keyword">async function</span> gerarPix(valor) {<br>
-&nbsp;&nbsp;<span class="code-keyword">const</span> URL = <span class="code-string">'https://diretopay.com.br/api.php'</span>;<br>
+&nbsp;&nbsp;<span class="code-keyword">const</span> URL = <span class="code-string">'https://diretopay.site/api.php'</span>;<br>
 &nbsp;&nbsp;<span class="code-keyword">const</span> KEY = <span class="code-string">'direto_SUA_CHAVE_AQUI'</span>;<br><br>
 &nbsp;&nbsp;<span class="code-keyword">try</span> {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> res = <span class="code-keyword">await</span> axios.post(URL, { amount: valor }, {<br>
@@ -287,7 +287,7 @@ require_once 'includes/db.php';
                             <div class="code-block">
 <span class="code-keyword">import</span> requests<br><br>
 <span class="code-keyword">def</span> criar_cobranca(valor):<br>
-&nbsp;&nbsp;url = <span class="code-string">"https://diretopay.com.br/api.php"</span><br>
+&nbsp;&nbsp;url = <span class="code-string">"https://diretopay.site/api.php"</span><br>
 &nbsp;&nbsp;headers = { <span class="code-string">"Authorization"</span>: <span class="code-string">"Bearer direto_SUA_CHAVE"</span> }<br><br>
 &nbsp;&nbsp;res = requests.post(url, headers=headers, json={<span class="code-string">"amount"</span>: valor}).json()<br>
 &nbsp;&nbsp;<span class="code-keyword">if</span> res.get(<span class="code-string">'success'</span>):<br>
@@ -302,7 +302,7 @@ require_once 'includes/db.php';
 <span class="code-comment">// pix.php (Ponte segura)</span><br>
 <span class="code-keyword">$SUA_CHAVE</span> = <span class="code-string">"direto_SUA_CHAVE_AQUI"</span>;<br>
 <span class="code-keyword">$valor</span> = <span class="code-keyword">$_POST</span>[<span class="code-string">'v'</span>] ?? <span class="code-string">10.00</span>;<br><br>
-<span class="code-keyword">$ch</span> = curl_init(<span class="code-string">"https://diretopay.com.br/api.php"</span>);<br>
+<span class="code-keyword">$ch</span> = curl_init(<span class="code-string">"https://diretopay.site/api.php"</span>);<br>
 curl_setopt(<span class="code-keyword">$ch</span>, CURLOPT_HTTPHEADER, [<br>
 &nbsp;&nbsp;<span class="code-string">"Authorization: Bearer $SUA_CHAVE"</span>,<br>
 &nbsp;&nbsp;<span class="code-string">"Content-Type: application/json"</span><br>
@@ -319,7 +319,7 @@ curl_exec(<span class="code-keyword">$ch</span>);
 bot = telebot.TeleBot(<span class="code-string">'TOKEN_DO_BOT'</span>)<br><br>
 <span class="code-keyword">@bot.message_handler</span>(commands=[<span class="code-string">'comprar'</span>])<br>
 <span class="code-keyword">def</span> comprar(message):<br>
-&nbsp;&nbsp;res = requests.post(<span class="code-string">"https://diretopay.com.br/api.php"</span>, <br>
+&nbsp;&nbsp;res = requests.post(<span class="code-string">"https://diretopay.site/api.php"</span>, <br>
 &nbsp;&nbsp;&nbsp;&nbsp;headers={<span class="code-string">"Authorization"</span>: <span class="code-string">"Bearer direto_KEY"</span>},<br>
 &nbsp;&nbsp;&nbsp;&nbsp;json={<span class="code-string">"amount"</span>: <span class="code-string">15.00</span>}).json()<br><br>
 &nbsp;&nbsp;<span class="code-keyword">if</span> res.get(<span class="code-string">'success'</span>):<br>
@@ -333,7 +333,7 @@ bot = telebot.TeleBot(<span class="code-string">'TOKEN_DO_BOT'</span>)<br><br>
                             <p>Integração nativa para aplicativos Android/iOS (React Native / Flutter).</p>
                             <div class="code-block">
 <span class="code-keyword">const</span> fazerPix = <span class="code-keyword">async</span> (valor) => {<br>
-&nbsp;&nbsp;<span class="code-keyword">const</span> res = <span class="code-keyword">await</span> fetch(<span class="code-string">'https://diretopay.com.br/api.php'</span>, {<br>
+&nbsp;&nbsp;<span class="code-keyword">const</span> res = <span class="code-keyword">await</span> fetch(<span class="code-string">'https://diretopay.site/api.php'</span>, {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;method: <span class="code-string">'POST'</span>,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;headers: {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">'Authorization'</span>: <span class="code-string">'Bearer direto_KEY'</span>,<br>

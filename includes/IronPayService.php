@@ -27,7 +27,7 @@ class IronPayService
         $cpf = preg_replace('/\D/', '', $customer['document'] ?? '');
         if (empty($cpf)) $cpf = '00000000000';
         $name  = !empty($customer['name'])  ? $customer['name']  : 'Cliente';
-        $email = !empty($customer['email']) ? $customer['email'] : 'cliente@diretopay.com.br';
+        $email = !empty($customer['email']) ? $customer['email'] : 'cliente@diretopay.site';
 
         $body = json_encode([
             'amount'              => $amountCents,
@@ -36,7 +36,7 @@ class IronPayService
             'installments'        => 1,
             'expire_in_days'      => $expireDays,
             'transaction_origin'  => 'api',
-            'postback_url'        => 'https://diretopay.com.br/ironpay_webhook.php',
+            'postback_url'        => 'https://diretopay.site/ironpay_webhook.php',
             'customer' => [
                 'name'         => $name,
                 'email'        => $email,
