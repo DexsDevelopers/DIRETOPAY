@@ -11,6 +11,7 @@ const NAV_LINKS = [
     { label: 'API Docs',   to: '/docs', icon: Code2 },
     { label: 'FAQ',        to: '/faq' },
     { label: 'Contato',    href: 'https://wa.me/5551996148568', external: true },
+    { label: 'Canal',      href: 'https://whatsapp.com/channel/0029Vb7xewz7z4kaRdHkhO1e', external: true },
 ];
 
 export default function PublicLayout({ children }) {
@@ -69,8 +70,9 @@ export default function PublicLayout({ children }) {
             {/* Mobile menu */}
             <AnimatePresence>
                 {menuOpen && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-40 bg-[#050709]/98 backdrop-blur-2xl flex flex-col pt-20 px-6 pb-10 md:hidden">
+                    <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.15 }}
+                        className="fixed inset-0 z-40 bg-[#050709] flex flex-col pt-20 px-6 pb-10 md:hidden">
                         <nav className="flex flex-col gap-1 mt-4">
                             {NAV_LINKS.map(l => {
                                 const Ico = l.icon;

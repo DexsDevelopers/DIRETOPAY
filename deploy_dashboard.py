@@ -121,7 +121,54 @@ with open(INDEX_PHP, 'w', encoding='utf-8') as f:
     f.write(php_new)
 print(f'✓ index.php atualizado (v{old_v} → v{new_v})')
 
-# ── 6. Git add + commit + push ───────────────────────────────────────────────
+# ── 6. SFTP upload to server ─────────────────────────────────────────────────
+print('▶ Enviando para o servidor via SFTP...')
+try:
+    import paramiko
+    SSH_HOST = '45.132.157.58'
+    SSH_PORT = 65002
+    SSH_USER = 'u853242961'
+    SSH_PASS = 'Lucastav8012@'
+    REMOTE_BASE = '/home/u853242961/domains/diretopay.site/public_html'
+
+    c = paramiko.SSHClient()
+    c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    c.connect(SSH_HOST, port=SSH_PORT, username=SSH_USER, password=SSH_PASS,
+              look_for_keys=False, allow_agent=False, timeout=30)
+    sftp = c.open_sftp()
+
+    # Upload only NEW asset files (that don't yet exist on server)
+    try:
+        remote_files = set(sftp.listdir(f'{REMOTE_BASE}/assets/dashboard-react'))
+    except Exception:
+        remote_files = set()
+
+    uploaded = 0
+    for fname in os.listdir(DEST_DIR):
+        if fname not in remote_files:
+            local = os.path.join(DEST_DIR, fname)
+            if os.path.isfile(local):
+                sftp.put(local, f'{REMOTE_BASE}/assets/dashboard-react/{fname}')
+                uploaded += 1
+
+    # Always upload index.php and favicon.ico
+    sftp.put(INDEX_PHP, f'{REMOTE_BASE}/index.php')
+    print(f'  index.php → OK')
+
+    favicon_root = os.path.join(ROOT, 'favicon.ico')
+    if os.path.exists(favicon_root):
+        sftp.put(favicon_root, f'{REMOTE_BASE}/favicon.ico')
+        print(f'  favicon.ico → OK')
+
+    sftp.close()
+    c.close()
+    print(f'✓ {uploaded} novos assets + index.php enviados via SFTP')
+except ImportError:
+    print('⚠️  paramiko não instalado — pulando SFTP. Instale: pip install paramiko')
+except Exception as e:
+    print(f'⚠️  Erro SFTP: {e}')
+
+# ── 7. Git add + commit + push ───────────────────────────────────────────────
 print('▶ Git push...')
 subprocess.run(['git', 'add', '-A'], cwd=ROOT, shell=True)
 subprocess.run(['git', 'commit', '-m', f'deploy: dashboard v{new_v} — React build sync'], cwd=ROOT, shell=True)
