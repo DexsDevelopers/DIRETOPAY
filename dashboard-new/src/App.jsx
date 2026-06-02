@@ -55,7 +55,10 @@ const PixPage              = React.lazy(() => import('./pages/PixPage'));
 const AdminGatewaysPage    = React.lazy(() => import('./pages/AdminGatewaysPage'));
 const BuyerChatPage        = React.lazy(() => import('./pages/BuyerChatPage'));
 const ParceirosPage        = React.lazy(() => import('./pages/ParceirosPage'));
-const PremiacoesPage       = React.lazy(() => import('./pages/PremiacoesPage'));
+const PremiacoesPage           = React.lazy(() => import('./pages/PremiacoesPage'));
+const BeneficiosPage           = React.lazy(() => import('./pages/BeneficiosPage'));
+const PremiacoesPublicPage     = React.lazy(() => import('./pages/PremiacoesPublicPage'));
+const FaqPage                  = React.lazy(() => import('./pages/FaqPage'));
 const BankAccountsPage     = React.lazy(() => import('./pages/BankAccountsPage'));
 const DashboardHomePage    = React.lazy(() => import('./pages/DashboardHomePage'));
 const AnnouncementModal    = React.lazy(() => import('./components/AnnouncementModal'));
@@ -284,6 +287,9 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/demo" element={<DemoPage />} />
         <Route path="/docs" element={<ApiDocsPage />} />
+        <Route path="/beneficios" element={<BeneficiosPage />} />
+        <Route path="/premiacoes" element={<PremiacoesPublicPage />} />
+        <Route path="/faq" element={<FaqPage />} />
         <Route path="/login" element={<LoginPage onLogin={fetchDashboard} />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -550,7 +556,7 @@ export default function App() {
           </PrivateRoute>
         } />
 
-        <Route path="/premiacoes" element={
+        <Route path="/minha-premiacao" element={
           <PrivateRoute>
             <DashboardLayout {...commonProps} activeTab="premiacoes">
               <PremiacoesPage dashboardData={dashboardData} />

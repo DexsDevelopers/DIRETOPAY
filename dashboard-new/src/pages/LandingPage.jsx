@@ -12,11 +12,11 @@ import {
 } from 'lucide-react';
 
 const NAV_LINKS = [
-    { label: 'Início',     href: '#sistema' },
-    { label: 'Benefícios',  href: '#recursos' },
-    { label: 'Premiações', href: '#conquistas' },
-    { label: 'API Docs',   href: '/docs',   icon: Code2 },
-    { label: 'FAQ',        href: '#faq' },
+    { label: 'Início',     href: '/' },
+    { label: 'Benefícios', href: '/beneficios' },
+    { label: 'Premiações', href: '/premiacoes' },
+    { label: 'API Docs',   href: '/docs',        icon: Code2 },
+    { label: 'FAQ',        href: '/faq' },
     { label: 'Contato',    href: 'https://wa.me/5551996148568', external: true },
 ];
 

@@ -187,7 +187,7 @@ export default function Sidebar({ isOpen, activeTab, onTabChange, onClose, userD
             items: [
                 { type: 'item', id: 'afiliado',  icon: <Gift size={15} />,      label: 'Afiliado',   path: '/afiliado' },
                 { type: 'item', id: 'parceiros', icon: <Handshake size={15} />, label: 'Parceiros',  path: '/parceiros' },
-                { type: 'item', id: 'premiacoes',icon: <Trophy size={15} />,    label: 'Premiações', path: '/premiacoes' },
+                { type: 'item', id: 'premiacoes',icon: <Trophy size={15} />,    label: 'Premiações', path: '/minha-premiacao' },
             ]
         },
         {
