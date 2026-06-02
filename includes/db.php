@@ -363,6 +363,180 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
     } catch (PDOException $e) {}
 
+    // ─── MIGRAÇÕES CONSOLIDADAS (scripts soltos → db.php) ───────────────────────
+
+    // Auto-Migração: remember_token nos users (obrigatório para auto-login)
+    try { $pdo->exec("ALTER TABLE users ADD COLUMN remember_token VARCHAR(255) NULL"); } catch (PDOException $e) {}
+
+    // Auto-Migração: api_key nos users (acesso à API REST)
+    try { $pdo->exec("ALTER TABLE users ADD COLUMN api_key VARCHAR(64) NULL"); } catch (PDOException $e) {}
+
+    // Auto-Migração: pix_code e qr_image nas transações (sem elas nenhum PIX funciona)
+    try { $pdo->exec("ALTER TABLE transactions ADD COLUMN pix_code TEXT NULL AFTER pix_id"); } catch (PDOException $e) {}
+    try { $pdo->exec("ALTER TABLE transactions ADD COLUMN qr_image VARCHAR(500) NULL AFTER pix_code"); } catch (PDOException $e) {}
+    try { $pdo->exec("ALTER TABLE transactions ADD COLUMN callback_url TEXT NULL AFTER qr_image"); } catch (PDOException $e) {}
+
+    // Auto-Migração: colunas críticas em withdrawals (INSERT em triggerAutoWithdraw depende delas)
+    try { $pdo->exec("ALTER TABLE withdrawals ADD COLUMN pix_key_type VARCHAR(20) DEFAULT NULL"); } catch (PDOException $e) {}
+    try { $pdo->exec("ALTER TABLE withdrawals ADD COLUMN description TEXT DEFAULT NULL"); } catch (PDOException $e) {}
+    try { $pdo->exec("ALTER TABLE withdrawals ADD COLUMN type VARCHAR(30) DEFAULT 'withdrawal'"); } catch (PDOException $e) {}
+    try { $pdo->exec("ALTER TABLE withdrawals ADD COLUMN charge_recipient TINYINT(1) DEFAULT 0"); } catch (PDOException $e) {}
+
+    // Auto-Migração: tabela de notificações internas (sino do dashboard)
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS notifications (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NULL,
+            title VARCHAR(255) NOT NULL,
+            message TEXT NOT NULL,
+            type ENUM('info','success','warning','danger') NOT NULL DEFAULT 'info',
+            is_read TINYINT(1) NOT NULL DEFAULT 0,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_notif_user (user_id),
+            INDEX idx_notif_read (user_id, is_read)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: push subscriptions (notificações push web)
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS push_subscriptions (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            endpoint TEXT NOT NULL,
+            p256dh VARCHAR(255) NOT NULL,
+            auth VARCHAR(255) NOT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_push_user (user_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: tabela de produtos (catálogo)
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS products (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            name VARCHAR(255) NOT NULL,
+            description TEXT,
+            price DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+            image_url VARCHAR(500),
+            category VARCHAR(100) DEFAULT 'Digital',
+            type ENUM('digital','physical','service') DEFAULT 'digital',
+            delivery_method VARCHAR(50) DEFAULT '',
+            delivery_info TEXT,
+            vitrine TINYINT(1) DEFAULT 0,
+            status ENUM('active','inactive','pending') DEFAULT 'pending',
+            stock INT DEFAULT -1,
+            orders_count INT DEFAULT 0,
+            avg_rating DECIMAL(3,2) DEFAULT 0.00,
+            review_count INT DEFAULT 0,
+            has_variants TINYINT(1) NOT NULL DEFAULT 0,
+            subscription_interval ENUM('weekly','monthly','yearly') DEFAULT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_products_user (user_id),
+            INDEX idx_products_vitrine (vitrine, status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: avaliações de produtos
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS product_reviews (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            product_id INT NOT NULL,
+            user_id INT NULL,
+            buyer_name VARCHAR(255),
+            rating TINYINT NOT NULL DEFAULT 5,
+            comment TEXT,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_reviews_product (product_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: tabela de pedidos (inclui todas as colunas de ALTER TABLE posteriores)
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS orders (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            product_id INT NOT NULL,
+            seller_id INT NOT NULL,
+            buyer_name VARCHAR(255),
+            buyer_document VARCHAR(20),
+            buyer_pix_key VARCHAR(255) NULL,
+            buyer_email VARCHAR(255) NULL,
+            buyer_user_id INT NULL,
+            reseller_id INT DEFAULT NULL,
+            quantity INT DEFAULT 1,
+            amount DECIMAL(10,2) NOT NULL,
+            transaction_id INT DEFAULT NULL,
+            status ENUM('pending','paid','delivered','cancelled') DEFAULT 'pending',
+            delivery_data TEXT,
+            delivery_token VARCHAR(64) NULL,
+            delivered_content TEXT NULL,
+            coupon_id INT NULL,
+            discount_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_orders_seller (seller_id),
+            INDEX idx_orders_product (product_id),
+            UNIQUE KEY uq_delivery_token (delivery_token)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: configurações de loja pública
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS store_settings (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL UNIQUE,
+            store_name VARCHAR(255),
+            store_description TEXT,
+            store_banner VARCHAR(500),
+            slug VARCHAR(100) UNIQUE,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: itens de estoque de produtos digitais
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS product_stock_items (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            product_id INT NOT NULL,
+            content TEXT NOT NULL,
+            status ENUM('available','used') DEFAULT 'available',
+            order_id INT DEFAULT NULL,
+            used_at DATETIME NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_stock_product (product_id, status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: tabela de chaves API PixGo (múltiplos gateways)
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS pixgo_apis (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            api_key VARCHAR(255) NOT NULL,
+            status ENUM('active','inactive') DEFAULT 'active',
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: tabela de premiações (claim_award.php auto-cria mas garante aqui)
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS award_claims (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            award_id VARCHAR(50) NOT NULL,
+            claimed_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            total_at_claim DECIMAL(12,2) DEFAULT 0,
+            status VARCHAR(20) DEFAULT 'pending',
+            UNIQUE KEY uniq_user_award (user_id, award_id),
+            INDEX idx_award_user (user_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+
+    // ─────────────────────────────────────────────────────────────────────────────
+
 } catch (PDOException $e) {
     die("Erro ao conectar ao banco de dados: " . $e->getMessage());
 }
