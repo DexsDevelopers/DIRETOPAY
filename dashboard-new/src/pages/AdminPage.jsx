@@ -312,7 +312,7 @@ export default function AdminPage() {
                                         />
                                         <Bar dataKey="count" radius={[6,6,0,0]}>
                                             {s.registration_chart.map((entry, i) => (
-                                                <Cell key={i} fill={entry.count > 0 ? '#a855f7' : '#e5e7eb'} />
+                                                <Cell key={i} fill={entry.count > 0 ? '#1ea465' : '#e5e7eb'} />
                                             ))}
                                         </Bar>
                                     </BarChart>

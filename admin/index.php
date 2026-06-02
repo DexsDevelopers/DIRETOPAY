@@ -1013,7 +1013,7 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                                         <input type="hidden" name="withdraw_id" value="<?php echo $w['id']; ?>">
                                         <?php
                                         $bgStyle = 'rgba(30, 164, 101, 0.15)';
-                                        $colorStyle = '#a855f7';
+                                        $colorStyle = '#1ea465';
                                         $borderStyle = 'rgba(30, 164, 101, 0.25)';
                                         if ($w['nominal_display'] === 'nominal2') {
                                             $bgStyle = 'rgba(6, 182, 212, 0.15)';

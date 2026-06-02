@@ -1153,21 +1153,21 @@ export default function SettingsPage({ userData, onProfileSaved }) {
                                             label: 'Claro',
                                             desc: 'Visual limpo, ideal para ambientes iluminados',
                                             icon: <Sun size={28} />,
-                                            colors: ['#ffffff','#f9fafb','#a855f7'],
+                                            colors: ['#ffffff','#f9fafb','#1ea465'],
                                         },
                                         {
                                             id: 'dark',
                                             label: 'Escuro',
                                             desc: 'Modo noturno, reduz o cansaço visual',
                                             icon: <Moon size={28} />,
-                                            colors: ['#0d0d12','#17171f','#a855f7'],
+                                            colors: ['#0d0d12','#17171f','#1ea465'],
                                         },
                                         {
                                             id: 'system',
                                             label: 'Sistema',
                                             desc: 'Segue a preferência do seu dispositivo',
                                             icon: <Monitor size={28} />,
-                                            colors: ['#f9fafb','#0d0d12','#a855f7'],
+                                            colors: ['#f9fafb','#0d0d12','#1ea465'],
                                         },
                                     ].map(opt => {
                                         const isActive =
