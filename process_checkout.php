@@ -82,6 +82,7 @@ try {
         return ($val === false) ? '' : (string)$val;
     };
 
+    $lunarEnabled  = $getSetting('lunarpay_enabled') === '1';
     $ezzyEnabled   = $getSetting('ezzybanking_enabled') === '1';
     $sigiloEnabled = $getSetting('sigilopay_enabled') === '1';
 
@@ -92,8 +93,39 @@ try {
     $gatewayName = '';
     $gatewayFee = 0.00;
 
+    // ── Gateway: LunarPay ─────────────────────────────────────────────
+    if ($lunarEnabled) {
+        require_once 'includes/LunarPayService.php';
+        
+        $customer = [
+            'name' => empty($customerName) ? 'Cliente Checkout' : $customerName,
+            'email' => (!empty($user['email'])) ? $user['email'] : 'comprador@diretopay.site',
+            'phone' => '(11) 9 0000-0000',
+            'document' => !empty($customerDocument) ? preg_replace('/[^0-9]/', '', $customerDocument) : '14714301624',
+        ];
+
+        write_log('info', "Checkout LunarPay Request: amount=$totalAmount | externalId=$externalId");
+
+        $lunarResponse = LunarPayService::createPixCharge(
+            $totalAmount,
+            $externalId,
+            $customer,
+            getFullUrl('lunarpay_webhook.php'),
+            'Pagamento DiretoPay'
+        );
+
+        if ($lunarResponse['ok'] && isset($lunarResponse['data']['transaction_id'])) {
+            $pixId = $lunarResponse['data']['transaction_id'];
+            $pixCode = $lunarResponse['data']['pix_code'] ?? $lunarResponse['data']['qr_code'] ?? '';
+            $qrImage = !empty($pixCode) ? 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($pixCode) : '';
+            $gatewayName = 'LunarPay';
+            $gatewayFee = (float)($getSetting('lunarpay_fee_fixed') ?: 0.99) + ($totalAmount * (float)($getSetting('lunarpay_fee_percent') ?: 5) / 100);
+        } else {
+            throw new Exception('LunarPay: ' . ($lunarResponse['error'] ?? 'Erro desconhecido'));
+        }
+    }
     // ── Gateway: Ezzy Banking ───────────────────────────────────────────
-    if ($ezzyEnabled) {
+    elseif ($ezzyEnabled) {
         require_once 'includes/EzzyBankingService.php';
         
         $customer = [

@@ -1046,5 +1046,22 @@ foreach ($ezzySettings as $key => $value) {
         $stmt->execute([$key, $value]);
     } catch (PDOException $e) {}
 }
+
+// ─── AUTO-MIGRAÇÃO: LunarPay Settings ─────────────────────────────────────
+$lunarSettings = [
+    'lunarpay_enabled' => '0',
+    'lunarpay_client_id' => '',
+    'lunarpay_client_secret' => '',
+    'lunarpay_webhook_secret' => '',
+    'lunarpay_fee_percent' => '5',
+    'lunarpay_fee_fixed' => '0.99',
+];
+
+foreach ($lunarSettings as $key => $value) {
+    try {
+        $stmt = $pdo->prepare("INSERT IGNORE INTO settings (`key`, `value`) VALUES (?, ?)");
+        $stmt->execute([$key, $value]);
+    } catch (PDOException $e) {}
+}
 ?>
 
