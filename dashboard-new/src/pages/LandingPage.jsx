@@ -107,11 +107,8 @@ export default function LandingPage() {
                 scrolled ? 'bg-[#050709]/85 backdrop-blur-2xl border-b border-white/[0.07] shadow-xl shadow-black/30' : ''
             }`}>
                 <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-2.5 group">
-                        <div className="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/30 group-hover:shadow-emerald-500/50 transition-shadow">
-                            <Zap size={15} className="text-white" fill="white" />
-                        </div>
-                        <span className="text-[16px] font-black tracking-tight">Direto<span className="text-emerald-500">Pay</span></span>
+                    <Link to="/" className="flex items-center group">
+                        <img src="/logo-diretopay.webp" alt="DiretoPay" className="h-8 sm:h-9 w-auto" />
                     </Link>
 
                     <div className="hidden md:flex items-center gap-1">
@@ -267,8 +264,35 @@ export default function LandingPage() {
                 </div>
             </section>
 
+            {/* ── PLATFORMS MARQUEE ── */}
+            <section className="relative z-10 border-y border-white/[0.06] bg-white/[0.015] overflow-hidden py-6">
+                <p className="text-center text-[11px] font-bold text-gray-600 uppercase tracking-widest mb-5">Compatível com os maiores sistemas do mercado</p>
+                <div className="relative">
+                    {/* fade edges */}
+                    <div className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, #050709, transparent)' }} />
+                    <div className="absolute right-0 top-0 bottom-0 w-20 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, #050709, transparent)' }} />
+                    <motion.div
+                        animate={{ x: ['0%', '-50%'] }}
+                        transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
+                        className="flex items-center gap-10 w-max">
+                        {[
+                            'Hotmart', 'Kiwify', 'Eduzz', 'Monetizze', 'Braip',
+                            'Shopify', 'WooCommerce', 'WordPress', 'Lastlink', 'Ticto',
+                            'PerfectPay', 'Guru', 'Pepper', 'Memberkit', 'Cademi',
+                            'Hotmart', 'Kiwify', 'Eduzz', 'Monetizze', 'Braip',
+                            'Shopify', 'WooCommerce', 'WordPress', 'Lastlink', 'Ticto',
+                            'PerfectPay', 'Guru', 'Pepper', 'Memberkit', 'Cademi',
+                        ].map((name, i) => (
+                            <span key={i} className="text-[13px] font-black text-gray-500 hover:text-gray-300 transition-colors whitespace-nowrap tracking-tight opacity-50 hover:opacity-100 cursor-default">
+                                {name}
+                            </span>
+                        ))}
+                    </motion.div>
+                </div>
+            </section>
+
             {/* ── STATS ── */}
-            <section className="relative z-10 border-y border-white/[0.06] bg-white/[0.015]">
+            <section className="relative z-10 border-b border-white/[0.06] bg-white/[0.015]">
                 <div className="max-w-5xl mx-auto px-5 py-12 grid grid-cols-2 md:grid-cols-4 gap-6">
                     {STATS.map(({ value, label, note }, i) => (
                         <motion.div key={label}
@@ -548,12 +572,7 @@ export default function LandingPage() {
             {/* ── FOOTER ── */}
             <footer className="relative z-10 border-t border-white/[0.06] py-10 px-5">
                 <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-xl bg-emerald-500 flex items-center justify-center shadow-md shadow-emerald-500/20">
-                            <Zap size={13} className="text-white" fill="white" />
-                        </div>
-                        <span className="text-[15px] font-black">Direto<span className="text-emerald-500">Pay</span></span>
-                    </div>
+                    <img src="/logo-diretopay.webp" alt="DiretoPay" className="h-7 w-auto opacity-70 hover:opacity-100 transition-opacity" />
                     <p className="text-[12px] text-gray-600">© {new Date().getFullYear()} DiretoPay. Todos os direitos reservados.</p>
                     <div className="flex items-center gap-5">
                         <Link to="/login"    className="text-[12px] text-gray-500 hover:text-gray-300 transition-colors">Entrar</Link>
