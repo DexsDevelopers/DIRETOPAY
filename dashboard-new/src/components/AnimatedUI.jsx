@@ -3,10 +3,291 @@
  *   • React Bits (reactbits.dev): Particles, Aurora, SplitText, Glow
  *   • Hover.dev: ShimmerButton, GlowCard, GridPattern
  *   • Pagedone: StatCard, FeatureCard
+ *   • Awwwards: CustomCursor, NoiseOverlay, ClipReveal, CountUp, Marquee, MagneticButton, PageLoader
  */
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useInView, animate } from 'framer-motion';
+
+/* ─── Custom Cursor (Awwwards #1 signature) ──────────────────────────────── */
+export function CustomCursor() {
+    const dot   = useRef(null);
+    const ring  = useRef(null);
+    const mouse = useRef({ x: 0, y: 0 });
+    const pos   = useRef({ x: 0, y: 0 });
+    const raf   = useRef(null);
+    const [visible, setVisible] = useState(false);
+    const [hovered, setHovered] = useState(false);
+
+    useEffect(() => {
+        const onMove = (e) => {
+            mouse.current = { x: e.clientX, y: e.clientY };
+            if (!visible) setVisible(true);
+        };
+        const onLeave = () => setVisible(false);
+        const onEnter = () => setVisible(true);
+        const onHoverIn  = (e) => { if (e.target.closest('a,button,[data-cursor="hover"]')) setHovered(true); };
+        const onHoverOut = (e) => { if (e.target.closest('a,button,[data-cursor="hover"]')) setHovered(false); };
+
+        window.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseleave', onLeave);
+        document.addEventListener('mouseenter', onEnter);
+        document.addEventListener('mouseover', onHoverIn);
+        document.addEventListener('mouseout', onHoverOut);
+
+        const loop = () => {
+            pos.current.x += (mouse.current.x - pos.current.x) * 0.12;
+            pos.current.y += (mouse.current.y - pos.current.y) * 0.12;
+            if (ring.current) {
+                ring.current.style.transform = `translate(${pos.current.x - 20}px, ${pos.current.y - 20}px)`;
+            }
+            if (dot.current) {
+                dot.current.style.transform = `translate(${mouse.current.x - 4}px, ${mouse.current.y - 4}px)`;
+            }
+            raf.current = requestAnimationFrame(loop);
+        };
+        raf.current = requestAnimationFrame(loop);
+
+        return () => {
+            window.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseleave', onLeave);
+            document.removeEventListener('mouseenter', onEnter);
+            document.removeEventListener('mouseover', onHoverIn);
+            document.removeEventListener('mouseout', onHoverOut);
+            cancelAnimationFrame(raf.current);
+        };
+    }, []);
+
+    if (typeof window === 'undefined') return null;
+
+    return (
+        <>
+            <style>{`* { cursor: none !important; }`}</style>
+            {/* Trailing ring */}
+            <div ref={ring} className="fixed top-0 left-0 pointer-events-none z-[9999] will-change-transform transition-[width,height,opacity,border-color] duration-200"
+                style={{
+                    width: hovered ? 48 : 40, height: hovered ? 48 : 40,
+                    borderRadius: '50%',
+                    border: `1.5px solid ${hovered ? 'rgba(16,185,129,0.8)' : 'rgba(255,255,255,0.35)'}`,
+                    opacity: visible ? 1 : 0,
+                    marginTop: hovered ? -4 : 0, marginLeft: hovered ? -4 : 0,
+                }} />
+            {/* Dot */}
+            <div ref={dot} className="fixed top-0 left-0 pointer-events-none z-[9999] will-change-transform"
+                style={{
+                    width: 8, height: 8, borderRadius: '50%',
+                    background: hovered ? '#10b981' : 'white',
+                    opacity: visible ? 1 : 0,
+                    transition: 'background 0.15s, opacity 0.2s',
+                }} />
+        </>
+    );
+}
+
+/* ─── Noise / Grain Overlay (Awwwards texture) ───────────────────────────── */
+export function NoiseOverlay({ opacity = 0.035 }) {
+    return (
+        <div className="fixed inset-0 pointer-events-none z-[9990]"
+            style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+                backgroundRepeat: 'repeat',
+                backgroundSize: '180px 180px',
+                opacity,
+                mixBlendMode: 'overlay',
+            }}
+        />
+    );
+}
+
+/* ─── Clip-Path Text Reveal (Awwwards hero text) ─────────────────────────── */
+export function ClipReveal({ children, className = '', delay = 0, duration = 0.75, once = true }) {
+    return (
+        <div className={`overflow-hidden ${className}`}>
+            <motion.div
+                initial={{ y: '105%', opacity: 0 }}
+                whileInView={{ y: '0%', opacity: 1 }}
+                viewport={{ once }}
+                transition={{ duration, delay, ease: [0.16, 1, 0.3, 1] }}>
+                {children}
+            </motion.div>
+        </div>
+    );
+}
+
+/* ─── Line Reveal (word by word) ─────────────────────────────────────────── */
+export function LineReveal({ text, className = '', delay = 0, stagger = 0.08, once = true }) {
+    const words = text.split(' ');
+    return (
+        <span className={className}>
+            {words.map((word, i) => (
+                <span key={i} className="inline-block overflow-hidden mr-[0.28em]">
+                    <motion.span className="inline-block"
+                        initial={{ y: '110%' }}
+                        whileInView={{ y: '0%' }}
+                        viewport={{ once }}
+                        transition={{ duration: 0.65, delay: delay + i * stagger, ease: [0.16, 1, 0.3, 1] }}>
+                        {word}
+                    </motion.span>
+                </span>
+            ))}
+        </span>
+    );
+}
+
+/* ─── Count-Up Number (Awwwards stats) ───────────────────────────────────── */
+export function CountUp({ from = 0, to, duration = 1.8, prefix = '', suffix = '', decimals = 0, className = '' }) {
+    const ref    = useRef(null);
+    const inView = useInView(ref, { once: true, margin: '-60px' });
+    const [val, setVal] = useState(from);
+
+    useEffect(() => {
+        if (!inView) return;
+        const controls = animate(from, to, {
+            duration,
+            ease: [0.22, 1, 0.36, 1],
+            onUpdate: (v) => setVal(parseFloat(v.toFixed(decimals))),
+        });
+        return () => controls.stop();
+    }, [inView, from, to, duration, decimals]);
+
+    return (
+        <span ref={ref} className={className}>
+            {prefix}{typeof val === 'number' ? val.toLocaleString('pt-BR') : val}{suffix}
+        </span>
+    );
+}
+
+/* ─── Infinite Marquee (Awwwards scrolling ticker) ───────────────────────── */
+export function Marquee({ items, speed = 30, reverse = false, separator = '·', className = '' }) {
+    const [duration, setDuration] = useState(speed);
+    const trackRef = useRef(null);
+
+    useEffect(() => {
+        if (trackRef.current) {
+            const w = trackRef.current.scrollWidth / 2;
+            setDuration(w / speed);
+        }
+    }, [items, speed]);
+
+    const content = [...items, ...items];
+
+    return (
+        <div className={`overflow-hidden whitespace-nowrap ${className}`}
+            style={{ WebkitMaskImage: 'linear-gradient(90deg,transparent,black 10%,black 90%,transparent)' }}>
+            <div ref={trackRef} className="inline-flex"
+                style={{
+                    animation: `marquee-scroll ${duration}s linear infinite ${reverse ? 'reverse' : 'normal'}`,
+                }}>
+                {content.map((item, i) => (
+                    <span key={i} className="inline-flex items-center gap-4 px-4 text-[13px] font-semibold text-gray-500 uppercase tracking-widest">
+                        {item} <span className="text-emerald-500/60">{separator}</span>
+                    </span>
+                ))}
+            </div>
+            <style>{`
+                @keyframes marquee-scroll {
+                    from { transform: translateX(0); }
+                    to   { transform: translateX(-50%); }
+                }
+            `}</style>
+        </div>
+    );
+}
+
+/* ─── Magnetic Button (Awwwards CTA) ─────────────────────────────────────── */
+export function MagneticButton({ children, className = '', strength = 0.35, onClick, type = 'button', disabled = false }) {
+    const ref   = useRef(null);
+    const [pos, setPos] = useState({ x: 0, y: 0 });
+
+    const handleMove = useCallback((e) => {
+        const rect = ref.current?.getBoundingClientRect();
+        if (!rect) return;
+        const cx = rect.left + rect.width  / 2;
+        const cy = rect.top  + rect.height / 2;
+        setPos({ x: (e.clientX - cx) * strength, y: (e.clientY - cy) * strength });
+    }, [strength]);
+
+    const handleLeave = useCallback(() => {
+        setPos({ x: 0, y: 0 });
+    }, []);
+
+    return (
+        <motion.button ref={ref} type={type} onClick={onClick} disabled={disabled}
+            onMouseMove={handleMove} onMouseLeave={handleLeave}
+            animate={{ x: pos.x, y: pos.y }}
+            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+            className={`relative overflow-hidden ${className}`}>
+            <span className="absolute inset-0 -translate-x-full hover:translate-x-full transition-transform duration-700 ease-in-out"
+                style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)' }} />
+            {children}
+        </motion.button>
+    );
+}
+
+/* ─── Page Loader (Awwwards intro screen) ────────────────────────────────── */
+export function PageLoader({ onDone, label = 'DiretoPay' }) {
+    const [progress, setProgress] = useState(0);
+    const [done, setDone]         = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            const iv = setInterval(() => {
+                setProgress(p => {
+                    if (p >= 100) { clearInterval(iv); setTimeout(() => { setDone(true); onDone?.(); }, 300); return 100; }
+                    return p + Math.random() * 18 + 4;
+                });
+            }, 60);
+            return () => clearInterval(iv);
+        }, 100);
+        return () => clearTimeout(timer);
+    }, []);
+
+    return (
+        <motion.div initial={{ opacity: 1 }} animate={{ opacity: done ? 0 : 1 }}
+            transition={{ duration: 0.5 }} onAnimationComplete={() => done && onDone?.()}
+            className="fixed inset-0 z-[9998] bg-[#050709] flex flex-col items-center justify-center pointer-events-none">
+            <DotGrid />
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
+                className="text-center">
+                <p className="text-[11px] font-bold text-emerald-500 uppercase tracking-[0.4em] mb-6">{label}</p>
+                <div className="w-48 h-[1px] bg-white/10 relative overflow-hidden">
+                    <motion.div className="absolute inset-y-0 left-0 bg-emerald-500"
+                        animate={{ width: `${Math.min(progress, 100)}%` }}
+                        transition={{ duration: 0.15, ease: 'linear' }} />
+                </div>
+                <p className="text-[11px] text-gray-600 mt-3 tabular-nums">
+                    {Math.min(Math.round(progress), 100)}%
+                </p>
+            </motion.div>
+        </motion.div>
+    );
+}
+
+/* ─── Section Number Label (Awwwards 01 / 02 style) ─────────────────────── */
+export function SectionLabel({ number, label, color = '#10b981' }) {
+    return (
+        <ClipReveal>
+            <div className="flex items-center gap-3 mb-3">
+                <span className="text-[10px] font-black tabular-nums" style={{ color }}>{number}</span>
+                <div className="h-px w-8" style={{ background: color, opacity: 0.4 }} />
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500">{label}</span>
+            </div>
+        </ClipReveal>
+    );
+}
+
+/* ─── Scroll Reveal Wrapper ──────────────────────────────────────────────── */
+export function Reveal({ children, delay = 0, y = 24, once = true, className = '' }) {
+    return (
+        <motion.div className={className}
+            initial={{ opacity: 0, y }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once, margin: '-40px' }}
+            transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}>
+            {children}
+        </motion.div>
+    );
+}
 
 /* ─── Aurora Background ──────────────────────────────────────────────────── */
 export function AuroraBg({ className = '' }) {

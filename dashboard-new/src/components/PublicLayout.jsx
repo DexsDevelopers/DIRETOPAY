@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Code2, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { CustomCursor, NoiseOverlay } from './AnimatedUI';
 
 const NAV_LINKS = [
     { label: 'Início',     to: '/' },
@@ -28,6 +29,8 @@ export default function PublicLayout({ children }) {
 
     return (
         <div className="min-h-screen bg-[#050709] text-white font-sans antialiased overflow-x-hidden">
+            <CustomCursor />
+            <NoiseOverlay />
             <div className="fixed inset-0 pointer-events-none z-0" style={{
                 backgroundImage: `linear-gradient(rgba(16,185,129,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.03) 1px, transparent 1px)`,
                 backgroundSize: '64px 64px',

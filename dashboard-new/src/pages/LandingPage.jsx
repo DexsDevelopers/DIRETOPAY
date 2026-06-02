@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
-import { AuroraBg, DotGrid, Particles, ShimmerButton, GlowCard, GradientText, PulseBadge, StatCard, FeatureCard } from '../components/AnimatedUI';
+import { AuroraBg, DotGrid, Particles, ShimmerButton, GlowCard, GradientText, PulseBadge, StatCard, FeatureCard, CustomCursor, NoiseOverlay, ClipReveal, LineReveal, CountUp, Marquee, MagneticButton, PageLoader, SectionLabel, Reveal } from '../components/AnimatedUI';
 import {
     Zap, ShieldCheck, BarChart3, ArrowRight, CheckCircle,
     QrCode, Webhook, Globe, TrendingUp, ChevronDown,
@@ -23,11 +23,13 @@ const NAV_LINKS = [
 ];
 
 const STATS = [
-    { value: 'R$ 12M+', label: 'Processado',  note: 'volume total na plataforma' },
-    { value: '4.200+',  label: 'Vendedores',   note: 'ativos todos os dias' },
-    { value: '99.97%',  label: 'Uptime',       note: 'SLA mensal garantido' },
-    { value: '~200ms',  label: 'PIX gerado',   note: 'tempo médio de criação' },
+    { to: 12,    prefix: 'R$ ', suffix: 'M+', label: 'Processado',  note: 'volume total na plataforma', decimals: 0 },
+    { to: 4200,  prefix: '',   suffix: '+',  label: 'Vendedores',   note: 'ativos todos os dias',        decimals: 0 },
+    { to: 99.97, prefix: '',   suffix: '%',  label: 'Uptime',       note: 'SLA mensal garantido',       decimals: 2 },
+    { to: 200,   prefix: '~', suffix: 'ms', label: 'PIX gerado',   note: 'tempo médio de criação',     decimals: 0 },
 ];
+
+const MARQUEE_ITEMS = ['PIX Instantâneo', 'Sem Mensalidade', 'D+0 Saque', 'Antifraude', 'Checkout Próprio', 'Webhooks', 'API REST', '99.97% Uptime', 'Sem CNPJ'];
 
 const TICKER = [
     { name: 'Lucas M.',  value: 'R$ 297,00' },
@@ -124,6 +126,7 @@ export default function LandingPage() {
     const [tickerVisible, setTickerVisible] = useState(true);
     const [onlineUsers, setOnlineUsers] = useState(2348);
     const [activePlate, setActivePlate] = useState(0);
+    const [loaded,      setLoaded]      = useState(false);
 
     useEffect(() => {
         const fn = () => setScrolled(window.scrollY > 24);
@@ -154,6 +157,11 @@ export default function LandingPage() {
 
     return (
         <div className="min-h-screen bg-[#050709] text-white font-sans antialiased overflow-x-hidden">
+
+            {/* Awwwards: Cursor + Noise + Loader */}
+            <CustomCursor />
+            <NoiseOverlay />
+            {!loaded && <PageLoader onDone={() => setLoaded(true)} />}
 
             {/* Background: Aurora + Grid + Particles */}
             <div className="fixed inset-0 pointer-events-none z-0" style={{
@@ -281,9 +289,13 @@ export default function LandingPage() {
                             <div className="mb-6">
                                 <PulseBadge color="#10b981">+3.000 Sellers que confiam em nós</PulseBadge>
                             </div>
-                            <h1 className="text-[42px] sm:text-[54px] font-black tracking-tight leading-[1.03] mb-5">
-                                A plataforma que escala com<br />
-                                <GradientText from="#10b981" to="#34d399">sua operação crescer!</GradientText>
+                            <h1 className="text-[42px] sm:text-[56px] font-black tracking-tight leading-[1.03] mb-5">
+                                <ClipReveal delay={0.05}>
+                                    A plataforma que escala com
+                                </ClipReveal>
+                                <ClipReveal delay={0.18}>
+                                    <GradientText from="#10b981" to="#34d399">sua operação crescer!</GradientText>
+                                </ClipReveal>
                             </h1>
                             <p className="text-[16px] text-gray-400 leading-relaxed mb-6 max-w-md">
                                 Receba via PIX com <strong className="text-gray-200">aprovação instantânea</strong>. Sem burocracia, saques rápidos e <strong className="text-gray-200">total proteção</strong>.
@@ -296,9 +308,9 @@ export default function LandingPage() {
                                 ))}
                             </div>
                             <div className="flex flex-col sm:flex-row gap-3 mb-10">
-                                <ShimmerButton className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-7 py-3.5 rounded-xl transition-all text-[15px] shadow-2xl shadow-emerald-500/30 hover:-translate-y-0.5">
+                                <MagneticButton className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-7 py-3.5 rounded-xl transition-colors text-[15px] shadow-2xl shadow-emerald-500/30">
                                     <Link to="/register" className="flex items-center gap-2">Criar conta grátis <ArrowRight size={16} /></Link>
-                                </ShimmerButton>
+                                </MagneticButton>
                                 <a href="#recursos"
                                     className="flex items-center justify-center gap-2 border border-white/10 hover:border-white/20 hover:bg-white/[0.04] text-gray-300 font-medium px-7 py-3.5 rounded-xl transition-all text-[15px]">
                                     Ver como funciona
@@ -408,18 +420,21 @@ export default function LandingPage() {
 
             {/* ── STATS ── */}
             <section className="relative z-10 border-b border-white/[0.06]">
-                <div className="max-w-5xl mx-auto px-5 py-12 grid grid-cols-2 md:grid-cols-4 gap-6">
-                    {STATS.map(({ value, label, note }, i) => (
-                        <motion.div key={label} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.08 }} className="text-center">
-                            <p className="text-[32px] sm:text-[40px] font-black tracking-tight"
+                <div className="max-w-5xl mx-auto px-5 py-14 grid grid-cols-2 md:grid-cols-4 gap-8">
+                    {STATS.map(({ to, prefix, suffix, label, note, decimals }, i) => (
+                        <Reveal key={label} delay={i * 0.08} className="text-center">
+                            <p className="text-[38px] sm:text-[48px] font-black tracking-tight tabular-nums"
                                 style={{ background: 'linear-gradient(135deg, #fff 30%, #10b981)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                                {value}
+                                <CountUp from={0} to={to} prefix={prefix} suffix={suffix} decimals={decimals} duration={2} />
                             </p>
-                            <p className="text-[13px] font-semibold text-gray-300 mt-1">{label}</p>
+                            <p className="text-[13px] font-bold text-gray-300 mt-1.5 uppercase tracking-wider">{label}</p>
                             <p className="text-[11px] text-gray-600 mt-0.5">{note}</p>
-                        </motion.div>
+                        </Reveal>
                     ))}
+                </div>
+                {/* Awwwards marquee belt */}
+                <div className="border-t border-white/[0.04] py-4">
+                    <Marquee items={MARQUEE_ITEMS} speed={60} />
                 </div>
             </section>
 
@@ -428,17 +443,17 @@ export default function LandingPage() {
                 <div className="max-w-5xl mx-auto">
 
                     {/* Header */}
-                    <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-                        <div className="inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[12px] font-bold px-4 py-2 rounded-full mb-4">
-                            <Trophy size={13} /> Conquistas
-                        </div>
-                        <h2 className="text-3xl sm:text-4xl font-black tracking-tight mb-2">
-                            Celebre suas <span className="text-emerald-400">conquistas</span>
-                        </h2>
+                    <div className="text-center mb-12">
+                        <SectionLabel number="02" label="Conquistas" />
+                        <ClipReveal delay={0.05}>
+                            <h2 className="text-3xl sm:text-4xl font-black tracking-tight mb-2">
+                                Celebre suas <GradientText from="#f59e0b" to="#fbbf24">conquistas</GradientText>
+                            </h2>
+                        </ClipReveal>
                         <p className="text-gray-500 text-[14px] max-w-sm mx-auto">
                             Receba placas exclusivas ao atingir marcos de faturamento. Mostre ao mundo o seu sucesso!
                         </p>
-                    </motion.div>
+                    </div>
 
                     {/* Carousel */}
                     <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">

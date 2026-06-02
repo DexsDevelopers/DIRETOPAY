@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, Mail, ArrowRight, Zap, KeyRound, Check, ShieldCheck, TrendingUp, DollarSign, Users, Eye, EyeOff, Star } from 'lucide-react';
-import { AuroraBg, DotGrid, Particles, ShimmerButton, StatCard, GradientText, PulseBadge, GlowInput } from '../components/AnimatedUI';
+import { AuroraBg, DotGrid, Particles, ShimmerButton, StatCard, GradientText, PulseBadge, GlowInput, CustomCursor, NoiseOverlay, ClipReveal, MagneticButton } from '../components/AnimatedUI';
 
 const STATS = [
     { icon: DollarSign, label: 'Volume hoje',     value: 'R$ 84.290', sub: '+12% vs ontem',  color: '#10b981', bg: 'rgba(16,185,129,0.12)', delay: 0.3  },
@@ -64,6 +64,8 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen bg-[#050709] text-white flex overflow-hidden">
+            <CustomCursor />
+            <NoiseOverlay />
 
             {/* ── LEFT PANEL ─────────────────────────────────────────────── */}
             <div className="hidden lg:flex lg:w-[52%] flex-col justify-between p-14 border-r border-white/[0.06] relative overflow-hidden">
@@ -89,8 +91,9 @@ export default function LoginPage() {
 
                     <div>
                         <h2 className="text-[42px] font-black tracking-tight leading-[1.05] mb-4">
-                            Sua plataforma<br />de pagamentos<br />
-                            <GradientText from="#10b981" to="#34d399">PIX.</GradientText>
+                            <ClipReveal delay={0.3}>Sua plataforma</ClipReveal>
+                            <ClipReveal delay={0.42}>de pagamentos</ClipReveal>
+                            <ClipReveal delay={0.54}><GradientText from="#10b981" to="#34d399">PIX.</GradientText></ClipReveal>
                         </h2>
                         <p className="text-gray-400 text-[14px] max-w-sm leading-relaxed">
                             Receba, gerencie e saque com velocidade profissional.<br />Sem burocracia, sem surpresas.
@@ -216,14 +219,14 @@ export default function LoginPage() {
                                             </button>
                                         </div>
                                     </div>
-                                    <ShimmerButton type="submit" disabled={loading}
+                                    <MagneticButton type="submit" disabled={loading} strength={0.2}
                                         className="w-full bg-emerald-500 hover:bg-emerald-400 active:scale-[0.98] text-white rounded-xl py-3.5 font-bold text-[14px] flex items-center justify-center gap-2 transition-all disabled:opacity-50 mt-1 shadow-lg shadow-emerald-500/25">
                                         {loading ? (
                                             <><span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />Autenticando...</>
                                         ) : (
                                             <>Entrar <ArrowRight size={15} /></>
                                         )}
-                                    </ShimmerButton>
+                                    </MagneticButton>
                                 </motion.form>
                             )}
                         </AnimatePresence>
