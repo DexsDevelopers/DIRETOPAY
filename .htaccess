@@ -1,6 +1,10 @@
 Options -MultiViews
 RewriteEngine On
 
+# Scripts de instalação/gerenciamento (acesso direto)
+RewriteRule ^setup_db\.php$ - [L]
+RewriteRule ^install_database\.php$ - [L]
+
 # Checkouts customizados (Legado)
 RewriteRule ^c/([a-zA-Z0-9_-]+)/?$ pay.php?c=$1 [L,QSA]
 
