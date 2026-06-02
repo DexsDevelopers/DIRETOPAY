@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../contexts/ThemeContext';
 import {
     Zap, ShieldCheck, BarChart3, ArrowRight, CheckCircle,
     QrCode, Webhook, Globe, TrendingUp, ChevronDown,
     Menu, X, DollarSign, RefreshCw, Lock,
     Instagram, MessageCircle, MapPin, Users,
     Trophy, Award, Gem, Crown, Flame, Star,
+    Sun, Moon, Code2,
 } from 'lucide-react';
 
 const NAV_LINKS = [
-    { label: 'O SISTEMA', href: '#sistema' },
-    { label: 'API & DEV',  href: '/docs',    highlight: true },
-    { label: 'SOBRE',      href: '#sobre' },
+    { label: 'Início',     href: '#sistema' },
+    { label: 'Benefícios',  href: '#recursos' },
+    { label: 'Premiações', href: '#conquistas' },
+    { label: 'API Docs',   href: '/docs',   icon: Code2 },
     { label: 'FAQ',        href: '#faq' },
-    { label: 'CONTATO',    href: 'https://wa.me/5551996148568', external: true },
+    { label: 'Contato',    href: 'https://wa.me/5551996148568', external: true },
 ];
 
 const STATS = [
@@ -112,6 +115,7 @@ function FaqItem({ q, a }) {
 }
 
 export default function LandingPage() {
+    const { isDark, toggleTheme } = useTheme();
     const [menuOpen,    setMenuOpen]    = useState(false);
     const [scrolled,    setScrolled]    = useState(false);
     const [tickerIdx,   setTickerIdx]   = useState(0);
@@ -162,19 +166,28 @@ export default function LandingPage() {
                 <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
                     <Link to="/"><img src="/logo-diretopay.webp" alt="DiretoPay" className="h-8 sm:h-9 w-auto" /></Link>
 
-                    <div className="hidden md:flex items-center gap-0.5">
-                        {NAV_LINKS.map(l =>
-                            l.external
-                                ? <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer"
-                                    className={`text-[11px] font-black tracking-[0.1em] px-3.5 py-2 rounded-lg transition-colors ${l.highlight ? 'text-emerald-400 hover:bg-emerald-500/10' : 'text-gray-400 hover:text-white hover:bg-white/[0.05]'}`}>{l.label}</a>
-                                : <a key={l.label} href={l.href}
-                                    className={`text-[11px] font-black tracking-[0.1em] px-3.5 py-2 rounded-lg transition-colors ${l.highlight ? 'text-emerald-400 hover:bg-emerald-500/10' : 'text-gray-400 hover:text-white hover:bg-white/[0.05]'}`}>{l.label}</a>
-                        )}
+                    {/* Links */}
+                    <div className="hidden md:flex items-center gap-1">
+                        {NAV_LINKS.map(l => {
+                            const Ico = l.icon;
+                            const inner = <>{Ico && <Ico size={12} className="inline mr-1 opacity-70" />}{l.label}</>;
+                            const cls = `text-[13px] font-medium px-3.5 py-2 rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-white/[0.05]`;
+                            return l.external
+                                ? <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
+                                : <a key={l.label} href={l.href} className={cls}>{inner}</a>;
+                        })}
                     </div>
 
+                    {/* Right: theme + auth */}
                     <div className="hidden md:flex items-center gap-2">
-                        <Link to="/login" className="text-[11px] font-black tracking-[0.1em] text-gray-400 hover:text-white px-4 py-2 transition-colors">ENTRAR</Link>
-                        <Link to="/register" className="text-[11px] font-black tracking-[0.1em] bg-emerald-500 hover:bg-emerald-400 text-white px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-500/25 hover:-translate-y-px">CRIAR CONTA</Link>
+                        {/* Theme toggle — like LunarPay's ☀ CLARO chip */}
+                        <button onClick={toggleTheme}
+                            className="flex items-center gap-1.5 text-[11px] font-bold text-gray-300 hover:text-white border border-white/20 hover:border-white/40 rounded-full px-3 py-1.5 transition-all">
+                            {isDark ? <Sun size={12} /> : <Moon size={12} />}
+                            <span>{isDark ? 'CLARO' : 'ESCURO'}</span>
+                        </button>
+                        <Link to="/login" className="text-[13px] font-medium text-gray-400 hover:text-white px-4 py-2 transition-colors">Login</Link>
+                        <Link to="/register" className="text-[13px] font-semibold bg-emerald-500 hover:bg-emerald-400 text-white px-5 py-2 rounded-xl transition-all shadow-lg shadow-emerald-500/25 hover:-translate-y-px">Cadastre-se</Link>
                     </div>
 
                     <button onClick={() => setMenuOpen(o => !o)} className="md:hidden p-2 text-gray-400 hover:text-white transition-colors">
@@ -189,20 +202,30 @@ export default function LandingPage() {
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                         className="fixed inset-0 z-40 bg-[#050709]/98 backdrop-blur-2xl flex flex-col pt-20 px-6 pb-10 md:hidden">
                         <nav className="flex flex-col gap-1 mt-4">
-                            {NAV_LINKS.map(l => (
-                                <a key={l.label} href={l.href} target={l.external ? '_blank' : undefined}
-                                    rel={l.external ? 'noopener noreferrer' : undefined}
-                                    onClick={() => setMenuOpen(false)}
-                                    className={`py-3.5 px-4 rounded-2xl text-[13px] font-black tracking-[0.1em] transition-all ${l.highlight ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20' : 'text-gray-300 hover:text-white hover:bg-white/[0.05]'}`}>
-                                    {l.label}
-                                </a>
-                            ))}
+                            {NAV_LINKS.map(l => {
+                                const Ico = l.icon;
+                                return (
+                                    <a key={l.label} href={l.href} target={l.external ? '_blank' : undefined}
+                                        rel={l.external ? 'noopener noreferrer' : undefined}
+                                        onClick={() => setMenuOpen(false)}
+                                        className="flex items-center gap-2 py-3.5 px-4 rounded-2xl text-[14px] font-medium text-gray-300 hover:text-white hover:bg-white/[0.05] transition-all">
+                                        {Ico && <Ico size={14} className="opacity-60" />}
+                                        {l.label}
+                                    </a>
+                                );
+                            })}
                         </nav>
                         <div className="mt-auto flex flex-col gap-3">
+                            {/* Theme toggle mobile */}
+                            <button onClick={toggleTheme}
+                                className="flex items-center justify-center gap-2 py-3 text-[12px] font-bold text-gray-300 border border-white/10 rounded-2xl hover:border-white/20 transition-colors">
+                                {isDark ? <Sun size={13} /> : <Moon size={13} />}
+                                {isDark ? 'Mudar para Claro' : 'Mudar para Escuro'}
+                            </button>
                             <Link to="/login" onClick={() => setMenuOpen(false)}
-                                className="text-center py-3 text-[12px] font-black tracking-widest text-gray-300 border border-white/10 rounded-2xl hover:border-white/20 transition-colors">ENTRAR</Link>
+                                className="text-center py-3 text-[13px] font-medium text-gray-300 border border-white/10 rounded-2xl hover:border-white/20 transition-colors">Login</Link>
                             <Link to="/register" onClick={() => setMenuOpen(false)}
-                                className="text-center py-4 text-[12px] font-black tracking-widest bg-emerald-500 text-white rounded-2xl hover:bg-emerald-400 transition-colors shadow-xl shadow-emerald-500/30">CRIAR CONTA GRÁTIS</Link>
+                                className="text-center py-4 text-[13px] font-semibold bg-emerald-500 text-white rounded-2xl hover:bg-emerald-400 transition-colors shadow-xl shadow-emerald-500/30">Cadastre-se</Link>
                         </div>
                     </motion.div>
                 )}
