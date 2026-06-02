@@ -72,9 +72,9 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
 
         {/* Balance card */}
         <div className="sm:col-span-2 relative rounded-2xl overflow-hidden p-6 flex flex-col justify-between min-h-[170px]"
-          style={{ background: 'linear-gradient(135deg, #3d0020 0%, #1a000e 50%, #0a0006 100%)' }}>
+          style={{ background: 'linear-gradient(135deg, #093f2c 0%, #051d14 50%, #020b08 100%)' }}>
           <div className="absolute inset-0 pointer-events-none"
-            style={{ backgroundImage: 'radial-gradient(ellipse at 85% 15%, rgba(30,164,101,.45), transparent 60%), radial-gradient(ellipse at 15% 85%, rgba(139,0,69,.30), transparent 55%)' }} />
+            style={{ backgroundImage: 'radial-gradient(ellipse at 85% 15%, rgba(30,164,101,.45), transparent 60%), radial-gradient(ellipse at 15% 85%, rgba(16,185,129,.20), transparent 55%)' }} />
           <div className="relative z-10 flex items-start justify-between">
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -104,7 +104,7 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
             </div>
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-[3px]"
-            style={{ background: 'linear-gradient(90deg, #1ea465, #ff4da6, #126b41, #ff80c0, #1ea465)' }} />
+            style={{ background: 'linear-gradient(90deg, #1ea465, #34d399, #126b41, #a7f3d0, #1ea465)' }} />
         </div>
 
         {/* 4 stat mini cards */}
@@ -198,7 +198,7 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
                 </defs>
                 <Tooltip
                   contentStyle={{ background: '#13131a', border: '1px solid #1e1e2e', borderRadius: 8, fontSize: 11 }}
-                  itemStyle={{ color: '#ff4da6' }}
+                  itemStyle={{ color: '#1ea465' }}
                   formatter={(v) => [`R$ ${v * 100},00`, '']}
                   labelFormatter={() => ''}
                 />

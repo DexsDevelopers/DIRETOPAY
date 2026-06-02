@@ -75,7 +75,7 @@ $emailBody = "
     <p style='color: #555; font-size: 11px; margin-top: 20px;'>Link direto: {$resetLink}</p>
 ";
 
-$sent = MailService::send($user['email'], 'Ghost Pix - Redefinir Senha', $emailBody);
+$sent = MailService::send($user['email'], 'DiretoPay - Redefinir Senha', $emailBody);
 
 write_log('INFO', 'Forgot password - token gerado', [
     'user_id' => $user['id'],

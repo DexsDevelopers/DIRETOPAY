@@ -12,7 +12,7 @@ const isPublicPath = (pathname) =>
 export function ThemeProvider({ children }) {
     const location = useLocation();
     const [isDark, setIsDark] = useState(() => {
-        const saved = localStorage.getItem('ghost_theme');
+        const saved = localStorage.getItem('direto_theme');
         if (saved) return saved === 'dark';
         return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
     });
@@ -24,7 +24,7 @@ export function ThemeProvider({ children }) {
         } else {
             html.classList.remove('dark');
         }
-        localStorage.setItem('ghost_theme', isDark ? 'dark' : 'light');
+        localStorage.setItem('direto_theme', isDark ? 'dark' : 'light');
     }, [isDark, location.pathname]);
 
     const toggleTheme = () => setIsDark(d => !d);

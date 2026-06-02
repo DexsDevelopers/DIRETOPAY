@@ -12,7 +12,7 @@
     /* Core Design System Tokens — Ghostspay Inspired */
     --primary: #1ea465;
     --primary-h: #188a53;
-    --primary-glow: rgba(233, 30, 99, 0.25);
+    --primary-glow: rgba(30, 164, 101, 0.25);
     
     --green: #22c55e;
     --amber: #f59e0b;
@@ -331,10 +331,10 @@ a,
 }
 
 .nav-item.active {
-    background: linear-gradient(90deg, rgba(233, 30, 99, 0.15), transparent);
+    background: linear-gradient(90deg, rgba(30, 164, 101, 0.15), transparent);
     color: var(--primary);
     font-weight: 600;
-    border: 1px solid rgba(233, 30, 99, 0.2);
+    border: 1px solid rgba(30, 164, 101, 0.2);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
@@ -692,7 +692,7 @@ a,
 
 .stat-card.ghost-purple .stat-icon {
     background: rgba(30, 164, 101, 0.15);
-    color: #c084fc;
+    color: #1ea465;
     box-shadow: 0 0 15px rgba(30, 164, 101, 0.2);
 }
 
@@ -829,8 +829,8 @@ a,
 }
 
 .progress-bar.purple {
-    background: linear-gradient(90deg, #8b5cf6, #a78bfa);
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+    background: linear-gradient(90deg, #1ea465, #126b41);
+    box-shadow: 0 0 15px rgba(30, 164, 101, 0.4);
 }
 
 .progress-bar.blue {
@@ -939,8 +939,8 @@ a,
 .lp-card-icon {
     width: 70px;
     height: 70px;
-    background: linear-gradient(135deg, rgba(233, 30, 99, 0.2) 0%, rgba(233, 30, 99, 0.05) 100%);
-    border: 1px solid rgba(233, 30, 99, 0.3);
+    background: linear-gradient(135deg, rgba(30, 164, 101, 0.2) 0%, rgba(30, 164, 101, 0.05) 100%);
+    border: 1px solid rgba(30, 164, 101, 0.3);
     border-radius: 20px;
     display: flex;
     align-items: center;
@@ -1475,9 +1475,9 @@ a,
 }
 
 .badge.paid {
-    background: rgba(233, 30, 99, 0.1);
+    background: rgba(30, 164, 101, 0.1);
     color: var(--primary);
-    border: 1px solid rgba(233, 30, 99, 0.2);
+    border: 1px solid rgba(30, 164, 101, 0.2);
 }
 
 .badge.pending {
@@ -3281,7 +3281,7 @@ input:-webkit-autofill:focus {
 
 .r-check.purple {
     background: rgba(30, 164, 101, 0.1);
-    color: #a855f7;
+    color: #1ea465;
 }
 
 .r-check.teal {

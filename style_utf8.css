@@ -1,4 +1,4 @@
-﻿/* =====================================================
+/* =====================================================
    GHOST PIX - DEFINITIVE DESIGN SYSTEM v8.0
    Skills: frontend-design · mobile-design
            scroll-experience · ui-ux-pro-max
@@ -682,7 +682,7 @@ a,
 
 .stat-card.ghost-purple .stat-icon {
     background: rgba(30, 164, 101, 0.1);
-    color: #a855f7;
+    color: #1ea465;
 }
 
 .stat-card.ghost-yellow .stat-icon {
@@ -805,8 +805,8 @@ a,
 }
 
 .progress-bar.purple {
-    background: linear-gradient(90deg, #8b5cf6, #a78bfa);
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+    background: linear-gradient(90deg, #1ea465, #126b41);
+    box-shadow: 0 0 15px rgba(30, 164, 101, 0.4);
 }
 
 .progress-bar.blue {

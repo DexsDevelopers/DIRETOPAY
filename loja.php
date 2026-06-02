@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ghost Pix — Loja</title>
+<title>DiretoPay — Loja</title>
 <meta name="description" content="Descubra e compre produtos digitais, cursos e serviços de vendedores verificados. Pagamento 100% via PIX, sem cadastro.">
 <link rel="icon" type="image/png" href="/logo_diretopay.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script>try{var t=localStorage.getItem('ghost_loja_theme');if(t==='light'||(!t&&matchMedia('(prefers-color-scheme:light)').matches))document.documentElement.classList.add('light')}catch(e){}</script>
+<script>try{var t=localStorage.getItem('direto_loja_theme');if(t==='light'||(!t&&matchMedia('(prefers-color-scheme:light)').matches))document.documentElement.classList.add('light')}catch(e){}</script>
 <style>
 /* ── Reset & Base ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -275,8 +275,8 @@ footer a{color:var(--primary)}
 <nav class="navbar">
   <div class="container nav-inner">
     <a href="/loja" class="brand">
-      <img src="/logo_premium.png" alt="Ghost Pix">
-      GHOST<em>PIX</em>
+      <img src="/logo-diretopay.webp" alt="DiretoPay">
+      Direto<em>Pay</em>
     </a>
     <div class="nav-search">
       <svg class="nav-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>

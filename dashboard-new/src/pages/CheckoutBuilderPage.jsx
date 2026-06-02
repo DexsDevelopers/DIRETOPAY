@@ -44,7 +44,7 @@ const DEFAULT_CS = {
     allow_item_selection: false,
     bg_type: 'solid',
     gradient_from: '#0a0a0f',
-    gradient_to: '#1a0a2e',
+    gradient_to: '#052014',
     gradient_dir: '135deg',
     logo_url: '',
     font_family: 'Outfit',

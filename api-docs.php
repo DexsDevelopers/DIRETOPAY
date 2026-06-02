@@ -7,7 +7,7 @@ require_once 'includes/db.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>Ghost Pix - API de Pagamentos Blindada</title>
+    <title>DiretoPay - API de Pagamentos Blindada</title>
     <link rel="stylesheet" href="style.css?v=125.0">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -99,8 +99,8 @@ require_once 'includes/db.php';
 
     <nav class="lp-navbar">
         <div class="logo">
-            <img src="logo_premium.png?v=107.0" class="logo-img" alt="Ghost Logo">
-            <span class="logo-text">GHOST<span> PIX</span></span>
+            <img src="logo-diretopay.webp" class="logo-img" alt="DiretoPay Logo">
+            <span class="logo-text">Direto<span>Pay</span></span>
         </div>
         <div class="lp-nav-links">
             <a href="index.php" class="lp-nav-link">HOME</a>
@@ -119,7 +119,7 @@ require_once 'includes/db.php';
     <main class="lp-container">
         <section class="api-hero" data-aos="fade-up">
             <div class="lp-hero-tag" style="margin-bottom: 1rem;">PARA DESENVOLVEDORES E LOJISTAS</div>
-            <h1 class="lp-responsive-title">DOCUMENTAÇÃO <span class="lp-gradient-text">GHOST API</span></h1>
+            <h1 class="lp-responsive-title">DOCUMENTAÇÃO <span class="lp-gradient-text">DiretoPay API</span></h1>
             <p style="max-width: 700px; margin: 1.5rem auto;">Tudo o que você precisa para integrar pagamentos blindados em seu checkout.</p>
         </section>
 
@@ -144,9 +144,9 @@ require_once 'includes/db.php';
                 <!-- Autenticação -->
                 <section id="autenticacao" style="margin-bottom: 5rem;" data-aos="fade-up">
                     <h2 style="color: var(--green);">1. Autenticação</h2>
-                    <p>Todas as chamadas à API devem incluir sua <strong>Ghost Key</strong> no header da requisição através do protocolo Bearer Auth.</p>
+                    <p>Todas as chamadas à API devem incluir sua <strong>Direto Key</strong> no header da requisição através do protocolo Bearer Auth.</p>
                     <div class="code-block">
-                        Authorization: Bearer <span class="code-string">ghost_f2146406f1be1789ad472403...</span>
+                        Authorization: Bearer <span class="code-string">direto_f2146406f1be1789ad472403...</span>
                     </div>
                 </section>
 
@@ -208,7 +208,7 @@ require_once 'includes/db.php';
                 <!-- Webhooks -->
                 <section id="webhooks" style="margin-bottom: 5rem;" data-aos="fade-up">
                     <h2 style="color: var(--green);">4. Webhooks (Callbacks)</h2>
-                    <p>O Ghost Pix enviará um POST JSON para a sua <code>callback_url</code> assim que a liquidação for confirmada.</p>
+                    <p>O DiretoPay enviará um POST JSON para a sua <code>callback_url</code> assim que a liquidação for confirmada.</p>
                     <div class="code-block">
                         <span class="code-comment">// Payload enviado ao seu servidor</span><br>
                         {<br>
@@ -225,7 +225,7 @@ require_once 'includes/db.php';
                 <!-- Exemplos de Integração -->
                 <section id="exemplos" style="margin-bottom: 5rem;" data-aos="fade-up">
                     <h2 style="color: var(--green);">5. Exemplos de Integração</h2>
-                    <p>Escolha sua linguagem e veja como é fácil integrar o Ghost Pix.</p>
+                    <p>Escolha sua linguagem e veja como é fácil integrar o DiretoPay.</p>
                     
                     <div class="tabs-container" style="margin-top: 2rem;">
                         <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
@@ -249,8 +249,8 @@ require_once 'includes/db.php';
 &nbsp;&nbsp;<span class="code-string">"net/http"</span><br>
 )<br><br>
 <span class="code-keyword">func</span> main() {<br>
-&nbsp;&nbsp;url := <span class="code-string">"https://pixghost.site/api.php"</span><br>
-&nbsp;&nbsp;minhaChave := <span class="code-string">"ghost_SUA_CHAVE_AQUI"</span><br><br>
+&nbsp;&nbsp;url := <span class="code-string">"https://diretopay.com.br/api.php"</span><br>
+&nbsp;&nbsp;minhaChave := <span class="code-string">"direto_SUA_CHAVE_AQUI"</span><br><br>
 &nbsp;&nbsp;dados := <span class="code-keyword">map</span>[<span class="code-keyword">string</span>]<span class="code-keyword">interface</span>{}{ <span class="code-string">"amount"</span>: <span class="code-string">100.00</span> }<br>
 &nbsp;&nbsp;corpo, _ := json.Marshal(dados)<br><br>
 &nbsp;&nbsp;req, _ := http.NewRequest(<span class="code-string">"POST"</span>, url, bytes.NewBuffer(corpo))<br>
@@ -269,8 +269,8 @@ require_once 'includes/db.php';
                             <div class="code-block">
 <span class="code-keyword">const</span> axios = <span class="code-keyword">require</span>(<span class="code-string">'axios'</span>);<br><br>
 <span class="code-keyword">async function</span> gerarPix(valor) {<br>
-&nbsp;&nbsp;<span class="code-keyword">const</span> URL = <span class="code-string">'https://pixghost.site/api.php'</span>;<br>
-&nbsp;&nbsp;<span class="code-keyword">const</span> KEY = <span class="code-string">'ghost_SUA_CHAVE_AQUI'</span>;<br><br>
+&nbsp;&nbsp;<span class="code-keyword">const</span> URL = <span class="code-string">'https://diretopay.com.br/api.php'</span>;<br>
+&nbsp;&nbsp;<span class="code-keyword">const</span> KEY = <span class="code-string">'direto_SUA_CHAVE_AQUI'</span>;<br><br>
 &nbsp;&nbsp;<span class="code-keyword">try</span> {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> res = <span class="code-keyword">await</span> axios.post(URL, { amount: valor }, {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;headers: { <span class="code-string">'Authorization'</span>: <span class="code-string">`Bearer ${KEY}`</span> }<br>
@@ -287,8 +287,8 @@ require_once 'includes/db.php';
                             <div class="code-block">
 <span class="code-keyword">import</span> requests<br><br>
 <span class="code-keyword">def</span> criar_cobranca(valor):<br>
-&nbsp;&nbsp;url = <span class="code-string">"https://pixghost.site/api.php"</span><br>
-&nbsp;&nbsp;headers = { <span class="code-string">"Authorization"</span>: <span class="code-string">"Bearer ghost_SUA_CHAVE"</span> }<br><br>
+&nbsp;&nbsp;url = <span class="code-string">"https://diretopay.com.br/api.php"</span><br>
+&nbsp;&nbsp;headers = { <span class="code-string">"Authorization"</span>: <span class="code-string">"Bearer direto_SUA_CHAVE"</span> }<br><br>
 &nbsp;&nbsp;res = requests.post(url, headers=headers, json={<span class="code-string">"amount"</span>: valor}).json()<br>
 &nbsp;&nbsp;<span class="code-keyword">if</span> res.get(<span class="code-string">'success'</span>):<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">print</span>(<span class="code-string">"Link do QR Code:"</span>, res[<span class="code-string">'qr_image'</span>])
@@ -300,9 +300,9 @@ require_once 'includes/db.php';
                             <p>Use um arquivo PHP como ponte para proteger sua chave secreta.</p>
                             <div class="code-block">
 <span class="code-comment">// pix.php (Ponte segura)</span><br>
-<span class="code-keyword">$SUA_CHAVE</span> = <span class="code-string">"ghost_SUA_CHAVE_AQUI"</span>;<br>
+<span class="code-keyword">$SUA_CHAVE</span> = <span class="code-string">"direto_SUA_CHAVE_AQUI"</span>;<br>
 <span class="code-keyword">$valor</span> = <span class="code-keyword">$_POST</span>[<span class="code-string">'v'</span>] ?? <span class="code-string">10.00</span>;<br><br>
-<span class="code-keyword">$ch</span> = curl_init(<span class="code-string">"https://pixghost.site/api.php"</span>);<br>
+<span class="code-keyword">$ch</span> = curl_init(<span class="code-string">"https://diretopay.com.br/api.php"</span>);<br>
 curl_setopt(<span class="code-keyword">$ch</span>, CURLOPT_HTTPHEADER, [<br>
 &nbsp;&nbsp;<span class="code-string">"Authorization: Bearer $SUA_CHAVE"</span>,<br>
 &nbsp;&nbsp;<span class="code-string">"Content-Type: application/json"</span><br>
@@ -319,8 +319,8 @@ curl_exec(<span class="code-keyword">$ch</span>);
 bot = telebot.TeleBot(<span class="code-string">'TOKEN_DO_BOT'</span>)<br><br>
 <span class="code-keyword">@bot.message_handler</span>(commands=[<span class="code-string">'comprar'</span>])<br>
 <span class="code-keyword">def</span> comprar(message):<br>
-&nbsp;&nbsp;res = requests.post(<span class="code-string">"https://pixghost.site/api.php"</span>, <br>
-&nbsp;&nbsp;&nbsp;&nbsp;headers={<span class="code-string">"Authorization"</span>: <span class="code-string">"Bearer ghost_KEY"</span>},<br>
+&nbsp;&nbsp;res = requests.post(<span class="code-string">"https://diretopay.com.br/api.php"</span>, <br>
+&nbsp;&nbsp;&nbsp;&nbsp;headers={<span class="code-string">"Authorization"</span>: <span class="code-string">"Bearer direto_KEY"</span>},<br>
 &nbsp;&nbsp;&nbsp;&nbsp;json={<span class="code-string">"amount"</span>: <span class="code-string">15.00</span>}).json()<br><br>
 &nbsp;&nbsp;<span class="code-keyword">if</span> res.get(<span class="code-string">'success'</span>):<br>
 &nbsp;&nbsp;&nbsp;&nbsp;bot.send_photo(message.chat.id, res[<span class="code-string">'qr_image'</span>])<br>
@@ -333,10 +333,10 @@ bot = telebot.TeleBot(<span class="code-string">'TOKEN_DO_BOT'</span>)<br><br>
                             <p>Integração nativa para aplicativos Android/iOS (React Native / Flutter).</p>
                             <div class="code-block">
 <span class="code-keyword">const</span> fazerPix = <span class="code-keyword">async</span> (valor) => {<br>
-&nbsp;&nbsp;<span class="code-keyword">const</span> res = <span class="code-keyword">await</span> fetch(<span class="code-string">'https://pixghost.site/api.php'</span>, {<br>
+&nbsp;&nbsp;<span class="code-keyword">const</span> res = <span class="code-keyword">await</span> fetch(<span class="code-string">'https://diretopay.com.br/api.php'</span>, {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;method: <span class="code-string">'POST'</span>,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;headers: {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">'Authorization'</span>: <span class="code-string">'Bearer ghost_KEY'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">'Authorization'</span>: <span class="code-string">'Bearer direto_KEY'</span>,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">'Content-Type'</span>: <span class="code-string">'application/json'</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;},<br>
 &nbsp;&nbsp;&nbsp;&nbsp;body: JSON.stringify({ amount: valor })<br>
@@ -351,7 +351,7 @@ bot = telebot.TeleBot(<span class="code-string">'TOKEN_DO_BOT'</span>)<br><br>
                 <!-- Telegram Bots Detalhado -->
                 <section id="telegram" style="margin-bottom: 5rem;" data-aos="fade-up">
                     <h2 style="color: var(--green);">6. Bots do Telegram Dinâmicos</h2>
-                    <p>Vá além do básico: aprenda a trocar seu token Ghost direto pelo celular através do bot.</p>
+                    <p>Vá além do básico: aprenda a trocar seu token Direto direto pelo celular através do bot.</p>
                     <div class="code-block">
 <span class="code-keyword">@bot.message_handler</span>(commands=[<span class="code-string">'token'</span>])<br>
 <span class="code-keyword">def</span> configurar(message):<br>
@@ -375,7 +375,7 @@ bot = telebot.TeleBot(<span class="code-string">'TOKEN_DO_BOT'</span>)<br><br>
                         </div>
                         <div class="card glass-card" style="padding: 1.5rem;">
                             <h4 style="color: var(--red);"><i class="fas fa-server"></i> Segurança</h4>
-                            <p style="font-size: 0.85rem;">Evite deixar o <code>ghost_token</code> no código do app. O ideal é usar seu servidor como ponte.</p>
+                            <p style="font-size: 0.85rem;">Evite deixar o <code>direto_token</code> no código do app. O ideal é usar seu servidor como ponte.</p>
                         </div>
                     </div>
                 </section>
@@ -386,7 +386,7 @@ bot = telebot.TeleBot(<span class="code-string">'TOKEN_DO_BOT'</span>)<br><br>
                     <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
                         <div class="card glass-card" style="padding: 1.5rem;">
                             <h4 style="color: var(--green);"><i class="fas fa-shield-alt"></i> Proteção de Chaves</h4>
-                            <p style="font-size: 0.85rem;">Jamais exponha sua <code>ghost_key</code> no frontend ou em repositórios públicos. Use variáveis de ambiente (<code>.env</code>).</p>
+                            <p style="font-size: 0.85rem;">Jamais exponha sua <code>direto_key</code> no frontend ou em repositórios públicos. Use variáveis de ambiente (<code>.env</code>).</p>
                         </div>
                         <div class="card glass-card" style="padding: 1.5rem;">
                             <h4 style="color: var(--blue);"><i class="fas fa-lock"></i> Webhook Seguro</h4>
@@ -415,7 +415,7 @@ bot = telebot.TeleBot(<span class="code-string">'TOKEN_DO_BOT'</span>)<br><br>
                         <tr style="border-bottom: 1px solid var(--border);">
                             <td style="padding: 1rem;"><code>401</code></td>
                             <td style="padding: 1rem;">Não autorizado</td>
-                            <td style="padding: 1rem;">Ghost Key vazia ou inválida.</td>
+                            <td style="padding: 1rem;">Direto Key vazia ou inválida.</td>
                         </tr>
                         <tr style="border-bottom: 1px solid var(--border);">
                             <td style="padding: 1rem;"><code>400</code></td>
@@ -443,8 +443,8 @@ bot = telebot.TeleBot(<span class="code-string">'TOKEN_DO_BOT'</span>)<br><br>
         <div class="lp-footer-container">
             <div class="lp-footer-brand">
                 <div class="logo">
-                    <img src="logo_premium.png?v=107.0" class="logo-img" alt="Ghost Logo">
-                    <span class="logo-text">GHOST<span> PIX</span></span>
+                    <img src="logo-diretopay.webp" class="logo-img" alt="DiretoPay Logo">
+                    <span class="logo-text">Direto<span>Pay</span></span>
                 </div>
                 <p class="lp-brand-tagline">Privacidade é um direito, não um privilégio.</p>
             </div>

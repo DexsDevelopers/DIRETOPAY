@@ -10,8 +10,8 @@ $is_whatsapp_active = ($current_page == 'whatsapp.php');
 <!-- Mobile Header -->
 <div class="mobile-header" style="background: #13131a; border-bottom: 1px solid rgba(255, 255, 255, 0.07); padding: 0.75rem 1.25rem; display: flex; align-items: center; justify-content: space-between;">
     <div class="logo" style="margin: 0; padding: 0;" onclick="window.location.href='/dashboard'">
-        <img src="/logo_premium.png?v=9.0" class="logo-img" style="height: 32px;" alt="Ghost Logo">
-        <span class="logo-text" style="font-size: 1.3rem;">Ghost<span> Pix</span></span>
+        <img src="/logo-diretopay.webp" class="logo-img" style="height: 32px;" alt="DiretoPay Logo">
+        <span class="logo-text" style="font-size: 1.3rem;">Direto<span>Pay</span></span>
     </div>
     <button class="menu-toggle" id="menu-toggle" style="background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">☰</button>
 </div>
@@ -264,9 +264,9 @@ $is_whatsapp_active = ($current_page == 'whatsapp.php');
             width: 2.5rem !important;
             height: 2.5rem !important;
             border-radius: 1rem !important;
-            background: rgba(233, 30, 99, 0.15) !important;
+            background: rgba(30, 164, 101, 0.15) !important;
             color: #1ea465 !important;
-            border: 1px solid rgba(233, 30, 99, 0.3) !important;
+            border: 1px solid rgba(30, 164, 101, 0.3) !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
@@ -365,7 +365,7 @@ $is_whatsapp_active = ($current_page == 'whatsapp.php');
             background: #1ea465 !important;
             color: #ffffff !important;
             font-weight: 600 !important;
-            box-shadow: 0 4px 14px rgba(233, 30, 99, 0.35) !important;
+            box-shadow: 0 4px 14px rgba(30, 164, 101, 0.35) !important;
         }
 
         .sb-item.active i {

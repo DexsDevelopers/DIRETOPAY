@@ -129,7 +129,7 @@ const AdminAnunciosPage = () => {
         <button
           onClick={openNew}
           className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all"
-          style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}
+          style={{ background: 'linear-gradient(135deg, #1ea465, #126b41)' }}
         >
           <Plus size={16} /> Novo Anúncio
         </button>
@@ -240,7 +240,7 @@ const AdminAnunciosPage = () => {
                   type="submit"
                   disabled={saving}
                   className="flex-1 py-3 rounded-xl text-sm font-bold transition disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}
+                  style={{ background: 'linear-gradient(135deg, #1ea465, #126b41)' }}
                 >
                   {saving ? 'Salvando...' : editing ? 'Atualizar' : 'Criar Anúncio'}
                 </button>

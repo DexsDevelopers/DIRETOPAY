@@ -17,8 +17,8 @@ $csrfToken = $headers['X-CSRF-Token'] ?? ($headers['x-csrf-token'] ?? '');
 check_csrf($csrfToken);
 
 if (isset($input['action']) && $input['action'] === 'generate') {
-    // Gerar uma chave aleatória segura (ghost_...)
-    $newKey = 'ghost_' . bin2hex(random_bytes(24));
+    // Gerar uma chave aleatória segura (direto_...)
+    $newKey = 'direto_' . bin2hex(random_bytes(24));
     
     try {
         $stmt = $pdo->prepare("UPDATE users SET api_key = ? WHERE id = ?");

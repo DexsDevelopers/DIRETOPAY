@@ -1,6 +1,19 @@
 <?php
 require_once 'includes/db.php';
 
+// affiliate tracking logic
+if (isset($_GET['ref'])) {
+    $refToken = substr(strip_tags($_GET['ref']), 0, 32);
+    try {
+        $stmt = $pdo->prepare("SELECT id FROM users WHERE referral_token = ?");
+        $stmt->execute([$refToken]);
+        if ($stmt->fetch()) {
+            setcookie('direto_pay_ref', $refToken, time() + (86400 * 30), "/");
+        }
+    } catch (\Throwable $e) {}
+}
+
+
 $isAuth = isLoggedIn();
 $requestPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -100,7 +113,7 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
     <title>DiretoPay - Plataforma de Pagamentos</title>
     
     <!-- React Build Assets -->
-    <script type="module" crossorigin src="/assets/dashboard-react/assets/index-CfxneH_h.js"></script>
+    <script type="module" crossorigin src="/assets/dashboard-react/assets/index-BmFz9Kwu.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/rolldown-runtime-WehaI0Q3.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-charts-He-U0hDw.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/vendor-router-Dg8CQPxv.js">
@@ -112,7 +125,7 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
     
     <!-- React Checkout Chunk Preload -->
     <?php if ($requestPath && strpos($requestPath, '/p/') === 0): ?>
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/CheckoutPage-eeSe_UEE.js">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/assets/CheckoutPage-C-S_4FgG.js">
     <?php endif; ?>
     <!-- React Checkout Chunk Preload End -->
 

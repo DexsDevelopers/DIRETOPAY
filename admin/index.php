@@ -891,7 +891,7 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                                     <form method="POST" style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
                                         <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
                                         <input type="text" name="pix_key" value="<?php echo htmlspecialchars($u['pix_key']); ?>" class="pix-input-admin" style="padding: 3px 8px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: #fff; border-radius: 4px; outline: none;">
-                                        <button type="submit" name="update_pix" class="btn-icon-sm" style="background: rgba(30, 164, 101, 0.1); color: var(--purple); border: none; border-radius: 4px; cursor: pointer; height: 24px; width: 24px;"><i class="fas fa-save" style="font-size: 0.7rem;"></i></button>
+                                        <button type="submit" name="update_pix" class="btn-icon-sm" style="background: rgba(30, 164, 101, 0.1); color: var(--primary); border: none; border-radius: 4px; cursor: pointer; height: 24px; width: 24px;"><i class="fas fa-save" style="font-size: 0.7rem;"></i></button>
                                     </form>
                                 </td>
                                 <td data-label="WhatsApp">
@@ -943,7 +943,7 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                                 </td>
                                 <td data-label="Ações" class="actions-cell" style="text-align: right;">
                                     <div style="display: flex; gap: 5px; justify-content: flex-end; flex-wrap: wrap;">
-                                        <button type="button" onclick="openFakeWithdrawModal(<?php echo $u['id']; ?>, '<?php echo addslashes($u['full_name']); ?>', '<?php echo $u['pix_key']; ?>')" class="badge paid" style="border: none; cursor: pointer; background: var(--purple); font-size: 0.6rem;">Saque Fake</button>
+                                        <button type="button" onclick="openFakeWithdrawModal(<?php echo $u['id']; ?>, '<?php echo addslashes($u['full_name']); ?>', '<?php echo $u['pix_key']; ?>')" class="badge paid" style="border: none; cursor: pointer; background: var(--primary); font-size: 0.6rem;">Saque Fake</button>
                                         
                                         <form method="POST" style="display:inline;" onsubmit="return confirm('Deseja realmente DELETAR permanentemente este usuário e todos os seus registros?')">
                                             <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
@@ -1105,7 +1105,7 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                     <label class="input-label">Valor do Saque (R$)</label>
                     <input type="number" name="amount" required placeholder="Ex: 500.00" step="0.01" style="width: 100%; padding: 1rem; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; color: #f87171; font-weight: 800; font-size: 1.2rem; text-align: center;">
                 </div>
-                <button type="submit" name="create_fake_withdrawal" class="btn-primary" style="width: 100%; background: var(--purple);">Lançar Saque no Histórico <i class="fas fa-bolt" style="margin-left: 8px;"></i></button>
+                <button type="submit" name="create_fake_withdrawal" class="btn-primary" style="width: 100%; background: var(--primary);">Lançar Saque no Histórico <i class="fas fa-bolt" style="margin-left: 8px;"></i></button>
             </form>
         </div>
     </div>

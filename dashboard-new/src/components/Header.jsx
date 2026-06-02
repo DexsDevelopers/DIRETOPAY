@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -116,7 +116,7 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
                             >
                                 {/* ── HEADER GRADIENTE ── */}
                                 <div className="relative shrink-0 overflow-hidden"
-                                    style={{ background: 'linear-gradient(135deg, #1a000e 0%, #3d0020 60%, #1a000e 100%)' }}>
+                                    style={{ background: 'linear-gradient(135deg, #051d14 0%, #093f2c 60%, #051d14 100%)' }}>
                                     {/* glow orb */}
                                     <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full pointer-events-none"
                                         style={{ background: 'radial-gradient(circle, rgba(30,164,101,0.35) 0%, transparent 70%)' }} />

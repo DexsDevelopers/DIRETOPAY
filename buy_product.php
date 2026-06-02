@@ -111,7 +111,7 @@ try {
             'amount'      => $amount,
             'client'      => [
                 'name'     => $customerName,
-                'email'    => 'comprador@pixghost.site',
+                'email'    => 'comprador@diretopay.com.br',
                 'phone'    => '(11) 9 0000-0000',
                 'document' => $customerDoc ? preg_replace('/[^0-9]/', '', $customerDoc) : '14714301624',
             ],

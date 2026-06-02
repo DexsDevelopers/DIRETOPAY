@@ -1,6 +1,6 @@
 <?php
 /**
- * Ghost Pix — MailService
+ * DiretoPay — MailService
  * Gerencia o envio de e-mails transacionais via SMTP do Gmail.
  */
 
@@ -34,7 +34,7 @@ class MailService {
                 </div>
                 <div style='margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; font-size: 12px; color: #777; text-align: center;'>
                     Este é um e-mail automático. Por favor, não responda.<br>
-                    &copy; " . date('Y') . " Ghost Pix - Todos os direitos reservados.
+                    &copy; " . date('Y') . " DiretoPay - Todos os direitos reservados.
                 </div>
             </div>
         </body>

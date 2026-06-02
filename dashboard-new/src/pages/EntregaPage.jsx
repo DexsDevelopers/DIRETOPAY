@@ -117,7 +117,7 @@ export default function EntregaPage() {
             <div className="w-full max-w-lg">
                 {/* Logo */}
                 <div className="text-center mb-8">
-                    <span className="font-black text-2xl tracking-tight text-gray-900">GHOST<span className="text-primary italic">PIX</span></span>
+                    <span className="font-black text-2xl tracking-tight text-gray-900">Direto<span className="text-primary italic">Pay</span></span>
                 </div>
 
                 {/* Status Card */}

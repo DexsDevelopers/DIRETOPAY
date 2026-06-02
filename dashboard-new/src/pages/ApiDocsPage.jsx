@@ -113,7 +113,7 @@ export default function ApiDocsPage() {
                 <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-2 group">
                         <ArrowLeft size={16} className="text-white/30 group-hover:text-primary transition-colors" />
-                        <span className="font-bold tracking-tight text-sm">GHOST<span className="text-primary italic">PIX</span> <span className="text-white/20 ml-1 font-medium">DOCS</span></span>
+                        <span className="font-bold tracking-tight text-sm">Direto<span className="text-primary italic">Pay</span> <span className="text-white/20 ml-1 font-medium">DOCS</span></span>
                     </Link>
                     <div className="flex items-center gap-4">
                         <Link to="/login" className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-colors hidden sm:block">Entrar</Link>

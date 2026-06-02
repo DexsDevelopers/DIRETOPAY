@@ -688,7 +688,7 @@ export default function LandingPage() {
                     : 'left-0 translate-x-0 top-[34px] w-full h-16 sm:h-20 rounded-none px-6 sm:px-12 border-b border-transparent backdrop-blur-sm ' + (isDark ? 'bg-[#06070a]/70' : 'bg-white/70')
                 }`}>
                 <div className="flex items-center">
-                    <img src={isDark ? "/logo_premium.png?v=3" : "/logo_white.jpg?v=3"} alt="DiretoPay Logo" className="h-6 sm:h-7 w-auto" />
+                    <img src="/logo-diretopay.webp" alt="DiretoPay Logo" className="h-6 sm:h-7 w-auto" />
                 </div>
                 
                 <div className="hidden lg:flex items-center gap-8 text-[11px] font-black uppercase tracking-wider text-gray-500">
@@ -1264,7 +1264,7 @@ export default function LandingPage() {
                         
                         {/* BRAND IDENTIFICATION */}
                         <div className="space-y-3">
-                            <img src={isDark ? "/logo_premium.png?v=3" : "/logo_white.jpg?v=3"} alt="DiretoPay Logo" className="h-6 w-auto" />
+                            <img src="/logo-diretopay.webp" alt="DiretoPay Logo" className="h-6 w-auto" />
                             <p className="text-gray-500 leading-relaxed font-semibold">
                                 Plataforma robusta de intermediação de pagamentos com foco em checkout Pix simplificado, split automatizado e contingência de servidores.
                             </p>

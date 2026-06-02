@@ -12,7 +12,7 @@ import PixModal from '../components/PixModal';
 
 /* ── Default custom settings ─────────────────────────────── */
 const DEFAULT_CS = {
-    bg_type: 'solid', gradient_from: '#0a0a0f', gradient_to: '#1a0a2e', gradient_dir: '135deg',
+    bg_type: 'solid', gradient_from: '#0a0a0f', gradient_to: '#052014', gradient_dir: '135deg',
     logo_url: '', font_family: 'Outfit', btn_radius: 'rounded', layout: '2col',
     show_countdown: true, show_viewers: true, show_guarantee: true,
     guarantee_text: 'Garantia de 7 Dias',

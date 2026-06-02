@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ghost Pix — Redefinir Senha</title>
+    <title>DiretoPay — Redefinir Senha</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
             right: -100px;
             width: 300px;
             height: 300px;
-            background: rgba(74, 222, 128, 0.05);
+            background: rgba(30, 164, 101, 0.05);
             border-radius: 50%;
             filter: blur(80px);
             pointer-events: none;
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
             font-size: 24px;
             letter-spacing: -0.5px;
         }
-        .logo .accent { color: #4ade80; font-style: italic; }
+        .logo .accent { color: #1ea465; font-style: italic; }
         h2 {
             font-size: 22px;
             font-weight: 800;
@@ -130,13 +130,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
             margin-bottom: 20px;
         }
         input[type="password"]:focus {
-            border-color: rgba(74, 222, 128, 0.4);
+            border-color: rgba(30, 164, 101, 0.4);
         }
         .btn {
             width: 100%;
             padding: 16px;
-            background: #4ade80;
-            color: #000;
+            background: #1ea465;
+            color: #fff;
             font-family: 'Outfit', sans-serif;
             font-size: 13px;
             font-weight: 900;
@@ -167,9 +167,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
             margin-bottom: 24px;
         }
         .success {
-            background: rgba(74, 222, 128, 0.1);
-            border: 1px solid rgba(74, 222, 128, 0.2);
-            color: #4ade80;
+            background: rgba(30, 164, 101, 0.1);
+            border: 1px solid rgba(30, 164, 101, 0.2);
+            color: #1ea465;
             padding: 14px 20px;
             border-radius: 16px;
             font-size: 13px;
@@ -186,13 +186,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
             text-transform: uppercase;
             letter-spacing: 1.5px;
         }
-        .link a:hover { color: #4ade80; }
+        .link a:hover { color: #1ea465; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="logo">
-            <span>GHOST<span class="accent">PIX</span></span>
+            <span>DIRETO<span class="accent">PAY</span></span>
         </div>
 
         <?php if (!empty($success)): ?>

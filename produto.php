@@ -68,7 +68,7 @@ $variantsJson = json_encode($variants, JSON_HEX_TAG|JSON_HEX_APOS);
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><?= $product ? htmlspecialchars($product['name']).' — Ghost Pix' : 'Produto não encontrado — Ghost Pix' ?></title>
+<title><?= $product ? htmlspecialchars($product['name']).' — DiretoPay' : 'Produto não encontrado — DiretoPay' ?></title>
 <?php if ($product && $product['description']): ?>
 <meta name="description" content="<?= htmlspecialchars(mb_substr($product['description'], 0, 155)) ?>">
 <?php endif; ?>
@@ -284,8 +284,8 @@ input,textarea{font-family:inherit;outline:none}
 <nav class="navbar">
   <div class="container navbar-inner">
     <a href="/" class="brand">
-      <img src="/logo_premium.png" alt="Ghost Pix">
-      GHOST<span>PIX</span>
+      <img src="/logo-diretopay.webp" alt="DiretoPay">
+      Direto<span>Pay</span>
     </a>
     <div class="badge-secure">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -478,10 +478,10 @@ input,textarea{font-family:inherit;outline:none}
 <footer class="page-footer">
   <div class="container">
     <div class="footer-logo">
-      <img src="/logo_premium.png" alt="Ghost Pix" style="width:24px;height:24px;border-radius:6px">
-      GHOST PIX
+      <img src="/logo-diretopay.webp" alt="DiretoPay" style="width:24px;height:24px;border-radius:6px">
+      DiretoPay
     </div>
-    <div>Pagamentos PIX seguros e instantâneos · © 2026 Ghost Pix Technology</div>
+    <div>Pagamentos PIX seguros e instantâneos · © 2026 DiretoPay Technology</div>
   </div>
 </footer>
 
