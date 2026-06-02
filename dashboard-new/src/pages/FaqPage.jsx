@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, MessageCircle, ArrowRight, HelpCircle } from 'lucide-react';
+import { ChevronDown, MessageCircle, ArrowRight, HelpCircle, Plus } from 'lucide-react';
 import PublicLayout from '../components/PublicLayout';
+import { AuroraBg, DotGrid, Particles, ShimmerButton, GlowCard, GradientText, PulseBadge } from '../components/AnimatedUI';
 
 const FAQS = [
     {
@@ -47,30 +48,42 @@ const FAQS = [
     },
 ];
 
-function FaqItem({ q, a }) {
+function FaqItem({ q, a, index }) {
     const [open, setOpen] = useState(false);
     return (
-        <div className="border-b border-white/[0.06] last:border-0">
+        <motion.div
+            initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ delay: index * 0.05, duration: 0.4 }}
+            className={`rounded-2xl border transition-all duration-300 mb-3 overflow-hidden ${
+                open
+                    ? 'border-emerald-500/30 bg-emerald-500/[0.04]'
+                    : 'border-white/[0.07] bg-white/[0.03] hover:border-white/[0.12]'
+            }`}>
             <button onClick={() => setOpen(o => !o)}
-                className="w-full flex items-center justify-between py-5 px-1 text-left gap-4 group">
+                className="w-full flex items-center justify-between py-5 px-6 text-left gap-4 group">
                 <span className="text-[14px] font-semibold text-gray-200 group-hover:text-white transition-colors">{q}</span>
-                <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} className="shrink-0">
-                    <ChevronDown size={16} className="text-gray-500 group-hover:text-emerald-400 transition-colors" />
+                <motion.div animate={{ rotate: open ? 45 : 0 }} transition={{ duration: 0.2 }}
+                    className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center border transition-colors ${
+                        open ? 'border-emerald-500/50 bg-emerald-500/15 text-emerald-400' : 'border-white/10 text-gray-500 group-hover:text-emerald-400 group-hover:border-emerald-500/30'
+                    }`}>
+                    <Plus size={14} />
                 </motion.div>
             </button>
             <AnimatePresence>
                 {open && (
-                    <motion.p
+                    <motion.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.25 }}
-                        className="text-[14px] text-gray-400 pb-5 px-1 leading-relaxed overflow-hidden">
-                        {a}
-                    </motion.p>
+                        className="overflow-hidden">
+                        <p className="text-[14px] text-gray-400 px-6 pb-5 leading-relaxed border-t border-white/[0.05] pt-4">
+                            {a}
+                        </p>
+                    </motion.div>
                 )}
             </AnimatePresence>
-        </div>
+        </motion.div>
     );
 }
 
@@ -78,14 +91,19 @@ export default function FaqPage() {
     return (
         <PublicLayout>
             {/* Hero */}
-            <section className="py-24 px-5 text-center">
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-                    <div className="inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[12px] font-bold px-4 py-2 rounded-full mb-6">
-                        <HelpCircle size={12} /> Perguntas Frequentes
+            <section className="relative py-28 px-5 text-center overflow-hidden">
+                <AuroraBg />
+                <DotGrid />
+                <Particles count={15} color="#10b981" className="opacity-40" />
+                <div className="absolute inset-0 pointer-events-none"
+                    style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(16,185,129,0.10), transparent 70%)' }} />
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="relative z-10">
+                    <div className="flex justify-center mb-6">
+                        <PulseBadge color="#10b981">Perguntas Frequentes</PulseBadge>
                     </div>
                     <h1 className="text-4xl sm:text-5xl font-black tracking-tight mb-4">
                         Tire suas dúvidas<br />
-                        <span className="text-emerald-400">sobre a DiretoPay</span>
+                        <GradientText from="#10b981" to="#34d399">sobre a DiretoPay</GradientText>
                     </h1>
                     <p className="text-gray-400 text-[16px] max-w-xl mx-auto">
                         Tudo que você precisa saber antes de começar. Não encontrou resposta? Fale com a gente no WhatsApp.
@@ -97,11 +115,7 @@ export default function FaqPage() {
             <section className="px-5 pb-20 border-t border-white/[0.06] pt-12">
                 <div className="max-w-2xl mx-auto">
                     {FAQS.map((item, i) => (
-                        <motion.div key={item.q}
-                            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }} transition={{ delay: i * 0.04 }}>
-                            <FaqItem {...item} />
-                        </motion.div>
+                        <FaqItem key={item.q} {...item} index={i} />
                     ))}
                 </div>
             </section>
@@ -118,10 +132,9 @@ export default function FaqPage() {
                             <h3 className="text-[15px] font-bold text-white mb-1">Ainda tem dúvidas?</h3>
                             <p className="text-[13px] text-gray-500">Nossa equipe responde em minutos pelo WhatsApp.</p>
                         </div>
-                        <a href="https://wa.me/5551996148568" target="_blank" rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/25 text-[13px] whitespace-nowrap">
-                            Falar no WhatsApp <ArrowRight size={14} />
-                        </a>
+                        <ShimmerButton className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/25 text-[13px] whitespace-nowrap">
+                            <a href="https://wa.me/5551996148568" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">Falar no WhatsApp <ArrowRight size={14} /></a>
+                        </ShimmerButton>
                     </motion.div>
                 </div>
             </section>
@@ -134,10 +147,9 @@ export default function FaqPage() {
                     className="relative max-w-lg mx-auto">
                     <h2 className="text-3xl font-black tracking-tight mb-4">Pronto para começar?</h2>
                     <p className="text-gray-400 mb-8">Junte-se a 4.200+ sellers que já vendem com a DiretoPay.</p>
-                    <Link to="/register"
-                        className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-10 py-4 rounded-xl transition-all shadow-xl shadow-emerald-500/30 hover:-translate-y-px text-[15px]">
-                        Criar conta grátis <ArrowRight size={16} />
-                    </Link>
+                    <ShimmerButton className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-10 py-4 rounded-xl transition-all shadow-xl shadow-emerald-500/30 hover:-translate-y-px text-[15px]">
+                        <Link to="/register" className="flex items-center gap-2">Criar conta grátis <ArrowRight size={16} /></Link>
+                    </ShimmerButton>
                 </motion.div>
             </section>
         </PublicLayout>

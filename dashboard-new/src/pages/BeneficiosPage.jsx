@@ -6,6 +6,7 @@ import {
     TrendingUp, RefreshCw, Lock, CheckCircle, ArrowRight, X,
 } from 'lucide-react';
 import PublicLayout from '../components/PublicLayout';
+import { AuroraBg, DotGrid, Particles, ShimmerButton, FeatureCard, GlowCard, GradientText, PulseBadge, SplitText } from '../components/AnimatedUI';
 
 const FEATURES = [
     { icon: Zap,        color: '#10b981', title: 'PIX Instantâneo',        desc: 'Gere cobranças em milissegundos. Confirmação em tempo real sem refresh.' },
@@ -41,22 +42,27 @@ export default function BeneficiosPage() {
     return (
         <PublicLayout>
             {/* Hero */}
-            <section className="py-24 px-5 text-center">
-                <motion.div {...fadeUp()}>
-                    <div className="inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[12px] font-bold px-4 py-2 rounded-full mb-6">
-                        <Zap size={12} fill="currentColor" /> Por que a DiretoPay?
+            <section className="relative py-28 px-5 text-center overflow-hidden">
+                <AuroraBg />
+                <DotGrid />
+                <Particles count={20} color="#10b981" className="opacity-50" />
+                <div className="absolute inset-0 pointer-events-none"
+                    style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(16,185,129,0.12), transparent 70%)' }} />
+                <motion.div {...fadeUp()} className="relative z-10">
+                    <div className="flex justify-center mb-6">
+                        <PulseBadge color="#10b981">Por que a DiretoPay?</PulseBadge>
                     </div>
                     <h1 className="text-4xl sm:text-5xl font-black tracking-tight mb-4">
                         Infraestrutura de pagamentos<br />
-                        <span className="text-emerald-400">que escala com você</span>
+                        <GradientText from="#10b981" to="#34d399">que escala com você</GradientText>
                     </h1>
                     <p className="text-gray-400 text-[16px] max-w-xl mx-auto mb-8">
                         Sem burocracia, sem mensalidade, sem surpresas. Tudo que você precisa para vender mais e sacar rápido.
                     </p>
-                    <Link to="/register"
+                    <ShimmerButton
                         className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-8 py-3.5 rounded-xl transition-all shadow-lg shadow-emerald-500/25 hover:-translate-y-px">
-                        Criar conta grátis <ArrowRight size={16} />
-                    </Link>
+                        <Link to="/register" className="flex items-center gap-2">Criar conta grátis <ArrowRight size={16} /></Link>
+                    </ShimmerButton>
                 </motion.div>
             </section>
 
@@ -68,19 +74,8 @@ export default function BeneficiosPage() {
                         <h2 className="text-3xl font-black tracking-tight">Tudo incluso. Sem custo extra.</h2>
                     </motion.div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {FEATURES.map(({ icon: Icon, color, title, desc }, i) => (
-                            <motion.div key={title} {...fadeUp(i * 0.06)}
-                                whileHover={{ y: -5 }}
-                                className="relative rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6 overflow-hidden group cursor-default hover:border-white/[0.14] transition-all">
-                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                                    style={{ background: `radial-gradient(ellipse at 50% 0%, ${color}12, transparent 70%)` }} />
-                                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 relative"
-                                    style={{ background: `${color}15`, border: `1px solid ${color}28` }}>
-                                    <Icon size={18} style={{ color }} />
-                                </div>
-                                <h3 className="text-[14px] font-bold text-white mb-2 relative">{title}</h3>
-                                <p className="text-[13px] text-gray-500 leading-relaxed relative">{desc}</p>
-                            </motion.div>
+                        {FEATURES.map(({ icon, color, title, desc }, i) => (
+                            <FeatureCard key={title} icon={icon} color={color} title={title} desc={desc} delay={i * 0.06} />
                         ))}
                     </div>
                 </div>
@@ -128,10 +123,9 @@ export default function BeneficiosPage() {
                         Pronto para começar a vender?
                     </h2>
                     <p className="text-gray-400 mb-8">Crie sua conta em 2 minutos. Sem cartão, sem CNPJ, sem burocracia.</p>
-                    <Link to="/register"
-                        className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-10 py-4 rounded-xl transition-all shadow-xl shadow-emerald-500/30 hover:-translate-y-px text-[15px]">
-                        Começar agora — é grátis <ArrowRight size={16} />
-                    </Link>
+                    <ShimmerButton className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-10 py-4 rounded-xl transition-all shadow-xl shadow-emerald-500/30 hover:-translate-y-px text-[15px]">
+                        <Link to="/register" className="flex items-center gap-2">Começar agora — é grátis <ArrowRight size={16} /></Link>
+                    </ShimmerButton>
                 </motion.div>
             </section>
         </PublicLayout>

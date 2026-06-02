@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
+import { AuroraBg, DotGrid, Particles, ShimmerButton, GlowCard, GradientText, PulseBadge, StatCard, FeatureCard } from '../components/AnimatedUI';
 import {
     Zap, ShieldCheck, BarChart3, ArrowRight, CheckCircle,
     QrCode, Webhook, Globe, TrendingUp, ChevronDown,
@@ -154,11 +155,17 @@ export default function LandingPage() {
     return (
         <div className="min-h-screen bg-[#050709] text-white font-sans antialiased overflow-x-hidden">
 
-            {/* Background grid */}
+            {/* Background: Aurora + Grid + Particles */}
             <div className="fixed inset-0 pointer-events-none z-0" style={{
                 backgroundImage: `linear-gradient(rgba(16,185,129,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.03) 1px, transparent 1px)`,
                 backgroundSize: '64px 64px',
             }} />
+            <div className="fixed inset-0 pointer-events-none z-0">
+                <AuroraBg />
+            </div>
+            <div className="fixed inset-0 pointer-events-none z-0">
+                <Particles count={18} color="#10b981" className="opacity-30" />
+            </div>
             <div className="fixed inset-0 pointer-events-none z-0"
                 style={{ background: 'radial-gradient(ellipse 90% 55% at 50% -5%, rgba(16,185,129,0.12) 0%, transparent 65%)' }} />
 
@@ -271,15 +278,12 @@ export default function LandingPage() {
 
                         {/* Left */}
                         <motion.div initial={{ opacity: 0, x: -28 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/10 text-emerald-400 text-[12px] font-bold mb-6">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                +3.000 Sellers que confiam em nós
+                            <div className="mb-6">
+                                <PulseBadge color="#10b981">+3.000 Sellers que confiam em nós</PulseBadge>
                             </div>
                             <h1 className="text-[42px] sm:text-[54px] font-black tracking-tight leading-[1.03] mb-5">
                                 A plataforma que escala com<br />
-                                <span style={{ background: 'linear-gradient(135deg, #10b981, #34d399)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                                    sua operação crescer!
-                                </span>
+                                <GradientText from="#10b981" to="#34d399">sua operação crescer!</GradientText>
                             </h1>
                             <p className="text-[16px] text-gray-400 leading-relaxed mb-6 max-w-md">
                                 Receba via PIX com <strong className="text-gray-200">aprovação instantânea</strong>. Sem burocracia, saques rápidos e <strong className="text-gray-200">total proteção</strong>.
@@ -292,10 +296,9 @@ export default function LandingPage() {
                                 ))}
                             </div>
                             <div className="flex flex-col sm:flex-row gap-3 mb-10">
-                                <Link to="/register"
-                                    className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-7 py-3.5 rounded-xl transition-all text-[15px] shadow-2xl shadow-emerald-500/30 hover:-translate-y-0.5">
-                                    Criar conta grátis <ArrowRight size={16} />
-                                </Link>
+                                <ShimmerButton className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-7 py-3.5 rounded-xl transition-all text-[15px] shadow-2xl shadow-emerald-500/30 hover:-translate-y-0.5">
+                                    <Link to="/register" className="flex items-center gap-2">Criar conta grátis <ArrowRight size={16} /></Link>
+                                </ShimmerButton>
                                 <a href="#recursos"
                                     className="flex items-center justify-center gap-2 border border-white/10 hover:border-white/20 hover:bg-white/[0.04] text-gray-300 font-medium px-7 py-3.5 rounded-xl transition-all text-[15px]">
                                     Ver como funciona

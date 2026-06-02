@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Star, ArrowRight, CheckCircle, Gem, Crown, Flame, Award } from 'lucide-react';
 import PublicLayout from '../components/PublicLayout';
+import { AuroraBg, DotGrid, Particles, ShimmerButton, GlowCard, GradientText, PulseBadge } from '../components/AnimatedUI';
 
 const PLATES = [
     {
@@ -72,14 +73,19 @@ export default function PremiacoesPublicPage() {
     return (
         <PublicLayout>
             {/* Hero */}
-            <section className="py-24 px-5 text-center">
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-                    <div className="inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[12px] font-bold px-4 py-2 rounded-full mb-6">
-                        <Trophy size={12} /> Programa de Premiações
+            <section className="relative py-28 px-5 text-center overflow-hidden">
+                <AuroraBg />
+                <DotGrid />
+                <Particles count={20} color="#f59e0b" className="opacity-40" />
+                <div className="absolute inset-0 pointer-events-none"
+                    style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(245,158,11,0.10), transparent 70%)' }} />
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="relative z-10">
+                    <div className="flex justify-center mb-6">
+                        <PulseBadge color="#f59e0b">Programa de Premiações</PulseBadge>
                     </div>
                     <h1 className="text-4xl sm:text-5xl font-black tracking-tight mb-4">
                         Vença metas.<br />
-                        <span className="text-emerald-400">Ganhe sua placa.</span>
+                        <GradientText from="#f59e0b" to="#fbbf24">Ganhe sua placa.</GradientText>
                     </h1>
                     <p className="text-gray-400 text-[16px] max-w-xl mx-auto">
                         Na DiretoPay, cada conquista de faturamento vira uma placa física entregue na sua casa.
