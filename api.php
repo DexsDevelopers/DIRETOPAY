@@ -28,6 +28,51 @@ if (!function_exists('sendResponseAndContinue')) {
     }
 }
 
+// ── Rota de teste EzzyBanking (remover após uso) ──────────────────────────
+if (($_GET['action'] ?? '') === 'test_ezzy' && ($_GET['token'] ?? '') === 'ezzy_test_2025') {
+    require_once 'includes/db.php';
+    require_once 'includes/EzzyBankingService.php';
+    $ci = $pdo->query("SELECT `value` FROM settings WHERE `key`='ezzybanking_api_key'")->fetchColumn() ?: '';
+    $cs = $pdo->query("SELECT `value` FROM settings WHERE `key`='ezzybanking_api_secret'")->fetchColumn() ?: '';
+    if (!$ci || !$cs) { echo json_encode(['error' => 'Credenciais não configuradas']); exit; }
+    $BASE = 'https://ws.ezzybanking.com.br';
+    function ezzy_req(string $url, array $body = [], string $method = 'GET', string $ci = '', string $cs = ''): array {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => ["ci: $ci", "cs: $cs", 'Content-Type: application/json'],
+            CURLOPT_TIMEOUT        => 12,
+            CURLOPT_CUSTOMREQUEST  => $method,
+        ]);
+        if ($method === 'POST') curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
+        $raw = curl_exec($ch); $code = curl_getinfo($ch, CURLINFO_HTTP_CODE); $err = curl_error($ch); curl_close($ch);
+        return ['http' => $code, 'response' => json_decode($raw, true) ?? $raw, 'curl_err' => $err ?: null];
+    }
+    $baseQr = ['valor' => 1.00, 'expiracao' => 60, 'callbackUrl' => 'https://diretopay.site/ezzybanking_webhook.php', 'devedor' => ['cpf' => '14714301624', 'nome' => 'Teste DiretoPay']];
+    $results = [
+        '1_account'           => ezzy_req("$BASE/api/v1/account",          [], 'GET',  $ci, $cs),
+        '2_balance'           => ezzy_req("$BASE/api/v1/account/balance",   [], 'GET',  $ci, $cs),
+        '3_acquirers_v1'      => ezzy_req("$BASE/api/v1/adquirente",        [], 'GET',  $ci, $cs),
+        '4_acquirers_v2'      => ezzy_req("$BASE/api/v1/acquirers",         [], 'GET',  $ci, $cs),
+        '5_qr_baseline'       => ezzy_req("$BASE/api/v1/gateway/request-qrcode", $baseQr, 'POST', $ci, $cs),
+        '6_qr_adquirente'     => ezzy_req("$BASE/api/v1/gateway/request-qrcode", array_merge($baseQr, ['adquirente' => 'OWEMPAY']), 'POST', $ci, $cs),
+        '7_qr_nominal'        => ezzy_req("$BASE/api/v1/gateway/request-qrcode", array_merge($baseQr, ['nominal'    => 'OWEMPAY']), 'POST', $ci, $cs),
+        '8_qr_acquirer'       => ezzy_req("$BASE/api/v1/gateway/request-qrcode", array_merge($baseQr, ['acquirer'   => 'OWEMPAY']), 'POST', $ci, $cs),
+    ];
+    $summary = [
+        'auth_ok'              => $results['1_account']['http'] === 200,
+        'balance_ok'           => $results['2_balance']['http'] === 200,
+        'acquirers_list_found' => array_filter([$results['3_acquirers_v1'], $results['4_acquirers_v2']], fn($r) => $r['http'] === 200),
+        'qr_baseline_ok'       => $results['5_qr_baseline']['http'] < 300,
+        'qr_fields'            => is_array($results['5_qr_baseline']['response']) ? array_keys($results['5_qr_baseline']['response']) : [],
+        'adquirente_accepted'  => $results['6_qr_adquirente']['http'] < 300,
+        'nominal_accepted'     => $results['7_qr_nominal']['http'] < 300,
+        'acquirer_accepted'    => $results['8_qr_acquirer']['http'] < 300,
+    ];
+    echo json_encode(['RESUMO' => $summary, 'DETALHES' => $results], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 // 3. Início do processamento com proteção total contra erros 500
 try {
     ob_start();
@@ -48,6 +93,7 @@ try {
     require_once 'includes/BRPixService.php';
     require_once 'includes/IronPayService.php';
     require_once 'includes/MisticPayService.php';
+    require_once 'includes/EzzyBankingService.php';
 
     // Autenticação Híbrida 
     $userId = null;
@@ -101,9 +147,14 @@ try {
     $misticpayClientSecret = $getSetting('misticpay_client_secret');
     $useMisticPay          = ($misticpayEnabled && $misticpayClientId && $misticpayClientSecret);
 
-    write_log('info', "Gateway: sigiloEnabled=$sigiloEnabled useSigiloPay=$useSigiloPay | brpixEnabled=$brpixEnabled useBRPix=$useBRPix | ironpayEnabled=$ironpayEnabled useIronPay=$useIronPay | misticpayEnabled=$misticpayEnabled useMisticPay=$useMisticPay");
+    $ezzyEnabled    = $getSetting('ezzybanking_enabled') === '1';
+    $ezzyApiKey     = $getSetting('ezzybanking_api_key');
+    $ezzyApiSecret  = $getSetting('ezzybanking_api_secret');
+    $useEzzyBanking = ($ezzyEnabled && $ezzyApiKey && $ezzyApiSecret);
 
-    if (!$useSigiloPay && !$useBRPix && !$useIronPay && !$useMisticPay) {
+    write_log('info', "Gateway: sigiloEnabled=$sigiloEnabled useSigiloPay=$useSigiloPay | brpixEnabled=$brpixEnabled useBRPix=$useBRPix | ironpayEnabled=$ironpayEnabled useIronPay=$useIronPay | misticpayEnabled=$misticpayEnabled useMisticPay=$useMisticPay | ezzyEnabled=$ezzyEnabled useEzzyBanking=$useEzzyBanking");
+
+    if (!$useSigiloPay && !$useBRPix && !$useIronPay && !$useMisticPay && !$useEzzyBanking) {
         throw new Exception('Gateway de pagamento não configurado. Contate o administrador.', 503);
     }
 
@@ -138,8 +189,11 @@ try {
 
     $externalId    = !empty($input['external_id']) ? (string)$input['external_id'] : ('user_' . $userId . '_' . time());
     $userNominal   = $user['preferred_nominal'] ?? 'nominal1';
-    // Taxa por nominal: nominal3 = MisticPay (7% + R$1,00), nominal2 = BRPix (4% + R$1,00), nominal1 = SigiloPay (8% + R$0,99)
-    if ($userNominal === 'nominal3') {
+    // Taxa por nominal: nominal4 = EzzyBanking (3,99% + R$0,25), nominal3 = MisticPay (7% + R$1,00), nominal2 = BRPix (4% + R$1,00), nominal1 = SigiloPay (8% + R$0,99)
+    if ($userNominal === 'nominal4') {
+        $nominalFeePercent = (float)($getSetting('ezzybanking_fee_percent') ?: 3.99);
+        $nominalFeeFixed   = (float)($getSetting('ezzybanking_fee_fixed')   ?: 0.25);
+    } elseif ($userNominal === 'nominal3') {
         $nominalFeePercent = 7.00;
         $nominalFeeFixed   = 1.00;
     } elseif ($userNominal === 'nominal2') {
@@ -151,12 +205,14 @@ try {
     }
 
     // ── Seleciona gateway pelo nominal do usuário ─────────────────────
-    if ($userNominal === 'nominal3') {
-        $activeGateway = $useMisticPay ? 'misticpay' : ($useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : 'ironpay'));
+    if ($userNominal === 'nominal4') {
+        $activeGateway = $useEzzyBanking ? 'ezzybanking' : ($useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : ($useIronPay ? 'ironpay' : ($useMisticPay ? 'misticpay' : ''))));
+    } elseif ($userNominal === 'nominal3') {
+        $activeGateway = $useMisticPay ? 'misticpay' : ($useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : ($useIronPay ? 'ironpay' : ($useEzzyBanking ? 'ezzybanking' : ''))));
     } elseif ($userNominal === 'nominal2') {
-        $activeGateway = $useBRPix ? 'brpix' : ($useSigiloPay ? 'sigilopay' : ($useIronPay ? 'ironpay' : ($useMisticPay ? 'misticpay' : '')));
+        $activeGateway = $useBRPix ? 'brpix' : ($useSigiloPay ? 'sigilopay' : ($useIronPay ? 'ironpay' : ($useMisticPay ? 'misticpay' : ($useEzzyBanking ? 'ezzybanking' : ''))));
     } else {
-        $activeGateway = $useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : ($useIronPay ? 'ironpay' : ($useMisticPay ? 'misticpay' : '')));
+        $activeGateway = $useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : ($useIronPay ? 'ironpay' : ($useMisticPay ? 'misticpay' : ($useEzzyBanking ? 'ezzybanking' : ''))));
     }
 
     write_log('info', "Nominal=$userNominal | Gateway selecionado=$activeGateway");
@@ -478,9 +534,80 @@ try {
         }
     }
 
+    // ── GATEWAY: EzzyBanking ─────────────────────────────────────────
+    if ($activeGateway === 'ezzybanking') {
+        $feePercent = $nominalFeePercent;
+        $feeFixed   = $nominalFeeFixed;
+
+        $customerData = [
+            'name'     => !empty($user['full_name']) ? $user['full_name'] : 'Cliente',
+            'email'    => $user['email'] ?? '',
+            'phone'    => !empty($user['phone']) ? $user['phone'] : '(11) 9 0000-0000',
+            'document' => (!empty($user['cpf']) && $user['cpf'] !== '000.000.000-00') ? preg_replace('/\D/', '', $user['cpf']) : '14714301624',
+        ];
+
+        write_log('info', "EzzyBanking Request: amount=$amount | externalId=$externalId");
+        $ezzyResult = EzzyBankingService::createPixCharge(
+            $amount,
+            $externalId,
+            $customerData,
+            getFullUrl('ezzybanking_webhook.php'),
+            'Pagamento DiretoPay'
+        );
+        write_log('info', "EzzyBanking Response: ok={$ezzyResult['ok']} | http=" . ($ezzyResult['http_code'] ?? '?') . " | " . substr(json_encode($ezzyResult['data'] ?? $ezzyResult['error'] ?? ''), 0, 500));
+
+        if (!$ezzyResult['ok']) {
+            throw new Exception('Falha na conexão com EzzyBanking: ' . ($ezzyResult['error'] ?? 'Erro desconhecido'));
+        }
+
+        $ezzyData = $ezzyResult['data'] ?? [];
+
+        if (!empty($ezzyData['transaction_id'])) {
+            $pixId   = (string)$ezzyData['transaction_id'];
+            $pixCode = $ezzyData['pix_code'] ?? ($ezzyData['qr_code'] ?? ($ezzyData['copy_paste'] ?? ''));
+            $b64raw  = $ezzyData['qr_code_image'] ?? ($ezzyData['qr_code_base64'] ?? '');
+
+            if (!empty($b64raw)) {
+                $qrImage = strpos($b64raw, 'data:') === 0 ? $b64raw : 'data:image/png;base64,' . $b64raw;
+            } elseif (!empty($pixCode)) {
+                $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($pixCode);
+            } else {
+                $qrImage = '';
+            }
+
+            $gatewayFee  = round($amount * ($feePercent / 100) + $feeFixed, 2);
+            $platformFee = $amount * ($user['commission_rate'] / 100);
+            $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
+
+            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança DiretoPay', $externalId, 'pix', $utmParams);
+
+            // Retorna o PIX instantaneamente para o cliente
+            sendResponseAndContinue(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
+
+            // Executa as notificações lentas em background
+            if (class_exists('PushService')) {
+                try { PushService::notifyUser($userId, '⚡ PIX Gerado!', 'Cobrança de R$ ' . number_format($amount, 2, ',', '.') . ' gerada.', 'sale_generated'); } catch (Throwable $e) {}
+            }
+            $txId = (int)$pdo->lastInsertId();
+            try { TelegramService::notifyNewCharge($amount, $user['full_name'] ?? 'N/A', $txId); } catch (Throwable $e) {}
+            try {
+                if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
+                    WhatsAppService::notifyPixGenerated($user['whatsapp'], $amount, 'Cliente API', 'Cobrança', $txId);
+                }
+            } catch (Throwable $e) {}
+            if (class_exists('PushService')) {
+                try { PushService::notifyAdmins('⚡ Nova Cobrança #' . $txId, 'R$ ' . number_format($amount, 2, ',', '.') . ' — ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {}
+            }
+            exit;
+        } else {
+            $errMsg = $ezzyData['message'] ?? ($ezzyData['error'] ?? 'Erro de comunicação com o gateway');
+            write_log('error', "EzzyBanking FALHA: http=" . ($ezzyResult['http_code'] ?? '?') . " | $errMsg | response=" . json_encode($ezzyData));
+            throw new Exception('Erro ao processar pagamento: ' . $errMsg);
+        }
+    }
+
     // Se chegou aqui sem retornar, algo está errado no processamento do gateway
     throw new Exception('Erro inesperado no processamento do gateway.');
-
 } catch (Throwable $e) {
     if (ob_get_level() > 0) ob_end_clean();
     write_log('error', 'Falha API Crítica: ' . $e->getMessage());
