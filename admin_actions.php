@@ -515,7 +515,7 @@ try {
         case 'get_ezzybanking_balance':
             require_once 'includes/EzzyBankingService.php';
             $res = EzzyBankingService::getBalance();
-            if ($res['ok'] && isset($res['data'])) {
+            if ($res['ok'] && is_array($res['data'])) {
                 $info = $res['data'];
                 echo json_encode([
                     'success'          => true,
