@@ -714,6 +714,7 @@ try {
                 $upsert->execute(['cakto_webhook_id',    '', '']);
                 echo json_encode(['success' => true, 'warning' => 'Credenciais salvas. Webhook: ' . ($whData['detail'] ?? $whResult), 'token_ok' => true]);
             }
+            }
             break;
 
         case 'delete_user':
@@ -747,6 +748,22 @@ try {
             } catch (Throwable $e) {
                 if ($pdo->inTransaction()) $pdo->rollBack();
                 throw $e;
+            }
+            break;
+
+        case 'get_ezzy_acquirers':
+            require_once 'includes/EzzyBankingService.php';
+            $list = EzzyBankingService::listAcquirers();
+            if ($list['ok'] && isset($list['data']) && is_array($list['data'])) {
+                echo json_encode([
+                    'success' => true,
+                    'data' => $list['data']
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'error' => $list['error'] ?? 'Não foi possível listar adquirentes'
+                ]);
             }
             break;
 

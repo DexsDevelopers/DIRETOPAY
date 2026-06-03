@@ -10,6 +10,7 @@ import {
   BadgeCheck,
   Loader2,
   AlertTriangle,
+  AlertCircle,
   ShieldCheck,
   PiggyBank,
 } from "lucide-react";
@@ -163,6 +164,9 @@ export default function BankAccountsPage() {
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [ezzyAcquirer, setEzzyAcquirer] = useState("");
+  const [ezzyAcquirers, setEzzyAcquirers] = useState([]);
+  const [loadingAcquirers, setLoadingAcquirers] = useState(false);
 
   useEffect(() => {
     fetch("/get_dashboard_data.php")
@@ -170,21 +174,59 @@ export default function BankAccountsPage() {
       .then((d) => {
         setSelected(d?.user?.preferred_nominal || "nominal1");
         setWithdrawPref(d?.user?.withdraw_preference || "accumulate");
+        setEzzyAcquirer(d?.user?.ezzy_acquirer || "");
       })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    if (selected === "nominal4") {
+      let isMounted = true;
+      setLoadingAcquirers(true);
+      const fd = new FormData();
+      fd.append("action", "get_ezzy_acquirers");
+      fetch("/admin_actions.php", {
+        method: "POST",
+        body: fd,
+      })
+        .then((r) => r.json())
+        .then((d) => {
+          if (isMounted && d.success && d.data && Array.isArray(d.data)) {
+            setEzzyAcquirers(d.data);
+          }
+        })
+        .catch(() => {
+          // Error handled silently
+        })
+        .finally(() => {
+          if (isMounted) {
+            setLoadingAcquirers(false);
+          }
+        });
+      return () => {
+        isMounted = false;
+      };
+    }
+  }, [selected]);
+
   const handleSelect = (id) => {
     setSelected(id);
     setSaved(false);
-    if (id === "nominal3") {
+    if (id === "nominal3" || id === "nominal4") {
       setWithdrawPref("auto_direct");
+    }
+    if (id !== "nominal4") {
+      setEzzyAcquirer("");
     }
   };
 
   const handleSave = async () => {
     if (!selected || saving) return;
+    if (selected === "nominal4" && !ezzyAcquirer) {
+      alert("Por favor, selecione um adquirente para Nominal 4");
+      return;
+    }
     setSaving(true);
     try {
       const res = await fetch("/save_nominal.php", {
@@ -193,6 +235,7 @@ export default function BankAccountsPage() {
         body: JSON.stringify({
           nominal: selected,
           withdraw_preference: withdrawPref,
+          ezzy_acquirer: selected === "nominal4" ? ezzyAcquirer : "",
         }),
       });
       const data = await res.json();
@@ -200,7 +243,9 @@ export default function BankAccountsPage() {
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
       }
-    } catch {}
+    } catch {
+      // Error handled silently
+    }
     setSaving(false);
   };
 
@@ -400,6 +445,103 @@ export default function BankAccountsPage() {
         })}
       </div>
 
+      {/* Seleção de Adquirente (Nominal 4) */}
+      {selected === "nominal4" && (
+        <div className="pt-2 space-y-4">
+          <div>
+            <h2
+              className={cn(
+                "text-lg font-black tracking-tight",
+                isDark ? "text-white" : "text-gray-900",
+              )}
+            >
+              Selecionar Adquirente
+            </h2>
+            <p
+              className={cn(
+                "text-xs font-medium mt-0.5",
+                isDark ? "text-gray-500" : "text-gray-400",
+              )}
+            >
+              Escolha o adquirente para processar suas transações
+            </p>
+          </div>
+
+          {loadingAcquirers ? (
+            <div className="flex items-center justify-center py-6">
+              <Loader2 size={20} className="animate-spin text-gray-400" />
+            </div>
+          ) : ezzyAcquirers.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {ezzyAcquirers.map((acq) => (
+                <div
+                  key={acq.id}
+                  onClick={() => {
+                    setEzzyAcquirer(acq.id);
+                    setSaved(false);
+                  }}
+                  className={cn(
+                    "cursor-pointer p-4 rounded-2xl border-2 transition-all flex items-center gap-3 select-none",
+                    ezzyAcquirer === acq.id
+                      ? "bg-primary/10 border-primary shadow-[0_4px_12px_rgba(30,164,101,0.2)]"
+                      : isDark
+                        ? "bg-white/[0.02] border-white/[0.08] hover:border-white/[0.12]"
+                        : "bg-gray-50 border-gray-200 hover:border-gray-300",
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center transition-all",
+                      ezzyAcquirer === acq.id
+                        ? "border-primary bg-primary"
+                        : isDark
+                          ? "border-gray-600 bg-transparent"
+                          : "border-gray-300 bg-transparent",
+                    )}
+                  >
+                    {ezzyAcquirer === acq.id && (
+                      <div className="w-2 h-2 rounded-full bg-white" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className={cn(
+                        "text-sm font-bold",
+                        isDark ? "text-white" : "text-gray-900",
+                      )}
+                    >
+                      {acq.name}
+                    </p>
+                    {acq.description && (
+                      <p
+                        className={cn(
+                          "text-[11px] mt-0.5",
+                          isDark ? "text-gray-500" : "text-gray-500",
+                        )}
+                      >
+                        {acq.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div
+              className={cn(
+                "flex items-center gap-3 px-4 py-4 rounded-xl text-xs font-medium border",
+                isDark
+                  ? "bg-red-500/10 border-red-500/20 text-red-400"
+                  : "bg-red-50 border-red-200 text-red-700",
+              )}
+            >
+              <AlertCircle size={14} className="shrink-0" />
+              <span>Nenhum adquirente disponível no momento.</span>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Preferência de Liquidação */}
       <div className="pt-4 space-y-4">
         <div>
@@ -421,13 +563,13 @@ export default function BankAccountsPage() {
           </p>
         </div>
 
-        {selected === "nominal3" ? (
+        {selected === "nominal3" || selected === "nominal4" ? (
           <div className="bg-blue-500/10 border border-blue-500/20 text-blue-600 rounded-3xl p-5 flex gap-4 items-center">
             <Zap className="text-blue-500 shrink-0 animate-pulse" size={24} />
             <p className="text-xs font-bold leading-normal">
-              Para a Rota Nominal 3, o saque é automático por padrão. Cada venda
-              aprovada é transferida de forma instantânea para sua chave Pix
-              cadastrada.
+              {selected === "nominal3"
+                ? "Para a Rota Nominal 3, o saque é automático por padrão. Cada venda aprovada é transferida de forma instantânea para sua chave Pix cadastrada."
+                : "Para a Rota Nominal 4, o saque é automático por padrão. Todas as transações serão processadas pelo adquirente selecionado."}
             </p>
           </div>
         ) : (
