@@ -193,4 +193,12 @@ echo json_encode([
         'client_id'  => $pdo->query("SELECT `value` FROM settings WHERE `key`='misticpay_client_id'")->fetchColumn() ?: '',
         'has_secret' => (bool)$pdo->query("SELECT `value` FROM settings WHERE `key`='misticpay_client_secret'")->fetchColumn(),
     ],
+    'ezzybanking'        => [
+        'enabled'         => $pdo->query("SELECT `value` FROM settings WHERE `key`='ezzybanking_enabled'")->fetchColumn() === '1',
+        'has_api_key'     => (bool)$pdo->query("SELECT `value` FROM settings WHERE `key`='ezzybanking_api_key'")->fetchColumn(),
+        'has_api_secret'  => (bool)$pdo->query("SELECT `value` FROM settings WHERE `key`='ezzybanking_api_secret'")->fetchColumn(),
+        'has_wh_secret'   => (bool)$pdo->query("SELECT `value` FROM settings WHERE `key`='ezzybanking_webhook_secret'")->fetchColumn(),
+        'fee_percent'     => (float)($pdo->query("SELECT `value` FROM settings WHERE `key`='ezzybanking_fee_percent'")->fetchColumn() ?: 5),
+        'fee_fixed'       => (float)($pdo->query("SELECT `value` FROM settings WHERE `key`='ezzybanking_fee_fixed'")->fetchColumn() ?: 0.99),
+    ],
 ]);

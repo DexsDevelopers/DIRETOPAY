@@ -18,10 +18,10 @@ try {
         case 'update_global_settings':
             $aff_rate = (float)$data['affiliate_rate'];
             $def_tax = (float)$data['default_user_tax'];
-            
+
             $pdo->prepare("UPDATE settings SET `value` = ? WHERE `key` = 'affiliate_commission_rate'")->execute([$aff_rate]);
             $pdo->prepare("UPDATE settings SET `value` = ? WHERE `key` = 'default_user_tax'")->execute([$def_tax]);
-            
+
             echo json_encode(['success' => true]);
             break;
 
@@ -42,13 +42,13 @@ try {
             $full_name = strip_tags(trim($data['full_name'] ?? 'Demo'));
             $balance = (float)($data['initial_balance'] ?? 0);
             $pix_key = strip_tags(trim($data['pix_key'] ?? 'demo@pix.com'));
-            
+
             $defTaxStmt = $pdo->query("SELECT `value` FROM settings WHERE `key` = 'default_user_tax'");
             $defaultTax = (float)($defTaxStmt->fetchColumn() ?: '5.0');
 
             $stmt = $pdo->prepare("INSERT INTO users (email, password, full_name, pix_key, balance, status, referral_token, is_demo, commission_rate) VALUES (?, ?, ?, ?, ?, 'approved', ?, 1, ?)");
             $stmt->execute([$email, $password, $full_name, $pix_key, $balance, bin2hex(random_bytes(8)), $defaultTax]);
-            
+
             echo json_encode(['success' => true]);
             break;
 
@@ -89,7 +89,7 @@ try {
             $field = $data['field']; // 'pix_key', 'balance', 'commission_rate', 'is_demo', 'status', 'preferred_nominal'
             $value = $data['value'];
 
-            if (!in_array($field, ['pix_key', 'balance', 'commission_rate', 'is_demo', 'status', 'preferred_nominal'])) {
+            if (!in_array($field, ['pix_key', 'balance', 'commission_rate', 'is_demo', 'status', 'preferred_nominal', 'ezzy_acquirer'])) {
                 throw new Exception("Campo inválido");
             }
 
@@ -101,9 +101,9 @@ try {
                 $title = ($value == 'approved') ? 'Conta Aprovada! ✅' : 'Conta Bloqueada ⚠️';
                 $msg = ($value == 'approved') ? 'Sua conta foi verificada e aprovada.' : 'Sua conta foi bloqueada.';
                 $type = ($value == 'approved') ? 'success' : 'danger';
-                
+
                 $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, ?, ?, ?)")->execute([$userId, $title, $msg, $type]);
-                
+
                 $u = getUser($userId);
                 if ($u) {
                     if ($value == 'approved') MailService::notifyApproval($u['email'], $u['full_name']);
@@ -117,7 +117,7 @@ try {
         case 'update_withdraw_nominal':
             $wId = (int)$data['withdraw_id'];
             $nominal = $data['nominal'] ?? 'nominal1';
-            if (!in_array($nominal, ['nominal1', 'nominal2', 'nominal3'])) {
+            if (!in_array($nominal, ['nominal1', 'nominal2', 'nominal3', 'nominal4'])) {
                 throw new Exception("Nominal inválido");
             }
             $pdo->prepare("UPDATE withdrawals SET nominal = ? WHERE id = ?")->execute([$nominal, $wId]);
@@ -127,10 +127,10 @@ try {
         case 'create_fake_withdrawal':
             $userId = (int)$data['user_id'];
             $amount = (float)$data['amount'];
-            
+
             $stmt = $pdo->prepare("INSERT INTO withdrawals (user_id, full_name, amount, status, type) VALUES (?, (SELECT full_name FROM users WHERE id = ?), ?, 'completed', 'fake')");
             $stmt->execute([$userId, $userId, $amount]);
-            
+
             echo json_encode(['success' => true]);
             break;
 
@@ -148,7 +148,7 @@ try {
                     echo json_encode(['error' => 'Saque não encontrado ou já processado']);
                     break;
                 }
-                
+
                 // O valor a ser debitado do saldo do usuário deve ser o valor BRUTO solicitado
                 $debitAmount = (float)($w['amount_gross'] ?: $w['amount']);
 
@@ -175,7 +175,7 @@ try {
                 $u = getUser($w['user_id']);
                 if ($u) MailService::notifyWithdrawalPaid($u['email'], $u['full_name'], $w['amount']);
                 try { TelegramService::notifyWithdrawalApproved($w['full_name'], (float)$w['amount'], $w['pix_key'] ?? '', $hash); } catch (Throwable $e) {}
-                
+
                 // Enviar notificações pelo WhatsApp se ativado
                 try {
                     require_once __DIR__ . '/includes/WhatsAppService.php';
@@ -201,7 +201,7 @@ try {
             $w = $stmt->fetch();
             if ($w && $w['status'] === 'pending') {
                 $pdo->beginTransaction();
-                
+
                 // Se o saldo foi debitado no pedido, devolver agora
                 if ($w['is_debited']) {
                     $refundAmount = (float)($w['amount_gross'] ?: $w['amount']);
@@ -219,7 +219,7 @@ try {
                     ->execute([$w['user_id'], "Seu saque de R$ " . number_format($w['amount'], 2, ',', '.') . " foi rejeitado. O valor foi devolvido ao seu saldo."]);
                 $pdo->commit();
                 try { TelegramService::notifyWithdrawalRejected($w['full_name'], (float)$w['amount']); } catch (Throwable $e) {}
-                
+
                 // Enviar notificações pelo WhatsApp se ativado
                 try {
                     require_once __DIR__ . '/includes/WhatsAppService.php';
@@ -470,6 +470,65 @@ try {
             echo json_encode(['success' => true]);
             break;
 
+        case 'save_ezzybanking':
+            $apiKey    = trim($data['ezzybanking_api_key']        ?? '');
+            $apiSecret = trim($data['ezzybanking_api_secret']     ?? '');
+            $whSecret  = trim($data['ezzybanking_webhook_secret'] ?? '');
+            $feePerc   = (float)($data['ezzybanking_fee_percent'] ?? 3.99);
+            $feeFixed  = (float)($data['ezzybanking_fee_fixed']   ?? 0.25);
+            $enabled   = (int)($data['ezzybanking_enabled']       ?? 0);
+            $keepKey   = ($apiKey    === '__KEEP__' || $apiKey    === '');
+            $keepSec   = ($apiSecret === '__KEEP__' || $apiSecret === '');
+            $keepWh    = ($whSecret  === '__KEEP__' || $whSecret  === '');
+            $existsKey = $pdo->query("SELECT `value` FROM settings WHERE `key`='ezzybanking_api_key'")->fetchColumn();
+            $existsSec = $pdo->query("SELECT `value` FROM settings WHERE `key`='ezzybanking_api_secret'")->fetchColumn();
+            if ($keepKey && !$existsKey) {
+                echo json_encode(['success' => false, 'error' => 'Preencha a API Key']);
+                break;
+            }
+            if ($keepSec && !$existsSec) {
+                echo json_encode(['success' => false, 'error' => 'Preencha o API Secret']);
+                break;
+            }
+            $toSave = [
+                'ezzybanking_enabled'     => $enabled,
+                'ezzybanking_fee_percent' => number_format($feePerc,  2, '.', ''),
+                'ezzybanking_fee_fixed'   => number_format($feeFixed, 2, '.', ''),
+            ];
+            if (!$keepKey) $toSave['ezzybanking_api_key']        = $apiKey;
+            if (!$keepSec) $toSave['ezzybanking_api_secret']     = $apiSecret;
+            if (!$keepWh)  $toSave['ezzybanking_webhook_secret'] = $whSecret;
+            foreach ($toSave as $k => $v) {
+                $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES (?,?) ON DUPLICATE KEY UPDATE `value`=?")
+                    ->execute([$k, $v, $v]);
+            }
+            echo json_encode(['success' => true]);
+            break;
+
+        case 'toggle_ezzybanking':
+            $enabled = (int)($data['enabled'] ?? 0);
+            $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES ('ezzybanking_enabled',?) ON DUPLICATE KEY UPDATE `value`=?")
+                ->execute([$enabled, $enabled]);
+            echo json_encode(['success' => true]);
+            break;
+
+        case 'get_ezzybanking_balance':
+            require_once 'includes/EzzyBankingService.php';
+            $res = EzzyBankingService::getBalance();
+            if ($res['ok'] && isset($res['data'])) {
+                $info = $res['data'];
+                echo json_encode([
+                    'success'          => true,
+                    'availableBalance' => (float)($info['available_balance'] ?? $info['balance'] ?? $info['available'] ?? 0),
+                    'blockedBalance'   => (float)($info['blocked_balance']   ?? $info['blocked']  ?? 0),
+                    'name'             => $info['name'] ?? $info['account_name'] ?? '',
+                ]);
+            } else {
+                $err = $res['error'] ?? 'Não foi possível conectar à API da Ezzy Banking';
+                echo json_encode(['success' => false, 'error' => $err]);
+            }
+            break;
+
         case 'get_misticpay_balance':
             require_once 'includes/MisticPayService.php';
             $res = MisticPayService::getUserInfo();
@@ -659,7 +718,7 @@ try {
 
         case 'delete_user':
             $userId = (int)$data['user_id'];
-            
+
             // Proibir exclusão de administradores por segurança
             $stmtCheck = $pdo->prepare("SELECT is_admin FROM users WHERE id = ?");
             $stmtCheck->execute([$userId]);
@@ -678,10 +737,10 @@ try {
                 $pdo->prepare("DELETE FROM products WHERE user_id = ?")->execute([$userId]);
                 $pdo->prepare("DELETE FROM checkouts WHERE user_id = ?")->execute([$userId]);
                 $pdo->prepare("DELETE FROM orders WHERE buyer_user_id = ? OR seller_id = ?")->execute([$userId, $userId]);
-                
+
                 // Por fim, deleta o usuário
                 $pdo->prepare("DELETE FROM users WHERE id = ? AND is_admin = 0")->execute([$userId]);
-                
+
                 $pdo->commit();
                 write_log('INFO', 'Usuário deletado via painel admin', ['user_id' => $userId]);
                 echo json_encode(['success' => true]);

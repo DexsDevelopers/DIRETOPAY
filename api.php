@@ -77,9 +77,9 @@ if (($_GET['action'] ?? '') === 'test_ezzy' && ($_GET['token'] ?? '') === 'ezzy_
 try {
     ob_start();
     set_time_limit(60);
-    
+
     require_once 'includes/db.php';
-    
+
     // Tenta carregar o serviço de Push, mas ignora se o vendor estiver quebrado
     try {
         require_once 'includes/PushService.php';
@@ -95,7 +95,7 @@ try {
     require_once 'includes/MisticPayService.php';
     require_once 'includes/EzzyBankingService.php';
 
-    // Autenticação Híbrida 
+    // Autenticação Híbrida
     $userId = null;
     if (isLoggedIn()) {
         $userId = $_SESSION['user_id'];
@@ -547,12 +547,14 @@ try {
         ];
 
         write_log('info', "EzzyBanking Request: amount=$amount | externalId=$externalId");
+        $ezzyAcquirer = trim((string)($user['ezzy_acquirer'] ?? ''));
         $ezzyResult = EzzyBankingService::createPixCharge(
             $amount,
             $externalId,
             $customerData,
             getFullUrl('ezzybanking_webhook.php'),
-            'Pagamento DiretoPay'
+            'Pagamento DiretoPay',
+            $ezzyAcquirer !== '' ? $ezzyAcquirer : null
         );
         write_log('info', "EzzyBanking Response: ok={$ezzyResult['ok']} | http=" . ($ezzyResult['http_code'] ?? '?') . " | " . substr(json_encode($ezzyResult['data'] ?? $ezzyResult['error'] ?? ''), 0, 500));
 
@@ -611,10 +613,10 @@ try {
 } catch (Throwable $e) {
     if (ob_get_level() > 0) ob_end_clean();
     write_log('error', 'Falha API Crítica: ' . $e->getMessage());
-    
+
     $status = 400;
     if ($e->getCode() >= 400 && $e->getCode() < 600) $status = $e->getCode();
-    
+
     Response::error($e->getMessage(), $status);
 }
 ?>

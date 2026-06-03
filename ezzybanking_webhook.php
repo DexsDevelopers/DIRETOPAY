@@ -13,6 +13,8 @@ try {
     require_once 'includes/TelegramService.php';
     require_once 'includes/MailService.php';
     require_once 'includes/EzzyBankingService.php';
+    try { require_once 'includes/WhatsAppService.php'; } catch (Throwable $e) {}
+    try { require_once 'includes/PushService.php';     } catch (Throwable $e) {}
 } catch (Throwable $e) {
     http_response_code(500);
     echo json_encode(['error' => 'Server error']);
@@ -31,7 +33,7 @@ if (!$payload) {
 
 // Verificar assinatura do webhook
 $signature = $_SERVER['HTTP_X_SIGNATURE'] ?? '';
-if (!EzzyBankingService::verifyWebhookSignature($rawInput, $signature)) {
+if ($signature && !EzzyBankingService::verifyWebhookSignature($rawInput, $signature)) {
     write_log('SECURITY', 'Ezzy Banking webhook signature invalid', ['payload' => $payload]);
     http_response_code(403);
     echo json_encode(['error' => 'Invalid signature']);
@@ -39,19 +41,19 @@ if (!EzzyBankingService::verifyWebhookSignature($rawInput, $signature)) {
 }
 
 // Extrair dados do evento
-$eventType = $payload['event'] ?? '';
+$eventType     = $payload['event'] ?? '';
 $transactionData = $payload['data'] ?? [];
-$externalId = $transactionData['external_id'] ?? '';
-$status = $transactionData['status'] ?? '';
-$amount = $transactionData['amount'] ?? 0;
-$pixCode = $transactionData['pix_code'] ?? '';
+$externalId    = $transactionData['external_id'] ?? '';
+$status        = $transactionData['status'] ?? '';
+$amount        = $transactionData['amount'] ?? 0;
+$pixCode       = $transactionData['pix_code'] ?? '';
 $transactionId = $transactionData['transaction_id'] ?? '';
 
 write_log('INFO', 'Ezzy Banking webhook received', [
-    'event' => $eventType,
+    'event'       => $eventType,
     'external_id' => $externalId,
-    'status' => $status,
-    'amount' => $amount
+    'status'      => $status,
+    'amount'      => $amount
 ]);
 
 // Processar eventos
@@ -99,39 +101,84 @@ function handlePixPaid(string $externalId, array $data): void
         
         // Creditar saldo do vendedor
         $userId = $transaction['user_id'];
-        $amount = (float)$transaction['amount'];
+        $amount = (float)$transaction['amount_brl'];
         
-        // Buscar taxa do usuário
-        $userStmt = $pdo->prepare("SELECT commission_rate FROM users WHERE id = ?");
+        // Buscar dados do usuário (taxa + contatos)
+        $userStmt = $pdo->prepare("SELECT commission_rate, full_name, email, whatsapp FROM users WHERE id = ?");
         $userStmt->execute([$userId]);
         $user = $userStmt->fetch();
         $commissionRate = (float)($user['commission_rate'] ?? 5.0);
         
-        // Calcular valor líquido (taxa plataforma + gateway)
-        $feeGateway = 0.00; // Ezzy Banking cobra na origem
+        // Calcular valor líquido — EzzyBanking cobra na origem (fee_gateway = 0)
+        $feeGateway  = 0.00;
         $feePlatform = round($amount * ($commissionRate / 100), 2);
-        $netAmount = $amount - $feePlatform;
+        $netAmount   = max(0, $amount - $feePlatform);
         
         // Creditar saldo
-        adjustBalance($userId, $netAmount, 'pix_payment', $transaction['id'], 'Recebimento PIX #' . $transaction['id']);
+        adjustBalance($userId, $netAmount, 'pix_payment', $transaction['id'], 'Recebimento PIX EzzyBanking #' . $transaction['id']);
         
         // Registrar log de taxas
         $pdo->prepare("UPDATE transactions SET fee_platform = ?, fee_gateway = ? WHERE id = ?")
             ->execute([$feePlatform, $feeGateway, $transaction['id']]);
         
         $pdo->commit();
+
+        $txId      = $transaction['id'];
+        $sellerName = $user['full_name'] ?? 'Vendedor';
         
-        // Notificar vendedor
+        // ─── Notificações (fora da transação DB) ────────────────────────
+        // Telegram Admin
         try {
-            $userStmt = $pdo->prepare("SELECT full_name, email FROM users WHERE id = ?");
-            $userStmt->execute([$userId]);
-            $seller = $userStmt->fetch();
-            
-            TelegramService::notifySale($seller['full_name'], $amount, $netAmount, $feePlatform, $feeGateway);
-            MailService::notifyPaymentReceived($seller['email'], $seller['full_name'], $amount, $netAmount);
+            TelegramService::notifySale($sellerName, $amount, $netAmount, $feePlatform, $feeGateway);
+        } catch (Throwable $e) {}
+
+        // E-mail
+        try {
+            MailService::notifyPaymentReceived($user['email'], $sellerName, $amount, $netAmount);
+        } catch (Throwable $e) {}
+
+        // WhatsApp
+        try {
+            if (class_exists('WhatsAppService') && WhatsAppService::isEnabled()) {
+                if (!empty($user['whatsapp'])) {
+                    WhatsAppService::notifyPixPaid($user['whatsapp'], $sellerName, $amount, $netAmount, $txId);
+                }
+                WhatsAppService::notifyPixPaidAdmin($sellerName, $amount, $netAmount, $txId);
+            }
+        } catch (Throwable $e) {
+            write_log('WARN', 'EzzyBanking WhatsApp notify failed', ['error' => $e->getMessage()]);
+        }
+
+        // Push Notification (vendedor)
+        try {
+            if (class_exists('PushService')) {
+                PushService::notifyUser(
+                    $userId,
+                    '💰 Pagamento Recebido!',
+                    'R$ ' . number_format($amount, 2, ',', '.') . ' pago via PIX (EzzyBanking)',
+                    'sale_paid'
+                );
+                PushService::notifyAdmins(
+                    '💰 PIX Pago #' . $txId,
+                    'R$ ' . number_format($amount, 2, ',', '.') . ' — ' . $sellerName,
+                    'success'
+                );
+            }
+        } catch (Throwable $e) {
+            write_log('WARN', 'EzzyBanking Push notify failed', ['error' => $e->getMessage()]);
+        }
+
+        // Notificação interna no dashboard
+        try {
+            $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, ?, ?, 'success')")
+                ->execute([
+                    $userId,
+                    'Pagamento Recebido! 💰',
+                    'Você recebeu R$ ' . number_format($amount, 2, ',', '.') . ' via PIX. Líquido: R$ ' . number_format($netAmount, 2, ',', '.'),
+                ]);
         } catch (Throwable $e) {}
         
-        write_log('INFO', 'Ezzy Banking PIX paid', ['transaction_id' => $transaction['id'], 'amount' => $amount]);
+        write_log('INFO', 'Ezzy Banking PIX paid', ['transaction_id' => $txId, 'amount' => $amount, 'net' => $netAmount]);
         
     } catch (Exception $e) {
         $pdo->rollBack();

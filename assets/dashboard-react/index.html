@@ -1,18 +1,140 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>dashboard-new</title>
-    <script type="module" crossorigin src="/assets/index-DLZfCYqc.js"></script>
+    <meta name="theme-color" content="#0d0d12" />
+    <title>DiretoPay — Plataforma de Pagamentos</title>
+    <meta name="description" content="Gere cobranças PIX, gerencie vendas e saques com a DiretoPay." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!--
+      ANTI-FLASH: detecta o tema ANTES do primeiro paint.
+      Executa de forma síncrona (sem defer/async) para que o browser
+      aplique a classe 'dark' e o background correto antes de renderizar
+      qualquer pixel — eliminando o flash branco/preto.
+    -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('direto_theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var isDark = stored ? stored === 'dark' : prefersDark;
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.backgroundColor = '#0d0d12';
+            document.documentElement.style.color = '#eeeef5';
+          } else {
+            document.documentElement.style.backgroundColor = '#f9f9fc';
+            document.documentElement.style.color = '#1E1B4B';
+          }
+        } catch (e) {
+          document.documentElement.style.backgroundColor = '#0d0d12';
+        }
+      })();
+    </script>
+
+    <style>
+      /* Splash screen — visível até o React montar */
+      #lp-splash {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        z-index: 9999;
+        transition: opacity 0.3s ease;
+      }
+      html.dark #lp-splash { background: #0d0d12; }
+      html:not(.dark) #lp-splash { background: #f9f9fc; }
+
+      #lp-splash.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .lp-logo-ring {
+        width: 64px;
+        height: 64px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #1ea465, #126b41);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 40px rgba(30,164,101,0.4);
+        animation: lp-pulse 1.8s ease-in-out infinite;
+      }
+
+      .lp-logo-ring svg {
+        width: 36px;
+        height: 36px;
+        fill: white;
+      }
+
+      .lp-spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid rgba(30,164,101,0.2);
+        border-top-color: #1ea465;
+        border-radius: 50%;
+        animation: lp-spin 0.8s linear infinite;
+      }
+
+      @keyframes lp-spin {
+        to { transform: rotate(360deg); }
+      }
+
+      @keyframes lp-pulse {
+        0%, 100% { box-shadow: 0 0 30px rgba(30,164,101,0.35); transform: scale(1); }
+        50% { box-shadow: 0 0 60px rgba(30,164,101,0.6); transform: scale(1.05); }
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-W4zA_Kkl.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/rolldown-runtime-WehaI0Q3.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-charts-He-U0hDw.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-react-CIFpnPib.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-motion-BKEh_tME.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-QQ7TDr7I.css">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-router-Dg8CQPxv.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-motion-BCgFC3qs.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-icons-Ch5mnukh.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-react-B6YjI7Jz.js">
+    <link rel="modulepreload" crossorigin href="/assets/utils-DCsqA19A.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-q6uKCNEI.css">
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Splash visível imediatamente, antes do bundle JS carregar -->
+    <div id="lp-splash">
+      <div class="lp-logo-ring">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 2L4.5 13.5H11L10 22L19.5 10.5H13L13 2Z"/>
+        </svg>
+      </div>
+      <div class="lp-spinner"></div>
+    </div>
+
+    <div id="root"></div>
+
+    <!-- Remove o splash assim que o React montar -->
+    <script>
+      (function () {
+        var splash = document.getElementById('lp-splash');
+        if (!splash) return;
+        var observer = new MutationObserver(function () {
+          var root = document.getElementById('root');
+          if (root && root.children.length > 0) {
+            splash.classList.add('hidden');
+            setTimeout(function () { splash.remove(); }, 350);
+            observer.disconnect();
+          }
+        });
+        observer.observe(document.getElementById('root'), { childList: true });
+        // Fallback: remove após 5s caso algo falhe
+        setTimeout(function () { splash.remove(); }, 5000);
+      })();
+    </script>
   </body>
 </html>

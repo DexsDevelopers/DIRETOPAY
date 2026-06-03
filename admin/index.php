@@ -24,18 +24,18 @@ if (isset($_GET['approve'])) {
 
 if ($action && $id) {
     $status = ($action == 'approve') ? 'approved' : 'blocked';
-    
+
     $stmt = $pdo->prepare("UPDATE users SET status = ? WHERE id = ? AND is_admin = 0");
     $stmt->execute([$status, $id]);
-    
+
     // Notificação automática
     $title = ($status == 'approved') ? 'Conta Aprovada! ✅' : 'Conta Bloqueada ⚠️';
     $msg = ($status == 'approved') ? 'Sua conta foi verificada e aprovada. Já pode começar a operar!' : 'Sua conta foi bloqueada por nossa equipe de segurança.';
     $type = ($status == 'approved') ? 'success' : 'danger';
-    
+
     try {
         $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, ?, ?, ?)")->execute([$id, $title, $msg, $type]);
-        
+
         // Enviar e-mail se aprovado
         if ($status == 'approved') {
             $userData = getUser($id);
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $stmt = $pdo->prepare("INSERT INTO users (email, password, full_name, pix_key, balance, status, referral_token, is_demo, commission_rate) VALUES (?, ?, ?, ?, ?, 'approved', ?, 1, ?)");
         $stmt->execute([$email, $password, $full_name, $pix_key, $balance, $ref_token, $defaultTax]);
-        
+
         header("Location: index.php?success=1");
         exit;
     }
@@ -126,10 +126,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $userId = (int)$_POST['user_id'];
         $amount = (float)$_POST['amount'];
         $pixKey = $_POST['pix_key'];
-        
+
         $stmt = $pdo->prepare("INSERT INTO withdrawals (user_id, full_name, amount, status, type) VALUES (?, (SELECT full_name FROM users WHERE id = ?), ?, 'completed', 'fake')");
         $stmt->execute([$userId, $userId, $amount]);
-        
+
         header("Location: index.php?success=1");
         exit;
     }
@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['update_preferred_nominal'])) {
         $userId = (int)$_POST['user_id'];
         $nominal = $_POST['preferred_nominal'] ?? 'nominal1';
-        if (in_array($nominal, ['nominal1', 'nominal2', 'nominal3'])) {
+        if (in_array($nominal, ['nominal1', 'nominal2', 'nominal3', 'nominal4'])) {
             $stmt = $pdo->prepare("UPDATE users SET preferred_nominal = ? WHERE id = ?");
             $stmt->execute([$nominal, $userId]);
         }
@@ -148,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['update_withdraw_nominal'])) {
         $wId = (int)$_POST['withdraw_id'];
         $nominal = $_POST['nominal'] ?? 'nominal1';
-        if (in_array($nominal, ['nominal1', 'nominal2', 'nominal3'])) {
+        if (in_array($nominal, ['nominal1', 'nominal2', 'nominal3', 'nominal4'])) {
             $stmt = $pdo->prepare("UPDATE withdrawals SET nominal = ? WHERE id = ?");
             $stmt->execute([$nominal, $wId]);
         }
@@ -159,18 +159,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['approve_user']) || isset($_POST['block_user'])) {
         $id = (int)$_POST['user_id'];
         $status = isset($_POST['approve_user']) ? 'approved' : 'blocked';
-        
+
         $stmt = $pdo->prepare("UPDATE users SET status = ? WHERE id = ? AND is_admin = 0");
         $stmt->execute([$status, $id]);
-        
+
         // Notificação automática
         $title = ($status == 'approved') ? 'Conta Aprovada! ✅' : 'Conta Bloqueada ⚠️';
         $msg = ($status == 'approved') ? 'Sua conta foi verificada e aprovada. Já pode começar a operar!' : 'Sua conta foi bloqueada por nossa equipe de segurança.';
         $type = ($status == 'approved') ? 'success' : 'danger';
-        
+
         try {
             $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, ?, ?, ?)")->execute([$id, $title, $msg, $type]);
-            
+
             // Enviar e-mail se aprovado
             if ($status == 'approved') {
                 $userData = getUser($id);
@@ -269,7 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if ($action == 'delete_user') {
             $userId = (int)$_POST['user_id'];
-            
+
             // Proibir exclusão de administradores por segurança
             $stmtCheck = $pdo->prepare("SELECT is_admin FROM users WHERE id = ?");
             $stmtCheck->execute([$userId]);
@@ -289,10 +289,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $pdo->prepare("DELETE FROM products WHERE user_id = ?")->execute([$userId]);
                 $pdo->prepare("DELETE FROM checkouts WHERE user_id = ?")->execute([$userId]);
                 $pdo->prepare("DELETE FROM orders WHERE buyer_user_id = ? OR seller_id = ?")->execute([$userId, $userId]);
-                
+
                 // Por fim, deleta o usuário
                 $pdo->prepare("DELETE FROM users WHERE id = ? AND is_admin = 0")->execute([$userId]);
-                
+
                 $pdo->commit();
                 write_log('INFO', 'Usuário deletado via painel admin legacy', ['user_id' => $userId]);
                 header("Location: index.php?success=1");
@@ -347,7 +347,7 @@ $users = $stmt->fetchAll();
 if (isset($_POST['update_settings'])) {
     $aff_rate = (float)$_POST['affiliate_rate'];
     $def_tax = (float)$_POST['default_user_tax'];
-    
+
     // Atualizar Comissão Afiliados
     $checkAff = $pdo->prepare("SELECT `key` FROM settings WHERE `key` = 'affiliate_commission_rate'");
     $checkAff->execute();
@@ -454,12 +454,12 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                 overflow-x: auto !important;
             }
         }
-        
+
         /* User/Email column compression */
         .col-user { width: 180px !important; }
         .col-email { width: 220px !important; }
         .col-balance { width: 130px !important; }
-        
+
         .transaction-table {
             table-layout: auto !important; /* Allow content to dictate width if needed, but flex-container will squeeze */
         }
@@ -797,7 +797,7 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <button type="submit" name="update_settings" class="badge paid" style="border: none; cursor: pointer; padding: 8px 12px; font-size: 0.7rem; font-weight: 700; background: var(--primary);">Salvar</button>
                         </form>
 
@@ -852,7 +852,7 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                         </button>
                     </form>
                 </div>
-                
+
                 <form id="bulk-form" method="POST">
                 <div class="table-responsive">
                     <table class="transaction-table">
@@ -932,6 +932,7 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                                             <option value="nominal1" <?php echo $u['preferred_nominal'] === 'nominal1' ? 'selected' : ''; ?>>Nominal 1</option>
                                             <option value="nominal2" <?php echo $u['preferred_nominal'] === 'nominal2' ? 'selected' : ''; ?>>Nominal 2</option>
                                             <option value="nominal3" <?php echo $u['preferred_nominal'] === 'nominal3' ? 'selected' : ''; ?>>Nominal 3</option>
+                                            <option value="nominal4" <?php echo $u['preferred_nominal'] === 'nominal4' ? 'selected' : ''; ?>>Nominal 4</option>
                                         </select>
                                         <input type="hidden" name="update_preferred_nominal" value="1">
                                     </form>
@@ -944,13 +945,13 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                                 <td data-label="Ações" class="actions-cell" style="text-align: right;">
                                     <div style="display: flex; gap: 5px; justify-content: flex-end; flex-wrap: wrap;">
                                         <button type="button" onclick="openFakeWithdrawModal(<?php echo $u['id']; ?>, '<?php echo addslashes($u['full_name']); ?>', '<?php echo $u['pix_key']; ?>')" class="badge paid" style="border: none; cursor: pointer; background: var(--primary); font-size: 0.6rem;">Saque Fake</button>
-                                        
+
                                         <form method="POST" style="display:inline;" onsubmit="return confirm('Deseja realmente DELETAR permanentemente este usuário e todos os seus registros?')">
                                             <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
                                             <input type="hidden" name="action" value="delete_user">
                                             <button type="submit" class="badge expired" style="border: none; cursor: pointer; background: #ef4444; font-size: 0.6rem;">Deletar</button>
                                         </form>
-                                        
+
                                         <form method="POST" style="display:inline;">
                                             <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
                                             <?php if($u['status'] == 'pending' || $u['status'] == 'blocked'): ?>

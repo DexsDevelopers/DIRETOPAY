@@ -15,7 +15,7 @@ try { $pdo->exec("ALTER TABLE users ADD COLUMN crypto_address VARCHAR(255) DEFAU
 try { $pdo->exec("ALTER TABLE users ADD COLUMN crypto_network VARCHAR(20) DEFAULT ''"); } catch (PDOException $e) {}
 try { $pdo->exec("ALTER TABLE users ADD COLUMN whatsapp VARCHAR(20) DEFAULT NULL"); } catch (PDOException $e) {}
 
-$stmt = $pdo->prepare("SELECT balance, commission_rate, pix_key, status, is_demo, is_admin, full_name, email, referral_token, withdraw_method, crypto_address, crypto_network, api_key, whatsapp, utmify_api_token, seven_k_id, preferred_nominal, withdraw_preference FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT balance, commission_rate, pix_key, status, is_demo, is_admin, full_name, email, referral_token, withdraw_method, crypto_address, crypto_network, api_key, whatsapp, utmify_api_token, seven_k_id, preferred_nominal, withdraw_preference, ezzy_acquirer FROM users WHERE id = ?");
 $stmt->execute([$userId]);
 $user = $stmt->fetch();
 
@@ -103,10 +103,10 @@ if ($user['is_demo'] == 1) {
         ['status' => 'Pendente', 'badge' => 'pending'],
         ['status' => 'Expirado', 'badge' => 'expired'],
     ];
-    
+
     // Seed baseado no user_id para manter consistência entre reloads
     srand($userId * 1000 + (int)date('Ymd'));
-    
+
     $formattedRows = [];
     $txCount = rand(8, 12);
     for ($i = 0; $i < $txCount; $i++) {
@@ -117,7 +117,7 @@ if ($user['is_demo'] == 1) {
         $hoursAgo = $i * rand(1, 4);
         $date = date('d/m/Y H:i', strtotime("-{$hoursAgo} hours"));
         $secondsOld = $statusInfo['badge'] === 'pending' ? rand(60, 600) : rand(3600, 86400);
-        
+
         $formattedRows[] = [
             'id' => 90000 + $i,
             'date' => $date,
@@ -131,7 +131,7 @@ if ($user['is_demo'] == 1) {
             'seconds_old' => $secondsOld
         ];
     }
-    
+
     // Restaurar seed aleatório
     srand();
 } else {
@@ -187,6 +187,15 @@ foreach ($notifs as $n) {
     ];
 }
 
+$ezzyAcquirers = [];
+try {
+    require_once __DIR__ . '/includes/EzzyBankingService.php';
+    $ezzyList = EzzyBankingService::listAcquirers();
+    if (!empty($ezzyList['ok']) && !empty($ezzyList['data']) && is_array($ezzyList['data'])) {
+        $ezzyAcquirers = $ezzyList['data'];
+    }
+} catch (Throwable $e) {}
+
 header('Content-Type: application/json');
 echo json_encode([
     'success' => true,
@@ -209,6 +218,7 @@ echo json_encode([
         'commission_rate' => $user['commission_rate'] ?? null,
         'preferred_nominal' => $user['preferred_nominal'] ?? 'nominal1',
         'withdraw_preference' => $user['withdraw_preference'] ?? 'accumulate',
+        'ezzy_acquirer' => $user['ezzy_acquirer'] ?? '',
         'is_admin' => (bool)$user['is_admin'],
         'avatar_url' => (function() use ($userId) {
             $dir = __DIR__ . '/uploads/avatars/';
@@ -221,6 +231,8 @@ echo json_encode([
         })()
     ],
     'transactions' => $formattedRows,
-    'notifications' => $formattedNotifs
+    'notifications' => $formattedNotifs,
+    'ezzy' => [
+        'acquirers' => $ezzyAcquirers,
+    ]
 ]);
-
