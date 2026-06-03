@@ -586,24 +586,17 @@ export default function Sidebar({
 
   return (
     <>
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-[2px] lg:hidden"
-          onClick={handleClose}
-          style={{ transform: "translate3d(0, 0, 0)" }}
-        />
-      )}
       <aside
         className={cn(
-          `fixed z-50 top-0 left-0 h-full w-[248px] flex flex-col transform transition-transform duration-300 ease-out will-change-transform border-r`,
+          "fixed z-50 top-0 left-0 h-full w-[248px] flex flex-col will-change-transform border-r",
           bg,
           border,
-          isOpen ? "translate-x-0" : "-translate-x-full",
         )}
         style={{
           transform: isOpen
             ? "translate3d(0, 0, 0)"
             : "translate3d(-100%, 0, 0)",
+          transition: "transform 220ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
         }}
       >
         {/* Logo / Brand */}
