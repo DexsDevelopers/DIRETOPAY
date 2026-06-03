@@ -1,5 +1,7 @@
+#!/usr/bin/env python3
+"""Script de deploy SFTP para DiretoPay."""
+
 import os
-import sys
 
 import paramiko
 
@@ -9,44 +11,69 @@ USER = "u853242961"
 PASS = "Lucastav8012@"
 REMOTE_BASE = "/home/u853242961/domains/diretopay.site/public_html"
 
-LOCAL_ASSETS = r"D:\diretopay\assets\dashboard-react"
-REMOTE_ASSETS = REMOTE_BASE + "/assets/dashboard-react"
-LOCAL_INDEX = r"D:\diretopay\index.php"
-REMOTE_INDEX = REMOTE_BASE + "/index.php"
+LOCAL_BASE = os.path.dirname(os.path.abspath(__file__))
 
-print(f"Conectando a {HOST}:{PORT}...")
-transport = paramiko.Transport((HOST, PORT))
-transport.connect(username=USER, password=PASS)
-sftp = paramiko.SFTPClient.from_transport(transport)
-print("Conectado!")
+# Arquivos novos em assets/dashboard-react/ (untracked ou modificados)
+NEW_ASSETS = [
+    "assets/dashboard-react/BankAccountsPage-D7IU4HK8.js",
+    "assets/dashboard-react/BeneficiosPage-TiVi3tKD.js",
+    "assets/dashboard-react/CheckoutPage-UIY5PQuE.js",
+    "assets/dashboard-react/DashboardHomePage-BjwzFg8T.js",
+    "assets/dashboard-react/FaqPage-CZNMeP4t.js",
+    "assets/dashboard-react/LandingPage-914-wspk.js",
+    "assets/dashboard-react/LoginPage-DHKLGnVr.js",
+    "assets/dashboard-react/ParceirosPage-CRPrZeFe.js",
+    "assets/dashboard-react/PixPage-cS1exKjo.js",
+    "assets/dashboard-react/PremiacoesPublicPage-BiW8ygeF.js",
+    "assets/dashboard-react/PublicLayout-Cih2Usn8.js",
+    "assets/dashboard-react/RegisterPage-C1x_srRC.js",
+    "assets/dashboard-react/ReportsPage-C6tvKIHG.js",
+    "assets/dashboard-react/SalesPage-bkdiC3Lb.js",
+    "assets/dashboard-react/SettingsPage-Cu8SIwUc.js",
+    "assets/dashboard-react/index-DNiWCDQx.js",
+    "assets/dashboard-react/vendor-charts-He-U0hDw.js",
+    "index.php",
+]
 
-# Lista arquivos já existentes no servidor
-try:
-    remote_files = set(sftp.listdir(REMOTE_ASSETS))
-    print(f"Arquivos existentes no servidor: {len(remote_files)}")
-except FileNotFoundError:
-    print(f"Diretório remoto não existe, criando: {REMOTE_ASSETS}")
-    sftp.mkdir(REMOTE_ASSETS)
-    remote_files = set()
 
-# Upload apenas arquivos novos em assets/dashboard-react/
-local_files = os.listdir(LOCAL_ASSETS)
-new_files = [f for f in local_files if f not in remote_files]
-print(f"\nArquivos locais: {len(local_files)} | Novos para upload: {len(new_files)}")
+def main():
+    print(f"Conectando a {HOST}:{PORT}...")
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect(HOST, port=PORT, username=USER, password=PASS, timeout=30)
+    sftp = ssh.open_sftp()
+    print("Conectado!")
 
-for fname in new_files:
-    local_path = os.path.join(LOCAL_ASSETS, fname)
-    remote_path = REMOTE_ASSETS + "/" + fname
-    print(f"  [UPLOAD] {fname}")
-    sftp.put(local_path, remote_path)
+    for rel_path in NEW_ASSETS:
+        local_path = os.path.join(LOCAL_BASE, rel_path.replace("/", os.sep))
+        remote_path = f"{REMOTE_BASE}/{rel_path}"
+        print(f"  Enviando {rel_path}...")
+        # Garante que o diretório remoto existe
+        remote_dir = remote_path.rsplit("/", 1)[0]
+        try:
+            sftp.stat(remote_dir)
+        except FileNotFoundError:
+            sftp.mkdir(remote_dir)
+        sftp.put(local_path, remote_path)
+        print(f"    OK -> {remote_path}")
 
-if not new_files:
-    print("  Nenhum arquivo novo para enviar em assets/dashboard-react/")
+    print("\nTodos os arquivos enviados!")
 
-# Sempre faz upload do index.php
-print(f"\n[UPLOAD] index.php -> {REMOTE_INDEX}")
-sftp.put(LOCAL_INDEX, REMOTE_INDEX)
+    # Executa git fetch + reset no servidor
+    print("\nExecutando git fetch + reset no servidor...")
+    cmd = f"cd {REMOTE_BASE} && git fetch origin main && git reset --hard origin/main"
+    stdin, stdout, stderr = ssh.exec_command(cmd, timeout=60)
+    out = stdout.read().decode()
+    err = stderr.read().decode()
+    if out:
+        print("STDOUT:", out)
+    if err:
+        print("STDERR:", err)
+    print("Deploy servidor concluído!")
 
-sftp.close()
-transport.close()
-print("\nDeploy SFTP concluido com sucesso!")
+    sftp.close()
+    ssh.close()
+
+
+if __name__ == "__main__":
+    main()

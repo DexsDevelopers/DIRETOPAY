@@ -22,9 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Validação CSRF
-    $csrfToken = $_POST['csrf_token'] ?? '';
-    check_csrf($csrfToken);
+    // Validação CSRF — pular para requisições JSON (SPA usa Same-Origin, não precisa de CSRF token)
+    if (!$isJsonRequest) {
+        $csrfToken = $_POST['csrf_token'] ?? '';
+        check_csrf($csrfToken);
+    }
 
     // ── Bloqueio de IPs maliciosos ────────────────────────────────────
     $clientIp = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
@@ -125,11 +127,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     $hash = password_hash($password, PASSWORD_DEFAULT);
-    
-    // Garantir que coluna password tem tamanho suficiente para bcrypt hash (60 chars)
-    try { $pdo->exec("ALTER TABLE users MODIFY COLUMN password VARCHAR(255)"); } catch (PDOException $e) {
-        write_log('WARN', 'ALTER TABLE password falhou: ' . $e->getMessage());
-    }
 
     // Log para diagnóstico
     write_log('DEBUG', 'Registro - hash gerado', [
@@ -303,7 +300,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label style="display: block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-2); margin-bottom: 0.5rem; margin-left: 0.2rem;">Nome Completo</label>
                 <div style="position: relative;">
                     <i class="fas fa-user" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-2); font-size: 0.85rem;"></i>
-                    <input type="text" name="full_name" required placeholder="Como no seu banco" 
+                    <input type="text" name="full_name" required placeholder="Como no seu banco"
                            style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 0.9rem 1rem 0.9rem 2.6rem; border-radius: 11px; color: var(--text); font-size: 0.95rem; font-family: var(--font); transition: all 0.2s;">
                 </div>
             </div>
@@ -312,7 +309,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label style="display: block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-2); margin-bottom: 0.5rem; margin-left: 0.2rem;">Email</label>
                 <div style="position: relative;">
                     <i class="fas fa-envelope" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-2); font-size: 0.85rem;"></i>
-                    <input type="email" name="email" required placeholder="seu@email.com" 
+                    <input type="email" name="email" required placeholder="seu@email.com"
                            style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 0.9rem 1rem 0.9rem 2.6rem; border-radius: 11px; color: var(--text); font-size: 0.95rem; font-family: var(--font); transition: all 0.2s;">
                 </div>
             </div>
@@ -330,7 +327,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label style="display: block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-2); margin-bottom: 0.5rem; margin-left: 0.2rem;">Senha</label>
                 <div style="position: relative;">
                     <i class="fas fa-lock" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-2); font-size: 0.85rem;"></i>
-                    <input type="password" name="password" required placeholder="Mínimo 6 caracteres" 
+                    <input type="password" name="password" required placeholder="Mínimo 6 caracteres"
                            style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 0.9rem 1rem 0.9rem 2.6rem; border-radius: 11px; color: var(--text); font-size: 0.95rem; font-family: var(--font); transition: all 0.2s;">
                 </div>
             </div>
@@ -349,4 +346,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- Filtro removido para aceitar todos os tipos de chaves PIX (E-mail, CPF, Telefone, Aleatória) -->
 </body>
 </html>
-

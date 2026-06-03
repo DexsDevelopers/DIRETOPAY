@@ -11,9 +11,11 @@ if ($isJsonRequest) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $clientIp = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 
-    // Validação CSRF
-    $csrfToken = $_POST['csrf_token'] ?? '';
-    check_csrf($csrfToken);
+    // Validação CSRF — pular para requisições JSON (SPA usa Same-Origin)
+    if (!$isJsonRequest) {
+        $csrfToken = $_POST['csrf_token'] ?? '';
+        check_csrf($csrfToken);
+    }
 
     $email    = strtolower(trim(filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL)));
     $password = $_POST['password'] ?? '';
@@ -116,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label style="display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-2); margin-bottom: 0.6rem; margin-left: 0.2rem;">Email</label>
                 <div style="position: relative;">
                     <i class="fas fa-envelope" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-2); font-size: 0.9rem;"></i>
-                    <input type="email" name="email" required placeholder="seu@email.com" 
+                    <input type="email" name="email" required placeholder="seu@email.com"
                            style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 1rem 1rem 1rem 2.8rem; border-radius: 12px; color: var(--text); font-size: 1rem; font-family: var(--font); transition: all 0.2s;">
                 </div>
             </div>
@@ -125,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label style="display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-2); margin-bottom: 0.6rem; margin-left: 0.2rem;">Senha</label>
                 <div style="position: relative;">
                     <i class="fas fa-lock" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-2); font-size: 0.9rem;"></i>
-                    <input type="password" name="password" required placeholder="••••••••" 
+                    <input type="password" name="password" required placeholder="••••••••"
                            style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 1rem 1rem 1rem 2.8rem; border-radius: 12px; color: var(--text); font-size: 1rem; font-family: var(--font); transition: all 0.2s;">
                 </div>
             </div>
@@ -143,4 +145,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 </body>
 </html>
-
