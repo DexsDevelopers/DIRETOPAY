@@ -124,7 +124,7 @@ const accounts = [
     id: "nominal4",
     num: "04",
     name: "Nominal 4",
-    subtitle: "EzzyBanking",
+    subtitle: "Recebimento PIX",
     badge: "✨ Premium",
     badgeDark: "bg-violet-500/20 text-violet-300 border border-violet-500/30",
     badgeLight: "bg-violet-100 text-violet-700 border border-violet-200",
@@ -133,7 +133,7 @@ const accounts = [
     iconBgDark: "bg-violet-500/15 text-violet-400",
     iconBgLight: "bg-violet-100 text-violet-600",
     description:
-      "Conta nominal com adquirente Ezzy Banking. Taxa competitiva com suporte a múltiplos adquirentes para máxima flexibilidade. Ideal para quem busca otimizar conversões.",
+      "Conta nominal 4 com recebimento instantâneo via PIX. Taxa competitiva e processamento rápido para otimizar suas conversões.",
     fees: [
       {
         icon: <Percent size={11} />,
