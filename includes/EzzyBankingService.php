@@ -116,9 +116,14 @@ class EzzyBankingService
         }
 
         $decoded = json_decode($response, true);
+        $jsonError = json_last_error_msg();
 
         if ($httpCode >= 200 && $httpCode < 300) {
-            return ['ok' => true, 'data' => $decoded, 'http_code' => $httpCode];
+            if ($decoded === null && !empty($response)) {
+                // Resposta não é JSON válido mas HTTP foi sucesso (ex: servidor retornou HTML)
+                return ['ok' => false, 'error' => 'Resposta inválida da API (não é JSON): ' . $jsonError, 'http_code' => $httpCode];
+            }
+            return ['ok' => true, 'data' => $decoded ?? [], 'http_code' => $httpCode];
         }
 
         $errMsg = (is_array($decoded) && !empty($decoded['error']))
@@ -252,26 +257,49 @@ class EzzyBankingService
 
     /**
      * Consultar saldo da conta.
-     * Endpoint não está na doc pública — tentamos o padrão comum.
-     * Se retornar 404 o gateway simplesmente não expõe essa rota via API.
+     * Tenta múltiplos endpoints conhecidos com fallback.
+     * Se nenhum funcionar, retorna erro.
      */
     public static function getBalance(): array
     {
-        $result = self::apiRequest('/api/v1/account/balance', [], 'GET');
+        // Lista de endpoints para tentar (em ordem de preferência)
+        $endpoints = [
+            '/api/v1/account/balance',
+            '/api/v1/account',           // alternativa: dados da conta incluem saldo
+            '/api/v1/balance',
+            '/api/v1/saldo',
+        ];
 
-        // Normaliza campos de saldo para exibição no dashboard
-        if ($result['ok'] && is_array($result['data'])) {
+        $lastError = null;
+
+        foreach ($endpoints as $endpoint) {
+            $result = self::apiRequest($endpoint, [], 'GET');
+
+            if (!$result['ok']) {
+                $lastError = $result['error'] ?? 'Falha desconhecida';
+                continue; // Tenta próximo endpoint
+            }
+
+            // Normaliza campos de saldo para exibição no dashboard
+            if (!is_array($result['data'])) {
+                $lastError = 'Resposta da API não é um array';
+                continue;
+            }
+
             $d = $result['data'];
-            $result['available_balance'] = (float)(
+            $result['data']['available_balance'] = (float)(
                 $d['saldoDisponivel'] ?? $d['available_balance'] ?? $d['balance'] ?? $d['available'] ?? 0
             );
-            $result['blocked_balance'] = (float)(
+            $result['data']['blocked_balance'] = (float)(
                 $d['saldoBloqueado'] ?? $d['blocked_balance'] ?? $d['blocked'] ?? 0
             );
-            $result['name'] = $d['nome'] ?? $d['name'] ?? $d['accountName'] ?? '';
+            $result['data']['name'] = $d['nome'] ?? $d['name'] ?? $d['accountName'] ?? $d['nomeCompleto'] ?? '';
+
+            return $result;
         }
 
-        return $result;
+        // Se chegou aqui, nenhum endpoint funcionou
+        return ['ok' => false, 'error' => $lastError ?? 'Não foi possível obter saldo da conta Ezzy Banking', 'data' => null];
     }
 
     /**
