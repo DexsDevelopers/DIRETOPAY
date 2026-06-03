@@ -650,14 +650,24 @@ export default function LandingPage() {
                 </PulseBadge>
               </div>
               <h1 className="text-[30px] sm:text-[44px] lg:text-[56px] font-black tracking-tight leading-[1.05] mb-5">
-                <ClipReveal delay={0.05}>
+                <motion.span
+                  className="block"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                >
                   A plataforma que escala com
-                </ClipReveal>
-                <ClipReveal delay={0.18}>
+                </motion.span>
+                <motion.span
+                  className="block"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.25 }}
+                >
                   <GradientText from="#10b981" to="#34d399">
                     sua operação crescer!
                   </GradientText>
-                </ClipReveal>
+                </motion.span>
               </h1>
               <p className="text-[16px] text-gray-400 leading-relaxed mb-6 max-w-md">
                 Receba via PIX com{" "}
