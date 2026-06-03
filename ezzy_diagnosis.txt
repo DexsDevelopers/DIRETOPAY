@@ -1,0 +1,36 @@
+DIAGNÓSTICO EZZY BANKING - DiretoPay
+=====================================
+
+Data: 2026-06-03 10:54:00 BRT
+
+TESTES EXECUTADOS:
+1. GET /api/v1/account → HTTP 404 (Not Found)
+2. GET /api/v1/account/balance → HTTP 404 (Not Found)
+3. GET /api/v1/adquirente → HTTP 404 (Not Found)
+4. GET /api/v1/my-acquirer → HTTP 404 (Not Found)
+5. GET /api/v1/acquirers → HTTP 404 (Not Found)
+6. GET /api/v1/account/acquirers → HTTP 404 (Not Found)
+7. GET /api/v1/gateway/adquirentes → HTTP 404 (Not Found)
+8. GET /api/v1/gateway/acquirer → HTTP 404 (Not Found)
+9. POST /api/v1/gateway/request-qrcode → HTTP 502 (Bad Gateway)
+   - Mensagem: "Todas as adquirentes falharam"
+
+PROBLEMA IDENTIFICADO:
+- Todos os endpoints de conta (account) retornam 404
+- Todos os endpoints de adquirentes retornam 404
+- QR Code retorna 502 com mensagem "Todas as adquirentes falharam"
+
+POSSÍVEIS CAUSAS:
+1. Client ID (ci) ou Client Secret (cs) incorretos
+2. Conta não ativa na Ezzy Banking
+3. Nenhuma adquirente configurada na conta
+4. Problema de autenticação com headers ci/cs
+
+AÇÕES RECOMENDADAS:
+1. Verifique as credenciais no painel Ezzy Banking
+2. Confirme que a conta está ativa
+3. Verifique se há adquirentes configuradas
+4. Teste as credenciais diretamente na API Ezzy Banking
+5. Entre em contato com o suporte da Ezzy Banking
+
+URL DO TESTE: https://diretopay.site/ezzy_test.php?token=ezzy_test_2025
