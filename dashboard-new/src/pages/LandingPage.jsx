@@ -650,24 +650,12 @@ export default function LandingPage() {
                 </PulseBadge>
               </div>
               <h1 className="text-[30px] sm:text-[44px] lg:text-[56px] font-black tracking-tight leading-[1.05] mb-5">
-                <motion.span
-                  className="block"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.1 }}
-                >
-                  A plataforma que escala com
-                </motion.span>
-                <motion.span
-                  className="block"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.25 }}
-                >
+                <span className="block">A plataforma que escala com</span>
+                <span className="block">
                   <GradientText from="#10b981" to="#34d399">
                     sua operação crescer!
                   </GradientText>
-                </motion.span>
+                </span>
               </h1>
               <p className="text-[16px] text-gray-400 leading-relaxed mb-6 max-w-md">
                 Receba via PIX com{" "}
