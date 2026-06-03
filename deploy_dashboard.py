@@ -185,6 +185,16 @@ try:
         sftp.put(favicon_root, f"{REMOTE_BASE}/favicon.ico")
         print(f"  favicon.ico → OK")
 
+    # Force git pull on server to sync with GitHub
+    remote_path = REMOTE_BASE
+    stdin, stdout, stderr = c.exec_command(
+        f"cd {remote_path} && git fetch origin main && git reset --hard origin/main 2>&1"
+    )
+    pull_result = stdout.read().decode().strip()
+    print(
+        f"  git pull servidor: {pull_result.splitlines()[-1] if pull_result else 'OK'}"
+    )
+
     sftp.close()
     c.close()
     print(f"✓ {uploaded} novos assets + index.php enviados via SFTP")
