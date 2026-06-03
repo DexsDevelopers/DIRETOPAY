@@ -529,6 +529,20 @@ try {
             }
             break;
 
+        case 'get_ezzy_acquirers':
+            require_once 'includes/EzzyBankingService.php';
+            $res = EzzyBankingService::listAcquirers();
+            if ($res['ok'] && isset($res['data']) && is_array($res['data'])) {
+                echo json_encode([
+                    'success' => true,
+                    'data' => $res['data'],
+                ]);
+            } else {
+                $err = $res['error'] ?? 'Não foi possível obter lista de adquirentes';
+                echo json_encode(['success' => false, 'error' => $err]);
+            }
+            break;
+
         case 'get_misticpay_balance':
             require_once 'includes/MisticPayService.php';
             $res = MisticPayService::getUserInfo();
