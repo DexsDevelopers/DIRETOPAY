@@ -144,6 +144,25 @@ $is_whatsapp_active = ($current_page == 'whatsapp.php');
                 <span>Premiações</span>
             </a>
 
+            <!-- Suporte Group -->
+            <div class="sb-group">
+                <button class="sb-group-trigger">
+                    <i class="fa-solid fa-headset"></i>
+                    <span class="sb-group-title">Suporte</span>
+                    <i class="fa-solid fa-chevron-right sb-chevron"></i>
+                </button>
+                <div class="sb-group-content">
+                    <a href="/suporte.php" class="sb-subitem">
+                        <i class="fa-solid fa-circle-question"></i>
+                        <span>Central de Ajuda</span>
+                    </a>
+                    <a href="/suporte_tickets.php" class="sb-subitem">
+                        <i class="fa-solid fa-ticket"></i>
+                        <span>Tickets de Suporte</span>
+                    </a>
+                </div>
+            </div>
+
             <!-- Configurações -->
             <a href="/config" class="sb-item">
                 <i class="fa-solid fa-gear"></i>
@@ -194,6 +213,10 @@ $is_whatsapp_active = ($current_page == 'whatsapp.php');
                     <a href="/admin/chats" class="sb-subitem">
                         <i class="fa-solid fa-comments"></i>
                         <span>Chats</span>
+                    </a>
+                    <a href="/admin_tickets.php" class="sb-subitem">
+                        <i class="fa-solid fa-ticket"></i>
+                        <span>Tickets de Suporte</span>
                     </a>
                     <a href="/admin/gateways" class="sb-subitem">
                         <i class="fa-solid fa-cpu"></i>

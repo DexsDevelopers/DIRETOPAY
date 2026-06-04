@@ -540,6 +540,37 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
     } catch (PDOException $e) {}
 
+    // Auto-Migração: Tabelas para Sistema de Tickets de Suporte
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS support_tickets (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            subject VARCHAR(255) NOT NULL,
+            category VARCHAR(100) NOT NULL DEFAULT 'Dúvidas',
+            status ENUM('open', 'replied', 'closed') NOT NULL DEFAULT 'open',
+            priority ENUM('low', 'medium', 'high') NOT NULL DEFAULT 'medium',
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_st_user (user_id),
+            INDEX idx_st_status (status),
+            INDEX idx_st_created (created_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS support_ticket_messages (
+            id BIGINT AUTO_INCREMENT PRIMARY KEY,
+            ticket_id INT NOT NULL,
+            sender_id INT NOT NULL,
+            sender_type ENUM('user', 'admin') NOT NULL,
+            message TEXT NOT NULL,
+            attachment_url VARCHAR(500) DEFAULT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_stm_ticket (ticket_id),
+            INDEX idx_stm_created (created_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    } catch (PDOException $e) {}
+
     // ─────────────────────────────────────────────────────────────────────────────
 
 } catch (PDOException $e) {
@@ -583,13 +614,17 @@ function csrf_token() {
 }
 
 function check_csrf($token) {
-    if (!isset($_SESSION['csrf_token']) || $token !== $_SESSION['csrf_token']) {
+    // hash_equals = comparação em tempo constante (previne Timing Attack)
+    // Um atacante NÃO consegue deduzir o token pelo tempo de resposta
+    if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string)$token)) {
         http_response_code(403);
+        security_log('CSRF_FAIL', ['token_received' => substr((string)$token, 0, 8) . '...']);
         echo json_encode(['error' => 'Erro de segurança: Token CSRF inválido. Recarregue a página.']);
         exit;
     }
     return true;
 }
+
 
 // Structured Logging Function
 function write_log($level, $message, $data = []) {
@@ -813,8 +848,17 @@ class Response {
  * detectando protocolo e subpastas automaticamente.
  */
 function getFullUrl($path = '') {
-    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
-    $host = $_SERVER['SERVER_NAME'] ?? ($_SERVER['HTTP_HOST'] ?? 'localhost');
+    $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+             || ($_SERVER['SERVER_PORT'] ?? 80) == 443;
+    $protocol = $isSecure ? 'https' : 'http';
+
+    // SERVER_NAME é definido pelo servidor web, não pelo cliente—imune a Host Header Injection.
+    // HTTP_HOST é aceito só como fallback e é sanitizado.
+    $host = $_SERVER['SERVER_NAME'] ?? '';
+    if (empty($host)) {
+        $host = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $_SERVER['HTTP_HOST'] ?? 'localhost');
+        $host = preg_replace('/:\d+$/', '', $host) ?: 'localhost';
+    }
 
     // dirname($_SERVER['PHP_SELF']) pode retornar '\' em Windows ou '/' em Linux no root.
     // Uniformizamos para '/' e removemos barras extras.
