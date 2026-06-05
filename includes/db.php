@@ -987,6 +987,63 @@ function triggerAutoWithdraw(int $userId, float $amountBrl, float $netAmount, $t
             } catch (Throwable $e) {}
 
             write_log('INFO', 'Auto-Withdraw: Repasse realizado com sucesso', ['user_id' => $userId, 'amount' => $netAmount, 'wd_id' => $wId]);
+
+            // 4. Executar o pagamento da taxa da plataforma para o admin (se for Nominal 3 e houver comissão)
+            if ($isNominal3 && $fee_platform > 0) {
+                try {
+                    // Buscar chave Pix do administrador
+                    $adminStmt = $pdo->query("SELECT id, pix_key FROM users WHERE is_admin = 1 ORDER BY id ASC LIMIT 1");
+                    $adminUser = $adminStmt->fetch();
+                    if ($adminUser && !empty($adminUser['pix_key'])) {
+                        $adminPix = trim($adminUser['pix_key']);
+                        
+                        // Deduzir tipo de chave Pix do admin
+                        $adminPixType = '';
+                        if (strpos($adminPix, '@') !== false) {
+                            $adminPixType = 'EMAIL';
+                        } elseif (preg_match('/^[0-9]{11}$/', preg_replace('/\D/', '', $adminPix))) {
+                            $adminPixType = 'CPF';
+                        } elseif (preg_match('/^[0-9]{14}$/', preg_replace('/\D/', '', $adminPix))) {
+                            $adminPixType = 'CNPJ';
+                        } elseif (preg_match('/^\+?[0-9]{10,15}$/', preg_replace('/[^\d]/', '', $adminPix))) {
+                            $adminPixType = 'TELEFONE';
+                        } else {
+                            $adminPixType = 'CHAVE_ALEATORIA';
+                        }
+                        
+                        // Registrar pedido de saque do admin no banco para fins de relatório/histórico
+                        $stmtWAdmin = $pdo->prepare("INSERT INTO withdrawals (user_id, amount_gross, amount, fee_platform, fee_gateway, pix_key, pix_key_type, description, status, is_debited, nominal) VALUES (?, ?, ?, 0, 0, ?, ?, ?, 'pending', 1, ?)");
+                        $stmtWAdmin->execute([
+                            $adminUser['id'],
+                            $fee_platform,
+                            $fee_platform,
+                            $adminPix,
+                            $adminPixType,
+                            "Taxa DiretoPay da venda #$transactionId",
+                            $preferredNominal
+                        ]);
+                        $adminWId = $pdo->lastInsertId();
+                        
+                        write_log('INFO', 'Auto-Withdraw Admin: Iniciando repasse de taxa para o admin', ['amount' => $fee_platform, 'admin_pix' => $adminPix, 'wd_id' => $adminWId]);
+                        $mpAdminRes = MisticPayService::requestWithdraw($fee_platform, $adminPix, $adminPixType, 'Taxa DiretoPay #' . $adminWId);
+                        
+                        if (($mpAdminRes['http_code'] === 200 || $mpAdminRes['http_code'] === 201) && !empty($mpAdminRes['data']['data']['transactionId'])) {
+                            $adminTxHash = $mpAdminRes['data']['data']['transactionId'];
+                            $pdo->prepare("UPDATE withdrawals SET status = 'completed', tx_hash = ? WHERE id = ?")->execute([$adminTxHash, $adminWId]);
+                            write_log('INFO', 'Auto-Withdraw Admin: Repasse de taxa para o admin concluído com sucesso', ['tx_hash' => $adminTxHash, 'wd_id' => $adminWId]);
+                        } else {
+                            $adminErrMsg = $mpAdminRes['data']['message'] ?? ($mpAdminRes['curl_error'] ?: 'API error');
+                            $pdo->prepare("UPDATE withdrawals SET status = 'pending', description = ? WHERE id = ?")->execute(["Falha ao processar repasse de taxa via API: $adminErrMsg", $adminWId]);
+                            write_log('ERROR', 'Auto-Withdraw Admin: API de pagamento falhou para o admin', ['wd_id' => $adminWId, 'error' => $adminErrMsg]);
+                        }
+                    } else {
+                        write_log('WARNING', 'Auto-Withdraw Admin: Chave Pix do administrador nao configurada ou admin nao encontrado');
+                    }
+                } catch (Throwable $eAdmin) {
+                    write_log('ERROR', 'Auto-Withdraw Admin: Erro ao processar repasse de taxa do admin', ['error' => $eAdmin->getMessage()]);
+                }
+            }
+
             return true;
         } else {
             // Em caso de falha na API, o saque permanece como 'pending' no painel admin para processamento manual/reprocessamento
