@@ -15,6 +15,20 @@ if (!isLoggedIn()) {
 $userId = $_SESSION['user_id'];
 $input = json_decode(file_get_contents('php://input'), true);
 
+// Rate Limiting — máx 5 saques/minuto por IP, 3/minuto por usuário
+// Pesquisa: OWASP — endpoints financeiros devem ter rate limiting rigoroso
+$clientIp = get_real_ip();
+if (!check_endpoint_rate_limit($pdo, $clientIp, 'withdraw', 5, 1)) {
+    http_response_code(429);
+    echo json_encode(['error' => 'Muitas solicitações. Aguarde 1 minuto e tente novamente.']);
+    exit;
+}
+if (!check_endpoint_rate_limit($pdo, 'user_' . $userId, 'withdraw', 3, 1)) {
+    http_response_code(429);
+    echo json_encode(['error' => 'Limite de saques por minuto atingido. Aguarde e tente novamente.']);
+    exit;
+}
+
 // Validação CSRF
 $headers = getallheaders();
 $csrfToken = $headers['X-CSRF-Token'] ?? ($headers['x-csrf-token'] ?? '');

@@ -7,6 +7,7 @@
  */
 
 require_once 'config.php';
+require_once __DIR__ . '/includes/Security.php'; // get_trusted_base_url()
 
 $botToken = defined('TELEGRAM_USER_BOT_TOKEN') ? TELEGRAM_USER_BOT_TOKEN : '';
 $secret   = defined('TELEGRAM_USER_BOT_SECRET') ? TELEGRAM_USER_BOT_SECRET : '';
@@ -21,7 +22,7 @@ define(\'TELEGRAM_USER_BOT_USERNAME\', \'NomeDoBot\');
     </pre>');
 }
 
-$webhookUrl = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/telegram_user_bot.php';
+$webhookUrl = get_trusted_base_url() . '/telegram_user_bot.php';
 
 $params = [
     'url' => $webhookUrl,

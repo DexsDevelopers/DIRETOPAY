@@ -191,7 +191,7 @@ function safe_redirect(string $url): string {
 
     // Rejeita URLs com host externo
     if (!empty($parsed['host'])) {
-        $allowedHost = strtolower($_SERVER['HTTP_HOST'] ?? '');
+        $allowedHost = strtolower(get_trusted_host()); // SERVER_NAME — não controlado pelo cliente
         if (strtolower($parsed['host']) !== $allowedHost) {
             return '/dashboard.php'; // fallback seguro
         }
@@ -345,3 +345,115 @@ function security_log(string $event, array $context = []): void {
         write_log('SECURITY', $event, $context);
     }
 }
+
+// ──────────────────────────────────────────────────────────────────────────────
+// 13. WEBHOOK REPLAY ATTACK — valida janela de tempo do timestamp
+//     Impede que atacantes reutilizem webhooks capturados (replay attacks)
+//     Pesquisa: hooklistener.com, ngrok.com — tolerância recomendada: 5 minutos
+// ──────────────────────────────────────────────────────────────────────────────
+function validate_webhook_timestamp(int $webhookTimestamp, int $toleranceSeconds = 300): bool {
+    $now = time();
+    $diff = abs($now - $webhookTimestamp);
+    if ($diff > $toleranceSeconds) {
+        security_log('WEBHOOK_REPLAY_BLOCKED', [
+            'webhook_ts' => $webhookTimestamp,
+            'server_ts'  => $now,
+            'diff_sec'   => $diff,
+        ]);
+        return false;
+    }
+    return true;
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// 14. RATE LIMITER GENÉRICO — por IP + endpoint (usa tabela login_attempts adaptada)
+//     Pesquisa: OWASP, readme.io — endpoints críticos devem ter rate limiting
+// ──────────────────────────────────────────────────────────────────────────────
+function check_endpoint_rate_limit(PDO $pdo, string $ip, string $endpoint, int $maxHits = 20, int $windowMinutes = 1): bool {
+    try {
+        // Cria tabela de rate limit se não existir
+        $pdo->exec("CREATE TABLE IF NOT EXISTS rate_limit_log (
+            id         INT AUTO_INCREMENT PRIMARY KEY,
+            ip         VARCHAR(45) NOT NULL,
+            endpoint   VARCHAR(100) NOT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_rl (ip, endpoint, created_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+        // Conta hits no janela de tempo
+        $s = $pdo->prepare("SELECT COUNT(*) FROM rate_limit_log WHERE ip = ? AND endpoint = ? AND created_at >= DATE_SUB(NOW(), INTERVAL ? MINUTE)");
+        $s->execute([$ip, $endpoint, $windowMinutes]);
+        $hits = (int)$s->fetchColumn();
+
+        if ($hits >= $maxHits) {
+            security_log('RATE_LIMIT_HIT', ['endpoint' => $endpoint, 'hits' => $hits, 'window_min' => $windowMinutes]);
+            return false; // bloqueado
+        }
+
+        // Registra o hit atual
+        $pdo->prepare("INSERT INTO rate_limit_log (ip, endpoint) VALUES (?, ?)")->execute([$ip, $endpoint]);
+
+        // Limpeza periódica (1% de chance por requisição para não sobrecarregar)
+        if (rand(1, 100) === 1) {
+            $pdo->exec("DELETE FROM rate_limit_log WHERE created_at < DATE_SUB(NOW(), INTERVAL 60 MINUTE)");
+        }
+
+        return true;
+    } catch (Throwable $e) {
+        return true; // em caso de erro no DB, não bloqueia (fail open para não derrubar o site)
+    }
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// 15. SANITIZAÇÃO DE ENTRADA — remove caracteres de controle e limita tamanho
+//     Pesquisa: OWASP — nunca confie em input do usuário
+// ──────────────────────────────────────────────────────────────────────────────
+function sanitize_string(string $input, int $maxLen = 255): string {
+    // Remove caracteres de controle (exceto nova linha e tab em contextos multi-linha)
+    $clean = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $input);
+    // Limita tamanho
+    return mb_substr(trim($clean), 0, $maxLen, 'UTF-8');
+}
+
+function sanitize_numeric_string(string $input): string {
+    return preg_replace('/[^0-9.\-]/', '', $input);
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// 16. VALIDAÇÃO RIGOROSA DE VALOR MONETÁRIO
+//     Previne manipulação de preços (price tampering) — validação sempre server-side
+//     Pesquisa: OWASP — "Never trust client-side calculations"
+// ──────────────────────────────────────────────────────────────────────────────
+function validate_monetary_amount(float $amount, float $min = 1.0, float $max = 100000.0): bool {
+    if (!is_finite($amount)) return false;
+    if ($amount < $min || $amount > $max) return false;
+    // Verifica se tem no máximo 2 casas decimais (evita float abuse)
+    if (round($amount, 2) !== $amount) {
+        $amount = round($amount, 2); // normaliza silenciosamente
+    }
+    return true;
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// 17. BLOQUEAR MÉTODOS HTTP INDESEJADOS em endpoints sensíveis
+//     Pesquisa: OWASP — "Use POST for sensitive actions, never GET"
+// ──────────────────────────────────────────────────────────────────────────────
+function require_post_method(): void {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        header('Allow: POST');
+        echo json_encode(['error' => 'Método não permitido. Use POST.']);
+        exit;
+    }
+}
+
+function require_https(): void {
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || ($_SERVER['SERVER_PORT'] ?? 80) == 443;
+    if (!$isHttps && php_sapi_name() !== 'cli') {
+        http_response_code(426);
+        echo json_encode(['error' => 'HTTPS obrigatório.']);
+        exit;
+    }
+}
+

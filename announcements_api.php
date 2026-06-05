@@ -118,7 +118,7 @@ function handleMediaUpload(): array {
         throw new RuntimeException('Falha ao salvar arquivo');
     }
 
-    $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+    $baseUrl = get_trusted_base_url();
     return ['url' => $baseUrl . '/uploads/announcements/' . $filename, 'type' => $mediaType];
 }
 

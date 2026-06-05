@@ -21,12 +21,21 @@ try {
         exit;
     }
 
-    $event = $payload['event'] ?? '';
-    write_log('info', "SigiloPay Webhook: event=$event | " . substr($rawBody, 0, 300));
+    // Rate Limiting — previne flood/replay de webhook (max 60 req/min por IP)
+    // Pesquisa: hooklistener.com, readme.io — rate limiting em webhooks
+    $whIp = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+    if (!check_endpoint_rate_limit($pdo, $whIp, 'sigilo_webhook', 60, 1)) {
+        http_response_code(429);
+        echo json_encode(['error' => 'Rate limit exceeded']);
+        exit;
+    }
 
-    // Token por transação não é validado globalmente (o token da API é por transação e seria sobrescrito)
-    // A segurança é garantida pela correspondência do pix_id com transações internas
+    $event = $payload['event'] ?? '';
+    write_log('info', "SigiloPay Webhook: event=$event ip=$whIp | " . substr($rawBody, 0, 300));
+
+    // SigiloPay usa token por transação (não HMAC global) — segurança extra via rate limit + match de pix_id interno
     write_log('info', "SigiloPay Webhook: token recebido=" . ($payload['token'] ?? '(none)'));
+
 
     // Só processa pagamentos confirmados
     if ($event !== 'TRANSACTION_PAID') {
@@ -73,14 +82,17 @@ try {
             $userId    = $txRow['user_id'];
             $netAmount = (float)$txRow['amount_net_brl'];
 
-            // Credita saldo (VALOR BRUTO conforme solicitado)
-            $pdo->prepare("UPDATE users SET balance = balance + ? WHERE id = ?")->execute([$amount, $userId]);
-
-            // Log de saldo
-            try {
-                $pdo->prepare("INSERT INTO balance_log (user_id, type, amount, description, created_at) VALUES (?,?,?,?,NOW())")
-                    ->execute([$userId, 'credit', $amount, 'Pagamento PIX #' . $sigiloTxId]);
-            } catch (Throwable $e) {}
+            // Credita saldo atomicamente (SELECT FOR UPDATE + log correto em balance_log)
+            $creditResult = adjustBalance(
+                (int)$userId,
+                (float)$amount,
+                'pix_credit',
+                'sigilo_' . $sigiloTxId,
+                'Pagamento PIX SigiloPay #' . $sigiloTxId
+            );
+            if (!$creditResult['success']) {
+                write_log('ERROR', 'SigiloPay: falha ao creditar saldo', ['user_id' => $userId, 'tx' => $sigiloTxId, 'error' => $creditResult['error']]);
+            }
 
             // Notificação in-app com frase engraçada
             try {
@@ -262,12 +274,17 @@ try {
             $platformFee = $amount * ($commRate / 100);
             $netAmount = $amount - $gatewayFee - $platformFee;
 
-            $pdo->prepare("UPDATE users SET balance = balance + ? WHERE id = ?")->execute([$amount, $userId]);
-
-            try {
-                $pdo->prepare("INSERT INTO balance_log (user_id, type, amount, description, created_at) VALUES (?,?,?,?,NOW())")
-                    ->execute([$userId, 'credit', $amount, 'Pagamento PIX #' . $sigiloTxId]);
-            } catch (Throwable $e) {}
+            // Credita saldo atomicamente — novo usuário criado via SigiloPay
+            $creditResult2 = adjustBalance(
+                (int)$userId,
+                (float)$amount,
+                'pix_credit',
+                'sigilo_new_' . $sigiloTxId,
+                'Pagamento PIX SigiloPay (novo usuário) #' . $sigiloTxId
+            );
+            if (!$creditResult2['success']) {
+                write_log('ERROR', 'SigiloPay (novo usuário): falha ao creditar saldo', ['user_id' => $userId, 'tx' => $sigiloTxId, 'error' => $creditResult2['error']]);
+            }
 
             try {
                 $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, created_at) VALUES (?,?,?,?,NOW())")

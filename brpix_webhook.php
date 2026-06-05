@@ -106,14 +106,17 @@ try {
             $userId    = $txRow['user_id'];
             $netAmount = (float)$txRow['amount_net_brl'];
 
-            // Credita saldo
-            $pdo->prepare("UPDATE users SET balance = balance + ? WHERE id = ?")->execute([$amount, $userId]);
-
-            // Log de saldo
-            try {
-                $pdo->prepare("INSERT INTO balance_log (user_id, type, amount, description, created_at) VALUES (?,?,?,?,NOW())")
-                    ->execute([$userId, 'credit', $amount, 'Pagamento PIX #' . $brpixTxId]);
-            } catch (Throwable $e) {}
+            // Credita saldo atomicamente (SELECT FOR UPDATE + log correto em balance_log)
+            $creditResult = adjustBalance(
+                (int)$userId,
+                (float)$amount,
+                'pix_credit',
+                'brpix_' . $brpixTxId,
+                'Pagamento PIX BRPix #' . $brpixTxId
+            );
+            if (!$creditResult['success']) {
+                write_log('ERROR', 'BRPix: falha ao creditar saldo', ['user_id' => $userId, 'tx' => $brpixTxId, 'error' => $creditResult['error']]);
+            }
 
             // Notificação in-app
             try {

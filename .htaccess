@@ -1,7 +1,127 @@
-Options -MultiViews
+Options -MultiViews -Indexes
 RewriteEngine On
 
-# Scripts de instalação/gerenciamento (acesso direto)
+# ======================================================================
+# SECURITY HARDENING — DiretoPay
+# Pesquisa: OWASP Top 10, SecurityHeaders.com, Apache Security Docs
+# ======================================================================
+
+# ----------------------------------------------------------------------
+# HTTP SECURITY HEADERS (nivel servidor — aplicam a TODAS as respostas)
+# Pesquisa: SecurityHeaders.com — A+ rating requires these headers
+# ----------------------------------------------------------------------
+<IfModule mod_headers.c>
+    # Previne Clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    # Previne MIME sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    # XSS Protection para browsers legados
+    Header always set X-XSS-Protection "1; mode=block"
+    # Controla referrer em links externos
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    # Desativa recursos de hardware desnecessarios
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(), usb=()"
+    # HSTS — forca HTTPS por 1 ano
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    # CSP — permite CDNs usados pelo projeto
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
+    # Remove headers que expoe versao do servidor
+    Header always unset X-Powered-By
+    Header always unset Server
+</IfModule>
+
+# ----------------------------------------------------------------------
+# BLOQUEAR ACESSO A ARQUIVOS SENSIVEIS
+# Pesquisa: OWASP — never expose config, credentials, or debug files
+# ----------------------------------------------------------------------
+
+# Credenciais SSH expostas na raiz — CRITICO
+<Files "ssh_credentials.txt">
+    Require all denied
+</Files>
+
+# .env (se existir)
+<Files ".env">
+    Require all denied
+</Files>
+
+# Config PHP (nunca acessar diretamente)
+<Files "config.php">
+    Require all denied
+</Files>
+
+# Scripts Python (deploy, debug) — nunca devem ser acessiveis via web
+<FilesMatch "\.py$">
+    Require all denied
+</FilesMatch>
+
+# Scripts de debug e verificacao sensiveis
+<FilesMatch "^(check_db|check_data|check_richard|check_richard_id|check_richard_v2|check_profit_sum|check_table|check_now|check_slug|debug_bot|debug_admin_actions|diagnose|make_admin|create_admin|fix_admin|fix_admin2|fix_tx671|fix_old_withdrawals|reset_admin|brpix_debug|brpix_qrdebug|brpix_qrdebug2|brpix_whsecret|show_secret|server_ip|where_am_i|temp_migrate|tmp_check_cols_v2|patch_banner_column|find_richard|ironpay_debug)\.php$">
+    Require all denied
+</FilesMatch>
+
+# Backups e dumps SQL
+<FilesMatch "\.(sql|bak|backup|old|orig|tmp|swp)$">
+    Require all denied
+</FilesMatch>
+
+# Arquivos de log
+<FilesMatch "\.log$">
+    Require all denied
+</FilesMatch>
+
+# Composer e package manager (nao expor)
+<FilesMatch "^(composer\.(json|lock|phar)|package(-lock)?\.json)$">
+    Require all denied
+</FilesMatch>
+
+# Bloquear acesso direto a includes/
+<IfModule mod_rewrite.c>
+    RewriteRule ^includes/ - [F,L]
+</IfModule>
+
+# ----------------------------------------------------------------------
+# BLOQUEAR AGENTES DE ATAQUE CONHECIDOS (Scanners, Pentest tools)
+# Pesquisa: OWASP — block automated attack tools at server level
+# ----------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_USER_AGENT} (sqlmap|nikto|nmap|masscan|zgrab|dirbuster|gobuster|wfuzz|burpsuite|openvas|nessus|hydra|acunetix|nuclei|metasploit|w3af|arachni|havij|appscan|netsparker|skipfish|whatweb|commix|dalfox|subfinder|httprobe|ffuf) [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# ----------------------------------------------------------------------
+# BLOQUEAR PADROES DE ATAQUE NA URL (Path Traversal, null byte, PHP wrappers)
+# Pesquisa: OWASP A01, A03 — bloquear no servidor antes de chegar ao PHP
+# ----------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+    # Path Traversal
+    RewriteCond %{QUERY_STRING} (\.\./|\.\.\\) [NC]
+    RewriteRule .* - [F,L]
+
+    # Null byte injection
+    RewriteCond %{QUERY_STRING} %00 [NC]
+    RewriteRule .* - [F,L]
+
+    # PHP wrapper injection (php://input, php://filter, etc.)
+    RewriteCond %{QUERY_STRING} (php://|file://|zip://|phar://) [NC]
+    RewriteRule .* - [F,L]
+
+    # Tentativa de injecao de comandos via URL
+    RewriteCond %{QUERY_STRING} (exec|passthru|popen|proc_open|shell_exec|system|eval|base64_decode) [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# ----------------------------------------------------------------------
+# OCULTAR INFORMACOES DO SERVIDOR
+# Pesquisa: solvps.com — ServerSignature Off reduz surface area de ataque
+# ----------------------------------------------------------------------
+ServerSignature Off
+
+# ----------------------------------------------------------------------
+# ROTAS DA APLICACAO (mantidas do original)
+# ----------------------------------------------------------------------
+
+# Scripts de instalacao/gerenciamento (acesso direto)
 RewriteRule ^setup_db\.php$ - [L]
 RewriteRule ^install_database\.php$ - [L]
 RewriteRule ^ezzy_test\.php$ - [L]
@@ -9,17 +129,17 @@ RewriteRule ^ezzy_test\.php$ - [L]
 # Checkouts customizados (Legado)
 RewriteRule ^c/([a-zA-Z0-9_-]+)/?$ pay.php?c=$1 [L,QSA]
 
-# Loja pública standalone
+# Loja publica standalone
 RewriteRule ^loja/?$ loja.php [L,QSA]
 
-# Todas as rotas SPA → index.php (antes do fallback de arquivos)
+# Todas as rotas SPA -> index.php
 RewriteRule ^(dashboard|vendas|relatorios|saques|config|admin|admin/apis|admin/chats|admin/saques|admin/usuarios|admin/vendas|admin/produtos|admin/anuncios|admin/banners|admin/gateways|checkouts|checkout-builder|afiliado|login|register|forgot-password|demo|docs|chat|vitrine|parceiros|premiacoes)/?$ index.php [L,QSA]
 RewriteRule ^vitrine/produto/(.+)$ index.php [L,QSA]
 RewriteRule ^reset-password/(.+)$ index.php [L,QSA]
 RewriteRule ^chat/(.+)$ index.php [L,QSA]
 RewriteRule ^p/(.+)$ index.php [L,QSA]
 
-# Fallback SPA: rotas que não são arquivos nem diretórios
+# Fallback SPA: rotas que nao sao arquivos nem diretorios
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} !^/assets/ [NC]
@@ -29,11 +149,7 @@ RewriteRule ^(.*)$ index.php [L,QSA]
 # HIGH-PERFORMANCE OPTIMIZATIONS (GZIP & BROWSER CACHING)
 # ======================================================================
 
-# ----------------------------------------------------------------------
-# GZIP COMPRESSION (deflate)
-# ----------------------------------------------------------------------
 <IfModule mod_deflate.c>
-    # Compress HTML, CSS, JavaScript, Text, XML and fonts
     AddOutputFilterByType DEFLATE application/javascript
     AddOutputFilterByType DEFLATE application/rss+xml
     AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
@@ -55,35 +171,24 @@ RewriteRule ^(.*)$ index.php [L,QSA]
     AddOutputFilterByType DEFLATE text/javascript
     AddOutputFilterByType DEFLATE text/plain
     AddOutputFilterByType DEFLATE text/xml
-
-    # Bug corrections for older browsers
     BrowserMatch ^Mozilla/4 gzip-only-text/html
     BrowserMatch ^Mozilla/4\.0[678] no-gzip
     BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
 </IfModule>
 
-# ----------------------------------------------------------------------
-# BROWSER CACHING (expires headers)
-# ----------------------------------------------------------------------
 <IfModule mod_expires.c>
     ExpiresActive On
     ExpiresDefault "access plus 1 month"
-
-    # CSS and JavaScript (cacheable for 1 year since Vite uses hashes)
     ExpiresByType text/css "access plus 1 year"
     ExpiresByType application/javascript "access plus 1 year"
     ExpiresByType application/x-javascript "access plus 1 year"
     ExpiresByType text/javascript "access plus 1 year"
-
-    # Images
     ExpiresByType image/gif "access plus 1 year"
     ExpiresByType image/png "access plus 1 year"
     ExpiresByType image/jpeg "access plus 1 year"
     ExpiresByType image/webp "access plus 1 year"
     ExpiresByType image/x-icon "access plus 1 year"
     ExpiresByType image/svg+xml "access plus 1 year"
-
-    # Fonts
     ExpiresByType font/opentype "access plus 1 year"
     ExpiresByType font/truetype "access plus 1 year"
     ExpiresByType font/ttf "access plus 1 year"
@@ -91,9 +196,6 @@ RewriteRule ^(.*)$ index.php [L,QSA]
     ExpiresByType font/woff2 "access plus 1 year"
 </IfModule>
 
-# ----------------------------------------------------------------------
-# FORCE NO CACHE FOR DYNAMIC FILES (PHP, HTML)
-# ----------------------------------------------------------------------
 <FilesMatch "\.(php|html)$">
     <IfModule mod_headers.c>
         Header set Cache-Control "no-cache, no-store, must-revalidate"
@@ -102,9 +204,6 @@ RewriteRule ^(.*)$ index.php [L,QSA]
     </IfModule>
 </FilesMatch>
 
-# ----------------------------------------------------------------------
-# FORCE NO CACHE FOR SPA ENTRY POINT JS (changes every build)
-# ----------------------------------------------------------------------
 <FilesMatch "^index-[A-Za-z0-9_-]+\.js$">
     <IfModule mod_headers.c>
         Header set Cache-Control "no-cache, no-store, must-revalidate"

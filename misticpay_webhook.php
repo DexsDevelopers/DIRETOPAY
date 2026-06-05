@@ -80,14 +80,17 @@ try {
             $netAmount = (float)$txRow['amount_net_brl'];
             $amountBrl = (float)$txRow['amount_brl']; // Usar o valor da transação gravada para evitar inconsistência de arredondamento centavos se houver
 
-            // Credita saldo (valor bruto, conforme padrão de webhook do projeto)
-            $pdo->prepare("UPDATE users SET balance = balance + ? WHERE id = ?")->execute([$amountBrl, $userId]);
-
-            // Log de saldo
-            try {
-                $pdo->prepare("INSERT INTO balance_log (user_id, type, amount, description, created_at) VALUES (?,?,?,?,NOW())")
-                    ->execute([$userId, 'credit', $amountBrl, 'Pagamento PIX Nominal 3 #' . $misticTxId]);
-            } catch (Throwable $e) {}
+            // Credita saldo atomicamente (SELECT FOR UPDATE + log correto em balance_log)
+            $creditResult = adjustBalance(
+                (int)$userId,
+                (float)$amountBrl,
+                'pix_credit',
+                'misticpay_' . $misticTxId,
+                'Pagamento PIX MisticPay #' . $misticTxId
+            );
+            if (!$creditResult['success']) {
+                write_log('ERROR', 'MisticPay: falha ao creditar saldo', ['user_id' => $userId, 'tx' => $misticTxId, 'error' => $creditResult['error']]);
+            }
 
             // Notificação in-app
             try {

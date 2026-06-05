@@ -21,7 +21,7 @@ DIST_PUB = os.path.join(ROOT, "dashboard-new", "dist")
 # 1. Build
 print("▶ Building React...")
 result = subprocess.run(
-    ["npm", "run", "build"], cwd=os.path.join(ROOT, "dashboard-new")
+    ["npm", "run", "build"], cwd=os.path.join(ROOT, "dashboard-new"), shell=True
 )
 if result.returncode != 0:
     sys.exit("Build falhou!")

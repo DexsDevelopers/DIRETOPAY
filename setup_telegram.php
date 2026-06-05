@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Setup Telegram — Configurar bots Admin + Usuário
  * Acesse: https://seusite.com/setup_telegram.php
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // ── Registrar Webhook + Testar Bot Usuário ──────────────────────
     if (!empty($fields['TELEGRAM_USER_BOT_TOKEN'])) {
-        $webhookUrl = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/telegram_user_bot.php';
+        $webhookUrl = get_trusted_base_url() . '/telegram_user_bot.php';
         $whParams = [
             'url' => $webhookUrl,
             'allowed_updates' => json_encode(['message', 'callback_query']),

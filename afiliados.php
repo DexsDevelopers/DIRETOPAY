@@ -8,7 +8,7 @@ if (!isLoggedIn()) {
 }
 
 $user = getUser($_SESSION['user_id']);
-$ref_link = "https://" . $_SERVER['HTTP_HOST'] . "/index.php?ref=" . $user['referral_token'];
+$ref_link = get_trusted_base_url() . "/index.php?ref=" . $user['referral_token'];
 
 // Buscar indicados
 $stmt = $pdo->prepare("SELECT full_name, created_at, status FROM users WHERE affiliate_id = ? ORDER BY created_at DESC");
