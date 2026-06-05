@@ -29,7 +29,7 @@ try:
     # Executar git pull
     print("[*] Executando git pull...")
     stdin, stdout, stderr = client.exec_command(
-        f"cd {REMOTE_PATH} && git pull origin main"
+        f"cd {REMOTE_PATH} && git fetch origin main && git reset --hard origin/main"
     )
 
     output = stdout.read().decode("utf-8", errors="ignore")

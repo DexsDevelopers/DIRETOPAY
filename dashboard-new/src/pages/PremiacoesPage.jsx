@@ -5,6 +5,16 @@ const SUPPORT_WHATSAPP = '5511988627674';
 
 const AWARDS = [
     {
+        id: 'upgrade_lunarpay',
+        title: 'Upgrade LunarPay',
+        description: 'Ao atingir R$ 1.000, você ganha o direito de migrar sua conta para a LunarPay (taxas quase nulas, gerentes individuais nominais e adquirentes sem aviso de golpe).',
+        goal: 1000,
+        goalLabel: 'R$ 1.000',
+        image: '/logo_lunarpay.png',
+        color: 'purple',
+        perks: ['Taxas quase zero', 'Gerente Individual', 'Sem placas físicas'],
+    },
+    {
         id: 'placa_10k',
         title: 'Placa de 10K',
         description: 'Exclusiva para quem faturou R$ 10.000 na plataforma. Um símbolo do seu início rumo ao sucesso.',
@@ -57,6 +67,17 @@ const AWARDS = [
 ];
 
 const colorMap = {
+    purple: {
+        ring:    'ring-purple-400/40',
+        glow:    'shadow-purple-500/20',
+        badge:   'bg-purple-500/10 text-purple-400 border-purple-500/20',
+        bar:     'bg-purple-500',
+        barBg:   'bg-purple-500/10',
+        btn:     'bg-purple-600 hover:bg-purple-500 text-white shadow-[0_4px_16px_rgba(168,85,247,0.3)]',
+        icon:    'text-purple-400',
+        border:  'border-purple-500/30',
+        tag:     'bg-purple-500/10 text-purple-400 border-purple-450/20',
+    },
     amber: {
         ring:    'ring-amber-400/40',
         glow:    'shadow-amber-500/20',
@@ -113,6 +134,8 @@ function AwardCard({ award, totalPaid, status, onClaim, claiming }) {
             window.open(`https://wa.me/${SUPPORT_WHATSAPP}?text=${msg}`, '_blank');
         }
     };
+
+    const isLunar = award.id === 'upgrade_lunarpay';
 
     return (
         <div className={`relative rounded-3xl border bg-white overflow-hidden shadow-lg ${unlocked ? `${c.border} ${c.glow} shadow-xl` : 'border-gray-200'}`}>
@@ -189,7 +212,26 @@ function AwardCard({ award, totalPaid, status, onClaim, claiming }) {
                 </div>
 
                 {/* CTA */}
-                {claimed ? (
+                {isLunar ? (
+                    unlocked ? (
+                        <a
+                            href="https://lunarpay.site"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all active:scale-95 ${c.btn}`}
+                        >
+                            <ExternalLink size={16} /> Ir para a LunarPay
+                        </a>
+                    ) : (
+                        <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 flex items-center gap-3">
+                            <Lock size={18} className="text-gray-300 shrink-0" />
+                            <div>
+                                <p className="text-sm font-bold text-gray-400">Faltam R$ {Math.max(0, award.goal - totalPaid).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} para desbloquear</p>
+                                <p className="text-xs text-gray-400 mt-0.5">Venda mais para liberar o seu upgrade!</p>
+                            </div>
+                        </div>
+                    )
+                ) : claimed ? (
                     <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-2xl p-4">
                         <CheckCircle2 size={20} className="text-emerald-500 shrink-0" />
                         <div>
@@ -324,37 +366,6 @@ export default function PremiacoesPage({ dashboardData }) {
                     </p>
                 </div>
             </div>
-
-            {/* LunarPay Alert if totalPaid >= 1000 */}
-            {!loading && totalPaid >= 1000 && (
-                <div className="bg-purple-950/20 border border-purple-500/30 rounded-3xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-[0_12px_45px_rgba(168,85,247,0.15)] relative overflow-hidden">
-                    <div className="absolute top-[-30px] right-[-30px] w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none" />
-                    
-                    <div className="space-y-2 flex-1 relative z-10">
-                        <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                            <span className="text-[10px] font-black text-purple-300 uppercase tracking-widest">LunarPay Disponível</span>
-                        </div>
-                        <h3 className="text-lg font-black text-white">
-                            Prefere taxas quase nulas ao invés de placas físicas?
-                        </h3>
-                        <p className="text-sm text-gray-400 leading-relaxed">
-                            Ao atingir R$ 1.000 em faturamento, você ganha o direito de migrar sua conta para a <strong>LunarPay</strong>. Lá você terá taxas extremamente baixas (quase zero), gerentes individuais nominais e adquirentes sem aviso de golpe. Porém, observe que a LunarPay <strong>não possui placas de premiação física</strong> (que continuam sendo exclusivas da DiretoPay). A escolha de migrar é inteiramente sua!
-                        </p>
-                    </div>
-                    
-                    <div className="shrink-0 self-stretch md:self-auto flex items-center justify-end relative z-10">
-                        <a
-                            href="https://lunarpay.site"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full md:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-black px-5 py-3 rounded-2xl shadow-[0_4px_16px_rgba(124,58,237,0.3)] transition-all active:scale-95 whitespace-nowrap"
-                        >
-                            Conhecer a LunarPay <ExternalLink size={13} />
-                        </a>
-                    </div>
-                </div>
-            )}
 
             {/* Cards de prêmios */}
             {loading ? (

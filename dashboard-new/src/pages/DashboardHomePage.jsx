@@ -138,58 +138,94 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
       </motion.div>
 
       {/* ── LUNARPAY MIGRATION OFFER BANNER ── */}
-      {(stats.total_paid_raw || 0) >= 1000 && (
-        <motion.div
-          {...fu(0.03)}
-          className={`rounded-2xl border p-5 relative overflow-hidden ${
-            isDark 
+      <motion.div
+        {...fu(0.03)}
+        className={`rounded-2xl border p-5 relative overflow-hidden ${
+          (stats.total_paid_raw || 0) >= 1000
+            ? isDark 
               ? 'bg-[#12101b] border-purple-500/20 shadow-[0_12px_40px_rgba(168,85,247,0.1)]' 
               : 'bg-gradient-to-br from-purple-50/50 to-indigo-50/50 border-purple-200 shadow-[0_12px_40px_rgba(168,85,247,0.05)]'
-          }`}
-        >
-          {/* Decorative Background Glows */}
-          <div className="absolute top-[-40px] right-[-40px] w-40 h-40 bg-purple-500/10 rounded-full blur-2xl pointer-events-none" />
-          <div className="absolute bottom-[-30px] left-[-30px] w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
-          
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 relative z-10">
-            <div className="space-y-2 flex-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className={`inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-widest border ${
-                  isDark 
-                    ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' 
-                    : 'bg-purple-100 text-purple-700 border-purple-200'
-                }`}>
-                  <Sparkles size={10} className="animate-pulse" /> Upgrade Disponível
-                </span>
-                <span className={`text-[10px] font-bold ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                  Meta de R$ 1.000 alcançada! 🎉
-                </span>
-              </div>
-              
-              <h3 className={`text-[18px] font-black tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                Você desbloqueou o direito de migrar para a{' '}
-                <span className="bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent">
-                  LunarPay
-                </span>
-              </h3>
-              
-              <p className={`text-[12.5px] max-w-3xl leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                A LunarPay é a nossa plataforma premium com <strong>taxas baixíssimas (quase nada)</strong>, atualizações mais rápidas, gerentes individuais, contas nominais e adquirentes blindadas sem aviso de golpe.
-              </p>
-              
-              <div className={`text-[11px] p-2.5 rounded-xl border flex items-start gap-2 ${
-                isDark 
-                  ? 'bg-amber-500/5 border-amber-500/10 text-amber-200/80' 
-                  : 'bg-amber-50 border-amber-200 text-amber-800'
-              }`}>
-                <span className="shrink-0 text-amber-500 font-bold">⚠️ Atenção:</span>
-                <span>
-                  A LunarPay <strong>não possui placas de premiação física</strong>. Se você fizer a migração, deixará de concorrer às placas do Hall da Fama (10k, 100k, etc.). A escolha é totalmente sua!
-                </span>
-              </div>
+            : isDark
+              ? 'bg-[#111117] border-white/[0.07] opacity-75'
+              : 'bg-white border-gray-100 opacity-95'
+        }`}
+      >
+        {/* Decorative Background Glows */}
+        {(stats.total_paid_raw || 0) >= 1000 && (
+          <>
+            <div className="absolute top-[-40px] right-[-40px] w-40 h-40 bg-purple-500/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute bottom-[-30px] left-[-30px] w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
+          </>
+        )}
+        
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 relative z-10">
+          <div className="space-y-2 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              {(stats.total_paid_raw || 0) >= 1000 ? (
+                <>
+                  <span className={`inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-widest border ${
+                    isDark 
+                      ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' 
+                      : 'bg-purple-100 text-purple-700 border-purple-200'
+                  }`}>
+                    <Sparkles size={10} className="animate-pulse" /> Upgrade Disponível
+                  </span>
+                  <span className={`text-[10px] font-bold ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                    Meta de R$ 1.000 alcançada! 🎉
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className={`inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-widest border ${
+                    isDark 
+                      ? 'bg-purple-950/20 text-purple-300 border-purple-900/30' 
+                      : 'bg-purple-50 text-purple-600 border-purple-100'
+                  }`}>
+                    <Clock size={10} /> Meta de Upgrade
+                  </span>
+                  <span className={`text-[10px] font-bold ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                    Falta R$ {(1000 - (stats.total_paid_raw || 0)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} para o upgrade da LunarPay
+                  </span>
+                </>
+              )}
             </div>
             
-            <div className="shrink-0 self-stretch md:self-auto flex items-center justify-end">
+            <h3 className={`text-[18px] font-black tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              {(stats.total_paid_raw || 0) >= 1000 ? (
+                <>
+                  Você desbloqueou o direito de migrar para a{' '}
+                  <span className="bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent font-black">
+                    LunarPay
+                  </span>
+                </>
+              ) : (
+                <>
+                  Bata R$ 1.000,00 de faturamento e migre para a{' '}
+                  <span className="text-purple-500 font-black">
+                    LunarPay
+                  </span>
+                </>
+              )}
+            </h3>
+            
+            <p className={`text-[12.5px] max-w-3xl leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              A LunarPay é a nossa plataforma premium com <strong>taxas baixíssimas (quase nada)</strong>, atualizações mais rápidas, gerentes individuais, contas nominais e adquirentes blindadas sem aviso de golpe.
+            </p>
+            
+            <div className={`text-[11px] p-2.5 rounded-xl border flex items-start gap-2 ${
+              isDark 
+                ? 'bg-amber-500/5 border-amber-500/10 text-amber-200/80' 
+                : 'bg-amber-50 border-amber-200 text-amber-800'
+            }`}>
+              <span className="shrink-0 text-amber-500 font-bold">⚠️ Atenção:</span>
+              <span>
+                A LunarPay <strong>não possui placas de premiação física</strong>. Se você fizer a migração, deixará de concorrer às placas do Hall da Fama da DiretoPay. A escolha é totalmente sua!
+              </span>
+            </div>
+          </div>
+          
+          <div className="shrink-0 self-stretch md:self-auto flex items-center justify-end">
+            {(stats.total_paid_raw || 0) >= 1000 ? (
               <a
                 href="https://lunarpay.site"
                 target="_blank"
@@ -198,10 +234,16 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
               >
                 Conhecer a LunarPay <ArrowUpRight size={14} />
               </a>
-            </div>
+            ) : (
+              <div className={`w-full md:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border text-[13px] font-bold ${
+                isDark ? 'border-white/10 text-gray-500 bg-white/5' : 'border-gray-200 text-gray-400 bg-gray-50'
+              }`}>
+                Bloqueado 🔒
+              </div>
+            )}
           </div>
-        </motion.div>
-      )}
+        </div>
+      </motion.div>
 
       {/* ── BALANCE + KPI CARDS ── */}
       <motion.div {...fu(0.06)} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
