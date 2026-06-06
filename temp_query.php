@@ -11,23 +11,32 @@ if (empty($_GET['token']) || $_GET['token'] !== 'diretopay_secure_debug_token_20
 try {
     $res = [];
     
-    // Recent withdrawals
-    $stmt = $pdo->query("SELECT id, user_id, amount_gross, amount, fee_platform, fee_gateway, pix_key, status, nominal, type, description, created_at FROM withdrawals ORDER BY id DESC LIMIT 15");
-    $res['withdrawals'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // User data for recent withdrawals
-    if (!empty($res['withdrawals'])) {
-        $userIds = array_unique(array_column($res['withdrawals'], 'user_id'));
-        $inQuery = implode(',', array_map('intval', $userIds));
-        $stmtUsers = $pdo->query("SELECT id, email, full_name, balance, preferred_nominal, commission_rate FROM users WHERE id IN ($inQuery)");
-        $res['users'] = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
-    } else {
-        $res['users'] = [];
+    // List files in the root directory
+    $files = scandir(__DIR__);
+    $res['root_files'] = [];
+    foreach ($files as $file) {
+        if ($file === '.' || $file === '..') continue;
+        $res['root_files'][] = [
+            'name' => $file,
+            'is_dir' => is_dir($file),
+            'size' => is_dir($file) ? 0 : filesize($file),
+            'mtime' => date('Y-m-d H:i:s', filemtime($file))
+        ];
     }
     
-    // Recent transactions
-    $stmtTx = $pdo->query("SELECT id, user_id, amount_brl, amount_net_brl, status, created_at FROM transactions ORDER BY id DESC LIMIT 10");
-    $res['transactions'] = $stmtTx->fetchAll(PDO::FETCH_ASSOC);
+    // Check if index.html exists and its content excerpt
+    if (file_exists('index.html')) {
+        $res['index_html_excerpt'] = substr(file_get_contents('index.html'), 0, 500);
+    } else {
+        $res['index_html_excerpt'] = null;
+    }
+    
+    // Check index.php content excerpt
+    if (file_exists('index.php')) {
+        $res['index_php_excerpt'] = substr(file_get_contents('index.php'), 0, 500);
+    } else {
+        $res['index_php_excerpt'] = null;
+    }
 
     echo json_encode(['success' => true, 'data' => $res]);
 } catch (Throwable $e) {
