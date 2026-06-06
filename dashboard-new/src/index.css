@@ -11,6 +11,11 @@
 
 :root {
   font-family: 'Outfit', sans-serif;
+  --cursor-ring: rgba(0, 0, 0, 0.25);
+  --cursor-dot: #0f172a;
+  --cursor-hover: #1ea465;
+  --dot-grid-color: rgba(30, 164, 101, 0.05);
+  --line-grid-color: rgba(30, 164, 101, 0.03);
 }
 
 body {
@@ -91,7 +96,14 @@ body {
      text4   #60607a   muted    #404055
 ═══════════════════════════════════════════════ */
 
-html.dark { color-scheme: dark; }
+html.dark {
+  color-scheme: dark;
+  --cursor-ring: rgba(255, 255, 255, 0.35);
+  --cursor-dot: #ffffff;
+  --cursor-hover: #10b981;
+  --dot-grid-color: rgba(255, 255, 255, 0.06);
+  --line-grid-color: rgba(255, 255, 255, 0.03);
+}
 
 html.dark body {
   background-color: #0d0d12;

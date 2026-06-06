@@ -68,7 +68,7 @@ export function CustomCursor() {
                 style={{
                     width: hovered ? 48 : 40, height: hovered ? 48 : 40,
                     borderRadius: '50%',
-                    border: `1.5px solid ${hovered ? 'rgba(16,185,129,0.8)' : 'rgba(255,255,255,0.35)'}`,
+                    border: `1.5px solid ${hovered ? 'var(--cursor-hover)' : 'var(--cursor-ring)'}`,
                     opacity: visible ? 1 : 0,
                     marginTop: hovered ? -4 : 0, marginLeft: hovered ? -4 : 0,
                 }} />
@@ -76,7 +76,7 @@ export function CustomCursor() {
             <div ref={dot} className="fixed top-0 left-0 pointer-events-none z-[9999] will-change-transform"
                 style={{
                     width: 8, height: 8, borderRadius: '50%',
-                    background: hovered ? '#10b981' : 'white',
+                    background: hovered ? 'var(--cursor-hover)' : 'var(--cursor-dot)',
                     opacity: visible ? 1 : 0,
                     transition: 'background 0.15s, opacity 0.2s',
                 }} />
@@ -315,7 +315,7 @@ export function AuroraBg({ className = '' }) {
 }
 
 /* ─── Dot Grid Pattern (Hover.dev style) ─────────────────────────────────── */
-export function DotGrid({ className = '', color = 'rgba(255,255,255,0.06)' }) {
+export function DotGrid({ className = '', color = 'var(--dot-grid-color)' }) {
     return (
         <div className={`absolute inset-0 pointer-events-none ${className}`}
             style={{
@@ -331,7 +331,7 @@ export function LineGrid({ className = '' }) {
     return (
         <div className={`absolute inset-0 pointer-events-none ${className}`}
             style={{
-                backgroundImage: `linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)`,
+                backgroundImage: `linear-gradient(var(--line-grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--line-grid-color) 1px, transparent 1px)`,
                 backgroundSize: '48px 48px',
             }}
         />
