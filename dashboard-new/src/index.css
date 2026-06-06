@@ -245,3 +245,9 @@ html.dark *, html.dark *::before, html.dark *::after {
   transition-duration: 200ms;
   transition-timing-function: ease;
 }
+
+/* ── Adaptive Logo for Light/Dark themes ── */
+/* Inverts white text to black, but rotates hue back to preserve the green brand colors */
+html:not(.dark) .logo-theme-adaptive {
+  filter: invert(1) hue-rotate(180deg) saturate(1.4) brightness(0.9) !important;
+}

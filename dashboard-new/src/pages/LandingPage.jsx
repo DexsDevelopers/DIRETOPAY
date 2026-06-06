@@ -443,7 +443,7 @@ export default function LandingPage() {
             <img
               src="/logo-diretopay.webp"
               alt="DiretoPay"
-              className="h-8 sm:h-9 w-auto dark:invert-0 invert"
+              className="h-8 sm:h-9 w-auto logo-theme-adaptive"
             />
           </Link>
 
@@ -919,6 +919,7 @@ export default function LandingPage() {
                     : "linear-gradient(135deg, #0f172a 30%, #1ea465)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
                 }}
               >
                 <CountUp
@@ -1098,7 +1099,7 @@ export default function LandingPage() {
                       <img
                         src="/logo-diretopay.webp"
                         alt="DiretoPay"
-                        className="h-4 opacity-75 dark:opacity-25 dark:invert-0 invert mx-auto"
+                        className="h-4 opacity-75 dark:opacity-25 logo-theme-adaptive mx-auto"
                       />
                     </div>
                   </div>
@@ -1539,6 +1540,7 @@ export default function LandingPage() {
                   : "linear-gradient(135deg, #1ea465, #126b41)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
               }}
             >
               hoje mesmo.
@@ -1567,7 +1569,7 @@ export default function LandingPage() {
               <img
                 src="/logo-diretopay.webp"
                 alt="DiretoPay"
-                className="h-7 w-auto opacity-70 hover:opacity-100 dark:invert-0 invert transition-opacity mb-3"
+                className="h-7 w-auto opacity-70 hover:opacity-100 logo-theme-adaptive transition-opacity mb-3"
               />
               <p className="text-[12px] text-slate-500 dark:text-gray-500 leading-relaxed mb-4">
                 Plataforma de pagamentos PIX para vendedores digitais.
