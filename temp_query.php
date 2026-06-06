@@ -10,12 +10,33 @@ if (empty($_GET['token']) || $_GET['token'] !== 'diretopay_secure_debug_token_20
 
 try {
     $res = [];
+    $logDir = __DIR__ . '/logs';
+    $matches = [];
     
-    // Transactions for User 9
-    $res['user9_transactions'] = $pdo->query("SELECT id, amount_brl, amount_net_brl, status, created_at FROM transactions WHERE user_id = 9 ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
+    if (is_dir($logDir)) {
+        $files = scandir($logDir);
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..') continue;
+            $path = $logDir . '/' . $file;
+            if (is_file($path)) {
+                $content = file_get_contents($path);
+                if (strpos($content, '3.20') !== false || strpos($content, '3,20') !== false) {
+                    // Find lines containing the pattern
+                    $lines = explode("\n", $content);
+                    foreach ($lines as $line) {
+                        if (strpos($line, '3.20') !== false || strpos($line, '3,20') !== false) {
+                            $matches[] = [
+                                'file' => $file,
+                                'line' => trim($line)
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+    }
     
-    // Withdrawals for User 9
-    $res['user9_withdrawals'] = $pdo->query("SELECT id, amount_gross, amount, status, nominal, created_at FROM withdrawals WHERE user_id = 9 ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
+    $res['matches'] = $matches;
 
     echo json_encode(['success' => true, 'data' => $res]);
 } catch (Throwable $e) {
