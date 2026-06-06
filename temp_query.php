@@ -11,12 +11,8 @@ if (empty($_GET['token']) || $_GET['token'] !== 'diretopay_secure_debug_token_20
 try {
     $res = [];
     
-    // Check .htaccess on server
-    if (file_exists('.htaccess')) {
-        $res['htaccess'] = file_get_contents('.htaccess');
-    } else {
-        $res['htaccess'] = null;
-    }
+    // Check $_SERVER variable
+    $res['server_vars'] = $_SERVER;
 
     echo json_encode(['success' => true, 'data' => $res]);
 } catch (Throwable $e) {
