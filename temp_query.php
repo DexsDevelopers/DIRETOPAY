@@ -11,18 +11,11 @@ if (empty($_GET['token']) || $_GET['token'] !== 'diretopay_secure_debug_token_20
 try {
     $res = [];
     
-    // Count of withdrawals
-    $res['withdrawals_count'] = (int)$pdo->query("SELECT COUNT(*) FROM withdrawals")->fetchColumn();
+    // Transactions for User 9
+    $res['user9_transactions'] = $pdo->query("SELECT id, amount_brl, amount_net_brl, status, created_at FROM transactions WHERE user_id = 9 ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
     
-    // Detailed list of withdrawals (if any exist)
-    $stmt = $pdo->query("SELECT * FROM withdrawals ORDER BY id DESC LIMIT 50");
-    $res['withdrawals'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // List all users
-    $res['users'] = $pdo->query("SELECT id, email, full_name, balance, preferred_nominal, commission_rate FROM users ORDER BY id ASC")->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Recent balance logs
-    $res['balance_logs'] = $pdo->query("SELECT id, user_id, amount, origin, reference_id, description, created_at FROM balance_log ORDER BY id DESC LIMIT 30")->fetchAll(PDO::FETCH_ASSOC);
+    // Withdrawals for User 9
+    $res['user9_withdrawals'] = $pdo->query("SELECT id, amount_gross, amount, status, nominal, created_at FROM withdrawals WHERE user_id = 9 ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode(['success' => true, 'data' => $res]);
 } catch (Throwable $e) {
