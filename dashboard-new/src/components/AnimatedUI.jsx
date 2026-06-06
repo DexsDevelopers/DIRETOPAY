@@ -293,21 +293,25 @@ export function Reveal({ children, delay = 0, y = 24, once = true, className = '
 export function AuroraBg({ className = '' }) {
     return (
         <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
-            <div className="absolute inset-0 opacity-30"
+            <div className="absolute inset-0 opacity-30 aurora-bg-animation"
                 style={{
                     background: `
                         radial-gradient(ellipse 80% 60% at 20% -10%, rgba(16,185,129,0.35) 0%, transparent 60%),
                         radial-gradient(ellipse 60% 50% at 80% 110%, rgba(99,102,241,0.25) 0%, transparent 55%),
                         radial-gradient(ellipse 50% 40% at 50% 50%, rgba(16,185,129,0.08) 0%, transparent 60%)
-                    `,
-                    animation: 'aurora 12s ease-in-out infinite alternate',
+                    `
                 }}
             />
             <style>{`
+                @media (min-width: 768px) {
+                    .aurora-bg-animation {
+                        animation: aurora 16s ease-in-out infinite alternate;
+                    }
+                }
                 @keyframes aurora {
-                    0%   { transform: scale(1) rotate(0deg); opacity: 0.25; }
-                    50%  { transform: scale(1.1) rotate(2deg); opacity: 0.35; }
-                    100% { transform: scale(0.95) rotate(-1deg); opacity: 0.28; }
+                    0%   { transform: scale(1) rotate(0deg); opacity: 0.22; }
+                    50%  { transform: scale(1.05) rotate(1.5deg); opacity: 0.32; }
+                    100% { transform: scale(0.98) rotate(-1deg); opacity: 0.26; }
                 }
             `}</style>
         </div>
@@ -527,23 +531,20 @@ export function PulseBadge({ children, color = '#10b981' }) {
     );
 }
 
-/* ─── Glowing Input ──────────────────────────────────────────────────────── */
 export function GlowInput({ icon: Icon, type = 'text', placeholder, value, onChange, required, className = '' }) {
     const [focused, setFocused] = useState(false);
     return (
         <div className={`relative transition-all duration-200 ${className}`}
-            style={{ filter: focused ? 'drop-shadow(0 0 8px rgba(16,185,129,0.3))' : undefined }}>
+            style={{ filter: focused ? 'drop-shadow(0 0 8px rgba(16,185,129,0.25))' : undefined }}>
             {Icon && <Icon size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors duration-200"
-                style={{ color: focused ? '#10b981' : '#4b5563' }} />}
+                style={{ color: focused ? '#10b981' : '#64748b' }} />}
             <input type={type} placeholder={placeholder} value={value} onChange={onChange}
                 required={required}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
-                className="w-full rounded-xl py-3 pr-4 text-[14px] outline-none transition-all duration-200 bg-white/[0.05] text-white placeholder:text-gray-600"
+                className="w-full rounded-xl py-3 pr-4 text-[14px] outline-none transition-all duration-200 border text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 border-slate-200 dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.04] focus:border-emerald-500/50 dark:focus:border-emerald-500/50 focus:bg-white dark:focus:bg-emerald-500/5"
                 style={{
                     paddingLeft: Icon ? '2.75rem' : '1rem',
-                    border: `1px solid ${focused ? 'rgba(16,185,129,0.5)' : 'rgba(255,255,255,0.08)'}`,
-                    background: focused ? 'rgba(16,185,129,0.05)' : 'rgba(255,255,255,0.04)',
                 }}
             />
         </div>

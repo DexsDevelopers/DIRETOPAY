@@ -136,10 +136,10 @@ html.dark .hover\:bg-gray-900\/10:hover { background-color: rgba(30,164,101,0.08
 
 /* Ambient decorations */
 html.dark .bg-emerald-100\/40  { background-color: rgba(30,164,101,0.07) !important; }
-html.dark .bg-primary/5      { background-color: rgba(30,164,101,0.05) !important; }
-html.dark .bg-primary/8      { background-color: rgba(30,164,101,0.09) !important; }
-html.dark .bg-primary/10     { background-color: rgba(30,164,101,0.1) !important; }
-html.dark .bg-emerald-50/30   { background-color: rgba(30,164,101,0.06) !important; }
+html.dark .bg-primary\/5      { background-color: rgba(30,164,101,0.05) !important; }
+html.dark .bg-primary\/8      { background-color: rgba(30,164,101,0.09) !important; }
+html.dark .bg-primary\/10     { background-color: rgba(30,164,101,0.1) !important; }
+html.dark .bg-emerald-50\/30   { background-color: rgba(30,164,101,0.06) !important; }
 
 /* Card special backgrounds */
 html.dark .bg-emerald-100      { background-color: rgba(30,164,101,0.08) !important; }
@@ -180,16 +180,16 @@ html.dark nav a.text-gray-400:hover { color: #f0f0f8 !important; }
 
 /* ── Primary color opacity variants (pill texts) ── */
 /* text-primary/60, /50, /40 são ilegíveis em dark — tornar sólidos */
-html.dark .text-primary/60 { color: #2ce089 !important; }
-html.dark .text-primary/50 { color: #1ea465 !important; }
-html.dark .text-primary/40 { color: #1ea465 !important; }
-html.dark .text-primary/30 { color: #126b41 !important; }
+html.dark .text-primary\/60 { color: #2ce089 !important; }
+html.dark .text-primary\/50 { color: #1ea465 !important; }
+html.dark .text-primary\/40 { color: #1ea465 !important; }
+html.dark .text-primary\/30 { color: #126b41 !important; }
 /* Pill container bg */
-html.dark .bg-primary/5  { background-color: rgba(30,164,101,0.08) !important; }
-html.dark .bg-primary/8  { background-color: rgba(30,164,101,0.10) !important; }
-html.dark .bg-primary/10 { background-color: rgba(30,164,101,0.12) !important; }
-html.dark .border-primary/15 { border-color: rgba(30,164,101,0.25) !important; }
-html.dark .border-primary/20 { border-color: rgba(30,164,101,0.30) !important; }
+html.dark .bg-primary\/5  { background-color: rgba(30,164,101,0.08) !important; }
+html.dark .bg-primary\/8  { background-color: rgba(30,164,101,0.10) !important; }
+html.dark .bg-primary\/10 { background-color: rgba(30,164,101,0.12) !important; }
+html.dark .border-primary\/15 { border-color: rgba(30,164,101,0.25) !important; }
+html.dark .border-primary\/20 { border-color: rgba(30,164,101,0.30) !important; }
 
 /* ── Shadows ── */
 html.dark .shadow-sm  { box-shadow: 0 1px 6px rgba(0,0,0,0.55) !important; }

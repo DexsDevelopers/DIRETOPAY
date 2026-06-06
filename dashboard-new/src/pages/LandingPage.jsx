@@ -12,14 +12,11 @@ import {
   PulseBadge,
   StatCard,
   FeatureCard,
-  CustomCursor,
-  NoiseOverlay,
   ClipReveal,
   LineReveal,
   CountUp,
   Marquee,
   MagneticButton,
-  PageLoader,
   SectionLabel,
   Reveal,
 } from "../components/AnimatedUI";
@@ -376,7 +373,6 @@ export default function LandingPage() {
   const [tickerVisible, setTickerVisible] = useState(true);
   const [onlineUsers, setOnlineUsers] = useState(2348);
   const [activePlate, setActivePlate] = useState(0);
-  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 24);
@@ -413,11 +409,6 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#050709] text-slate-800 dark:text-white font-sans antialiased overflow-x-hidden transition-colors duration-300">
-      {/* Awwwards: Cursor + Noise + Loader */}
-      <CustomCursor />
-      <NoiseOverlay />
-      {!loaded && <PageLoader onDone={() => setLoaded(true)} />}
-
       {/* Background: Aurora + Grid + Particles */}
       <div
         className="fixed inset-0 pointer-events-none z-0"
@@ -431,8 +422,8 @@ export default function LandingPage() {
       <div className="fixed inset-0 pointer-events-none z-0">
         <AuroraBg className={isDark ? "opacity-100" : "opacity-30"} />
       </div>
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <Particles count={18} color="#10b981" className={isDark ? "opacity-30" : "opacity-15"} />
+      <div className="fixed inset-0 pointer-events-none z-0 hidden md:block">
+        <Particles count={10} color="#10b981" className={isDark ? "opacity-20" : "opacity-10"} />
       </div>
       <div
         className="fixed inset-0 pointer-events-none z-0"

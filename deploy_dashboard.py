@@ -11,6 +11,17 @@ import shutil
 import subprocess
 import sys
 
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+if hasattr(sys.stderr, "reconfigure"):
+    try:
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DIST_DIR = os.path.join(ROOT, "dashboard-new", "dist", "assets")
 DEST_DIR = os.path.join(ROOT, "assets", "dashboard-react")
@@ -129,7 +140,21 @@ with open(INDEX_PHP, "w", encoding="utf-8") as f:
     f.write(php_new)
 print(f"✓ index.php atualizado (v{old_v} → v{new_v})")
 
-# ── 6. SFTP upload to server ─────────────────────────────────────────────────
+# ── 6. Git add + commit + push ───────────────────────────────────────────────
+print("▶ Git push...")
+subprocess.run(["git", "add", "-A"], cwd=ROOT, shell=True)
+subprocess.run(
+    ["git", "commit", "-m", f"deploy: dashboard v{new_v} — React build sync"],
+    cwd=ROOT,
+    shell=True,
+)
+git_push_res = subprocess.run(["git", "push", "origin", "main"], cwd=ROOT, shell=True)
+if git_push_res.returncode == 0:
+    print("✓ Git push OK")
+else:
+    print("⚠️  Push falhou — verifique suas credenciais git")
+
+# ── 7. SFTP upload to server ─────────────────────────────────────────────────
 print("▶ Enviando para o servidor via SFTP...")
 try:
     import paramiko
@@ -173,7 +198,7 @@ try:
     stdin, stdout, stderr = c.exec_command(f'grep -m1 "src=" {REMOTE_BASE}/index.php')
     server_line = stdout.read().decode().strip()
     if f"v={new_v}" in server_line:
-        print(f"  index.php → OK (v{new_v} confirmado no servidor)")
+        print(f"  index.php → OK (v{new_v} verificado no servidor)")
     else:
         print(f"  ⚠️  index.php pode não ter sido atualizado! Servidor: {server_line}")
         # Force re-upload
@@ -198,6 +223,7 @@ try:
     sftp.close()
     c.close()
     print(f"✓ {uploaded} novos assets + index.php enviados via SFTP")
+    print(f"✅ Deploy v{new_v} concluído! Acesse https://diretopay.site")
 except ImportError:
     print("⚠️  paramiko não instalado — pulando SFTP. Instale: pip install paramiko")
 except Exception as e:
@@ -206,16 +232,3 @@ except Exception as e:
     print(f"⚠️  Erro SFTP: {e}")
     traceback.print_exc()
 
-# ── 7. Git add + commit + push ───────────────────────────────────────────────
-print("▶ Git push...")
-subprocess.run(["git", "add", "-A"], cwd=ROOT, shell=True)
-subprocess.run(
-    ["git", "commit", "-m", f"deploy: dashboard v{new_v} — React build sync"],
-    cwd=ROOT,
-    shell=True,
-)
-r = subprocess.run(["git", "push", "origin", "main"], cwd=ROOT, shell=True)
-if r.returncode == 0:
-    print(f"✅ Deploy v{new_v} concluído! Acesse https://diretopay.site")
-else:
-    print("⚠️  Push falhou — verifique suas credenciais git")
