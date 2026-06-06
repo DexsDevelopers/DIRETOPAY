@@ -109,7 +109,7 @@ try {
             // Credita saldo atomicamente (SELECT FOR UPDATE + log correto em balance_log)
             $creditResult = adjustBalance(
                 (int)$userId,
-                (float)$amount,
+                $netAmount,
                 'pix_credit',
                 'brpix_' . $brpixTxId,
                 'Pagamento PIX BRPix #' . $brpixTxId

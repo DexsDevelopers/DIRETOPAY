@@ -2,6 +2,7 @@
 header('Cache-Control: no-cache, no-store, must-revalidate');
 header('Pragma: no-cache');
 header('Expires: 0');
+header('X-LiteSpeed-Purge: *');
 
 // Servir arquivos PHP diretamente se existirem
 $requestPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);

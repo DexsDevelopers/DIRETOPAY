@@ -140,7 +140,7 @@ try {
             $pdo->beginTransaction();
             try {
                 // Lock + verificar status para evitar double-processing
-                $stmtW = $pdo->prepare("SELECT w.user_id, w.amount, w.amount_gross, w.pix_key, w.status, w.is_debited, u.full_name, u.whatsapp FROM withdrawals w JOIN users u ON u.id = w.user_id WHERE w.id = ? FOR UPDATE");
+                $stmtW = $pdo->prepare("SELECT w.user_id, w.amount, w.amount_gross, w.nominal, w.fee_platform, w.pix_key, w.status, w.is_debited, u.full_name, u.whatsapp FROM withdrawals w JOIN users u ON u.id = w.user_id WHERE w.id = ? FOR UPDATE");
                 $stmtW->execute([$wId]);
                 $w = $stmtW->fetch();
                 if (!$w || $w['status'] !== 'pending') {
@@ -169,6 +169,24 @@ try {
                     }
                 }
                 $pdo->prepare("UPDATE withdrawals SET status = 'completed', tx_hash = ? WHERE id = ?")->execute([$hash, $wId]);
+
+                // Creditar a taxa da plataforma ao administrador (se houver e não for Nominal 3, que já repassa via Pix)
+                $wNominal = $w['nominal'] ?? 'nominal1';
+                $wFeePlatform = (float)($w['fee_platform'] ?? 0);
+                if ($wNominal !== 'nominal3' && $wFeePlatform > 0) {
+                    $adminStmt = $pdo->query("SELECT id FROM users WHERE is_admin = 1 ORDER BY id ASC LIMIT 1");
+                    $admin = $adminStmt->fetch();
+                    if ($admin) {
+                        adjustBalance(
+                            (int)$admin['id'],
+                            $wFeePlatform,
+                            'admin_profit',
+                            'wd_' . $wId,
+                            'Taxa do saque #' . $wId . ' (Lojista: ' . $w['full_name'] . ')'
+                        );
+                    }
+                }
+
                 $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, 'Saque Enviado! 💸', ?, 'success')")
                     ->execute([$w['user_id'], "Seu saque de R$ " . number_format($w['amount'], 2, ',', '.') . " foi processado."]);
                 $pdo->commit();
