@@ -10,6 +10,12 @@ if (empty($_GET['token']) || $_GET['token'] !== 'diretopay_secure_debug_token_20
 
 try {
     $res = [];
+    
+    // Check withdrawals table for 3.20, 320, 310
+    $stmt = $pdo->query("SELECT * FROM withdrawals WHERE amount_gross IN (3.20, 320, 310) OR amount IN (3.20, 320, 310) OR description LIKE '%3.20%' OR description LIKE '%320%' OR description LIKE '%310%'");
+    $res['withdrawals_matches'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Search logs for 320 or 310
     $logDir = __DIR__ . '/logs';
     $matches = [];
     
@@ -20,11 +26,10 @@ try {
             $path = $logDir . '/' . $file;
             if (is_file($path)) {
                 $content = file_get_contents($path);
-                if (strpos($content, '3.20') !== false || strpos($content, '3,20') !== false) {
-                    // Find lines containing the pattern
+                if (strpos($content, '320') !== false || strpos($content, '310') !== false) {
                     $lines = explode("\n", $content);
                     foreach ($lines as $line) {
-                        if (strpos($line, '3.20') !== false || strpos($line, '3,20') !== false) {
+                        if (strpos($line, '320') !== false || strpos($line, '310') !== false) {
                             $matches[] = [
                                 'file' => $file,
                                 'line' => trim($line)
@@ -35,8 +40,7 @@ try {
             }
         }
     }
-    
-    $res['matches'] = $matches;
+    $res['log_matches'] = $matches;
 
     echo json_encode(['success' => true, 'data' => $res]);
 } catch (Throwable $e) {
