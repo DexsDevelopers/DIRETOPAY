@@ -509,8 +509,8 @@ export function FeatureCard({ icon: Icon, color, title, desc, delay = 0 }) {
 /* ─── Gradient Text ──────────────────────────────────────────────────────── */
 export function GradientText({ children, from = '#10b981', to = '#6ee7b7', className = '' }) {
     return (
-        <span className={className}
-            style={{ background: `linear-gradient(135deg, ${from}, ${to})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+        <span className={`bg-clip-text text-transparent ${className}`}
+            style={{ backgroundImage: `linear-gradient(135deg, ${from}, ${to})` }}>
             {children}
         </span>
     );

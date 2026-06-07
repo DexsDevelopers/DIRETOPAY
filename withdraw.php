@@ -36,20 +36,11 @@ check_csrf($csrfToken);
 
 $amount = (float)($input['amount'] ?? 0);
 
-// 1. Taxa de Venda (O que o admin já pagou para o PixGo: 8% + 0.99)
-$saleGatewayCost = ($amount * 0.08) + 0.99;
-
-// 2. Taxa de Saque (O que o admin paga para enviar via Sigilo: 0.2% + 4.00)
-$sigiloPayoutCost = ($amount * 0.002) + 4.00;
-
-// 3. Lucro da Plataforma (5% fixo ou conforme configurado no usuário)
-// Buscaremos a taxa do usuário mais abaixo no código se necessário, 
-// por enquanto usamos 5% como base de lucro.
-$platformProfit = ($amount * 0.05);
-
-$fee_gateway = round($saleGatewayCost + $sigiloPayoutCost, 2);
-$fee_platform = round($platformProfit, 2);
-$withdrawFee = $fee_gateway + $fee_platform;
+// Como o saldo do lojista já é creditado líquido de taxas de venda/plataforma nos webhooks,
+// no saque cobra-se apenas a taxa de processamento de transferência Pix do gateway de payout (0.2% + R$4,00).
+$fee_gateway = round(($amount * 0.002) + 4.00, 2);
+$fee_platform = 0.00;
+$withdrawFee = $fee_gateway;
 
 try {
     $stmt = $pdo->prepare("SELECT balance, pix_key, preferred_nominal FROM users WHERE id = ?");

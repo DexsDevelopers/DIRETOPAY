@@ -912,14 +912,11 @@ export default function LandingPage() {
           {STATS.map(({ to, prefix, suffix, label, note, decimals }, i) => (
             <Reveal key={label} delay={i * 0.08} className="text-center">
               <p
-                className="text-[30px] sm:text-[40px] md:text-[48px] font-black tracking-tight tabular-nums"
+                className="text-[30px] sm:text-[40px] md:text-[48px] font-black tracking-tight tabular-nums bg-clip-text text-transparent"
                 style={{
-                  background: isDark
+                  backgroundImage: isDark
                     ? "linear-gradient(135deg, #fff 30%, #10b981)"
                     : "linear-gradient(135deg, #0f172a 30%, #1ea465)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
                 }}
               >
                 <CountUp
@@ -1534,13 +1531,11 @@ export default function LandingPage() {
             Comece a vender
             <br />
             <span
+              className="bg-clip-text text-transparent"
               style={{
-                background: isDark
+                backgroundImage: isDark
                   ? "linear-gradient(135deg, #10b981, #34d399)"
                   : "linear-gradient(135deg, #1ea465, #126b41)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
               }}
             >
               hoje mesmo.

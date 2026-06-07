@@ -100,8 +100,9 @@ function handlePixPaid(string $externalId, array $data): void
             ->execute([$data['pix_code'] ?? '', $transaction['id']]);
         
         // Creditar saldo do vendedor
-        $userId = $transaction['user_id'];
-        $amount = (float)$transaction['amount_brl'];
+        $userId    = $transaction['user_id'];
+        $amount    = (float)$transaction['amount_brl'];
+        $netAmount = (float)$transaction['amount_net_brl'];
         
         // Buscar dados do usuário (taxa + contatos)
         $userStmt = $pdo->prepare("SELECT commission_rate, full_name, email, whatsapp FROM users WHERE id = ?");
@@ -109,13 +110,27 @@ function handlePixPaid(string $externalId, array $data): void
         $user = $userStmt->fetch();
         $commissionRate = (float)($user['commission_rate'] ?? 5.0);
         
-        // Calcular valor líquido — EzzyBanking cobra na origem (fee_gateway = 0)
-        $feeGateway  = 0.00;
         $feePlatform = round($amount * ($commissionRate / 100), 2);
-        $netAmount   = max(0, $amount - $feePlatform);
+        $feeGateway  = round($amount - $netAmount - $feePlatform, 2);
+        if ($feeGateway < 0) $feeGateway = 0.00;
         
         // Creditar saldo
         adjustBalance($userId, $netAmount, 'pix_payment', $transaction['id'], 'Recebimento PIX EzzyBanking #' . $transaction['id']);
+
+        // Creditar comissão da plataforma ao administrador
+        if ($feePlatform > 0) {
+            $adminStmt = $pdo->query("SELECT id FROM users WHERE is_admin = 1 ORDER BY id ASC LIMIT 1");
+            $admin = $adminStmt->fetch();
+            if ($admin) {
+                adjustBalance(
+                    (int)$admin['id'],
+                    $feePlatform,
+                    'admin_profit',
+                    'tx_' . $transaction['id'],
+                    'Comissão da venda #' . $transaction['id'] . ' (EzzyBanking)'
+                );
+            }
+        }
         
         // Registrar log de taxas
         $pdo->prepare("UPDATE transactions SET fee_platform = ?, fee_gateway = ? WHERE id = ?")

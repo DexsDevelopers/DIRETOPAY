@@ -98,22 +98,38 @@ function handlePixPaid(string $externalId, array $data): void
             ->execute([$data['pix_code'] ?? '', $transaction['id']]);
         
         // Creditar saldo do vendedor
-        $userId = $transaction['user_id'];
-        $amount = (float)$transaction['amount'];
+        $userId    = $transaction['user_id'];
+        $amountBrl = (float)$transaction['amount_brl'];
+        $netAmount = (float)$transaction['amount_net_brl'];
         
-        // Buscar taxa do usuário
-        $userStmt = $pdo->prepare("SELECT commission_rate FROM users WHERE id = ?");
+        // Buscar taxa do usuário e contatos
+        $userStmt = $pdo->prepare("SELECT commission_rate, full_name, email, whatsapp FROM users WHERE id = ?");
         $userStmt->execute([$userId]);
         $user = $userStmt->fetch();
         $commissionRate = (float)($user['commission_rate'] ?? 5.0);
+        $sellerName = $user['full_name'] ?? 'Vendedor';
         
-        // Calcular valor líquido (taxa plataforma + gateway)
-        $feeGateway = 0.00; // LunarPay cobra na origem
-        $feePlatform = round($amount * ($commissionRate / 100), 2);
-        $netAmount = $amount - $feePlatform;
+        $feePlatform = round($amountBrl * ($commissionRate / 100), 2);
+        $feeGateway  = round($amountBrl - $netAmount - $feePlatform, 2);
+        if ($feeGateway < 0) $feeGateway = 0.00;
         
         // Creditar saldo
-        adjustBalance($userId, $netAmount, 'pix_payment', $transaction['id'], 'Recebimento PIX #' . $transaction['id']);
+        adjustBalance($userId, $netAmount, 'pix_payment', $transaction['id'], 'Recebimento PIX LunarPay #' . $transaction['id']);
+
+        // Creditar comissão da plataforma ao administrador
+        if ($feePlatform > 0) {
+            $adminStmt = $pdo->query("SELECT id FROM users WHERE is_admin = 1 ORDER BY id ASC LIMIT 1");
+            $admin = $adminStmt->fetch();
+            if ($admin) {
+                adjustBalance(
+                    (int)$admin['id'],
+                    $feePlatform,
+                    'admin_profit',
+                    'tx_' . $transaction['id'],
+                    'Comissão da venda #' . $transaction['id'] . ' (LunarPay)'
+                );
+            }
+        }
         
         // Registrar log de taxas
         $pdo->prepare("UPDATE transactions SET fee_platform = ?, fee_gateway = ? WHERE id = ?")
@@ -123,15 +139,11 @@ function handlePixPaid(string $externalId, array $data): void
         
         // Notificar vendedor
         try {
-            $userStmt = $pdo->prepare("SELECT full_name, email FROM users WHERE id = ?");
-            $userStmt->execute([$userId]);
-            $seller = $userStmt->fetch();
-            
-            TelegramService::notifySale($seller['full_name'], $amount, $netAmount, $feePlatform, $feeGateway);
-            MailService::notifyPaymentReceived($seller['email'], $seller['full_name'], $amount, $netAmount);
+            TelegramService::notifySale($sellerName, $amountBrl, $netAmount, $feePlatform, $feeGateway);
+            MailService::notifyPaymentReceived($user['email'], $sellerName, $amountBrl, $netAmount);
         } catch (Throwable $e) {}
         
-        write_log('INFO', 'LunarPay PIX paid', ['transaction_id' => $transaction['id'], 'amount' => $amount]);
+        write_log('INFO', 'LunarPay PIX paid', ['transaction_id' => $transaction['id'], 'amount' => $amountBrl]);
         
     } catch (Exception $e) {
         $pdo->rollBack();

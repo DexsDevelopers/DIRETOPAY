@@ -251,3 +251,10 @@ html.dark *, html.dark *::before, html.dark *::after {
 html:not(.dark) .logo-theme-adaptive {
   filter: invert(1) hue-rotate(180deg) saturate(1.4) brightness(0.9) !important;
 }
+
+/* Disable transition on gradient clipped text to prevent Chromium rendering bugs */
+.bg-clip-text,
+[style*="background-clip: text"],
+[style*="-webkit-background-clip: text"] {
+  transition: none !important;
+}

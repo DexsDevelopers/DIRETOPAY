@@ -106,6 +106,12 @@ try {
             $userId    = $txRow['user_id'];
             $netAmount = (float)$txRow['amount_net_brl'];
 
+            // Busca dados do vendedor (incluindo whatsapp e commission_rate)
+            $mStmt = $pdo->prepare("SELECT full_name, telegram_chat_id, whatsapp, commission_rate FROM users WHERE id = ?");
+            $mStmt->execute([$userId]);
+            $merchantRow  = $mStmt->fetch();
+            $merchantName = $merchantRow['full_name'] ?? 'N/A';
+
             // Credita saldo atomicamente (SELECT FOR UPDATE + log correto em balance_log)
             $creditResult = adjustBalance(
                 (int)$userId,
@@ -116,6 +122,24 @@ try {
             );
             if (!$creditResult['success']) {
                 write_log('ERROR', 'BRPix: falha ao creditar saldo', ['user_id' => $userId, 'tx' => $brpixTxId, 'error' => $creditResult['error']]);
+            }
+
+            // Creditar comissão da plataforma ao administrador
+            $commissionRate = (float)($merchantRow['commission_rate'] ?? 5.0);
+            $feePlatform = round((float)$txRow['amount_brl'] * ($commissionRate / 100), 2);
+
+            if ($feePlatform > 0) {
+                $adminStmt = $pdo->query("SELECT id FROM users WHERE is_admin = 1 ORDER BY id ASC LIMIT 1");
+                $admin = $adminStmt->fetch();
+                if ($admin) {
+                    adjustBalance(
+                        (int)$admin['id'],
+                        $feePlatform,
+                        'admin_profit',
+                        'tx_' . $txRow['id'],
+                        'Comissão da venda #' . $txRow['id'] . ' (BRPix)'
+                    );
+                }
             }
 
             // Notificação in-app
@@ -135,12 +159,6 @@ try {
                 $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, created_at) VALUES (?,?,?,?,NOW())")
                     ->execute([$userId, 'payment', $saleTitle, $saleMsg]);
             } catch (Throwable $e) {}
-
-            // Busca dados do vendedor (incluindo whatsapp)
-            $mStmt = $pdo->prepare("SELECT full_name, telegram_chat_id, whatsapp FROM users WHERE id = ?");
-            $mStmt->execute([$userId]);
-            $merchantRow  = $mStmt->fetch();
-            $merchantName = $merchantRow['full_name'] ?? 'N/A';
 
             // Buscar nome do produto/checkout
             $checkoutName = '';

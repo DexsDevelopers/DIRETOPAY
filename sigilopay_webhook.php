@@ -85,13 +85,30 @@ try {
             // Credita saldo atomicamente (SELECT FOR UPDATE + log correto em balance_log)
             $creditResult = adjustBalance(
                 (int)$userId,
-                (float)$amount,
+                $netAmount,
                 'pix_credit',
                 'sigilo_' . $sigiloTxId,
                 'Pagamento PIX SigiloPay #' . $sigiloTxId
             );
             if (!$creditResult['success']) {
                 write_log('ERROR', 'SigiloPay: falha ao creditar saldo', ['user_id' => $userId, 'tx' => $sigiloTxId, 'error' => $creditResult['error']]);
+            }
+
+            // Creditar comissão da plataforma ao administrador
+            $gatewayFee = $amount * 0.08 + 0.99;
+            $platformFee = $amount - $netAmount - $gatewayFee;
+            if ($platformFee > 0) {
+                $adminStmt = $pdo->query("SELECT id FROM users WHERE is_admin = 1 ORDER BY id ASC LIMIT 1");
+                $admin = $adminStmt->fetch();
+                if ($admin) {
+                    adjustBalance(
+                        (int)$admin['id'],
+                        $platformFee,
+                        'admin_profit',
+                        'tx_' . $txRow['id'],
+                        'Comissão da venda #' . $txRow['id'] . ' (SigiloPay)'
+                    );
+                }
             }
 
             // Notificação in-app com frase engraçada
@@ -269,7 +286,7 @@ try {
             }
 
             $userId    = $user['id'];
-            $commRate  = (float)($commStmt ? $commStmt->fetchColumn() : 5);
+            $commRate  = (float)($pdo->query("SELECT `value` FROM settings WHERE `key` = 'global_commission'")->fetchColumn() ?: 2.0);
             $gatewayFee = $amount * (8 / 100) + 0.99;
             $platformFee = $amount * ($commRate / 100);
             $netAmount = $amount - $gatewayFee - $platformFee;
@@ -277,13 +294,28 @@ try {
             // Credita saldo atomicamente — novo usuário criado via SigiloPay
             $creditResult2 = adjustBalance(
                 (int)$userId,
-                (float)$amount,
+                $netAmount,
                 'pix_credit',
                 'sigilo_new_' . $sigiloTxId,
                 'Pagamento PIX SigiloPay (novo usuário) #' . $sigiloTxId
             );
             if (!$creditResult2['success']) {
                 write_log('ERROR', 'SigiloPay (novo usuário): falha ao creditar saldo', ['user_id' => $userId, 'tx' => $sigiloTxId, 'error' => $creditResult2['error']]);
+            }
+
+            // Creditar comissão da plataforma ao administrador
+            if ($platformFee > 0) {
+                $adminStmt = $pdo->query("SELECT id FROM users WHERE is_admin = 1 ORDER BY id ASC LIMIT 1");
+                $admin = $adminStmt->fetch();
+                if ($admin) {
+                    adjustBalance(
+                        (int)$admin['id'],
+                        $platformFee,
+                        'admin_profit',
+                        'sigilo_new_' . $sigiloTxId,
+                        'Comissão da venda de novo lojista #' . $sigiloTxId . ' (SigiloPay)'
+                    );
+                }
             }
 
             try {

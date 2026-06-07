@@ -66,13 +66,13 @@ if (isset($data['event']) && ($data['event'] === 'payment.completed' || $data['e
                 $upd->execute([$transaction['id']]);
             }
 
-            // 2. Adicionar valor ao saldo do usuário (VALOR BRUTO conforme solicitado)
+            // 2. Adicionar valor ao saldo do usuário (VALOR LÍQUIDO)
             adjustBalance(
                 (int)$transaction['user_id'],
-                (float)$transaction['amount_brl'],
+                (float)$transaction['amount_net_brl'],
                 'sale',
                 'tx_' . $transaction['id'],
-                'Venda confirmada PIX #' . $transaction['id'] . ' — R$ ' . number_format($transaction['amount_brl'], 2, ',', '.')
+                'Venda confirmada PIX #' . $transaction['id'] . ' — R$ ' . number_format($transaction['amount_net_brl'], 2, ',', '.')
             );
 
             // 3. Calcular e Credit lucro do Admin e Afiliado
