@@ -19,6 +19,11 @@ import {
   MagneticButton,
   SectionLabel,
   Reveal,
+  BorderBeam,
+  MorphingText,
+  ScrollProgress,
+  Meteors,
+  SpotlightCard,
 } from "../components/AnimatedUI";
 import {
   Zap,
@@ -409,6 +414,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#050709] text-slate-800 dark:text-white font-sans antialiased overflow-x-hidden transition-colors duration-300">
+      <ScrollProgress color="#10b981" />
       {/* Background: Aurora + Grid + Particles */}
       <div
         className="fixed inset-0 pointer-events-none z-0"
@@ -623,6 +629,7 @@ export default function LandingPage() {
         id="sistema"
         className="relative z-10 pt-12 pb-20 px-5 overflow-hidden"
       >
+        <Meteors count={10} color="#10b981" />
         <div
           className="absolute -top-32 -left-48 w-[600px] h-[600px] rounded-full opacity-10 blur-3xl pointer-events-none"
           style={{
@@ -642,6 +649,14 @@ export default function LandingPage() {
                 <PulseBadge color="#10b981">
                   +3.000 Sellers que confiam em nós
                 </PulseBadge>
+              </div>
+              <div className="flex items-center gap-2 text-[13px] font-semibold mb-4">
+                <span className="text-slate-500 dark:text-slate-400">Para</span>
+                <MorphingText
+                  texts={["infoprodutores", "afiliados", "criadores", "e-commerces"]}
+                  className="text-emerald-500 dark:text-emerald-400"
+                />
+                <span className="text-slate-500 dark:text-slate-400">de todo o Brasil</span>
               </div>
               <h1 className="text-[30px] sm:text-[44px] lg:text-[56px] font-black tracking-tight leading-[1.05] mb-5 text-slate-900 dark:text-white">
                 <span className="block">A plataforma que escala com</span>
@@ -1142,27 +1157,40 @@ export default function LandingPage() {
               Ferramentas profissionais disponíveis desde o primeiro acesso.
             </p>
           </motion.div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {FEATURES.map(({ icon: Icon, color, title, desc }, i) => (
-              <motion.div
-                key={title}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.07 }}
-                whileHover={{ y: -4 }}
-                className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-white/[0.03] p-5 group hover:border-slate-300 dark:hover:border-white/[0.14] transition-all cursor-default shadow-sm hover:shadow-md dark:shadow-none"
-              >
-                <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110 duration-300"
-                  style={{ background: `${color}15`, border: `1px solid ${color}25` }}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {FEATURES.map(({ icon: Icon, color, title, desc }, i) => {
+              const isLarge = i === 0 || i === 3;
+              return (
+                <motion.div
+                  key={title}
+                  initial={{ opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.07 }}
+                  className={isLarge ? "sm:col-span-2 lg:col-span-2" : ""}
                 >
-                  <Icon size={18} style={{ color }} />
-                </div>
-                <h3 className="text-[14px] font-bold text-slate-900 dark:text-white mb-1.5">{title}</h3>
-                <p className="text-[12px] text-slate-500 dark:text-gray-500 leading-relaxed">{desc}</p>
-              </motion.div>
-            ))}
+                  <SpotlightCard
+                    color={`${color}18`}
+                    className="h-full rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-white/[0.03] p-5 hover:border-slate-300 dark:hover:border-white/[0.14] transition-all cursor-default shadow-sm hover:shadow-md dark:shadow-none group"
+                  >
+                    <div
+                      className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110 duration-300"
+                      style={{ background: `${color}15`, border: `1px solid ${color}25` }}
+                    >
+                      <Icon size={isLarge ? 22 : 18} style={{ color }} />
+                    </div>
+                    <h3 className={`${isLarge ? "text-[16px]" : "text-[14px]"} font-bold text-slate-900 dark:text-white mb-1.5`}>{title}</h3>
+                    <p className={`${isLarge ? "text-[13px] max-w-sm" : "text-[12px]"} text-slate-500 dark:text-gray-500 leading-relaxed`}>{desc}</p>
+                    {isLarge && (
+                      <div className="mt-4 flex items-center gap-1.5 text-[11px] font-bold" style={{ color }}>
+                        <CheckCircle size={12} />
+                        <span>Disponível desde o primeiro acesso</span>
+                      </div>
+                    )}
+                  </SpotlightCard>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -1198,8 +1226,11 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: i * 0.1 }}
                   whileHover={{ y: -6 }}
-                  className="relative rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] p-6 flex flex-col gap-4 cursor-default hover:border-slate-300 dark:hover:border-white/[0.16] transition-all shadow-sm hover:shadow-md dark:shadow-none"
                 >
+                  <SpotlightCard
+                    color="rgba(16,185,129,0.08)"
+                    className="relative rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] p-6 flex flex-col gap-4 cursor-default hover:border-slate-300 dark:hover:border-white/[0.16] transition-all shadow-sm hover:shadow-md dark:shadow-none h-full"
+                  >
                   {/* Stars */}
                   <div className="flex gap-1">
                     {Array.from({ length: stars }).map((_, si) => (
@@ -1233,6 +1264,7 @@ export default function LandingPage() {
                       {revenue}
                     </span>
                   </div>
+                  </SpotlightCard>
                 </motion.div>
               ),
             )}
@@ -1357,6 +1389,7 @@ export default function LandingPage() {
             className="grid md:grid-cols-3 gap-5 items-start"
           >
             <div className="md:col-span-2 rounded-2xl border-2 border-emerald-500 bg-white dark:bg-white/[0.03] p-6 sm:p-8 shadow-xl shadow-emerald-500/10 relative overflow-hidden">
+              <BorderBeam colorFrom="#10b981" colorTo="#6366f1" duration={8} />
               <div className="absolute top-0 right-0 bg-emerald-500 text-white text-[10px] font-black px-3 py-1 rounded-bl-xl tracking-widest">
                 MAIS POPULAR
               </div>

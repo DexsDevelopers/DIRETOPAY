@@ -7,7 +7,7 @@
  */
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { motion, useInView, animate } from 'framer-motion';
+import { motion, AnimatePresence, useInView, animate } from 'framer-motion';
 
 /* ─── Custom Cursor (Awwwards #1 signature) ──────────────────────────────── */
 export function CustomCursor() {
@@ -528,6 +528,112 @@ export function PulseBadge({ children, color = '#10b981' }) {
             </span>
             {children}
         </motion.div>
+    );
+}
+
+/* ─── Border Beam (MagicUI) ─────────────────────────────────────────────── */
+export function BorderBeam({ duration = 10, colorFrom = '#10b981', colorTo = '#6366f1', className = '' }) {
+    return (
+        <>
+            <div aria-hidden="true" className={`absolute inset-0 rounded-[inherit] pointer-events-none ${className}`}
+                style={{
+                    background: `conic-gradient(from 0deg, transparent 160deg, ${colorFrom} 185deg, ${colorTo} 200deg, transparent 225deg)`,
+                    padding: '1.5px',
+                    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                    WebkitMaskComposite: 'xor',
+                    maskComposite: 'exclude',
+                    animation: `bbeam ${duration}s linear infinite`,
+                }}
+            />
+            <style>{`@keyframes bbeam { to { transform: rotate(360deg); } }`}</style>
+        </>
+    );
+}
+
+/* ─── Morphing Text (MagicUI / ReactBits) ───────────────────────────────── */
+export function MorphingText({ texts = [], className = '', interval = 2800 }) {
+    const [index, setIndex] = useState(0);
+    useEffect(() => {
+        if (texts.length < 2) return;
+        const t = setInterval(() => setIndex(i => (i + 1) % texts.length), interval);
+        return () => clearInterval(t);
+    }, [texts, interval]);
+    return (
+        <AnimatePresence mode="wait">
+            <motion.span key={index}
+                initial={{ opacity: 0, y: 10, filter: 'blur(6px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, y: -10, filter: 'blur(6px)' }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className={className}>
+                {texts[index]}
+            </motion.span>
+        </AnimatePresence>
+    );
+}
+
+/* ─── Scroll Progress Bar (21st.dev) ────────────────────────────────────── */
+export function ScrollProgress({ color = '#10b981', height = 2 }) {
+    const [pct, setPct] = useState(0);
+    useEffect(() => {
+        const fn = () => {
+            const el = document.documentElement;
+            const max = el.scrollHeight - el.clientHeight;
+            setPct(max > 0 ? (window.scrollY / max) * 100 : 0);
+        };
+        window.addEventListener('scroll', fn, { passive: true });
+        return () => window.removeEventListener('scroll', fn);
+    }, []);
+    return (
+        <div className="fixed top-0 left-0 right-0 z-[9999] pointer-events-none" style={{ height }}>
+            <div style={{ width: `${pct}%`, height: '100%', background: color, transition: 'width 0.05s linear' }} />
+        </div>
+    );
+}
+
+/* ─── Meteors (MagicUI) ─────────────────────────────────────────────────── */
+export function Meteors({ count = 12, color = '#10b981' }) {
+    const list = Array.from({ length: count }, (_, i) => ({
+        id: i,
+        left: `${5 + Math.random() * 90}%`,
+        delay: `${Math.random() * 6}s`,
+        dur: `${3 + Math.random() * 4}s`,
+        w: 0.6 + Math.random() * 1,
+    }));
+    return (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {list.map(m => (
+                <span key={m.id} className="absolute top-0 rounded-full"
+                    style={{
+                        left: m.left, width: m.w, height: m.w * 55,
+                        background: `linear-gradient(to bottom, transparent, ${color}55, transparent)`,
+                        animation: `meteor ${m.dur} ${m.delay} linear infinite`,
+                        transform: 'rotate(20deg)',
+                    }}
+                />
+            ))}
+            <style>{`@keyframes meteor { 0%{transform:rotate(20deg) translateY(-80px);opacity:1} 100%{transform:rotate(20deg) translateY(110vh);opacity:0} }`}</style>
+        </div>
+    );
+}
+
+/* ─── Spotlight Card (ReactBits) ────────────────────────────────────────── */
+export function SpotlightCard({ children, className = '', color = 'rgba(16,185,129,0.10)' }) {
+    const [pos, setPos] = useState({ x: 0, y: 0 });
+    const [on, setOn] = useState(false);
+    const ref = useRef(null);
+    const mv = useCallback((e) => {
+        const r = ref.current?.getBoundingClientRect();
+        if (r) setPos({ x: e.clientX - r.left, y: e.clientY - r.top });
+    }, []);
+    return (
+        <div ref={ref} onMouseMove={mv} onMouseEnter={() => setOn(true)} onMouseLeave={() => setOn(false)}
+            className={`relative overflow-hidden ${className}`}>
+            {on && <div className="absolute pointer-events-none rounded-full"
+                style={{ width: 360, height: 360, top: pos.y - 180, left: pos.x - 180,
+                    background: `radial-gradient(circle, ${color}, transparent 70%)` }} />}
+            {children}
+        </div>
     );
 }
 
