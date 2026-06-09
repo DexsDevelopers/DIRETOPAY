@@ -61,6 +61,7 @@ import {
   Sun,
   Moon,
   Code2,
+  Play,
 } from "lucide-react";
 
 const NAV_LINKS = [
@@ -578,57 +579,37 @@ export default function LandingPage() {
         )}
       </AnimatePresence>
 
-      {/* ── ANNOUNCEMENT BANNER ── */}
-      <div className="relative z-10 flex justify-center pt-24 pb-2 px-5">
-        <motion.div
+      {/* ── ANNOUNCEMENT PILL (consolidado: canal + prova social) ── */}
+      <div className="relative z-10 flex justify-center pt-28 pb-2 px-5">
+        <motion.a
+          href="https://wa.me/5551996148568"
+          target="_blank"
+          rel="noopener noreferrer"
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="flex items-center gap-3 bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.09] rounded-2xl px-5 py-3 backdrop-blur-xl shadow-md dark:shadow-xl dark:shadow-black/30"
-        >
-          <MessageCircle size={14} className="text-emerald-400 shrink-0" />
-          <span className="text-[13px] text-slate-700 dark:text-gray-300 hidden sm:inline">
-            Entre no canal oficial para novidades e avisos!
-          </span>
-          <a
-            href="https://wa.me/5551996148568"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[10px] font-black bg-slate-900 dark:bg-white text-white dark:text-black px-3 py-1.5 rounded-lg tracking-widest hover:bg-slate-800 dark:hover:bg-gray-100 transition-colors whitespace-nowrap"
-          >
-            ENTRAR AGORA
-          </a>
-        </motion.div>
-      </div>
-
-      {/* ── SOCIAL PROOF BADGE ── */}
-      <div className="relative z-10 flex justify-center mt-4">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="flex items-center gap-3 bg-white dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.06] rounded-full px-4 py-2 shadow-sm dark:shadow-none"
+          whileHover={{ scale: 1.02 }}
+          className="group flex items-center gap-2.5 bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.09] rounded-full pl-2 pr-4 py-1.5 backdrop-blur-xl shadow-sm dark:shadow-lg dark:shadow-black/30 transition-all"
         >
           <div className="flex -space-x-2">
-            {["#10b981", "#6366f1", "#f59e0b", "#0ea5e9"].map((c, i) => (
+            {["#10b981", "#6366f1", "#f59e0b"].map((c, i) => (
               <div
                 key={i}
-                className="w-6 h-6 rounded-full border-2 border-white dark:border-[#050709] flex items-center justify-center text-[8px] font-bold"
+                className="w-6 h-6 rounded-full border-2 border-white dark:border-[#050709] flex items-center justify-center text-[8px] font-bold text-white"
                 style={{ background: c }}
               >
-                {["MR", "AL", "JS", "CF"][i]}
+                {["MR", "AL", "JS"][i]}
               </div>
             ))}
           </div>
-          <span className="text-[12px] font-semibold text-slate-700 dark:text-gray-300">
-            +
-            <span className="text-emerald-400">
-              {onlineUsers.toLocaleString("pt-BR")}
-            </span>{" "}
-            vendedores ativos agora
+          <span className="text-[12.5px] font-semibold text-slate-700 dark:text-gray-300">
+            <span className="text-emerald-500 dark:text-emerald-400 font-bold">{onlineUsers.toLocaleString("pt-BR")}</span> vendedores ativos agora
           </span>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-        </motion.div>
+          <span className="h-3.5 w-px bg-slate-200 dark:bg-white/10 hidden sm:block" />
+          <span className="text-[11px] font-bold text-slate-500 dark:text-gray-400 group-hover:text-emerald-500 transition-colors items-center gap-1 hidden sm:flex">
+            Canal oficial <ArrowRight size={11} className="group-hover:translate-x-0.5 transition-transform" />
+          </span>
+        </motion.a>
       </div>
 
       {/* ── HERO ── */}
@@ -652,88 +633,76 @@ export default function LandingPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="mb-6">
-                <PulseBadge color="#10b981">
-                  +3.000 Sellers que confiam em nós
-                </PulseBadge>
-              </div>
-              <div className="flex items-center gap-2 text-[13px] font-semibold mb-4">
-                <span className="text-slate-500 dark:text-slate-400">Para</span>
+              {/* Eyebrow */}
+              <div className="inline-flex items-center gap-2 mb-7 rounded-full border border-slate-200 dark:border-white/[0.08] bg-white/70 dark:bg-white/[0.03] backdrop-blur px-3.5 py-1.5 shadow-sm dark:shadow-none">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+                </span>
+                <span className="text-[12px] font-semibold text-slate-600 dark:text-slate-300">
+                  Gateway PIX para
+                </span>
                 <MorphingText
-                  texts={["infoprodutores", "afiliados", "criadores", "e-commerces"]}
-                  className="text-emerald-500 dark:text-emerald-400"
+                  texts={["infoprodutores", "afiliados", "e-commerces", "criadores"]}
+                  className="text-[12px] font-bold text-emerald-600 dark:text-emerald-400"
                 />
-                <span className="text-slate-500 dark:text-slate-400">de todo o Brasil</span>
               </div>
-              <h1 className="text-[30px] sm:text-[44px] lg:text-[56px] font-black tracking-tight leading-[1.05] mb-5 text-slate-900 dark:text-white">
-                <BlurText text="A plataforma que escala com" className="block" delay={0.04} />
+
+              {/* Headline — bold, oversized, layered */}
+              <h1 className="text-[42px] sm:text-[58px] lg:text-[68px] font-black tracking-[-0.03em] leading-[0.95] mb-6 text-slate-900 dark:text-white">
+                <BlurText text="Receba por PIX" className="block" delay={0.04} />
                 <span className="block">
                   <GradientText from="#10b981" to="#34d399">
-                    <BlurText text="sua operação crescer!" delay={0.05} />
+                    <BlurText text="na hora." delay={0.06} />
                   </GradientText>
+                  <span className="text-slate-300 dark:text-slate-700"> Sem fricção.</span>
                 </span>
               </h1>
-              <p className="text-[16px] text-slate-600 dark:text-slate-400 leading-relaxed mb-6 max-w-md">
-                Receba via PIX com{" "}
-                <strong className="text-slate-900 dark:text-slate-200">aprovação instantânea</strong>
-                . Sem burocracia, saques rápidos e{" "}
-                <strong className="text-slate-900 dark:text-slate-200">total proteção</strong>.
+
+              {/* Subheadline — one concise line */}
+              <p className="text-[17px] sm:text-[18px] text-slate-600 dark:text-slate-400 leading-relaxed mb-8 max-w-md">
+                Aprovação instantânea, saque direto na sua chave e antifraude nativo. Comece a vender em <strong className="text-slate-900 dark:text-white font-bold">2 minutos</strong> — sem CNPJ, sem burocracia.
               </p>
-              <div className="flex flex-wrap gap-2 mb-8">
-                {[
-                  "Sem documentos",
-                  "Sem CNPJ",
-                  "Taxa fixa",
-                  "Ativo em 2 min",
-                ].map((t) => (
-                  <span
-                    key={t}
-                    className="flex items-center gap-1.5 text-[12px] text-emerald-600 dark:text-emerald-300 font-semibold bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 px-3 py-1 rounded-full"
-                  >
-                    <CheckCircle size={11} className="shrink-0" /> {t}
-                  </span>
-                ))}
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3 mb-10">
-                <MagneticButton className="relative overflow-hidden flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-7 py-3.5 rounded-xl transition-colors text-[15px] shadow-2xl shadow-emerald-500/30">
-                  <Link to="/register" className="flex items-center gap-2">
-                    <ShinyText speed={2.5}>Criar conta grátis</ShinyText> <ArrowRight size={16} />
-                  </Link>
-                </MagneticButton>
+
+              {/* Single primary CTA + ghost link */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-10">
+                <RippleButton
+                  color="rgba(16,185,129,0.5)"
+                  onClick={() => (window.location.href = "/register")}
+                  className="group flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-8 py-4 rounded-2xl transition-all text-[16px] shadow-[0_12px_40px_rgba(16,185,129,0.35)] hover:-translate-y-0.5"
+                >
+                  <ShinyText speed={2.5}>Criar conta grátis</ShinyText>
+                  <ArrowRight size={17} className="group-hover:translate-x-0.5 transition-transform" />
+                </RippleButton>
                 <a
                   href="#recursos"
-                  className="flex items-center justify-center gap-2 border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:bg-slate-100 dark:hover:bg-white/[0.04] text-slate-700 dark:text-slate-300 font-medium px-7 py-3.5 rounded-xl transition-all text-[15px]"
+                  className="flex items-center justify-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-semibold px-4 py-4 transition-colors text-[15px]"
                 >
+                  <span className="w-8 h-8 rounded-full border border-slate-200 dark:border-white/15 flex items-center justify-center group-hover:border-emerald-500 transition-colors">
+                    <Play size={11} className="text-emerald-500 ml-0.5" fill="currentColor" />
+                  </span>
                   Ver como funciona
                 </a>
               </div>
-              {/* Benefit cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {BENEFITS.map(({ icon: Icon, color, title, desc }) => (
-                  <GlareCard key={title} className="rounded-2xl">
-                  <motion.div
-                    whileHover={{ y: -4, scale: 1.02 }}
-                    className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-white/[0.03] p-3 sm:p-4 hover:border-slate-300 dark:hover:border-white/[0.14] transition-all cursor-default flex sm:block items-start gap-3 shadow-sm dark:shadow-none hover:shadow-md dark:hover:shadow-none"
-                  >
-                    <div
-                      className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 sm:mb-3"
-                      style={{
-                        background: `${color}18`,
-                        border: `1px solid ${color}28`,
-                      }}
-                    >
-                      <Icon size={15} style={{ color }} />
-                    </div>
+
+              {/* Trust metric strip — strongest social proof (volume) */}
+              <div className="flex items-center gap-6 sm:gap-8 flex-wrap">
+                {[
+                  { value: 12, prefix: "R$ ", suffix: "M+", label: "processados" },
+                  { value: 4200, prefix: "", suffix: "+", label: "vendedores" },
+                  { value: 99.97, prefix: "", suffix: "%", label: "uptime", decimals: 2 },
+                ].map((m, i) => (
+                  <React.Fragment key={m.label}>
+                    {i > 0 && <span className="h-8 w-px bg-slate-200 dark:bg-white/10" />}
                     <div>
-                      <p className="text-[12px] font-bold text-slate-900 dark:text-white mb-0.5 sm:mb-1">
-                        {title}
+                      <p className="text-[22px] sm:text-[26px] font-black tracking-tight text-slate-900 dark:text-white tabular-nums leading-none">
+                        <NumberTicker value={m.value} prefix={m.prefix} suffix={m.suffix} decimals={m.decimals || 0} />
                       </p>
-                      <p className="text-[11px] text-slate-500 dark:text-gray-500 leading-relaxed">
-                        {desc}
+                      <p className="text-[11px] font-medium text-slate-500 dark:text-slate-500 uppercase tracking-wider mt-1">
+                        {m.label}
                       </p>
                     </div>
-                  </motion.div>
-                  </GlareCard>
+                  </React.Fragment>
                 ))}
               </div>
             </motion.div>
@@ -798,13 +767,15 @@ export default function LandingPage() {
                         <p className="text-[10px] text-slate-500 mb-1">
                           Faturamento Hoje
                         </p>
-                        <p className="text-[20px] font-black text-emerald-400">
-                          R$ 12.450,00
+                        <p className="text-[20px] font-black text-emerald-400 tabular-nums">
+                          <NumberTicker value={12450} prefix="R$ " duration={1.6} />
                         </p>
                       </div>
                       <div className="bg-slate-50 dark:bg-white/[0.03] border border-slate-100 dark:border-white/[0.05] rounded-2xl p-4">
                         <p className="text-[10px] text-slate-500 mb-1">Vendas</p>
-                        <p className="text-[20px] font-black text-slate-900 dark:text-white">847</p>
+                        <p className="text-[20px] font-black text-slate-900 dark:text-white tabular-nums">
+                          <NumberTicker value={847} duration={1.6} />
+                        </p>
                       </div>
                     </div>
                     <div className="bg-slate-100/50 dark:bg-white/[0.02] rounded-xl p-4 h-20 flex items-end gap-1.5">
@@ -971,16 +942,15 @@ export default function LandingPage() {
           <div className="text-center mb-10 sm:mb-12">
             <SectionLabel number="02" label="Conquistas" />
             <ClipReveal delay={0.05}>
-              <h2 className="text-3xl sm:text-4xl font-black tracking-tight mb-2 text-slate-900 dark:text-white">
+              <h2 className="text-[34px] sm:text-[48px] font-black tracking-[-0.02em] leading-[1] mb-3 text-slate-900 dark:text-white">
                 Celebre suas{" "}
                 <GradientText from="#f59e0b" to="#fbbf24">
                   conquistas
                 </GradientText>
               </h2>
             </ClipReveal>
-            <p className="text-slate-500 dark:text-slate-400 text-[14px] max-w-sm mx-auto">
-              Receba placas exclusivas ao atingir marcos de faturamento. Mostre
-              ao mundo o seu sucesso!
+            <p className="text-slate-500 dark:text-slate-400 text-[15px] max-w-sm mx-auto">
+              Placas exclusivas a cada marco de faturamento.
             </p>
           </div>
 
@@ -1154,15 +1124,15 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[12px] font-bold px-4 py-2 rounded-full mb-4">
+            <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[12px] font-bold px-4 py-2 rounded-full mb-5">
               <Zap size={12} /> Tudo que você precisa
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight mb-2 text-slate-900 dark:text-white">
-              Recursos feitos para{" "}
+            <h2 className="text-[34px] sm:text-[48px] font-black tracking-[-0.02em] leading-[1] mb-3 text-slate-900 dark:text-white">
+              <BlurText text="Tudo para" className="justify-center" delay={0.03} />{" "}
               <GradientText from="#10b981" to="#6366f1">vender mais</GradientText>
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 text-[14px] max-w-sm mx-auto">
-              Ferramentas profissionais disponíveis desde o primeiro acesso.
+            <p className="text-slate-500 dark:text-slate-400 text-[15px] max-w-md mx-auto">
+              Ferramentas profissionais desde o primeiro acesso.
             </p>
           </motion.div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1177,6 +1147,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.4, delay: i * 0.07 }}
                   className={isLarge ? "sm:col-span-2 lg:col-span-2" : ""}
                 >
+                  <GlareCard className="h-full rounded-2xl">
                   <SpotlightCard
                     color={`${color}18`}
                     className="h-full rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-white/[0.03] p-5 hover:border-slate-300 dark:hover:border-white/[0.14] transition-all cursor-default shadow-sm hover:shadow-md dark:shadow-none group"
@@ -1196,6 +1167,7 @@ export default function LandingPage() {
                       </div>
                     )}
                   </SpotlightCard>
+                  </GlareCard>
                 </motion.div>
               );
             })}
@@ -1214,13 +1186,13 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[12px] font-bold px-4 py-2 rounded-full mb-4">
-              <Star size={12} fill="currentColor" /> O que nossos sellers dizem
+            <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[12px] font-bold px-4 py-2 rounded-full mb-5">
+              <Star size={12} fill="currentColor" /> +4.200 sellers
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight mb-2 text-slate-900 dark:text-white">
-              Resultados reais de quem usa
+            <h2 className="text-[34px] sm:text-[48px] font-black tracking-[-0.02em] leading-[1] mb-3 text-slate-900 dark:text-white">
+              <BlurText text="Resultados reais" className="justify-center" delay={0.03} />
             </h2>
-            <p className="text-gray-500 text-[14px]">
+            <p className="text-gray-500 text-[15px]">
               Sellers de todo o Brasil já faturam com a DiretoPay.
             </p>
           </motion.div>
@@ -1235,6 +1207,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.4, delay: i * 0.1 }}
                   whileHover={{ y: -6 }}
                 >
+                  <GlareCard className="h-full rounded-2xl">
                   <SpotlightCard
                     color="rgba(16,185,129,0.08)"
                     className="relative rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] p-6 flex flex-col gap-4 cursor-default hover:border-slate-300 dark:hover:border-white/[0.16] transition-all shadow-sm hover:shadow-md dark:shadow-none h-full"
@@ -1273,6 +1246,7 @@ export default function LandingPage() {
                     </span>
                   </div>
                   </SpotlightCard>
+                  </GlareCard>
                 </motion.div>
               ),
             )}
@@ -1292,8 +1266,8 @@ export default function LandingPage() {
             <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[12px] font-bold px-4 py-2 rounded-full mb-4">
               <ShieldCheck size={13} /> Comparativo
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
-              Por que escolher a DiretoPay?
+            <h2 className="text-[34px] sm:text-[48px] font-black tracking-[-0.02em] leading-[1] text-slate-900 dark:text-white">
+              Por que a <GradientText from="#10b981" to="#34d399">DiretoPay?</GradientText>
             </h2>
           </motion.div>
           <motion.div
@@ -1381,11 +1355,11 @@ export default function LandingPage() {
             <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[12px] font-bold px-4 py-2 rounded-full mb-4">
               <DollarSign size={12} /> Preço transparente
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
+            <h2 className="text-[34px] sm:text-[48px] font-black tracking-[-0.02em] leading-[1] text-slate-900 dark:text-white">
               Simples assim.{" "}
               <GradientText from="#10b981" to="#34d399">Sem pegadinha.</GradientText>
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 text-[14px] mt-2">
+            <p className="text-slate-500 dark:text-slate-400 text-[15px] mt-3">
               Uma taxa. Tudo incluso. Você só paga quando vender.
             </p>
           </motion.div>
@@ -1472,8 +1446,8 @@ export default function LandingPage() {
             <p className="text-[12px] font-bold text-emerald-600 dark:text-emerald-500 uppercase tracking-widest mb-3">
               Como funciona
             </p>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
-              Comece em 4 passos
+            <h2 className="text-[34px] sm:text-[48px] font-black tracking-[-0.02em] leading-[1] text-slate-900 dark:text-white">
+              Comece em <GradientText from="#10b981" to="#34d399">4 passos</GradientText>
             </h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -1547,8 +1521,8 @@ export default function LandingPage() {
             <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[12px] font-bold px-4 py-2 rounded-full mb-4">
               <Flame size={13} /> Competição Mensal
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
-              Na DiretoPay, sua performance importa!
+            <h2 className="text-[34px] sm:text-[48px] font-black tracking-[-0.02em] leading-[1] text-slate-900 dark:text-white">
+              Sua <GradientText from="#f59e0b" to="#fbbf24">performance</GradientText> importa
             </h2>
           </motion.div>
           <motion.div
@@ -1625,8 +1599,8 @@ export default function LandingPage() {
             <p className="text-[12px] font-bold text-emerald-600 dark:text-emerald-500 uppercase tracking-widest mb-3">
               FAQ
             </p>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
-              Perguntas frequentes
+            <h2 className="text-[34px] sm:text-[48px] font-black tracking-[-0.02em] leading-[1] text-slate-900 dark:text-white">
+              Perguntas <GradientText from="#10b981" to="#34d399">frequentes</GradientText>
             </h2>
           </div>
           <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-white/[0.025] backdrop-blur-sm px-6 overflow-hidden shadow-sm">
