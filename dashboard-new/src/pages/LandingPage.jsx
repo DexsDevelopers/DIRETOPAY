@@ -1122,9 +1122,53 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── RECURSOS ── */}
+      <section id="recursos" className="relative z-10 py-12 sm:py-20 px-5 border-t border-slate-200 dark:border-white/[0.06]">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[12px] font-bold px-4 py-2 rounded-full mb-4">
+              <Zap size={12} /> Tudo que você precisa
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight mb-2 text-slate-900 dark:text-white">
+              Recursos feitos para{" "}
+              <GradientText from="#10b981" to="#6366f1">vender mais</GradientText>
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 text-[14px] max-w-sm mx-auto">
+              Ferramentas profissionais disponíveis desde o primeiro acesso.
+            </p>
+          </motion.div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {FEATURES.map(({ icon: Icon, color, title, desc }, i) => (
+              <motion.div
+                key={title}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.07 }}
+                whileHover={{ y: -4 }}
+                className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-white/[0.03] p-5 group hover:border-slate-300 dark:hover:border-white/[0.14] transition-all cursor-default shadow-sm hover:shadow-md dark:shadow-none"
+              >
+                <div
+                  className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110 duration-300"
+                  style={{ background: `${color}15`, border: `1px solid ${color}25` }}
+                >
+                  <Icon size={18} style={{ color }} />
+                </div>
+                <h3 className="text-[14px] font-bold text-slate-900 dark:text-white mb-1.5">{title}</h3>
+                <p className="text-[12px] text-slate-500 dark:text-gray-500 leading-relaxed">{desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── DEPOIMENTOS ── */}
       <section
-        id="recursos"
         className="relative z-10 py-12 sm:py-20 px-5 border-t border-slate-200 dark:border-white/[0.06]"
       >
         <div className="max-w-5xl mx-auto">
@@ -1277,6 +1321,101 @@ export default function LandingPage() {
                     <span className="text-[12px] font-bold text-emerald-600 dark:text-emerald-400">
                       {good}
                     </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── PRICING / TAXA ── */}
+      <section className="relative z-10 py-12 sm:py-20 px-5 border-t border-slate-200 dark:border-white/[0.06]">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-10"
+          >
+            <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[12px] font-bold px-4 py-2 rounded-full mb-4">
+              <DollarSign size={12} /> Preço transparente
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
+              Simples assim.{" "}
+              <GradientText from="#10b981" to="#34d399">Sem pegadinha.</GradientText>
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 text-[14px] mt-2">
+              Uma taxa. Tudo incluso. Você só paga quando vender.
+            </p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="grid md:grid-cols-3 gap-5 items-start"
+          >
+            <div className="md:col-span-2 rounded-2xl border-2 border-emerald-500 bg-white dark:bg-white/[0.03] p-6 sm:p-8 shadow-xl shadow-emerald-500/10 relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-emerald-500 text-white text-[10px] font-black px-3 py-1 rounded-bl-xl tracking-widest">
+                MAIS POPULAR
+              </div>
+              <div className="flex items-start gap-4 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center shrink-0">
+                  <Zap size={20} className="text-white" />
+                </div>
+                <div>
+                  <h3 className="text-[17px] font-black text-slate-900 dark:text-white">Plano Seller</h3>
+                  <p className="text-[13px] text-slate-500 dark:text-gray-400">Para quem quer vender de imediato</p>
+                </div>
+              </div>
+              <div className="flex items-end gap-2 mb-6">
+                <span className="text-[13px] font-bold text-slate-500 dark:text-gray-400 mb-1">taxa de</span>
+                <span className="text-[52px] font-black text-emerald-400 leading-none">4,99%</span>
+                <span className="text-[13px] font-bold text-slate-500 dark:text-gray-400 mb-1">por venda</span>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-2 mb-7">
+                {[
+                  "Sem mensalidade",
+                  "Sem taxa de cadastro",
+                  "Saque ilimitado via PIX",
+                  "Checkout personalizado",
+                  "API REST + Webhooks",
+                  "Dashboard em tempo real",
+                  "Antifraude nativo",
+                  "Suporte WhatsApp 24/7",
+                ].map((item) => (
+                  <div key={item} className="flex items-center gap-2">
+                    <CheckCircle size={13} className="text-emerald-400 shrink-0" />
+                    <span className="text-[13px] text-slate-700 dark:text-gray-300">{item}</span>
+                  </div>
+                ))}
+              </div>
+              <Link
+                to="/register"
+                className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-6 py-3.5 rounded-xl transition-all text-[14px] shadow-lg shadow-emerald-500/25 hover:-translate-y-px w-full"
+              >
+                Criar conta grátis <ArrowRight size={15} />
+              </Link>
+            </div>
+            <div className="flex flex-col gap-4">
+              {[
+                { icon: ShieldCheck, color: "#10b981", title: "Sem surpresas", desc: "Você só paga quando receber. Taxa única, sem letra miúda." },
+                { icon: Zap, color: "#6366f1", title: "Ativo imediatamente", desc: "Cadastro em 2 min. Sua conta está operacional para vender já." },
+                { icon: TrendingUp, color: "#f59e0b", title: "Volume alto?", desc: "Negocie condições especiais. Fale com nosso time no WhatsApp." },
+              ].map(({ icon: Icon, color, title, desc }) => (
+                <div key={title} className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-white/[0.03] p-4 shadow-sm dark:shadow-none">
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                      style={{ background: `${color}15`, border: `1px solid ${color}25` }}
+                    >
+                      <Icon size={15} style={{ color }} />
+                    </div>
+                    <div>
+                      <p className="text-[13px] font-bold text-slate-900 dark:text-white mb-0.5">{title}</p>
+                      <p className="text-[11px] text-slate-500 dark:text-gray-500 leading-relaxed">{desc}</p>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -1507,6 +1646,29 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── TRUST BADGES ── */}
+      <section className="relative z-10 py-8 px-5 border-t border-slate-200 dark:border-white/[0.06] bg-slate-50/80 dark:bg-white/[0.01]">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-center text-[10px] font-bold text-slate-400 dark:text-gray-600 uppercase tracking-widest mb-5">
+            Segurança e confiança
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10">
+            {[
+              { icon: ShieldCheck, label: "SSL 256-bit" },
+              { icon: Lock, label: "Criptografia ponta-a-ponta" },
+              { icon: Zap, label: "99,97% Uptime" },
+              { icon: Users, label: "+4.200 sellers ativos" },
+              { icon: Star, label: "Suporte 24/7" },
+            ].map(({ icon: Icon, label }) => (
+              <div key={label} className="flex items-center gap-2 text-slate-500 dark:text-gray-500">
+                <Icon size={14} className="text-emerald-500 shrink-0" />
+                <span className="text-[12px] font-semibold whitespace-nowrap">{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── CTA FINAL ── */}
       <section className="relative z-10 py-14 sm:py-24 px-5 border-t border-slate-200 dark:border-white/[0.06] overflow-hidden">
         <div
@@ -1555,6 +1717,32 @@ export default function LandingPage() {
           </p>
         </motion.div>
       </section>
+
+      {/* ── STICKY MOBILE CTA ── */}
+      <AnimatePresence>
+        {scrolled && (
+          <motion.div
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed bottom-4 left-4 right-4 z-50 md:hidden"
+          >
+            <div className="bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-white/[0.12] rounded-2xl px-4 py-3 flex items-center gap-3 shadow-2xl shadow-black/20 backdrop-blur-xl">
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] font-bold text-slate-900 dark:text-white truncate">Comece a vender hoje</p>
+                <p className="text-[10px] text-slate-500 dark:text-gray-500">Sem CNPJ · Sem documentos · Grátis</p>
+              </div>
+              <Link
+                to="/register"
+                className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 text-white text-[12px] font-bold px-4 py-2.5 rounded-xl transition-colors shadow-lg shadow-emerald-500/30 shrink-0 whitespace-nowrap"
+              >
+                Criar conta <ArrowRight size={13} />
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── FOOTER ── */}
       <footer className="relative z-10 border-t border-slate-200 dark:border-white/[0.06] py-12 px-5 bg-white dark:bg-transparent">

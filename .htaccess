@@ -202,6 +202,10 @@ RewriteRule ^(.*)$ index.php [L,QSA]
         Header set Pragma "no-cache"
         Header set Expires 0
     </IfModule>
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteRule .* - [E=Cache-Control:no-cache]
+    </IfModule>
 </FilesMatch>
 
 <FilesMatch "^index-[A-Za-z0-9_-]+\.js$">
