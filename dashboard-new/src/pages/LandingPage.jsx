@@ -700,23 +700,27 @@ export default function LandingPage() {
               </div>
 
               {/* Trust metric strip — strongest social proof (volume) */}
-              <div className="flex items-center gap-6 sm:gap-8 flex-wrap">
+              <div className="grid grid-cols-3 gap-3 sm:flex sm:items-center sm:gap-8">
                 {[
                   { value: 12, prefix: "R$ ", suffix: "M+", label: "processados" },
                   { value: 4200, prefix: "", suffix: "+", label: "vendedores" },
                   { value: 99.97, prefix: "", suffix: "%", label: "uptime", decimals: 2 },
                 ].map((m, i) => (
-                  <React.Fragment key={m.label}>
-                    {i > 0 && <span className="h-8 w-px bg-slate-200 dark:bg-white/10" />}
-                    <div>
-                      <p className="text-[22px] sm:text-[26px] font-black tracking-tight text-slate-900 dark:text-white tabular-nums leading-none">
-                        <NumberTicker value={m.value} prefix={m.prefix} suffix={m.suffix} decimals={m.decimals || 0} />
-                      </p>
-                      <p className="text-[11px] font-medium text-slate-500 dark:text-slate-500 uppercase tracking-wider mt-1">
-                        {m.label}
-                      </p>
-                    </div>
-                  </React.Fragment>
+                  <div
+                    key={m.label}
+                    className={
+                      i > 0
+                        ? "sm:pl-8 sm:border-l border-slate-200 dark:border-white/10"
+                        : ""
+                    }
+                  >
+                    <p className="text-[19px] sm:text-[26px] font-black tracking-tight text-slate-900 dark:text-white tabular-nums leading-none">
+                      <NumberTicker value={m.value} prefix={m.prefix} suffix={m.suffix} decimals={m.decimals || 0} />
+                    </p>
+                    <p className="text-[10px] sm:text-[11px] font-medium text-slate-500 dark:text-slate-500 uppercase tracking-wider mt-1">
+                      {m.label}
+                    </p>
+                  </div>
                 ))}
               </div>
             </motion.div>
