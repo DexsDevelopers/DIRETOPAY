@@ -32,6 +32,8 @@ import {
   RippleButton,
   NumberTicker,
 } from "../components/AnimatedUI";
+import DisplayCards from "../components/DisplayCards";
+import { ExpandableTabs } from "../components/ExpandableTabs";
 import {
   Zap,
   ShieldCheck,
@@ -949,6 +951,86 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── BENEFÍCIOS (DisplayCards 21st.dev) ── */}
+      <section className="relative z-10 py-12 sm:py-20 px-5 border-t border-slate-200 dark:border-white/[0.06] overflow-hidden">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+          {/* Texto */}
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[12px] font-bold px-4 py-2 rounded-full mb-5">
+              <ShieldCheck size={13} /> Por que DiretoPay
+            </div>
+            <h2 className="text-[34px] sm:text-[48px] font-black tracking-[-0.02em] leading-[1] mb-4 text-slate-900 dark:text-white">
+              Feito para você{" "}
+              <GradientText from="#10b981" to="#34d399">receber mais</GradientText>
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 text-[15px] max-w-md mb-6">
+              Aprovação na hora, dinheiro direto na sua chave PIX e proteção
+              antifraude nativa. Passe o mouse sobre os cards.
+            </p>
+            <div className="flex flex-col gap-3">
+              {BENEFITS.map(({ icon: Icon, color, title }) => (
+                <div key={title} className="flex items-center gap-3">
+                  <div
+                    className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+                    style={{ background: `${color}18`, border: `1px solid ${color}28` }}
+                  >
+                    <Icon size={15} style={{ color }} />
+                  </div>
+                  <span className="text-[14px] font-semibold text-slate-700 dark:text-gray-300">
+                    {title}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* DisplayCards empilhados */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="hidden sm:flex justify-center lg:justify-end min-h-[300px] items-center"
+          >
+            <DisplayCards
+              cards={[
+                {
+                  icon: <Zap className="size-4 text-emerald-300" />,
+                  title: "Aprovação Instantânea",
+                  description: "Produtos aprovados na hora",
+                  date: "Sem espera de 2-3 dias",
+                  titleClassName: "text-emerald-500",
+                  className:
+                    "[grid-area:stack] hover:-translate-y-10 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-slate-200 dark:before:outline-white/10 before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-white/50 dark:before:bg-[#050709]/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
+                },
+                {
+                  icon: <DollarSign className="size-4 text-emerald-300" />,
+                  title: "Saque Direto no PIX",
+                  description: "Liquidação imediata",
+                  date: "Na sua chave cadastrada",
+                  titleClassName: "text-emerald-500",
+                  className:
+                    "[grid-area:stack] translate-x-12 translate-y-10 hover:-translate-y-1 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-slate-200 dark:before:outline-white/10 before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-white/50 dark:before:bg-[#050709]/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
+                },
+                {
+                  icon: <ShieldCheck className="size-4 text-emerald-300" />,
+                  title: "Antifraude Nativo",
+                  description: "Proteção multicamada",
+                  date: "Contra chargebacks e MED",
+                  titleClassName: "text-emerald-500",
+                  className:
+                    "[grid-area:stack] translate-x-24 translate-y-20 hover:translate-y-10",
+                },
+              ]}
+            />
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── CONQUISTAS / PLACAS ── */}
       <section className="relative z-10 py-12 sm:py-20 px-5 border-t border-slate-200 dark:border-white/[0.06]">
         <div className="max-w-5xl mx-auto">
@@ -1149,6 +1231,24 @@ export default function LandingPage() {
               Ferramentas profissionais desde o primeiro acesso.
             </p>
           </motion.div>
+          <div className="flex justify-center mb-10">
+            <ExpandableTabs
+              tabs={[
+                { title: "Recursos", icon: Zap },
+                { title: "Simulador", icon: TrendingUp },
+                { type: "separator" },
+                { title: "Dúvidas", icon: MessageCircle },
+              ]}
+              onChange={(i) => {
+                const targets = ["recursos", "simulador", null, "faq"];
+                const t = i == null ? null : targets[i];
+                if (t)
+                  document
+                    .getElementById(t)
+                    ?.scrollIntoView({ behavior: "smooth" });
+              }}
+            />
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {FEATURES.map(({ icon: Icon, color, title, desc }, i) => {
               const isLarge = i === 0 || i === 3;
@@ -1358,7 +1458,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── CALCULADORA COMPARATIVA (estilo MisticPay) ── */}
-      <section className="relative z-10 py-12 sm:py-20 px-5 border-t border-slate-200 dark:border-white/[0.06] overflow-hidden">
+      <section id="simulador" className="relative z-10 py-12 sm:py-20 px-5 border-t border-slate-200 dark:border-white/[0.06] overflow-hidden">
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full opacity-[0.08] blur-3xl pointer-events-none"
           style={{ background: "radial-gradient(circle, #10b981, transparent 70%)" }}
