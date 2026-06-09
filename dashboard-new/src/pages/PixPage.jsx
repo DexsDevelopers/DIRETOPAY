@@ -6,7 +6,7 @@ import {
     ChevronDown, RefreshCw, Check, X, ChevronRight
 } from 'lucide-react';
 import PixModal from '../components/PixModal';
-import { BorderBeam, SpotlightCard } from '../components/AnimatedUI';
+import { BorderBeam, SpotlightCard, NeonCard, ShinyText, RippleButton, GlareCard } from '../components/AnimatedUI';
 
 const KEY_TYPES = [
     { value: 'cpf',    label: 'CPF',       icon: User        },
@@ -247,15 +247,15 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                         <p className="text-[11px] text-gray-400 px-1">Mínimo: R$ 2,00</p>
                                     </div>
 
-                                    <button onClick={handleGerar} disabled={genLoading || !amount}
+                                    <RippleButton onClick={handleGerar} disabled={genLoading || !amount} color="rgba(16,185,129,0.5)"
                                         className="w-full py-4 rounded-xl font-black text-white flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 shadow-[0_8px_24px_rgba(30,164,101,0.3)]"
                                         style={{ background: 'linear-gradient(135deg, #1ea465, #126b41)' }}
                                     >
                                         {genLoading
                                             ? <><Loader2 size={18} className="animate-spin" /> Gerando...</>
-                                            : <><Zap size={18} fill="currentColor" /> Gerar PIX</>
+                                            : <><Zap size={18} fill="currentColor" /> <ShinyText speed={3}>Gerar PIX</ShinyText></>
                                         }
-                                    </button>
+                                    </RippleButton>
 
                                     <div className="flex items-center gap-2 justify-center text-gray-300">
                                         <CheckCircle size={13} />

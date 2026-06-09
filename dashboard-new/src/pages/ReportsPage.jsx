@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
-import { BorderBeam, SpotlightCard, ScrollProgress } from '../components/AnimatedUI';
+import { BorderBeam, SpotlightCard, ScrollProgress, GlareCard, NeonCard, BlurText } from '../components/AnimatedUI';
 
 export default function ReportsPage() {
     const { isDark } = useTheme();
@@ -112,6 +112,7 @@ export default function ReportsPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: i * 0.05, duration: 0.35 }}
                                 className={``}>
+                                <GlareCard className="h-full">
                                 <SpotlightCard color={`${color}12`} className={`${card} flex flex-col gap-3 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200 cursor-default h-full`}>
                                 <div className="flex items-center justify-between">
                                     <span className={`text-[10px] font-black uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{title}</span>
@@ -127,6 +128,7 @@ export default function ReportsPage() {
                                     </div>
                                 )}
                             </SpotlightCard>
+                            </GlareCard>
                             </motion.div>
                         );
                     })}

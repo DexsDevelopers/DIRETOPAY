@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AreaChart, Area, ResponsiveContainer, Tooltip } from 'recharts';
-import { SpotlightCard, BorderBeam, ScrollProgress } from '../components/AnimatedUI';
+import { SpotlightCard, BorderBeam, ScrollProgress, GlareCard, NumberTicker, ShinyText, RippleButton, BlurText, NeonCard } from '../components/AnimatedUI';
 import {
   RefreshCw, TrendingUp, Banknote, ShoppingCart,
   Eye, EyeOff, ArrowUpRight, BarChart3, QrCode, Link2, Wallet, History,
@@ -124,9 +124,9 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
           <p className="text-[10.5px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-1 capitalize">{today}</p>
           <h1 className={`text-[24px] font-black tracking-tight leading-none ${isDark ? 'text-white' : 'text-gray-900'}`}>
             {greeting},{' '}
-            <span className="bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent">
+            <ShinyText className="bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent" speed={4}>
               {userData?.name?.split(' ')[0] || 'Usuário'}
-            </span>{' '}👋
+            </ShinyText>{' '}👋
           </h1>
           <p className={`text-[12px] mt-1.5 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Aqui está o resumo do seu negócio</p>
         </div>
@@ -288,12 +288,11 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
             <p className="text-[10.5px] text-emerald-300/35 font-medium mb-5">Disponível para saque imediato</p>
 
             <div className="flex items-center gap-2">
-              <motion.button whileHover={{ scale: 1.04, boxShadow: '0 0 32px rgba(16,185,129,0.5)' }} whileTap={{ scale: 0.96 }}
-                onClick={() => navigate('/saques')}
+              <RippleButton onClick={() => navigate('/saques')} color="rgba(16,185,129,0.5)"
                 className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 text-white text-[12px] font-bold px-4 py-2 rounded-xl transition-colors"
                 style={{ boxShadow: '0 0 24px rgba(16,185,129,0.35)' }}>
                 Sacar <ArrowUpRight size={13} />
-              </motion.button>
+              </RippleButton>
               <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
                 onClick={() => navigate('/pix')}
                 className="flex items-center gap-1.5 bg-white/8 hover:bg-white/14 text-white/80 text-[12px] font-semibold px-4 py-2 rounded-xl border border-white/10 hover:border-white/20 transition-all">
@@ -306,6 +305,7 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
         {/* KPI cards */}
         {kpis.map(({ label, value, delta, up, icon: Icon, color, spark }, i) => (
           <motion.div key={label} {...fu(0.08 + i * 0.05)} whileHover={{ y: -4 }}>
+            <GlareCard className="h-full">
             <SpotlightCard color={`${color}18`} className={`${card} p-4 flex flex-col gap-2.5 cursor-default group h-full`}>
             <div className="flex items-center justify-between relative">
               <span className={`text-[10px] font-bold uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{label}</span>
@@ -322,6 +322,7 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
               <Sparkline data={spark} color={color} />
             </div>
             </SpotlightCard>
+            </GlareCard>
           </motion.div>
         ))}
       </motion.div>

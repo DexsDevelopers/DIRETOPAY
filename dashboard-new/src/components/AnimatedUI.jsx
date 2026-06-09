@@ -1,9 +1,15 @@
 /**
  * AnimatedUI — Reusable animated components inspired by:
- *   • React Bits (reactbits.dev): Particles, Aurora, SplitText, Glow
+ *   • React Bits (reactbits.dev): Particles, Aurora, SplitText, Glow, BlurText, GlitchText, TiltCard
+ *   • MagicUI (magicui.design): BorderBeam, Meteors, ScrollProgress, MorphingText, SpotlightCard,
+ *       NumberTicker, HyperText, TypingAnimation, FlickeringGrid, RetroGrid, OrbitingCircles,
+ *       RippleButton, PulsatingButton, MagicCard, AnimatedBeam, ShinyText
+ *   • Uiverse (uiverse.io): NeonCard, GlowButton, GlareCard
  *   • Hover.dev: ShimmerButton, GlowCard, GridPattern
  *   • Pagedone: StatCard, FeatureCard
  *   • Awwwards: CustomCursor, NoiseOverlay, ClipReveal, CountUp, Marquee, MagneticButton, PageLoader
+ *   • Animista / Animate-UI: BlurText, ShinyText, GlitchText
+ *   • Gradient Hunt: gradient palettes applied throughout
  */
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
@@ -654,5 +660,455 @@ export function GlowInput({ icon: Icon, type = 'text', placeholder, value, onCha
                 }}
             />
         </div>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BATCH v56 — Advanced Components (MagicUI · ReactBits · Uiverse · Animista)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── NumberTicker (MagicUI) — slot-machine counter ─────────────────────── */
+export function NumberTicker({ value = 0, duration = 1.2, prefix = '', suffix = '', className = '', decimals = 0 }) {
+    const ref = useRef(null);
+    const inView = useInView(ref, { once: true, margin: '-40px' });
+    const [displayed, setDisplayed] = useState(0);
+    useEffect(() => {
+        if (!inView) return;
+        const start = performance.now();
+        const end = duration * 1000;
+        const raf = (ts) => {
+            const elapsed = ts - start;
+            const progress = Math.min(elapsed / end, 1);
+            const ease = 1 - Math.pow(1 - progress, 4);
+            setDisplayed(ease * value);
+            if (progress < 1) requestAnimationFrame(raf);
+        };
+        requestAnimationFrame(raf);
+    }, [inView, value, duration]);
+    const fmt = (n) => {
+        if (decimals > 0) return n.toFixed(decimals).replace('.', ',');
+        return Math.floor(n).toLocaleString('pt-BR');
+    };
+    return <span ref={ref} className={className}>{prefix}{fmt(displayed)}{suffix}</span>;
+}
+
+/* ─── ShinyText (ReactBits / MagicUI Animated Shiny Text) ───────────────── */
+export function ShinyText({ children, className = '', speed = 3, disabled = false }) {
+    const id = useRef(`shiny-${Math.random().toString(36).slice(2,7)}`).current;
+    return (
+        <span className={`relative inline-block ${className}`}>
+            <style>{`
+                @keyframes shiny-${id} {
+                    from { background-position: -200% center; }
+                    to   { background-position:  200% center; }
+                }
+                .shiny-${id} {
+                    background: linear-gradient(90deg,
+                        currentColor 0%, currentColor 40%,
+                        rgba(255,255,255,0.9) 50%,
+                        currentColor 60%, currentColor 100%
+                    );
+                    background-size: 200% auto;
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    animation: ${disabled ? 'none' : `shiny-${id} ${speed}s linear infinite`};
+                }
+            `}</style>
+            <span className={`shiny-${id}`}>{children}</span>
+        </span>
+    );
+}
+
+/* ─── BlurText (ReactBits) — word-by-word blur-fade reveal ──────────────── */
+export function BlurText({ text = '', className = '', wordClassName = '', delay = 0.06, once = true }) {
+    const ref = useRef(null);
+    const inView = useInView(ref, { once, margin: '-30px' });
+    const words = text.split(' ');
+    return (
+        <span ref={ref} className={`inline-flex flex-wrap gap-x-[0.35em] ${className}`} aria-label={text}>
+            {words.map((w, i) => (
+                <motion.span key={i}
+                    initial={{ opacity: 0, filter: 'blur(10px)', y: 8 }}
+                    animate={inView ? { opacity: 1, filter: 'blur(0px)', y: 0 } : {}}
+                    transition={{ duration: 0.45, delay: delay * i, ease: [0.22, 1, 0.36, 1] }}
+                    className={wordClassName}>
+                    {w}
+                </motion.span>
+            ))}
+        </span>
+    );
+}
+
+/* ─── HyperText (MagicUI) — scramble/glitch text reveal ─────────────────── */
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&';
+export function HyperText({ text = '', className = '', duration = 800, trigger = 'hover' }) {
+    const [displayed, setDisplayed] = useState(text.split(''));
+    const [hovered, setHovered] = useState(false);
+    const animRef = useRef(null);
+    const ref = useRef(null);
+    const inView = useInView(ref, { once: true });
+
+    const runScramble = useCallback(() => {
+        let iter = 0;
+        clearInterval(animRef.current);
+        animRef.current = setInterval(() => {
+            setDisplayed(text.split('').map((ch, i) => {
+                if (i < iter) return ch;
+                return ch === ' ' ? ' ' : CHARS[Math.floor(Math.random() * CHARS.length)];
+            }));
+            if (iter >= text.length) clearInterval(animRef.current);
+            iter += 0.5;
+        }, duration / (text.length * 2));
+    }, [text, duration]);
+
+    useEffect(() => {
+        if (trigger === 'inView' && inView) runScramble();
+    }, [inView, trigger, runScramble]);
+
+    useEffect(() => {
+        if (trigger === 'hover' && hovered) runScramble();
+        if (trigger === 'hover' && !hovered) setDisplayed(text.split(''));
+    }, [hovered, trigger, runScramble, text]);
+
+    useEffect(() => () => clearInterval(animRef.current), []);
+
+    return (
+        <span ref={ref} className={`inline-flex cursor-default ${className}`}
+            onMouseEnter={() => trigger === 'hover' && setHovered(true)}
+            onMouseLeave={() => trigger === 'hover' && setHovered(false)}>
+            {displayed.map((ch, i) => (
+                <span key={i} className={ch !== text[i] ? 'text-emerald-500' : ''}>{ch}</span>
+            ))}
+        </span>
+    );
+}
+
+/* ─── TypingAnimation (MagicUI) — typewriter with cursor ────────────────── */
+export function TypingAnimation({ text = '', speed = 60, className = '', cursorColor = '#10b981' }) {
+    const [displayed, setDisplayed] = useState('');
+    const [done, setDone] = useState(false);
+    const ref = useRef(null);
+    const inView = useInView(ref, { once: true });
+    useEffect(() => {
+        if (!inView) return;
+        let i = 0;
+        const t = setInterval(() => {
+            setDisplayed(text.slice(0, i + 1));
+            i++;
+            if (i >= text.length) { setDone(true); clearInterval(t); }
+        }, speed);
+        return () => clearInterval(t);
+    }, [inView, text, speed]);
+    return (
+        <span ref={ref} className={`inline ${className}`}>
+            {displayed}
+            {!done && <span className="inline-block w-[2px] h-[1em] ml-0.5 align-middle animate-pulse rounded-sm" style={{ background: cursorColor }} />}
+        </span>
+    );
+}
+
+/* ─── GlitchText (ReactBits) — RGB chromatic aberration glitch ──────────── */
+export function GlitchText({ text = '', className = '', trigger = 'hover', color1 = '#10b981', color2 = '#6366f1' }) {
+    const [active, setActive] = useState(false);
+    const ref = useRef(null);
+    const inView = useInView(ref, { once: true });
+    const isOn = trigger === 'inView' ? inView : active;
+    const uid = `gt-${text.slice(0,4).replace(/\s/g,'')}`;
+    return (
+        <span ref={ref} className={`relative inline-block cursor-default select-none ${className}`}
+            onMouseEnter={() => trigger === 'hover' && setActive(true)}
+            onMouseLeave={() => trigger === 'hover' && setActive(false)}>
+            <style>{`
+                @keyframes ${uid}-r { 0%,100%{clip-path:inset(0 0 95% 0);transform:translateX(-3px)} 50%{clip-path:inset(33% 0 33% 0);transform:translateX(3px)} }
+                @keyframes ${uid}-b { 0%,100%{clip-path:inset(50% 0 30% 0);transform:translateX(3px)} 50%{clip-path:inset(80% 0 5% 0);transform:translateX(-3px)} }
+                .${uid}-r{position:absolute;inset:0;animation:${uid}-r 0.35s steps(2) infinite;color:${color1};mix-blend-mode:screen}
+                .${uid}-b{position:absolute;inset:0;animation:${uid}-b 0.4s steps(3) infinite;color:${color2};mix-blend-mode:screen}
+            `}</style>
+            <span>{text}</span>
+            {isOn && <>
+                <span className={`${uid}-r`} aria-hidden>{text}</span>
+                <span className={`${uid}-b`} aria-hidden>{text}</span>
+            </>}
+        </span>
+    );
+}
+
+/* ─── GlareCard (MagicUI + Uiverse) — 3D tilt + glare on hover ──────────── */
+export function GlareCard({ children, className = '' }) {
+    const ref = useRef(null);
+    const [style, setStyle] = useState({});
+    const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
+
+    const onMove = useCallback((e) => {
+        const el = ref.current;
+        if (!el) return;
+        const { left, top, width, height } = el.getBoundingClientRect();
+        const x = (e.clientX - left) / width;
+        const y = (e.clientY - top) / height;
+        const rotX = (y - 0.5) * -20;
+        const rotY = (x - 0.5) * 20;
+        setStyle({
+            transform: `perspective(600px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.03)`,
+            transition: 'transform 0.1s ease-out',
+        });
+        setGlare({ x: x * 100, y: y * 100, opacity: 0.18 });
+    }, []);
+
+    const onLeave = useCallback(() => {
+        setStyle({ transform: 'perspective(600px) rotateX(0deg) rotateY(0deg) scale(1)', transition: 'transform 0.5s ease-out' });
+        setGlare({ x: 50, y: 50, opacity: 0 });
+    }, []);
+
+    return (
+        <div ref={ref} className={`relative overflow-hidden ${className}`}
+            onMouseMove={onMove} onMouseLeave={onLeave} style={style}>
+            <div className="absolute inset-0 pointer-events-none rounded-[inherit] z-10 transition-opacity duration-300"
+                style={{
+                    background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(255,255,255,0.35), transparent 55%)`,
+                    opacity: glare.opacity,
+                }} />
+            {children}
+        </div>
+    );
+}
+
+/* ─── NeonCard (Uiverse) — neon glow gradient border ────────────────────── */
+export function NeonCard({ children, className = '', color = '#10b981', secondColor = '#6366f1' }) {
+    const [pos, setPos] = useState({ x: 0, y: 0 });
+    const [hov, setHov] = useState(false);
+    const ref = useRef(null);
+    const onMove = useCallback((e) => {
+        const r = ref.current?.getBoundingClientRect();
+        if (r) setPos({ x: e.clientX - r.left, y: e.clientY - r.top });
+    }, []);
+    return (
+        <div ref={ref} className={`relative rounded-2xl ${className}`}
+            onMouseMove={onMove} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
+            <div className="absolute inset-0 rounded-[inherit] pointer-events-none transition-opacity duration-500"
+                style={{
+                    opacity: hov ? 1 : 0,
+                    background: `radial-gradient(300px circle at ${pos.x}px ${pos.y}px, ${color}35, transparent 70%)`,
+                }} />
+            <div className="absolute inset-0 rounded-[inherit] pointer-events-none"
+                style={{
+                    boxShadow: hov
+                        ? `0 0 0 1px ${color}60, 0 0 20px ${color}20, inset 0 0 20px ${color}05`
+                        : `0 0 0 1px rgba(255,255,255,0.06)`,
+                    transition: 'box-shadow 0.4s ease',
+                }} />
+            {children}
+        </div>
+    );
+}
+
+/* ─── MagicCard (MagicUI) — gradient border that follows cursor ──────────── */
+export function MagicCard({ children, className = '', gradientColor = '#10b98120' }) {
+    const ref = useRef(null);
+    const [pos, setPos] = useState({ x: 0, y: 0 });
+    const onMove = useCallback((e) => {
+        const r = ref.current?.getBoundingClientRect();
+        if (r) setPos({ x: e.clientX - r.left, y: e.clientY - r.top });
+    }, []);
+    return (
+        <div ref={ref} className={`relative overflow-hidden rounded-2xl ${className}`} onMouseMove={onMove}>
+            <div className="absolute inset-0 pointer-events-none rounded-[inherit] z-0"
+                style={{ background: `radial-gradient(400px circle at ${pos.x}px ${pos.y}px, ${gradientColor}, transparent 70%)` }} />
+            <div className="relative z-10 h-full">{children}</div>
+        </div>
+    );
+}
+
+/* ─── RippleButton (MagicUI) — ripple wave on click ─────────────────────── */
+export function RippleButton({ children, className = '', color = 'rgba(16,185,129,0.4)', onClick, type = 'button', disabled = false }) {
+    const [ripples, setRipples] = useState([]);
+    const ref = useRef(null);
+    const handleClick = useCallback((e) => {
+        const r = ref.current?.getBoundingClientRect();
+        if (!r) return;
+        const id = Date.now();
+        const size = Math.max(r.width, r.height) * 2;
+        setRipples(prev => [...prev, { id, x: e.clientX - r.left, y: e.clientY - r.top, size }]);
+        setTimeout(() => setRipples(prev => prev.filter(rp => rp.id !== id)), 700);
+        onClick?.(e);
+    }, [onClick]);
+    return (
+        <button ref={ref} type={type} disabled={disabled}
+            className={`relative overflow-hidden ${className}`} onClick={handleClick}>
+            {ripples.map(rp => (
+                <span key={rp.id} className="absolute pointer-events-none rounded-full animate-ping"
+                    style={{
+                        left: rp.x - rp.size / 2, top: rp.y - rp.size / 2,
+                        width: rp.size, height: rp.size,
+                        background: color, opacity: 0.6, animationDuration: '0.7s',
+                    }} />
+            ))}
+            {children}
+        </button>
+    );
+}
+
+/* ─── PulsatingButton (MagicUI) — pulsing ring CTA ──────────────────────── */
+export function PulsatingButton({ children, className = '', pulseColor = '#10b981', duration = 1.8, onClick, type = 'button' }) {
+    return (
+        <button type={type} onClick={onClick} className={`relative ${className}`}>
+            <span className="absolute inset-0 rounded-[inherit] animate-ping opacity-60"
+                style={{ background: pulseColor, animationDuration: `${duration}s` }} />
+            <span className="absolute inset-0 rounded-[inherit] opacity-30"
+                style={{ background: pulseColor }} />
+            <span className="relative z-10">{children}</span>
+        </button>
+    );
+}
+
+/* ─── FlickeringGrid (MagicUI) — dot grid that flickers ─────────────────── */
+export function FlickeringGrid({ className = '', color = '#10b981', opacity = 0.25, cellSize = 24, flickerChance = 0.0015 }) {
+    const canvasRef = useRef(null);
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let raf;
+        const resize = () => {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        };
+        resize();
+        const ro = new ResizeObserver(resize);
+        ro.observe(canvas);
+        const draw = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const cols = Math.ceil(canvas.width / cellSize);
+            const rows = Math.ceil(canvas.height / cellSize);
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (Math.random() < flickerChance * 60) {
+                        const a = (0.2 + Math.random() * 0.8) * opacity;
+                        ctx.fillStyle = color;
+                        ctx.globalAlpha = a;
+                        ctx.fillRect(c * cellSize + cellSize / 2 - 1.5, r * cellSize + cellSize / 2 - 1.5, 3, 3);
+                    }
+                }
+            }
+            ctx.globalAlpha = 1;
+            raf = requestAnimationFrame(draw);
+        };
+        draw();
+        return () => { cancelAnimationFrame(raf); ro.disconnect(); };
+    }, [color, opacity, cellSize, flickerChance]);
+    return <canvas ref={canvasRef} className={`absolute inset-0 w-full h-full pointer-events-none ${className}`} />;
+}
+
+/* ─── RetroGrid (MagicUI) — perspective vanishing grid ──────────────────── */
+export function RetroGrid({ className = '', angle = 65, color = '#10b981', opacity = 0.3 }) {
+    return (
+        <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`} aria-hidden>
+            <div className="absolute inset-x-0 bottom-0 h-[70%]"
+                style={{ perspective: '400px', perspectiveOrigin: '50% 100%' }}>
+                <div className="absolute inset-0 origin-bottom"
+                    style={{ transform: `rotateX(${angle}deg)` }}>
+                    <div className="absolute inset-0 opacity-[var(--rg-op)]"
+                        style={{
+                            backgroundImage: `linear-gradient(to right, ${color}40 1px, transparent 1px), linear-gradient(to bottom, ${color}40 1px, transparent 1px)`,
+                            backgroundSize: '48px 48px',
+                            maskImage: 'linear-gradient(to top, black 20%, transparent 95%)',
+                            WebkitMaskImage: 'linear-gradient(to top, black 20%, transparent 95%)',
+                            opacity,
+                        }}
+                    />
+                </div>
+            </div>
+            <div className="absolute inset-x-0 bottom-0 h-[20%]"
+                style={{
+                    background: `linear-gradient(to top, ${color}06, transparent)`,
+                }} />
+        </div>
+    );
+}
+
+/* ─── OrbitingCircles (MagicUI) — icons orbiting a center ───────────────── */
+export function OrbitingCircles({ children, radius = 80, duration = 12, reverse = false, className = '', centerContent = null }) {
+    const items = React.Children.toArray(children);
+    return (
+        <div className={`relative flex items-center justify-center ${className}`} style={{ width: radius * 2 + 48, height: radius * 2 + 48 }}>
+            {centerContent && <div className="absolute z-10 flex items-center justify-center">{centerContent}</div>}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ overflow: 'visible' }}>
+                <circle cx="50%" cy="50%" r={radius} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="1" strokeDasharray="4 6" />
+            </svg>
+            {items.map((child, i) => {
+                const angle = (360 / items.length) * i;
+                const delay = -(duration / items.length) * i;
+                return (
+                    <div key={i} className="absolute inset-0 flex items-center justify-center"
+                        style={{ animation: `orbit-spin ${duration}s linear ${delay}s infinite ${reverse ? 'reverse' : ''}` }}>
+                        <div style={{ transform: `rotate(${angle}deg) translateY(-${radius}px) rotate(-${angle}deg)` }}
+                            className="w-8 h-8 rounded-full border border-white/10 bg-white/5 backdrop-blur flex items-center justify-center text-white/60">
+                            {child}
+                        </div>
+                    </div>
+                );
+            })}
+            <style>{`@keyframes orbit-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+        </div>
+    );
+}
+
+/* ─── AnimatedBeam (MagicUI) — animated SVG beam between two refs ────────── */
+export function AnimatedBeam({ containerRef, fromRef, toRef, color = '#10b981', duration = 3, curvature = 0.3 }) {
+    const [path, setPath] = useState('');
+    useEffect(() => {
+        const update = () => {
+            const c = containerRef?.current;
+            const f = fromRef?.current;
+            const t = toRef?.current;
+            if (!c || !f || !t) return;
+            const cRect = c.getBoundingClientRect();
+            const fRect = f.getBoundingClientRect();
+            const tRect = t.getBoundingClientRect();
+            const fx = fRect.left + fRect.width / 2 - cRect.left;
+            const fy = fRect.top + fRect.height / 2 - cRect.top;
+            const tx = tRect.left + tRect.width / 2 - cRect.left;
+            const ty = tRect.top + tRect.height / 2 - cRect.top;
+            const cx1 = fx + (tx - fx) * curvature;
+            const cy1 = fy - Math.abs(ty - fy) * 0.4;
+            setPath(`M ${fx},${fy} Q ${cx1},${cy1} ${tx},${ty}`);
+        };
+        update();
+        window.addEventListener('resize', update);
+        return () => window.removeEventListener('resize', update);
+    }, [containerRef, fromRef, toRef, curvature]);
+
+    return (
+        <svg className="absolute inset-0 pointer-events-none overflow-visible" style={{ width: '100%', height: '100%' }}>
+            <defs>
+                <linearGradient id={`beam-grad-${color.slice(1)}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="transparent" />
+                    <stop offset="50%" stopColor={color} stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="transparent" />
+                </linearGradient>
+            </defs>
+            {path && <>
+                <path d={path} fill="none" stroke={`url(#beam-grad-${color.slice(1)})`} strokeWidth="1.5" strokeLinecap="round" />
+                <circle r="3" fill={color} style={{ offsetPath: `path("${path}")`, animation: `beam-travel ${duration}s linear infinite` }} />
+            </>}
+            <style>{`@keyframes beam-travel { from{offset-distance:0%} to{offset-distance:100%} }`}</style>
+        </svg>
+    );
+}
+
+/* ─── CountUpStat (enhanced, Uiverse + Animista) — full stat card ────────── */
+export function CountUpStat({ icon: Icon, label, value, prefix = '', suffix = '', color = '#10b981', isDark = true }) {
+    return (
+        <NeonCard color={color} className={`p-5 flex flex-col gap-3 ${isDark ? 'bg-[#111117]' : 'bg-white'}`}>
+            <div className="flex items-center justify-between">
+                <span className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{label}</span>
+                {Icon && <div className="w-7 h-7 rounded-xl flex items-center justify-center" style={{ background: `${color}18` }}>
+                    <Icon size={13} style={{ color }} />
+                </div>}
+            </div>
+            <span className={`text-[22px] font-black tabular-nums ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                {prefix}<NumberTicker value={typeof value === 'number' ? value : parseFloat(String(value).replace(/[^\d.]/g,'')) || 0} />{suffix}
+            </span>
+        </NeonCard>
     );
 }

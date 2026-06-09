@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Wallet, ArrowUpRight, ShieldCheck, History, Loader2, CheckCircle, XCircle, Clock, RefreshCw, CreditCard, AlertTriangle, Info, ChevronDown, ChevronUp, Banknote, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
-import { BorderBeam, ScrollProgress } from '../components/AnimatedUI';
+import { BorderBeam, ScrollProgress, RippleButton, ShinyText, NeonCard } from '../components/AnimatedUI';
 
 const BADGE = {
     approved: 'bg-emerald-500/10 text-emerald-500',
@@ -217,11 +217,11 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
                             )}
                         </div>
 
-                        <button onClick={handleWithdraw} disabled={loading}
+                        <RippleButton onClick={handleWithdraw} disabled={loading} color="rgba(16,185,129,0.45)"
                             className="w-full bg-emerald-500 hover:bg-emerald-400 active:scale-[0.98] text-white rounded-xl py-3.5 font-bold text-[14px] flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             style={{ boxShadow: '0 0 20px rgba(16,185,129,0.2)' }}>
-                            {loading ? <><Loader2 size={16} className="animate-spin" /> Processando...</> : <><Zap size={15} /> Confirmar saque <ArrowUpRight size={15} /></>}
-                        </button>
+                            {loading ? <><Loader2 size={16} className="animate-spin" /> Processando...</> : <><Zap size={15} /> <ShinyText speed={3}>Confirmar saque</ShinyText> <ArrowUpRight size={15} /></>}
+                        </RippleButton>
 
                         <button onClick={() => setShowInfo(v => !v)}
                             className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-[12px] font-semibold transition-all ${isDark ? 'border-white/8 text-gray-500 hover:text-gray-200 hover:bg-white/5' : 'border-gray-200 text-gray-400 hover:text-gray-600 hover:bg-gray-50'}`}>

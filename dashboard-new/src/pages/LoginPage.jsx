@@ -20,6 +20,10 @@ import {
   GlowInput,
   BorderBeam,
   Meteors,
+  FlickeringGrid,
+  HyperText,
+  ShinyText,
+  RippleButton,
 } from "../components/AnimatedUI";
 
 export default function LoginPage() {
@@ -151,15 +155,8 @@ export default function LoginPage() {
               "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(16,185,129,0.05) 0%, transparent 70%)",
           }}
         />
-        {/* Fine grid */}
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-          }}
-        />
+        {/* Flickering animated grid */}
+        <FlickeringGrid color="#10b981" opacity={0.18} cellSize={32} flickerChance={0.002} />
         <Meteors count={8} color="#10b981" />
       </div>
 
@@ -205,9 +202,7 @@ export default function LoginPage() {
                 transition={{ duration: 0.25 }}
               >
                 <h1 className="text-[22px] font-bold tracking-tight text-white">
-                  {mustResetPassword
-                    ? "Criar nova senha"
-                    : "Bem-vindo de volta"}
+                  <HyperText text={mustResetPassword ? "Criar nova senha" : "Bem-vindo de volta"} trigger="inView" duration={600} />
                 </h1>
                 <p className="text-[13px] text-gray-500 mt-1">
                   {mustResetPassword
@@ -389,10 +384,10 @@ export default function LoginPage() {
                 </div>
 
                 {/* CTA */}
-                <MagneticButton
+                <RippleButton
                   type="submit"
                   disabled={loading}
-                  strength={0.25}
+                  color="rgba(16,185,129,0.5)"
                   className="w-full bg-emerald-500 hover:bg-emerald-400 active:scale-[0.99] text-white rounded-xl py-3.5 font-semibold text-[14px] flex items-center justify-center gap-2 transition-colors shadow-lg shadow-emerald-500/20 disabled:opacity-50 mt-1"
                 >
                   {loading ? (
@@ -402,10 +397,10 @@ export default function LoginPage() {
                     </>
                   ) : (
                     <>
-                      Entrar na conta <ArrowRight size={15} />
+                      <ShinyText speed={3}>Entrar na conta</ShinyText> <ArrowRight size={15} />
                     </>
                   )}
-                </MagneticButton>
+                </RippleButton>
               </motion.form>
             )}
           </AnimatePresence>

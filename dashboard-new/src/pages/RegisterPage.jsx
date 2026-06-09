@@ -15,7 +15,7 @@ import {
   PiggyBank,
 } from "lucide-react";
 import { cn } from "../lib/utils";
-import { BorderBeam, Meteors } from "../components/AnimatedUI";
+import { BorderBeam, Meteors, FlickeringGrid, HyperText, ShinyText, RippleButton } from "../components/AnimatedUI";
 
 export default function RegisterPage() {
   const [step, setStep] = useState(1);
@@ -157,7 +157,7 @@ export default function RegisterPage() {
           }}
         />
         <div className="absolute -bottom-60 -right-40 w-[700px] h-[700px] rounded-full opacity-[0.07]" style={{ background: 'radial-gradient(circle, rgba(99,102,241,1) 0%, transparent 65%)' }} />
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
+        <FlickeringGrid color="#10b981" opacity={0.15} cellSize={32} flickerChance={0.0018} />
         <Meteors count={8} color="#10b981" />
       </div>
 
@@ -197,7 +197,7 @@ export default function RegisterPage() {
 
         <div className="mb-6">
           <h1 className="text-[22px] font-bold tracking-tight">
-            {step === 1 ? "Criar conta" : "Configurar operação"}
+            <HyperText text={step === 1 ? "Criar conta" : "Configurar operação"} trigger="inView" duration={600} />
           </h1>
           <p className="text-[13px] text-gray-400 mt-1">
             {step === 1
@@ -457,9 +457,9 @@ export default function RegisterPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex-[2] bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl py-3 font-semibold text-[14px] flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                    className="flex-[2] bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl py-3 font-semibold text-[14px] flex items-center justify-center gap-2 transition-all disabled:opacity-50 relative overflow-hidden"
                   >
-                    {loading ? "Criando..." : "Finalizar cadastro"}{" "}
+                    {loading ? "Criando..." : <ShinyText speed={3}>Finalizar cadastro</ShinyText>}{" "}
                     <ArrowRight size={15} />
                   </button>
                 </div>

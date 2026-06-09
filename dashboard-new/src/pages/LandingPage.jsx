@@ -24,6 +24,13 @@ import {
   ScrollProgress,
   Meteors,
   SpotlightCard,
+  BlurText,
+  GlareCard,
+  HyperText,
+  RetroGrid,
+  ShinyText,
+  RippleButton,
+  NumberTicker,
 } from "../components/AnimatedUI";
 import {
   Zap,
@@ -659,10 +666,10 @@ export default function LandingPage() {
                 <span className="text-slate-500 dark:text-slate-400">de todo o Brasil</span>
               </div>
               <h1 className="text-[30px] sm:text-[44px] lg:text-[56px] font-black tracking-tight leading-[1.05] mb-5 text-slate-900 dark:text-white">
-                <span className="block">A plataforma que escala com</span>
+                <BlurText text="A plataforma que escala com" className="block" delay={0.04} />
                 <span className="block">
                   <GradientText from="#10b981" to="#34d399">
-                    sua operação crescer!
+                    <BlurText text="sua operação crescer!" delay={0.05} />
                   </GradientText>
                 </span>
               </h1>
@@ -688,9 +695,9 @@ export default function LandingPage() {
                 ))}
               </div>
               <div className="flex flex-col sm:flex-row gap-3 mb-10">
-                <MagneticButton className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-7 py-3.5 rounded-xl transition-colors text-[15px] shadow-2xl shadow-emerald-500/30">
+                <MagneticButton className="relative overflow-hidden flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-7 py-3.5 rounded-xl transition-colors text-[15px] shadow-2xl shadow-emerald-500/30">
                   <Link to="/register" className="flex items-center gap-2">
-                    Criar conta grátis <ArrowRight size={16} />
+                    <ShinyText speed={2.5}>Criar conta grátis</ShinyText> <ArrowRight size={16} />
                   </Link>
                 </MagneticButton>
                 <a
@@ -703,8 +710,8 @@ export default function LandingPage() {
               {/* Benefit cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {BENEFITS.map(({ icon: Icon, color, title, desc }) => (
+                  <GlareCard key={title} className="rounded-2xl">
                   <motion.div
-                    key={title}
                     whileHover={{ y: -4, scale: 1.02 }}
                     className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-white/[0.03] p-3 sm:p-4 hover:border-slate-300 dark:hover:border-white/[0.14] transition-all cursor-default flex sm:block items-start gap-3 shadow-sm dark:shadow-none hover:shadow-md dark:hover:shadow-none"
                   >
@@ -726,6 +733,7 @@ export default function LandingPage() {
                       </p>
                     </div>
                   </motion.div>
+                  </GlareCard>
                 ))}
               </div>
             </motion.div>
@@ -1704,6 +1712,7 @@ export default function LandingPage() {
 
       {/* ── CTA FINAL ── */}
       <section className="relative z-10 py-14 sm:py-24 px-5 border-t border-slate-200 dark:border-white/[0.06] overflow-hidden">
+        <RetroGrid color="#10b981" opacity={0.18} />
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -1739,12 +1748,9 @@ export default function LandingPage() {
           <p className="text-slate-600 dark:text-gray-400 text-[16px] mb-9 max-w-md mx-auto">
             Sem documentos. Sem burocracia. Ativo em menos de 2 minutos.
           </p>
-          <Link
-            to="/register"
-            className="inline-flex items-center gap-2.5 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-10 py-4 rounded-2xl transition-all text-[16px] shadow-2xl shadow-emerald-500/35 hover:-translate-y-0.5"
-          >
-            Criar minha conta grátis <ArrowRight size={18} />
-          </Link>
+          <RippleButton color="rgba(16,185,129,0.5)" className="inline-flex items-center gap-2.5 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-10 py-4 rounded-2xl transition-all text-[16px] shadow-2xl shadow-emerald-500/35 hover:-translate-y-0.5" onClick={() => window.location.href='/register'}>
+            <ShinyText speed={2.5}>Criar minha conta grátis</ShinyText> <ArrowRight size={18} />
+          </RippleButton>
           <p className="text-[12px] text-slate-500 dark:text-gray-600 mt-5">
             Taxa fixa · Saque a qualquer hora · Sem CNPJ
           </p>
