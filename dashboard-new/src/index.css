@@ -257,4 +257,47 @@ html:not(.dark) .logo-theme-adaptive {
 [style*="background-clip: text"],
 [style*="-webkit-background-clip: text"] {
   transition: none !important;
-}
+}
+
+/* ── Calculator range slider ── */
+.dp-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.18);
+  outline: none;
+  cursor: pointer;
+}
+html.dark .dp-range {
+  background: rgba(255, 255, 255, 0.08);
+}
+.dp-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 9999px;
+  background: #10b981;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.5);
+  transition: transform 0.15s ease;
+}
+html.dark .dp-range::-webkit-slider-thumb {
+  border-color: #0b1220;
+}
+.dp-range::-webkit-slider-thumb:hover {
+  transform: scale(1.12);
+}
+.dp-range::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 9999px;
+  background: #10b981;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.5);
+  cursor: pointer;
+}
+html.dark .dp-range::-moz-range-thumb {
+  border-color: #0b1220;
+}

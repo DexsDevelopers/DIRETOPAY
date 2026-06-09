@@ -386,6 +386,20 @@ export default function LandingPage() {
   const [tickerVisible, setTickerVisible] = useState(true);
   const [onlineUsers, setOnlineUsers] = useState(2348);
   const [activePlate, setActivePlate] = useState(0);
+  const [calcValue, setCalcValue] = useState(1000);
+
+  const FEE = 0.0499;
+  const fmtBRL = (n) =>
+    n.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  const directoReceives = calcValue * (1 - FEE);
+  const kiwifyReceives = calcValue * (1 - 0.0899) - 2.49;
+  const hotmartReceives = calcValue * (1 - 0.099) - 1;
+  const extraVsKiwify = directoReceives - kiwifyReceives;
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 24);
@@ -1339,6 +1353,127 @@ export default function LandingPage() {
                 </div>
               ))}
             </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── CALCULADORA COMPARATIVA (estilo MisticPay) ── */}
+      <section className="relative z-10 py-12 sm:py-20 px-5 border-t border-slate-200 dark:border-white/[0.06] overflow-hidden">
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full opacity-[0.08] blur-3xl pointer-events-none"
+          style={{ background: "radial-gradient(circle, #10b981, transparent 70%)" }}
+        />
+        <div className="max-w-5xl mx-auto relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-10 sm:mb-12"
+          >
+            <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[12px] font-bold px-4 py-2 rounded-full mb-5">
+              <TrendingUp size={13} /> Simulador
+            </div>
+            <h2 className="text-[34px] sm:text-[48px] font-black tracking-[-0.02em] leading-[1] text-slate-900 dark:text-white">
+              Quanto você <GradientText from="#10b981" to="#34d399">recebe?</GradientText>
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 text-[15px] mt-3 max-w-md mx-auto">
+              Arraste e compare. Com a DiretoPay você fica com mais do seu dinheiro.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="relative rounded-3xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] p-6 sm:p-10 shadow-xl dark:shadow-[0_40px_80px_rgba(0,0,0,0.4)] overflow-hidden"
+          >
+            <BorderBeam colorFrom="#10b981" colorTo="#6366f1" duration={9} />
+
+            {/* Você vende */}
+            <div className="text-center mb-8">
+              <p className="text-[12px] font-bold text-slate-500 dark:text-gray-500 uppercase tracking-widest mb-2">
+                Você vende
+              </p>
+              <p className="text-[44px] sm:text-[60px] font-black tracking-tight text-slate-900 dark:text-white leading-none tabular-nums">
+                {fmtBRL(calcValue)}
+              </p>
+              <input
+                type="range"
+                min={50}
+                max={10000}
+                step={50}
+                value={calcValue}
+                onChange={(e) => setCalcValue(Number(e.target.value))}
+                className="dp-range w-full max-w-lg mx-auto mt-6 block"
+              />
+              <div className="flex justify-between max-w-lg mx-auto mt-2 text-[11px] font-semibold text-slate-400 dark:text-gray-600">
+                <span>R$ 50</span>
+                <span>R$ 10.000</span>
+              </div>
+            </div>
+
+            {/* Comparativo */}
+            <div className="grid sm:grid-cols-3 gap-4">
+              {/* DiretoPay — destaque */}
+              <div className="sm:col-span-1 order-first sm:order-none rounded-2xl border-2 border-emerald-500 bg-emerald-50/50 dark:bg-emerald-500/10 p-5 relative">
+                <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[9px] font-black px-2.5 py-1 rounded-full tracking-widest whitespace-nowrap">
+                  VOCÊ RECEBE
+                </div>
+                <div className="flex items-center gap-2 mb-3 mt-1">
+                  <img src="/logo-diretopay.webp" alt="DiretoPay" className="h-4 logo-theme-adaptive" />
+                </div>
+                <p className="text-[26px] sm:text-[28px] font-black text-emerald-500 dark:text-emerald-400 tabular-nums leading-none">
+                  <NumberTicker value={directoReceives} prefix="R$ " decimals={2} duration={0.8} />
+                </p>
+                <p className="text-[11px] font-bold text-emerald-600/70 dark:text-emerald-400/60 mt-2">
+                  taxa única de 4,99%
+                </p>
+              </div>
+
+              {/* Concorrentes */}
+              {[
+                { name: "Kiwify", fee: "8,99% + R$2,49", value: kiwifyReceives },
+                { name: "Hotmart", fee: "9,9% + R$1,00", value: hotmartReceives },
+              ].map((c) => (
+                <div
+                  key={c.name}
+                  className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-slate-50 dark:bg-white/[0.02] p-5"
+                >
+                  <p className="text-[13px] font-bold text-slate-600 dark:text-gray-400 mb-3 mt-1">
+                    {c.name}
+                  </p>
+                  <p className="text-[22px] sm:text-[24px] font-black text-slate-400 dark:text-gray-500 tabular-nums leading-none line-through decoration-red-400/50">
+                    {fmtBRL(c.value)}
+                  </p>
+                  <p className="text-[11px] font-semibold text-red-500/70 dark:text-red-400/60 mt-2">
+                    {c.fee}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Economia destacada */}
+            <div className="mt-7 flex items-center justify-center gap-2 text-center flex-wrap">
+              <span className="text-[14px] text-slate-600 dark:text-gray-400">
+                Você ganha
+              </span>
+              <span className="text-[18px] font-black text-emerald-500 dark:text-emerald-400 tabular-nums">
+                +{fmtBRL(Math.max(0, extraVsKiwify))}
+              </span>
+              <span className="text-[14px] text-slate-600 dark:text-gray-400">
+                a mais que na Kiwify por venda.
+              </span>
+            </div>
+
+            <RippleButton
+              color="rgba(16,185,129,0.5)"
+              onClick={() => (window.location.href = "/register")}
+              className="group mt-7 mx-auto flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-8 py-3.5 rounded-2xl transition-all text-[15px] shadow-[0_12px_40px_rgba(16,185,129,0.3)] hover:-translate-y-0.5"
+            >
+              <ShinyText speed={2.5}>Começar a receber mais</ShinyText>
+              <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+            </RippleButton>
           </motion.div>
         </div>
       </section>
