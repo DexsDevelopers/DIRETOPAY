@@ -774,7 +774,7 @@ export function HyperText({ text = '', className = '', duration = 800, trigger =
     useEffect(() => () => clearInterval(animRef.current), []);
 
     return (
-        <span ref={ref} className={`inline-flex cursor-default ${className}`}
+        <span ref={ref} className={`inline-block whitespace-pre cursor-default ${className}`}
             onMouseEnter={() => trigger === 'hover' && setHovered(true)}
             onMouseLeave={() => trigger === 'hover' && setHovered(false)}>
             {displayed.map((ch, i) => (
