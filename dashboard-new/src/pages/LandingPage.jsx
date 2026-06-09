@@ -668,9 +668,7 @@ export default function LandingPage() {
               <h1 className="text-[42px] sm:text-[58px] lg:text-[68px] font-black tracking-[-0.03em] leading-[0.95] mb-6 text-slate-900 dark:text-white">
                 <BlurText text="Receba por PIX" className="block" delay={0.04} />
                 <span className="block">
-                  <GradientText from="#10b981" to="#34d399">
-                    <BlurText text="na hora." delay={0.06} />
-                  </GradientText>
+                  <GradientText from="#10b981" to="#34d399">na hora.</GradientText>
                   <span className="text-slate-300 dark:text-slate-700"> Sem fricção.</span>
                 </span>
               </h1>
