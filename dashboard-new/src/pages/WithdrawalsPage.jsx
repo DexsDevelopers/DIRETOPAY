@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Wallet, ArrowUpRight, ShieldCheck, History, Loader2, CheckCircle, XCircle, Clock, RefreshCw, CreditCard, AlertTriangle, Info, ChevronDown, ChevronUp, Banknote, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
+import { BorderBeam, ScrollProgress } from '../components/AnimatedUI';
 
 const BADGE = {
     approved: 'bg-emerald-500/10 text-emerald-500',
@@ -91,6 +92,7 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
     return (
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.38, ease: [0.22,1,0.36,1] }}
             className="space-y-5 pb-10">
+            <ScrollProgress color="#10b981" />
 
             {/* Header */}
             <div>
@@ -121,6 +123,7 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
                         style={{ background: isDark
                             ? 'linear-gradient(135deg, #0a1f14 0%, #061510 100%)'
                             : 'linear-gradient(135deg, #064e3b 0%, #02291e 100%)' }}>
+                        <BorderBeam colorFrom="#10b981" colorTo="#34d399" duration={10} />
                         <div className="absolute inset-0 pointer-events-none"
                             style={{ background: 'radial-gradient(circle at 90% 20%, rgba(16,185,129,0.25) 0%, transparent 55%)' }} />
                         <div className="absolute right-[-30px] top-[-30px] w-[160px] h-[160px] rounded-full border border-emerald-500/10 pointer-events-none" />
@@ -147,7 +150,8 @@ export default function WithdrawalsPage({ balance, availableForWithdraw, pending
                     </div>
 
                     {/* Input form */}
-                    <div className={`${card} space-y-4`}>
+                    <div className={`${card} space-y-4 relative overflow-hidden`}>
+                        <BorderBeam colorFrom="#10b981" colorTo="#6366f1" duration={14} />
                         {result && (
                             <div className={`flex items-start gap-3 p-4 rounded-xl text-[13px] font-medium border ${result.success ? 'bg-emerald-500/8 text-emerald-500 border-emerald-500/20' : 'bg-red-500/8 text-red-400 border-red-500/20'}`}>
                                 {result.success ? <CheckCircle size={15} className="shrink-0 mt-0.5" /> : <XCircle size={15} className="shrink-0 mt-0.5" />}

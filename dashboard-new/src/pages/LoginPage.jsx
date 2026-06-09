@@ -18,6 +18,8 @@ import {
   NoiseOverlay,
   MagneticButton,
   GlowInput,
+  BorderBeam,
+  Meteors,
 } from "../components/AnimatedUI";
 
 export default function LoginPage() {
@@ -158,6 +160,7 @@ export default function LoginPage() {
             backgroundSize: "48px 48px",
           }}
         />
+        <Meteors count={8} color="#10b981" />
       </div>
 
       {/* ── LOGO ── */}
@@ -184,12 +187,13 @@ export default function LoginPage() {
         className="relative z-10 w-full max-w-[420px]"
       >
         <div
-          className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-2xl p-8"
+          className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-2xl p-8 relative overflow-hidden"
           style={{
             boxShadow:
               "0 0 0 1px rgba(255,255,255,0.05), 0 40px 100px rgba(0,0,0,0.55), 0 0 80px rgba(16,185,129,0.05)",
           }}
         >
+          <BorderBeam colorFrom="#10b981" colorTo="#6366f1" duration={14} />
           {/* Header */}
           <div className="mb-7">
             <AnimatePresence mode="wait">

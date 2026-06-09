@@ -16,6 +16,7 @@ import {
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../lib/utils';
+import { BorderBeam } from '../components/AnimatedUI';
 
 export default function CheckoutsPage() {
     const [checkouts, setCheckouts] = useState([]);
@@ -128,8 +129,9 @@ export default function CheckoutsPage() {
                             layout
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-white border border-gray-100 group rounded-[32px] overflow-hidden flex flex-col p-8 transition-all shadow-sm hover:border-primary/20 hover:shadow-[0_20px_60px_rgba(30,164,101,0.12)]"
+                            className="bg-white border border-gray-100 group rounded-[32px] overflow-hidden flex flex-col p-8 transition-all shadow-sm hover:border-primary/20 hover:shadow-[0_20px_60px_rgba(30,164,101,0.12)] relative"
                         >
+                            <BorderBeam colorFrom="#10b981" colorTo="#6366f1" duration={15} />
                             <div className="flex justify-between items-start mb-6">
                                 <div className="flex flex-col gap-1">
                                     <h3 className="text-xl font-black truncate max-w-[200px]">{checkout.title}</h3>

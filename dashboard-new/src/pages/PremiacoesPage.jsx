@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Lock, CheckCircle2, ExternalLink, Loader2, Star, Gift, Zap, ChevronRight, MessageCircle } from 'lucide-react';
+import { BorderBeam } from '../components/AnimatedUI';
 
 const SUPPORT_WHATSAPP = '5511988627674';
 
@@ -139,6 +140,7 @@ function AwardCard({ award, totalPaid, status, onClaim, claiming }) {
 
     return (
         <div className={`relative rounded-3xl border bg-white overflow-hidden shadow-lg ${unlocked ? `${c.border} ${c.glow} shadow-xl` : 'border-gray-200'}`}>
+            {unlocked && <BorderBeam colorFrom={award.color === 'purple' ? '#a855f7' : '#10b981'} colorTo={award.color === 'purple' ? '#6366f1' : '#34d399'} duration={10} />}
 
             {/* Header glowing strip */}
             {unlocked && (

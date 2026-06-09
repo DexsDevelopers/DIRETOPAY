@@ -6,7 +6,7 @@ import {
     TrendingUp, RefreshCw, Lock, CheckCircle, ArrowRight, X,
 } from 'lucide-react';
 import PublicLayout from '../components/PublicLayout';
-import { AuroraBg, DotGrid, Particles, ShimmerButton, FeatureCard, GlowCard, GradientText, PulseBadge, SplitText } from '../components/AnimatedUI';
+import { AuroraBg, DotGrid, Particles, ShimmerButton, FeatureCard, GlowCard, GradientText, PulseBadge, SplitText, BorderBeam, SpotlightCard } from '../components/AnimatedUI';
 
 const FEATURES = [
     { icon: Zap,        color: '#10b981', title: 'PIX Instantâneo',        desc: 'Gere cobranças em milissegundos. Confirmação em tempo real sem refresh.' },
@@ -89,7 +89,8 @@ export default function BeneficiosPage() {
                         <p className="text-[12px] font-bold text-emerald-500 uppercase tracking-widest mb-2">Comparativo</p>
                         <h2 className="text-3xl font-black tracking-tight">DiretoPay vs. outras plataformas</h2>
                     </motion.div>
-                    <motion.div {...fadeUp(0.1)} className="rounded-2xl border border-white/[0.08] overflow-hidden">
+                    <motion.div {...fadeUp(0.1)} className="rounded-2xl border border-white/[0.08] overflow-hidden relative">
+                        <BorderBeam colorFrom="#10b981" colorTo="#6366f1" duration={14} />
                         <div className="grid grid-cols-3 bg-white/[0.04] border-b border-white/[0.06] px-5 py-3">
                             <span className="text-[12px] font-bold text-gray-400 uppercase tracking-wider">Recurso</span>
                             <span className="text-[12px] font-bold text-emerald-400 uppercase tracking-wider text-center">DiretoPay</span>

@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
+import { BorderBeam, SpotlightCard, ScrollProgress } from '../components/AnimatedUI';
 
 export default function ReportsPage() {
     const { isDark } = useTheme();
@@ -62,6 +63,7 @@ export default function ReportsPage() {
     return (
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.38, ease: [0.22,1,0.36,1] }}
             className="space-y-5 pb-10">
+            <ScrollProgress color="#10b981" />
 
             {/* Header */}
             <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -109,7 +111,8 @@ export default function ReportsPage() {
                                 initial={{ opacity: 0, y: 14 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: i * 0.05, duration: 0.35 }}
-                                className={`${card} flex flex-col gap-3 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200 cursor-default`}>
+                                className={``}>
+                                <SpotlightCard color={`${color}12`} className={`${card} flex flex-col gap-3 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200 cursor-default h-full`}>
                                 <div className="flex items-center justify-between">
                                     <span className={`text-[10px] font-black uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{title}</span>
                                     <div className="w-7 h-7 rounded-xl flex items-center justify-center" style={{ background: `${color}18` }}>
@@ -123,6 +126,7 @@ export default function ReportsPage() {
                                         {isUp ? '+' : ''}{change}% vs. anterior
                                     </div>
                                 )}
+                            </SpotlightCard>
                             </motion.div>
                         );
                     })}
@@ -131,7 +135,8 @@ export default function ReportsPage() {
                 {/* Charts */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     {/* Area Chart */}
-                    <div className={`lg:col-span-2 ${card}`}>
+                    <div className={`lg:col-span-2 ${card} relative overflow-hidden`}>
+                        <BorderBeam colorFrom="#10b981" colorTo="#6366f1" duration={18} />
                         <div className="flex items-center justify-between mb-5">
                             <div>
                                 <h3 className={`text-[14px] font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>Faturamento diário</h3>

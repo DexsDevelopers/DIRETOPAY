@@ -64,20 +64,21 @@ const NavItem = React.memo(
         to={item.path}
         onClick={handleClick}
         className={cn(
-          "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-150 group w-full mb-0.5 relative will-change-transform",
+          "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 group w-full mb-0.5 relative will-change-transform",
           isActive
             ? isDark
-              ? "bg-emerald-500/10 text-emerald-400"
-              : "bg-emerald-50 text-emerald-700"
+              ? "text-emerald-400"
+              : "text-emerald-700"
             : isDark
               ? "text-gray-400 hover:bg-white/[0.05] hover:text-gray-100"
               : "text-gray-500 hover:bg-gray-50 hover:text-gray-800",
         )}
+        style={isActive ? { background: isDark ? 'linear-gradient(90deg,rgba(16,185,129,0.15) 0%,rgba(16,185,129,0.05) 60%,transparent 100%)' : 'linear-gradient(90deg,rgba(16,185,129,0.10) 0%,rgba(16,185,129,0.03) 60%,transparent 100%)' } : undefined}
       >
         {isActive && (
           <span
             className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-emerald-500"
-            style={{ transform: "translate3d(0, -50%, 0)" }}
+            style={{ transform: "translate3d(0, -50%, 0)", boxShadow: '0 0 8px rgba(16,185,129,0.8)' }}
           />
         )}
         <span
@@ -137,15 +138,16 @@ const NavSubItem = React.memo(
         {...props}
         onClick={handleClick}
         className={cn(
-          "flex items-center gap-2.5 pl-9 pr-3 py-2 rounded-lg transition-colors duration-150 group w-full mb-0.5 relative will-change-transform",
+          "flex items-center gap-2.5 pl-9 pr-3 py-2 rounded-lg transition-all duration-150 group w-full mb-0.5 relative will-change-transform",
           isActive
             ? isDark
-              ? "text-emerald-400 bg-emerald-500/8"
-              : "text-emerald-700 bg-emerald-50/80"
+              ? "text-emerald-400"
+              : "text-emerald-700"
             : isDark
               ? "text-gray-500 hover:bg-white/[0.04] hover:text-gray-200"
               : "text-gray-400 hover:bg-gray-50 hover:text-gray-700",
         )}
+        style={isActive ? { background: isDark ? 'linear-gradient(90deg,rgba(16,185,129,0.11) 0%,rgba(16,185,129,0.04) 60%,transparent 100%)' : 'linear-gradient(90deg,rgba(16,185,129,0.08) 0%,rgba(16,185,129,0.02) 60%,transparent 100%)' } : undefined}
       >
         <span
           className={cn(
@@ -581,7 +583,7 @@ export default function Sidebar({
     [location, handleTabChange, handleClose, isDark],
   );
 
-  const bg = isDark ? "bg-[#0e0e13]" : "bg-[#fafafa]";
+  const bg = isDark ? "bg-[#0a0a0f]" : "bg-[#fafafa]";
   const border = isDark ? "border-white/[0.06]" : "border-gray-200/70";
 
   return (
@@ -599,15 +601,19 @@ export default function Sidebar({
           transition: "transform 220ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
         }}
       >
+        {/* Decorative glow */}
+        {isDark && (
+          <div className="absolute top-0 left-0 right-0 h-48 pointer-events-none" style={{ background: 'radial-gradient(ellipse 120% 120% at 10% -20%, rgba(16,185,129,0.07) 0%, transparent 70%)', zIndex: 0 }} />
+        )}
         {/* Logo / Brand */}
         <div
           className={cn(
-            "flex items-center justify-between px-4 h-14 border-b shrink-0",
+            "flex items-center justify-between px-4 h-14 border-b shrink-0 relative z-10",
             border,
           )}
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center shrink-0 will-change-transform">
+            <div className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center shrink-0 will-change-transform" style={{ boxShadow: '0 0 14px rgba(16,185,129,0.55)' }}>
               <Zap size={14} className="text-white" fill="white" />
             </div>
             <span
@@ -668,7 +674,7 @@ export default function Sidebar({
               isDark ? "hover:bg-white/5" : "hover:bg-gray-100",
             )}
           >
-            <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-500 font-black text-sm shrink-0">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500/30 to-emerald-600/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-black text-sm shrink-0" style={{ boxShadow: '0 0 8px rgba(16,185,129,0.25)' }}>
               {userInitial}
             </div>
             <div className="min-w-0 flex-1">

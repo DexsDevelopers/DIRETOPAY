@@ -15,6 +15,7 @@ import {
   PiggyBank,
 } from "lucide-react";
 import { cn } from "../lib/utils";
+import { BorderBeam, Meteors } from "../components/AnimatedUI";
 
 export default function RegisterPage() {
   const [step, setStep] = useState(1);
@@ -148,13 +149,16 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-[#080a0e] text-white flex items-center justify-center p-5">
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full opacity-10"
           style={{
             background: "radial-gradient(ellipse, #10b981 0%, transparent 70%)",
           }}
         />
+        <div className="absolute -bottom-60 -right-40 w-[700px] h-[700px] rounded-full opacity-[0.07]" style={{ background: 'radial-gradient(circle, rgba(99,102,241,1) 0%, transparent 65%)' }} />
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
+        <Meteors count={8} color="#10b981" />
       </div>
 
       <motion.div
@@ -203,8 +207,9 @@ export default function RegisterPage() {
         </div>
 
         <div
-          className={`rounded-2xl border p-6 bg-white/[0.02] border-white/[0.07]`}
+          className={`rounded-2xl border p-6 bg-white/[0.02] border-white/[0.07] relative overflow-hidden`}
         >
+          <BorderBeam colorFrom="#10b981" colorTo="#6366f1" duration={14} />
           <AnimatePresence mode="wait">
             {step === 1 ? (
               <motion.form

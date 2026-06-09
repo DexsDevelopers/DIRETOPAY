@@ -5,6 +5,7 @@ import {
     MessageCircle, Gift
 } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { BorderBeam, SpotlightCard } from '../components/AnimatedUI';
 
 export default function AffiliatePage() {
     const [data, setData] = useState(null);
@@ -97,7 +98,8 @@ export default function AffiliatePage() {
             {/* Referral Link + How it Works */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Link Card */}
-                <div className="bg-white border border-gray-100 shadow-sm p-8 rounded-[32px] space-y-6">
+                <div className="bg-white border border-gray-100 shadow-sm p-8 rounded-[32px] space-y-6 relative overflow-hidden">
+                    <BorderBeam colorFrom="#10b981" colorTo="#6366f1" duration={12} />
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
                             <Link2 size={20} className="text-primary" />
@@ -152,7 +154,8 @@ export default function AffiliatePage() {
                 </div>
 
                 {/* How it works */}
-                <div className="bg-white border border-gray-100 shadow-sm p-8 rounded-[32px] space-y-6">
+                <div className="bg-white border border-gray-100 shadow-sm p-8 rounded-[32px] space-y-6 relative overflow-hidden">
+                    <BorderBeam colorFrom="#6366f1" colorTo="#a855f7" duration={15} />
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-200">
                             <Info size={20} className="text-gray-500" />
@@ -170,7 +173,7 @@ export default function AffiliatePage() {
                             { step: '03', title: 'Eles transacionam', desc: 'Quando seus indicados recebem pagamentos Pix, a plataforma cobra uma taxa.' },
                             { step: '04', title: 'Você ganha', desc: 'Ganhe R$ 0,05 por cada transação dos seus indicados + bônus de R$ 5,00 a cada 100 transações!' },
                         ].map((item, i) => (
-                            <div key={i} className="flex gap-4 items-start group">
+                            <SpotlightCard key={i} color="rgba(16,185,129,0.06)" className="flex gap-4 items-start group rounded-xl p-2 -m-2">
                                 <div className="w-10 h-10 shrink-0 rounded-xl bg-primary/5 border border-primary/10 flex items-center justify-center text-primary text-[11px] font-black group-hover:bg-primary/10 transition-colors">
                                     {item.step}
                                 </div>
@@ -178,7 +181,7 @@ export default function AffiliatePage() {
                                     <p className="text-sm font-bold text-gray-700">{item.title}</p>
                                     <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">{item.desc}</p>
                                 </div>
-                            </div>
+                            </SpotlightCard>
                         ))}
                     </div>
                 </div>

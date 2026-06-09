@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, MessageCircle, ArrowRight, HelpCircle, Plus } from 'lucide-react';
 import PublicLayout from '../components/PublicLayout';
-import { AuroraBg, DotGrid, Particles, ShimmerButton, GlowCard, GradientText, PulseBadge } from '../components/AnimatedUI';
+import { AuroraBg, DotGrid, Particles, ShimmerButton, GlowCard, GradientText, PulseBadge, BorderBeam } from '../components/AnimatedUI';
 
 const FAQS = [
     {
@@ -54,11 +54,12 @@ function FaqItem({ q, a, index }) {
         <motion.div
             initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ delay: index * 0.05, duration: 0.4 }}
-            className={`rounded-2xl border transition-all duration-300 mb-3 overflow-hidden ${
+            className={`rounded-2xl border transition-all duration-300 mb-3 overflow-hidden relative ${
                 open
                     ? 'border-emerald-500/30 bg-emerald-500/[0.04]'
                     : 'border-white/[0.07] bg-white/[0.03] hover:border-white/[0.12]'
             }`}>
+            {open && <BorderBeam colorFrom="#10b981" colorTo="#34d399" duration={8} />}
             <button onClick={() => setOpen(o => !o)}
                 className="w-full flex items-center justify-between py-5 px-6 text-left gap-4 group">
                 <span className="text-[14px] font-semibold text-gray-200 group-hover:text-white transition-colors">{q}</span>

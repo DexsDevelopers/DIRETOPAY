@@ -6,6 +6,7 @@ import {
     ChevronDown, RefreshCw, Check, X, ChevronRight
 } from 'lucide-react';
 import PixModal from '../components/PixModal';
+import { BorderBeam, SpotlightCard } from '../components/AnimatedUI';
 
 const KEY_TYPES = [
     { value: 'cpf',    label: 'CPF',       icon: User        },
@@ -228,7 +229,8 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                         {tab === 'cobrar' && (
                             <div className="space-y-4">
                                 <motion.div key="cobrar" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                                    className="bg-white dark:bg-gray-900/60 border border-gray-100 dark:border-white/5 rounded-2xl p-6 space-y-5">
+                                    className="bg-white dark:bg-gray-900/60 border border-gray-100 dark:border-white/5 rounded-2xl p-6 space-y-5 relative overflow-hidden">
+                                    <BorderBeam colorFrom="#10b981" colorTo="#6366f1" duration={14} />
                                     <h2 className="font-black text-gray-900 text-base">Gerar cobrança PIX</h2>
 
                                     <div className="space-y-1.5">
@@ -304,7 +306,8 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                         {/* ═══ ENVIAR ═══ */}
                         {tab === 'enviar' && (
                             <motion.div key="enviar" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                                className="bg-white dark:bg-gray-900/60 border border-gray-100 dark:border-white/5 rounded-2xl p-6 space-y-5">
+                                className="bg-white dark:bg-gray-900/60 border border-gray-100 dark:border-white/5 rounded-2xl p-6 space-y-5 relative overflow-hidden">
+                                <BorderBeam colorFrom="#6366f1" colorTo="#10b981" duration={14} />
 
                                 <AnimatePresence mode="wait">
 

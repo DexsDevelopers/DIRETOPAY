@@ -13,27 +13,12 @@ REMOTE_BASE = "/home/u853242961/domains/diretopay.site/public_html"
 
 LOCAL_BASE = os.path.dirname(os.path.abspath(__file__))
 
-# Arquivos novos em assets/dashboard-react/ (untracked ou modificados)
-NEW_ASSETS = [
-    "assets/dashboard-react/BankAccountsPage-D7IU4HK8.js",
-    "assets/dashboard-react/BeneficiosPage-TiVi3tKD.js",
-    "assets/dashboard-react/CheckoutPage-UIY5PQuE.js",
-    "assets/dashboard-react/DashboardHomePage-BjwzFg8T.js",
-    "assets/dashboard-react/FaqPage-CZNMeP4t.js",
-    "assets/dashboard-react/LandingPage-914-wspk.js",
-    "assets/dashboard-react/LoginPage-DHKLGnVr.js",
-    "assets/dashboard-react/ParceirosPage-CRPrZeFe.js",
-    "assets/dashboard-react/PixPage-cS1exKjo.js",
-    "assets/dashboard-react/PremiacoesPublicPage-BiW8ygeF.js",
-    "assets/dashboard-react/PublicLayout-Cih2Usn8.js",
-    "assets/dashboard-react/RegisterPage-C1x_srRC.js",
-    "assets/dashboard-react/ReportsPage-C6tvKIHG.js",
-    "assets/dashboard-react/SalesPage-bkdiC3Lb.js",
-    "assets/dashboard-react/SettingsPage-Cu8SIwUc.js",
-    "assets/dashboard-react/index-DNiWCDQx.js",
-    "assets/dashboard-react/vendor-charts-He-U0hDw.js",
-    "index.php",
-]
+# Detecta automaticamente todos os arquivos do build atual
+_assets_dir = os.path.join(LOCAL_BASE, "assets", "dashboard-react")
+NEW_ASSETS = (
+    [f"assets/dashboard-react/{f}" for f in os.listdir(_assets_dir) if os.path.isfile(os.path.join(_assets_dir, f))]
+    + ["index.php"]
+)
 
 
 def main():

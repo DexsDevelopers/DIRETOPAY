@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
+import { BorderBeam } from './AnimatedUI';
 
 function reativarNotificacoes() {
     localStorage.removeItem('push_subscribed');
@@ -76,8 +77,8 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
                 <button onClick={onMenuClick} className={`p-2 ${btnBase}`}>
                     <Menu size={18} />
                 </button>
-                <div className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium ${isDark ? 'bg-white/5 text-gray-400' : 'bg-gray-100 text-gray-500'}`}>
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <div className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold ${isDark ? 'bg-emerald-500/8 text-emerald-400/80 border border-emerald-500/15' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" style={{ boxShadow: '0 0 4px rgba(16,185,129,0.8)' }} />
                     Sistema operacional
                 </div>
             </div>
@@ -95,8 +96,8 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
                         className={`p-2 relative ${btnBase} ${showNotif ? (isDark ? 'bg-white/8 text-white' : 'bg-gray-100 text-gray-800') : ''}`}>
                         <Bell size={16} />
                         {unreadCount > 0 && (
-                            <span className="absolute top-1 right-1 w-[7px] h-[7px] bg-emerald-500 rounded-full ring-2 ring-offset-0"
-                                style={{ ringColor: isDark ? '#0e0e13' : '#fff' }} />
+                            <span className="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full animate-pulse"
+                                style={{ boxShadow: '0 0 6px rgba(16,185,129,0.8)' }} />
                         )}
                     </button>
 
@@ -107,8 +108,9 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
                                 onClick={e => e.stopPropagation()}
-                                className={`absolute top-[58px] right-4 w-[360px] max-h-[520px] rounded-2xl overflow-hidden flex flex-col shadow-2xl border ${isDark ? 'bg-[#111117] border-white/10' : 'bg-white border-gray-200'}`}
+                                className={`absolute top-[58px] right-4 w-[360px] max-h-[520px] rounded-2xl overflow-hidden flex flex-col shadow-2xl border relative ${isDark ? 'bg-[#111117] border-white/10' : 'bg-white border-gray-200'}`}
                             >
+                                <BorderBeam colorFrom="#10b981" colorTo="#6366f1" duration={12} />
                                 {/* Header */}
                                 <div className={`px-4 py-3 border-b flex items-center justify-between ${isDark ? 'border-white/8' : 'border-gray-100'}`}>
                                     <div className="flex items-center gap-2.5">
@@ -216,7 +218,7 @@ export default function Header({ onMenuClick, notifications = [], userData, onMa
                         className={`flex items-center gap-2 pl-2 pr-2.5 py-1.5 rounded-lg transition-all ${
                             isDark ? 'hover:bg-white/[0.07]' : 'hover:bg-gray-100'
                         }`}>
-                        <div className="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-500 font-black text-[11px]">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-500/30 to-emerald-600/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-black text-[11px]" style={{ boxShadow: '0 0 6px rgba(16,185,129,0.3)' }}>
                             {userInitial}
                         </div>
                         <span className={`text-[12.5px] font-semibold hidden sm:block ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>

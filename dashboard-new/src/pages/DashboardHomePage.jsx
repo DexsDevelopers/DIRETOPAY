@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AreaChart, Area, ResponsiveContainer, Tooltip } from 'recharts';
+import { SpotlightCard, BorderBeam, ScrollProgress } from '../components/AnimatedUI';
 import {
   RefreshCw, TrendingUp, Banknote, ShoppingCart,
   Eye, EyeOff, ArrowUpRight, BarChart3, QrCode, Link2, Wallet, History,
@@ -106,6 +107,7 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
 
   return (
     <div className="space-y-5 pb-12 relative">
+      <ScrollProgress color="#10b981" />
 
       {/* Background glow */}
       <div className="absolute top-0 left-0 right-0 h-[280px] pointer-events-none -z-10 overflow-hidden">
@@ -153,6 +155,7 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
         {/* Decorative Background Glows */}
         {(stats.total_paid_raw || 0) >= 1000 && (
           <>
+            <BorderBeam colorFrom="#a855f7" colorTo="#6366f1" duration={10} />
             <div className="absolute top-[-40px] right-[-40px] w-40 h-40 bg-purple-500/10 rounded-full blur-2xl pointer-events-none" />
             <div className="absolute bottom-[-30px] left-[-30px] w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
           </>
@@ -253,6 +256,7 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
           style={{ background: isDark
             ? 'linear-gradient(135deg, #0a1f14 0%, #061510 50%, #040e09 100%)'
             : 'linear-gradient(135deg, #064e3b 0%, #043d2e 50%, #02291e 100%)' }}>
+          <BorderBeam colorFrom="#10b981" colorTo="#34d399" duration={10} />
           <div className="absolute right-[-50px] top-[-50px] w-[200px] h-[200px] rounded-full border border-emerald-500/10 pointer-events-none" />
           <div className="absolute right-[-25px] top-[-25px] w-[130px] h-[130px] rounded-full border border-emerald-500/15 pointer-events-none" />
           <div className="absolute inset-0 pointer-events-none"
@@ -301,14 +305,8 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
 
         {/* KPI cards */}
         {kpis.map(({ label, value, delta, up, icon: Icon, color, spark }, i) => (
-          <motion.div key={label} {...fu(0.08 + i * 0.05)}
-            whileHover={{ y: -4 }}
-            className={`${card} p-4 flex flex-col gap-2.5 cursor-default group relative overflow-hidden`}
-            style={{ transition: 'box-shadow 0.22s ease, transform 0.22s ease' }}
-            onMouseEnter={e => e.currentTarget.style.boxShadow = `0 8px 32px ${color}25, 0 0 0 1px ${color}30`}
-            onMouseLeave={e => e.currentTarget.style.boxShadow = ''}>
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none"
-              style={{ background: `radial-gradient(ellipse at 60% 0%, ${color}0c, transparent 65%)` }} />
+          <motion.div key={label} {...fu(0.08 + i * 0.05)} whileHover={{ y: -4 }}>
+            <SpotlightCard color={`${color}18`} className={`${card} p-4 flex flex-col gap-2.5 cursor-default group h-full`}>
             <div className="flex items-center justify-between relative">
               <span className={`text-[10px] font-bold uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{label}</span>
               <div className="w-7 h-7 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200"
@@ -323,6 +321,7 @@ export default function DashboardHomePage({ userData, fetchDashboard, dashboardD
             <div className="-mx-1 mt-auto">
               <Sparkline data={spark} color={color} />
             </div>
+            </SpotlightCard>
           </motion.div>
         ))}
       </motion.div>

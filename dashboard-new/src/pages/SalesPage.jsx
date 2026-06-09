@@ -3,6 +3,7 @@ import { History, Search, Download, CheckCircle, Clock, XCircle, AlertCircle, La
 import { motion, AnimatePresence } from 'framer-motion';
 import TransactionsTable from '../components/TransactionsTable';
 import { useTheme } from '../contexts/ThemeContext';
+import { BorderBeam, SpotlightCard, ScrollProgress } from '../components/AnimatedUI';
 
 const FILTERS = [
     { key: 'all',      label: 'Todos',     dot: null },
@@ -129,6 +130,7 @@ export default function SalesPage({ onViewQr, onDelete }) {
 
     return (
         <div className="space-y-5 pb-10">
+            <ScrollProgress color="#10b981" />
             <AnimatePresence mode="wait">
                 {selectedTx && (
                     <DetailView key="detail" tx={selectedTx} onBack={() => setSelectedTx(null)} isDark={isDark} />
@@ -167,7 +169,7 @@ export default function SalesPage({ onViewQr, onDelete }) {
                     </div>
 
                     {/* Toolbar */}
-                    <div className={`${card} p-3 flex flex-col sm:flex-row gap-3`}>
+                    <SpotlightCard color="rgba(16,185,129,0.07)" className={`${card} p-3 flex flex-col sm:flex-row gap-3`}>
                         <div className="relative flex-1">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
                             <input
@@ -196,9 +198,10 @@ export default function SalesPage({ onViewQr, onDelete }) {
                                 </button>
                             ))}
                         </div>
-                    </div>
+                    </SpotlightCard>
 
-                    <div className={`${card} overflow-hidden`}>
+                    <div className={`${card} overflow-hidden relative`}>
+                        <BorderBeam colorFrom="#10b981" colorTo="#6366f1" duration={16} />
                         <TransactionsTable
                             transactions={filtered}
                             loading={loadingTx}
@@ -212,3 +215,4 @@ export default function SalesPage({ onViewQr, onDelete }) {
         </div>
     );
 }
+

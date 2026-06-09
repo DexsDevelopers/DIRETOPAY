@@ -2,6 +2,7 @@ import React from 'react';
 import { ExternalLink, ArrowRight } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { cn } from '../lib/utils';
+import { BorderBeam, SpotlightCard } from '../components/AnimatedUI';
 
 const parceiros = [
     {
@@ -67,6 +68,7 @@ function PartnerCard({ partner, isDark }) {
                     : 'bg-white hover:bg-gray-50 shadow-sm hover:shadow-md'
             )}
         >
+            <BorderBeam colorFrom="#10b981" colorTo="#6366f1" duration={14} />
             {/* Gradient bg */}
             <div className={cn("absolute inset-0 bg-gradient-to-br opacity-60 pointer-events-none", partner.gradient)} />
 
