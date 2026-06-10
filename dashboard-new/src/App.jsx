@@ -21,6 +21,7 @@ import {
   Moon,
 } from "lucide-react";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // Components
 import Sidebar from "./components/Sidebar";
@@ -115,7 +116,7 @@ function AdminRoute({ children, userData }) {
 }
 
 // Layout do Dashboard (Privado)
-function DashboardLayout({
+function DashboardLayoutInner({
   children,
   activeTab,
   setActiveTab,
@@ -169,6 +170,14 @@ function DashboardLayout({
       </div>
       <PushManager />
     </div>
+  );
+}
+
+function DashboardLayout(props) {
+  return (
+    <ErrorBoundary>
+      <DashboardLayoutInner {...props} />
+    </ErrorBoundary>
   );
 }
 
