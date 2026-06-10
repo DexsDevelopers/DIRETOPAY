@@ -14,6 +14,7 @@ DIST_DIR = os.path.join(ROOT, "dashboard-new", "dist", "assets")
 DEST_DIR = os.path.join(ROOT, "assets", "dashboard-react")
 DIST_HTML = os.path.join(ROOT, "dashboard-new", "dist", "index.html")
 INDEX_PHP = os.path.join(ROOT, "index.php")
+DASHBOARD_PHP = os.path.join(ROOT, "dashboard.php")
 
 # 1. Verificar se dist existe
 if not os.path.exists(DIST_DIR):
@@ -120,6 +121,38 @@ with open(INDEX_PHP, "w", encoding="utf-8") as f:
     f.write(php_new)
 
 print(f"✓ index.php atualizado (v{old_v} → v{new_v})")
+
+# 6. Atualizar dashboard.php também (evita tela preta por assets desatualizados)
+print("▶ Atualizando dashboard.php...")
+with open(DASHBOARD_PHP, encoding="utf-8") as f:
+    db_php = f.read()
+
+# Substitui o bloco de assets no dashboard.php
+old_db_block = re.search(
+    r"<!-- React Build Assets -->(.*?)<!-- Preload fonts",
+    db_php,
+    re.DOTALL,
+)
+if old_db_block:
+    new_db_block = f"""<!-- React Build Assets -->
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_runtime}?v={new_v}">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_charts}?v={new_v}">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_react}?v={new_v}">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_motion}?v={new_v}">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_router}?v={new_v}">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_icons}?v={new_v}">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_utils}?v={new_v}">
+    <script type="module" crossorigin src="/assets/dashboard-react/{new_main_js}?v={new_v}"></script>
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/{new_main_css}?v={new_v}">
+    
+    <!-- Preload fonts"""
+
+    db_php_new = db_php[: old_db_block.start()] + new_db_block + db_php[old_db_block.end():]
+    with open(DASHBOARD_PHP, "w", encoding="utf-8") as f:
+        f.write(db_php_new)
+    print(f"✓ dashboard.php atualizado (v{new_v})")
+else:
+    print("⚠️  Bloco <!-- React Build Assets --> não encontrado em dashboard.php — atualize manualmente")
 
 print(f"\n✅ Deploy local concluído com sucesso!")
 print(f"Versão: {new_v}")
