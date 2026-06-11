@@ -363,9 +363,10 @@ function FaqItem({ q, a }) {
           <ChevronDown size={16} className="text-slate-400 dark:text-gray-400 shrink-0" />
         </motion.div>
       </button>
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {open && (
           <motion.p
+            key="faq-body"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
@@ -540,9 +541,10 @@ export default function LandingPage() {
       </motion.nav>
 
       {/* Mobile full-screen menu */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {menuOpen && (
           <motion.div
+            key="mobile-menu"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -1969,9 +1971,10 @@ export default function LandingPage() {
       </section>
 
       {/* ── STICKY MOBILE CTA ── */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {scrolled && (
           <motion.div
+            key="sticky-cta"
             initial={{ y: 80, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 80, opacity: 0 }}

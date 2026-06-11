@@ -96,9 +96,10 @@ export function ExpandableTabs({
             )}
           >
             <Icon size={20} />
-            <AnimatePresence initial={false}>
+            <AnimatePresence initial={false} mode="wait">
               {selected === index && (
                 <motion.span
+                  key={tab.title}
                   variants={spanVariants}
                   initial="initial"
                   animate="animate"
