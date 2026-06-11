@@ -38,8 +38,20 @@ import {
   Moon,
   Code2,
   ChevronRight,
+  ChevronDown,
   Sparkles,
   BookOpen,
+  Users,
+  Smartphone,
+  Monitor,
+  HelpCircle,
+  Award,
+  Clock,
+  Globe,
+  CreditCard,
+  BarChart3,
+  Shield,
+  Quote,
 } from "lucide-react";
 
 const TICKER = [
@@ -58,6 +70,64 @@ const PARTNERS = [
   { name: "ASTROFY", icon: Trophy },
 ];
 
+const TESTIMONIALS = [
+  {
+    name: "Lucas Mendonça",
+    role: "CEO, Escola Digital Pro",
+    text: "Desde que migramos pra DiretoPay, nossa conversão no checkout subiu 34%. O Pix cai na hora e o suporte é absurdo de rápido.",
+    avatar: "LM",
+    rating: 5,
+  },
+  {
+    name: "Amanda Costa",
+    role: "Infoprodutora",
+    text: "Finalmente uma plataforma que entende o vendedor digital. Zero retenções, saque automático e dashboard que mostra tudo em tempo real.",
+    avatar: "AC",
+    rating: 5,
+  },
+  {
+    name: "Rafael Torres",
+    role: "Fundador, TorresSaaS",
+    text: "A API é limpa e bem documentada. Integrei em menos de 2 horas. Melhor custo-benefício do mercado para quem precisa de Pix via API.",
+    avatar: "RT",
+    rating: 5,
+  },
+  {
+    name: "Bianca Ferreira",
+    role: "Mentora de Negócios",
+    text: "Uso a DiretoPay pra todas as minhas mentorias e cursos. O checkout personalizável faz toda a diferença na experiência do cliente.",
+    avatar: "BF",
+    rating: 5,
+  },
+];
+
+const FAQ_DATA = [
+  {
+    q: "Como funciona o Pix na DiretoPay?",
+    a: "Você gera cobranças Pix em segundos, diretamente pelo dashboard ou via API. O pagamento é confirmado instantaneamente e o valor fica disponível para saque imediato, sem retenções.",
+  },
+  {
+    q: "Quanto custa usar a plataforma?",
+    a: "A criação de conta é 100% gratuita. Cobramos apenas uma taxa competitiva por transação aprovada. Sem mensalidades, sem taxas de setup e sem surpresas.",
+  },
+  {
+    q: "Posso personalizar o checkout?",
+    a: "Sim! Nosso Checkout Builder permite customizar cores, banners, order bumps, cupons, barra de avisos, rodapé e muito mais. Temos diversos templates prontos para acelerar sua conversão.",
+  },
+  {
+    q: "Existe retenção ou reserva de valores?",
+    a: "Não. Na DiretoPay, você tem acesso total ao seu dinheiro. Sem reservas, sem bloqueios e sem necessidade de aprovação para sacar. Liberdade financeira de verdade.",
+  },
+  {
+    q: "A DiretoPay tem API para desenvolvedores?",
+    a: "Sim! Oferecemos uma API RESTful completa com documentação detalhada. Você pode gerar cobranças Pix, consultar transações, receber webhooks e integrar com qualquer sistema.",
+  },
+  {
+    q: "Quanto tempo leva para o dinheiro cair na minha conta?",
+    a: "O saque é automático e instantâneo via Pix. Você solicita e o dinheiro cai na sua conta em segundos, 24 horas por dia, 7 dias por semana.",
+  },
+];
+
 export default function LandingPage() {
   const { isDark, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -67,6 +137,7 @@ export default function LandingPage() {
   const [onlineUsers, setOnlineUsers] = useState(2348);
   const [selectedMethod, setSelectedMethod] = useState("pix");
   const [activeTab, setActiveTab] = useState("curso");
+  const [openFaq, setOpenFaq] = useState(null);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 24);
@@ -1261,6 +1332,329 @@ export default function LandingPage() {
             ))}
           </div>
 
+        </div>
+      </section>
+
+      {/* ── SECTION: SCREENSHOTS GALLERY ── */}
+      <section className="relative z-10 py-24 px-5 border-t border-slate-200/60 dark:border-white/[0.06] bg-slate-50/50 dark:bg-white/[0.005] overflow-hidden">
+        <div className="max-w-6xl mx-auto">
+          <Reveal delay={0.05}>
+            <div className="text-center mb-14 flex flex-col items-center">
+              <div className="inline-flex items-center gap-2 mb-4 rounded-full border border-slate-200 dark:border-white/[0.08] bg-white/70 dark:bg-white/[0.03] backdrop-blur px-3.5 py-1.5 shadow-sm">
+                <Monitor size={13} className="text-[#1ea465]" />
+                <span className="text-[11.5px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                  Plataforma Completa
+                </span>
+              </div>
+              <h2 className="text-[38px] sm:text-[52px] font-black tracking-[-0.03em] leading-[1.0] text-slate-900 dark:text-white mb-4">
+                Tudo que você precisa, <GradientText from="#1ea465" to="#34d399">em um só lugar</GradientText>
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 text-[15px] sm:text-[16px] max-w-xl">
+                Dashboard completo, checkout personalizável, e uma experiência mobile impecável.
+              </p>
+            </div>
+          </Reveal>
+
+          {/* Screenshots Grid */}
+          <div className="grid md:grid-cols-2 gap-6 items-stretch">
+            {/* Dashboard Screenshot */}
+            <Reveal delay={0.1} className="h-full">
+              <div className="group rounded-3xl border border-slate-200 dark:border-white/[0.08] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 bg-white dark:bg-[#0c0c0f] h-full">
+                <div className="px-5 py-3 border-b border-slate-100 dark:border-white/[0.06] bg-slate-50 dark:bg-black/20 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-red-400" />
+                    <span className="w-3 h-3 rounded-full bg-yellow-400" />
+                    <span className="w-3 h-3 rounded-full bg-green-400" />
+                  </div>
+                  <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500">Dashboard DiretoPay</span>
+                  <BarChart3 size={14} className="text-slate-400" />
+                </div>
+                <div className="overflow-hidden relative">
+                  <img
+                    src="/dashboard_screenshot.png"
+                    alt="DiretoPay Dashboard - Painel de controle completo"
+                    className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </div>
+                <div className="px-5 py-4 flex items-center justify-between">
+                  <div>
+                    <h4 className="text-[14px] font-bold text-slate-900 dark:text-white">Dashboard em Tempo Real</h4>
+                    <p className="text-[12px] text-slate-500 dark:text-slate-400 mt-0.5">Monitore vendas, relatórios e métricas ao vivo</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#1ea465] bg-emerald-500/10 px-2.5 py-1 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#1ea465] animate-pulse" />
+                    LIVE
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Checkout Mobile Screenshot */}
+            <Reveal delay={0.15} className="h-full">
+              <div className="group rounded-3xl border border-slate-200 dark:border-white/[0.08] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 bg-white dark:bg-[#0c0c0f] h-full">
+                <div className="px-5 py-3 border-b border-slate-100 dark:border-white/[0.06] bg-slate-50 dark:bg-black/20 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-red-400" />
+                    <span className="w-3 h-3 rounded-full bg-yellow-400" />
+                    <span className="w-3 h-3 rounded-full bg-green-400" />
+                  </div>
+                  <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500">Checkout Mobile</span>
+                  <Smartphone size={14} className="text-slate-400" />
+                </div>
+                <div className="overflow-hidden relative">
+                  <img
+                    src="/checkout_mobile.png"
+                    alt="DiretoPay Checkout Mobile - Pagamento otimizado para mobile"
+                    className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </div>
+                <div className="px-5 py-4 flex items-center justify-between">
+                  <div>
+                    <h4 className="text-[14px] font-bold text-slate-900 dark:text-white">Checkout Responsivo</h4>
+                    <p className="text-[12px] text-slate-500 dark:text-slate-400 mt-0.5">Otimizado para mobile, tablet e desktop</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full">
+                    <CreditCard size={10} />
+                    PIX • CARTÃO
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+
+          {/* Feature mini-grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+            {[
+              { icon: Globe, label: "Disponível 24/7", desc: "Uptime de 99.97%" },
+              { icon: Clock, label: "Pix Instantâneo", desc: "Confirmação em <3s" },
+              { icon: Shield, label: "Segurança Total", desc: "Criptografia end-to-end" },
+              { icon: Award, label: "Sem Limites", desc: "Escale sem restrições" },
+            ].map((feat) => {
+              const Icon = feat.icon;
+              return (
+                <div
+                  key={feat.label}
+                  className="bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4 flex items-start gap-3 hover:border-[#1ea465]/30 hover:shadow-md transition-all duration-300 group"
+                >
+                  <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0 group-hover:bg-emerald-500/15 transition-colors">
+                    <Icon size={16} className="text-[#1ea465]" />
+                  </div>
+                  <div>
+                    <h4 className="text-[13px] font-bold text-slate-900 dark:text-white">{feat.label}</h4>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{feat.desc}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECTION: TESTIMONIALS ── */}
+      <section className="relative z-10 py-24 px-5 border-t border-slate-200/60 dark:border-white/[0.06] overflow-hidden">
+        <div className="max-w-5xl mx-auto">
+          <Reveal delay={0.05}>
+            <div className="text-center mb-14 flex flex-col items-center">
+              <div className="inline-flex items-center gap-2 mb-4 rounded-full border border-slate-200 dark:border-white/[0.08] bg-white/70 dark:bg-white/[0.03] backdrop-blur px-3.5 py-1.5 shadow-sm">
+                <Users size={13} className="text-[#1ea465]" />
+                <span className="text-[11.5px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                  Depoimentos
+                </span>
+              </div>
+              <h2 className="text-[38px] sm:text-[52px] font-black tracking-[-0.03em] leading-[1.0] text-slate-900 dark:text-white mb-4">
+                Quem usa, <GradientText from="#1ea465" to="#34d399">recomenda</GradientText>
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 text-[15px] sm:text-[16px] max-w-xl">
+                Veja o que nossos clientes dizem sobre a experiência com a DiretoPay.
+              </p>
+            </div>
+          </Reveal>
+
+          <div className="grid sm:grid-cols-2 gap-6">
+            {TESTIMONIALS.map((t, idx) => (
+              <Reveal key={t.name} delay={0.05 + idx * 0.08}>
+                <div className="bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.08] rounded-3xl p-6 flex flex-col justify-between text-left shadow-sm hover:shadow-lg hover:border-[#1ea465]/20 transition-all duration-300 h-full group">
+                  {/* Quote icon */}
+                  <div className="mb-4">
+                    <Quote size={24} className="text-[#1ea465]/25 group-hover:text-[#1ea465]/40 transition-colors" />
+                  </div>
+
+                  {/* Stars */}
+                  <div className="flex items-center gap-0.5 mb-3">
+                    {Array.from({ length: t.rating }).map((_, i) => (
+                      <Star key={i} size={13} className="text-amber-400 fill-amber-400" />
+                    ))}
+                  </div>
+
+                  {/* Text */}
+                  <p className="text-[14px] text-slate-600 dark:text-slate-300 leading-relaxed mb-6 flex-1">
+                    "{t.text}"
+                  </p>
+
+                  {/* Author */}
+                  <div className="flex items-center gap-3 pt-4 border-t border-slate-100 dark:border-white/[0.05]">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1ea465] to-[#34d399] flex items-center justify-center text-white font-bold text-[11px] shadow-md shadow-emerald-500/20">
+                      {t.avatar}
+                    </div>
+                    <div>
+                      <p className="text-[13px] font-bold text-slate-900 dark:text-white">{t.name}</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">{t.role}</p>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECTION: FAQ ── */}
+      <section className="relative z-10 py-24 px-5 border-t border-slate-200/60 dark:border-white/[0.06] bg-slate-50/50 dark:bg-white/[0.005] overflow-hidden">
+        <div className="max-w-3xl mx-auto">
+          <Reveal delay={0.05}>
+            <div className="text-center mb-14 flex flex-col items-center">
+              <div className="inline-flex items-center gap-2 mb-4 rounded-full border border-slate-200 dark:border-white/[0.08] bg-white/70 dark:bg-white/[0.03] backdrop-blur px-3.5 py-1.5 shadow-sm">
+                <HelpCircle size={13} className="text-[#1ea465]" />
+                <span className="text-[11.5px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                  FAQ
+                </span>
+              </div>
+              <h2 className="text-[38px] sm:text-[52px] font-black tracking-[-0.03em] leading-[1.0] text-slate-900 dark:text-white mb-4">
+                Perguntas <GradientText from="#1ea465" to="#34d399">frequentes</GradientText>
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 text-[15px] sm:text-[16px] max-w-lg">
+                Tire suas dúvidas sobre a plataforma. Não encontrou sua resposta? Fale com nosso suporte.
+              </p>
+            </div>
+          </Reveal>
+
+          <div className="flex flex-col gap-3">
+            {FAQ_DATA.map((faq, idx) => {
+              const isOpen = openFaq === idx;
+              return (
+                <Reveal key={idx} delay={0.02 + idx * 0.04}>
+                  <button
+                    onClick={() => setOpenFaq(isOpen ? null : idx)}
+                    className={`w-full text-left bg-white dark:bg-white/[0.02] border rounded-2xl transition-all duration-300 overflow-hidden group ${
+                      isOpen
+                        ? "border-[#1ea465]/30 shadow-lg shadow-emerald-500/5"
+                        : "border-slate-200 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/[0.12] shadow-sm"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between px-6 py-5">
+                      <span className={`text-[15px] font-bold transition-colors ${isOpen ? "text-[#1ea465]" : "text-slate-800 dark:text-slate-200"}`}>
+                        {faq.q}
+                      </span>
+                      <motion.div
+                        animate={{ rotate: isOpen ? 180 : 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="shrink-0 ml-4"
+                      >
+                        <ChevronDown size={18} className={`transition-colors ${isOpen ? "text-[#1ea465]" : "text-slate-400"}`} />
+                      </motion.div>
+                    </div>
+                    <AnimatePresence>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3, ease: "easeInOut" }}
+                        >
+                          <div className="px-6 pb-5 pt-0">
+                            <p className="text-[14px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                              {faq.a}
+                            </p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </button>
+                </Reveal>
+              );
+            })}
+          </div>
+
+          {/* Support CTA */}
+          <div className="text-center mt-10">
+            <p className="text-[13px] text-slate-500 dark:text-slate-400 mb-3">
+              Ainda tem dúvidas? Nossa equipe está pronta para ajudar.
+            </p>
+            <a
+              href="https://wa.me/5551996148568"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-[13px] font-bold text-[#1ea465] hover:text-[#126b41] transition-colors"
+            >
+              <MessageCircle size={14} />
+              Falar com suporte via WhatsApp
+              <ArrowRight size={13} />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECTION: FINAL CTA BANNER ── */}
+      <section className="relative z-10 py-20 px-5 overflow-hidden">
+        <div className="max-w-4xl mx-auto">
+          <Reveal delay={0.05}>
+            <div className="relative rounded-[32px] border border-[#1ea465]/20 bg-gradient-to-br from-[#1ea465]/[0.06] via-emerald-500/[0.03] to-transparent dark:from-[#1ea465]/[0.08] dark:via-emerald-500/[0.04] dark:to-transparent p-10 sm:p-14 text-center overflow-hidden">
+              {/* Decorative elements */}
+              <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#1ea465]/[0.06] rounded-full blur-[100px] pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-emerald-400/[0.04] rounded-full blur-[80px] pointer-events-none" />
+
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="w-14 h-14 rounded-2xl bg-[#1ea465]/15 border border-[#1ea465]/25 flex items-center justify-center mb-6">
+                  <Zap size={26} className="text-[#1ea465]" />
+                </div>
+
+                <h2 className="text-[32px] sm:text-[44px] font-black tracking-[-0.03em] leading-[1.05] text-slate-900 dark:text-white mb-4 max-w-2xl">
+                  Pronto para escalar suas <GradientText from="#1ea465" to="#34d399">vendas online?</GradientText>
+                </h2>
+
+                <p className="text-slate-500 dark:text-slate-400 text-[15px] sm:text-[16px] leading-relaxed mb-8 max-w-lg">
+                  Crie sua conta gratuitamente e comece a receber pagamentos em menos de 5 minutos. Sem burocracia, sem taxas de adesão.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                  <RippleButton
+                    color="rgba(30,164,101,0.4)"
+                    onClick={() => (window.location.href = "/register")}
+                    className="group flex items-center justify-center gap-2 bg-[#1ea465] hover:bg-[#126b41] text-white font-bold px-8 py-4 rounded-2xl transition-all text-[16px] shadow-[0_12px_45px_rgba(30,164,101,0.35)] hover:-translate-y-0.5"
+                  >
+                    <ShinyText speed={2.5}>Começar agora — é grátis</ShinyText>
+                    <ArrowRight size={17} className="group-hover:translate-x-0.5 transition-transform" />
+                  </RippleButton>
+                  <a
+                    href="https://wa.me/5551996148568"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 text-[14px] font-bold text-slate-700 dark:text-slate-300 hover:text-[#1ea465] dark:hover:text-[#1ea465] border border-slate-200 dark:border-white/[0.1] px-6 py-3.5 rounded-2xl transition-all hover:border-[#1ea465]/30 bg-white/50 dark:bg-transparent"
+                  >
+                    <MessageCircle size={15} />
+                    Fale com um especialista
+                  </a>
+                </div>
+
+                <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-[12px] text-slate-500 dark:text-slate-400">
+                  <span className="flex items-center gap-1.5">
+                    <CheckCircle size={13} className="text-[#1ea465]" />
+                    Sem taxas de adesão
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <CheckCircle size={13} className="text-[#1ea465]" />
+                    Saque instantâneo
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <CheckCircle size={13} className="text-[#1ea465]" />
+                    Suporte 24h
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
