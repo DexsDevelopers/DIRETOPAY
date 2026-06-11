@@ -39,6 +39,7 @@ import {
   Code2,
   ChevronRight,
   Sparkles,
+  BookOpen,
 } from "lucide-react";
 
 const TICKER = [
@@ -65,6 +66,7 @@ export default function LandingPage() {
   const [tickerVisible, setTickerVisible] = useState(true);
   const [onlineUsers, setOnlineUsers] = useState(2348);
   const [selectedMethod, setSelectedMethod] = useState("pix");
+  const [activeTab, setActiveTab] = useState("curso");
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 24);
@@ -148,10 +150,10 @@ export default function LandingPage() {
 
       {/* ── HEADER ── */}
       <motion.nav
-        className={`fixed top-10 inset-x-0 z-50 transition-all duration-300 ${
+        className={`sticky top-0 inset-x-0 z-50 transition-all duration-300 ${
           scrolled
             ? "bg-white/85 dark:bg-[#050709]/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/[0.07] shadow-lg shadow-slate-100/50 dark:shadow-xl dark:shadow-black/30 py-3"
-            : "py-4"
+            : "py-4 bg-transparent"
         }`}
       >
         <div className="max-w-6xl mx-auto px-5 flex items-center justify-between">
@@ -277,7 +279,7 @@ export default function LandingPage() {
       </AnimatePresence>
 
       {/* ── HERO ── */}
-      <section className="relative z-10 pt-36 pb-24 px-5 overflow-hidden">
+      <section className="relative z-10 pt-20 pb-24 px-5 overflow-hidden">
         <Meteors count={8} color="#1ea465" />
         
         <div className="max-w-6xl mx-auto text-center flex flex-col items-center">
@@ -746,6 +748,449 @@ export default function LandingPage() {
                     <span className="text-[#1ea465]">+ R$ 47,00</span>
                   </div>
                 </div>
+              </div>
+            </div>
+          </Reveal>
+
+        </div>
+      </section>
+
+      {/* ── SECTION: SUPORTE REAL, CONFIANÇA TOTAL ── */}
+      <section className="relative z-10 py-24 px-5 border-t border-slate-200/60 dark:border-white/[0.06] overflow-hidden">
+        <div className="max-w-5xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-16 flex flex-col items-center">
+            <div className="inline-flex items-center gap-2 mb-4 rounded-full border border-slate-200 dark:border-white/[0.08] bg-white/70 dark:bg-white/[0.03] backdrop-blur px-3.5 py-1.5 shadow-sm">
+              <span className="text-[11.5px] font-bold text-slate-550 dark:text-slate-400 uppercase tracking-widest">
+                Suporte Completo
+              </span>
+            </div>
+            <h2 className="text-[38px] sm:text-[52px] font-black tracking-[-0.03em] leading-[1.0] text-slate-900 dark:text-white mb-4">
+              Suporte real, <GradientText from="#1ea465" to="#34d399">confiança total</GradientText>
+            </h2>
+            <p className="text-slate-550 dark:text-slate-400 text-[15px] sm:text-[16px] max-w-2xl leading-relaxed">
+              Conte com nosso time do início ao fim. Ajuda automatizada e atendimento humano prontos para escalar com sua operação.
+            </p>
+          </div>
+
+          {/* Cards Grid */}
+          <div className="grid md:grid-cols-3 gap-6 items-stretch">
+            {/* Left Side: 3 smaller cards */}
+            <div className="md:col-span-1 flex flex-col gap-6">
+              {/* Card 1: Central de Ajuda */}
+              <div className="bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.08] rounded-3xl p-6 flex flex-col gap-4 text-left shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                  <BookOpen size={18} className="text-[#1ea465]" />
+                </div>
+                <div>
+                  <h3 className="text-[16px] font-bold text-slate-900 dark:text-white mb-1.5">
+                    Central de Ajuda completa
+                  </h3>
+                  <p className="text-[13px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Dúvidas frequentes, tutoriais e passo a passo em um só lugar.
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 2: Saque Automático */}
+              <div className="bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.08] rounded-3xl p-6 flex flex-col gap-4 text-left shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                  <Zap size={18} className="text-[#1ea465]" />
+                </div>
+                <div>
+                  <h3 className="text-[16px] font-bold text-slate-900 dark:text-white mb-1.5">
+                    Saque Automático
+                  </h3>
+                  <p className="text-[13px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Seu saque é liberado na hora. Sem retenções, sem necessidade de aprovação.
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 3: Zero Reservas */}
+              <div className="bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.08] rounded-3xl p-6 flex flex-col gap-4 text-left shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                  <ShieldCheck size={18} className="text-[#1ea465]" />
+                </div>
+                <div>
+                  <h3 className="text-[16px] font-bold text-slate-900 dark:text-white mb-1.5">
+                    Zero Reservas
+                  </h3>
+                  <p className="text-[13px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Venda sem retenções nem bloqueios. Liberdade financeira começa com acesso total ao que é seu.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Side: Big Card with Chat Mockup */}
+            <div className="md:col-span-2 bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.08] rounded-3xl p-6 flex flex-col justify-between text-left shadow-sm relative overflow-hidden min-h-[420px]">
+              <div className="flex flex-col gap-3 z-10 max-w-md mb-6">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                  <MessageCircle size={18} className="text-[#1ea465]" />
+                </div>
+                <h3 className="text-[20px] font-black text-slate-900 dark:text-white">
+                  Suporte humano, 24h por dia
+                </h3>
+                <p className="text-[14px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Nosso time de especialistas está sempre pronto para ajudar você, a qualquer hora, todos os dias.
+                </p>
+              </div>
+
+              {/* Chat UI Mockup Container */}
+              <div className="w-full max-w-[420px] mx-auto md:mr-0 mt-auto bg-slate-50 dark:bg-black/40 border border-slate-200/80 dark:border-white/[0.06] rounded-2xl shadow-xl overflow-hidden relative">
+                {/* Chat Header */}
+                <div className="bg-[#1ea465] text-white px-4 py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    {/* Mock Avatar */}
+                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold text-xs">
+                      DP
+                    </div>
+                    <div>
+                      <p className="text-xs font-black leading-tight">Suporte DiretoPay</p>
+                      <p className="text-[9px] text-emerald-100 flex items-center gap-1 mt-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
+                        Online
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 opacity-80">
+                    <span className="text-[10px] font-bold uppercase tracking-wider bg-white/10 px-2 py-0.5 rounded">24h</span>
+                  </div>
+                </div>
+
+                {/* Chat Messages */}
+                <div className="p-4 flex flex-col gap-3 text-xs min-h-[220px] justify-end bg-slate-100/50 dark:bg-[#08080a]/80">
+                  {/* User message (client) */}
+                  <div className="self-end max-w-[85%] bg-white dark:bg-white/[0.05] border border-slate-200/60 dark:border-white/[0.08] text-slate-850 dark:text-slate-200 rounded-2xl rounded-tr-none px-3.5 py-2.5 shadow-sm text-left">
+                    <p className="leading-relaxed">
+                      Oi, pessoal! Queria saber como faço para antecipar os valores das minhas vendas.
+                    </p>
+                    <span className="text-[8px] text-slate-400 dark:text-slate-500 mt-1 block text-right font-medium">10:59</span>
+                  </div>
+
+                  {/* Agent message (support) */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5, duration: 0.4 }}
+                    className="self-start max-w-[85%] bg-[#1ea465] text-white rounded-2xl rounded-tl-none px-3.5 py-2.5 shadow-md text-left"
+                  >
+                    <p className="leading-relaxed font-medium">
+                      Oi, tudo bem? Você já está habilitado para antecipação automática ou deseja fazer uma solicitação pontual?
+                    </p>
+                    <span className="text-[8px] text-emerald-100 mt-1 block text-right">11:00</span>
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECTION: PRA QUEM É A DIRETOPAY? ── */}
+      <section className="relative z-10 py-24 px-5 border-t border-slate-200/60 dark:border-white/[0.06] bg-slate-50/50 dark:bg-white/[0.005] overflow-hidden">
+        <div className="max-w-5xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-16 flex flex-col items-center">
+            <h2 className="text-[38px] sm:text-[52px] font-black tracking-[-0.03em] leading-[1.0] text-slate-900 dark:text-white mb-4">
+              Pra quem é a <GradientText from="#1ea465" to="#34d399">DiretoPay?</GradientText>
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 text-[15px] sm:text-[16px] max-w-xl">
+              Uma infraestrutura de pagamentos adaptada para o seu modelo de negócio.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-5 gap-10 items-center">
+            {/* Left side: Vertical Tabs Selector */}
+            <div className="lg:col-span-2 flex flex-col gap-3 text-left">
+              {[
+                {
+                  id: "curso",
+                  label: "Curso Online",
+                  desc: "Venda cursos com checkout otimizado e receba da forma rápida, segura e escalável.",
+                },
+                {
+                  id: "mentorias",
+                  label: "Mentorias",
+                  desc: "Automatize pagamentos das suas sessões, organize planos e receba com recorrência.",
+                },
+                {
+                  id: "ebooks",
+                  label: "E-books",
+                  desc: "Crie sua loja de conteúdos e venda de forma simples, com controle total das transações.",
+                },
+                {
+                  id: "comunidades",
+                  label: "Comunidades",
+                  desc: "Gerencie assinaturas, cobranças e acesso a conteúdos em um só lugar.",
+                },
+                {
+                  id: "saas",
+                  label: "SaaS",
+                  desc: "Ofereça uma experiência de pagamento completa via API, do checkout à conciliação.",
+                },
+              ].map((tab) => {
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`p-5 rounded-2xl text-left border transition-all duration-300 cursor-pointer ${
+                      isActive
+                        ? "border-[#1ea465]/40 bg-white dark:bg-white/[0.04] shadow-md shadow-emerald-500/5"
+                        : "border-transparent hover:bg-slate-100/50 dark:hover:bg-white/[0.01]"
+                    }`}
+                  >
+                    <h3
+                      className={`text-[15px] font-bold transition-colors ${
+                        isActive ? "text-[#1ea465]" : "text-slate-850 dark:text-slate-200"
+                      }`}
+                    >
+                      {tab.label}
+                    </h3>
+                    <p className="text-[12px] text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
+                      {tab.desc}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Right side: Dynamic Visual Mockup */}
+            <div className="lg:col-span-3 flex justify-center">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, scale: 0.96, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.96, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full max-w-[500px]"
+                >
+                  {activeTab === "curso" && (
+                    <div className="rounded-3xl border border-slate-200 dark:border-white/[0.08] shadow-2xl overflow-hidden bg-white dark:bg-[#0c0c0f] text-left">
+                      {/* Top Bar */}
+                      <div className="px-5 py-3 border-b border-slate-100 dark:border-white/[0.06] bg-slate-50 dark:bg-black/10 flex items-center justify-between text-[11px] font-bold text-slate-500">
+                        <span>ÁREA DE MEMBROS</span>
+                        <span className="text-emerald-500 flex items-center gap-1">
+                          <CheckCircle size={10} /> 94% Completo
+                        </span>
+                      </div>
+                      {/* Content */}
+                      <div className="p-5 flex flex-col gap-4">
+                        {/* Course Player Mockup */}
+                        <div className="aspect-video rounded-xl bg-slate-900/10 dark:bg-black/30 border border-slate-200/60 dark:border-white/[0.06] flex items-center justify-center relative overflow-hidden group">
+                          <div className="w-12 h-12 rounded-full bg-[#1ea465] text-white flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                            <span className="ml-1 w-0 h-0 border-y-[6px] border-y-transparent border-l-[10px] border-l-white" />
+                          </div>
+                          <div className="absolute bottom-3 left-3 right-3 bg-black/60 backdrop-blur-md px-3 py-2 rounded-lg flex items-center justify-between text-[10px] text-white font-semibold">
+                            <span>Aula 03: Escalando seu Checkout</span>
+                            <span>12:45 / 24:10</span>
+                          </div>
+                        </div>
+                        {/* Lessons List */}
+                        <div className="flex flex-col gap-2">
+                          {[
+                            { title: "Introdução à Plataforma", duration: "5:30", done: true },
+                            { title: "Configurando Chaves PIX", duration: "10:15", done: true },
+                            { title: "Criando seu Primeiro Link", duration: "15:45", active: true },
+                          ].map((lesson, idx) => (
+                            <div
+                              key={idx}
+                              className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-[11.5px] font-bold ${
+                                lesson.active
+                                  ? "border-emerald-500/30 bg-emerald-500/5 text-[#1ea465]"
+                                  : "border-slate-100 dark:border-white/[0.04] bg-slate-50 dark:bg-white/[0.01]"
+                              }`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <span className={`w-1.5 h-1.5 rounded-full ${lesson.done || lesson.active ? "bg-[#1ea465]" : "bg-slate-350"}`} />
+                                <span className={lesson.done ? "text-slate-400 dark:text-slate-505 line-through font-medium" : "text-slate-700 dark:text-slate-300"}>
+                                  {lesson.title}
+                                </span>
+                              </div>
+                              <span className="text-[10px] text-slate-400 font-medium">{lesson.duration}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === "mentorias" && (
+                    <div className="rounded-3xl border border-slate-200 dark:border-white/[0.08] shadow-2xl overflow-hidden bg-white dark:bg-[#0c0c0f] text-left">
+                      <div className="px-5 py-3 border-b border-slate-100 dark:border-white/[0.06] bg-slate-50 dark:bg-black/10 flex items-center justify-between text-[11px] font-bold text-slate-500">
+                        <span>AGENDAMENTO DE SESSÕES</span>
+                        <span className="text-indigo-400">1 Mentoria Ativa</span>
+                      </div>
+                      <div className="p-5 flex flex-col gap-4">
+                        {/* Calendar Mockup */}
+                        <div className="grid grid-cols-7 gap-1.5 text-center text-[10px] font-bold text-slate-400">
+                          {["D", "S", "T", "Q", "Q", "S", "S"].map((d, i) => (
+                            <span key={i} className="py-1">{d}</span>
+                          ))}
+                          {Array.from({ length: 28 }).map((_, i) => {
+                            const day = i + 1;
+                            const isScheduled = day === 14;
+                            return (
+                              <span
+                                key={i}
+                                className={`py-2 rounded-lg flex items-center justify-center font-bold ${
+                                  isScheduled
+                                    ? "bg-indigo-550 text-white shadow-lg shadow-indigo-500/25 scale-105"
+                                    : "bg-slate-50 dark:bg-white/[0.02] text-slate-600 dark:text-slate-400"
+                                }`}
+                              >
+                                {day}
+                              </span>
+                            );
+                          })}
+                        </div>
+                        {/* Scheduled Mentorship Details */}
+                        <div className="border border-indigo-500/20 bg-indigo-500/[0.02] rounded-2xl p-4 flex flex-col gap-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] bg-indigo-500/10 text-indigo-400 font-bold px-2 py-0.5 rounded">
+                              Confirmada
+                            </span>
+                            <span className="text-[10px] text-slate-400 font-medium">14 de Junho, 14:00</span>
+                          </div>
+                          <div>
+                            <h4 className="text-[13px] font-bold text-slate-800 dark:text-slate-200">
+                              Mentoria de Escala Digital
+                            </h4>
+                            <p className="text-[11px] text-slate-500 mt-1 font-medium">
+                              Mentor: Lucas T. (DiretoPay Seller)
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === "ebooks" && (
+                    <div className="rounded-3xl border border-slate-200 dark:border-white/[0.08] shadow-2xl overflow-hidden bg-white dark:bg-[#0c0c0f] text-left p-5 flex flex-col gap-4">
+                      {/* Ebook Graphic Mockup */}
+                      <div className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/25 rounded-2xl p-6 flex items-center justify-center gap-6">
+                        {/* Mock Cover */}
+                        <div className="w-20 h-28 bg-[#1ea465] text-white font-bold rounded-lg shadow-lg shadow-emerald-950/20 flex flex-col justify-between p-3 select-none relative overflow-hidden shrink-0">
+                          <div className="w-1.5 h-full bg-white/10 absolute left-0 top-0" />
+                          <span className="text-[8px] tracking-widest uppercase opacity-60">e-Book</span>
+                          <span className="text-[11px] leading-tight font-black">MÁQUINA DE PIX</span>
+                          <span className="text-[7px] text-emerald-100 font-bold">DiretoPay</span>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <h4 className="text-[15px] font-black text-slate-900 dark:text-white leading-tight">
+                            Máquina de Vendas no Pix
+                          </h4>
+                          <p className="text-[11px] text-slate-500 font-semibold leading-relaxed">
+                            O guia definitivo para automatizar e otimizar conversões no checkout.
+                          </p>
+                          <span className="text-[14px] font-black text-[#1ea465] mt-1">R$ 29,90</span>
+                        </div>
+                      </div>
+                      {/* Checkout payment option ebook */}
+                      <div className="border border-slate-100 dark:border-white/[0.06] bg-slate-50 dark:bg-white/[0.01] rounded-2xl p-4 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-[#1ea465] font-bold">
+                            PDF
+                          </div>
+                          <div>
+                            <p className="text-[11px] font-bold text-slate-850 dark:text-slate-200">maquina-pix.pdf</p>
+                            <p className="text-[9px] text-slate-450 mt-0.5">4.8 MB • Pronto para ler</p>
+                          </div>
+                        </div>
+                        <button className="bg-[#1ea465] text-white font-bold text-[10px] px-3.5 py-1.5 rounded-lg shadow-sm cursor-pointer">
+                          Baixar
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === "comunidades" && (
+                    <div className="rounded-3xl border border-slate-200 dark:border-white/[0.08] shadow-2xl overflow-hidden bg-white dark:bg-[#0c0c0f] text-left">
+                      <div className="px-5 py-3 border-b border-slate-100 dark:border-white/[0.06] bg-slate-50 dark:bg-black/10 flex items-center justify-between text-[11px] font-bold text-slate-500">
+                        <span>GERENCIAR ASSINATURAS</span>
+                        <span className="text-emerald-500 font-black">R$ 8.490/mês recorrente</span>
+                      </div>
+                      <div className="p-5 flex flex-col gap-3.5">
+                        {[
+                          { name: "Carlos Henrique", plan: "Plano Trimestral", status: "Ativo", date: "Renova em 24/06", color: "text-[#1ea465]" },
+                          { name: "Mariana Costa", plan: "Plano Anual", status: "Ativo", date: "Renova em 12/08", color: "text-[#1ea465]" },
+                          { name: "Rodrigo Santos", plan: "Plano Mensal", status: "Vencido", date: "Expirou em 05/06", color: "text-red-400" },
+                        ].map((member, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center justify-between p-3 border border-slate-100 dark:border-white/[0.05] rounded-xl bg-slate-50 dark:bg-white/[0.01]"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              {/* Avatar placeholder */}
+                              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center font-bold text-[10px] text-[#1ea465]">
+                                {member.name.split(" ").map(n => n[0]).join("")}
+                              </div>
+                              <div>
+                                <p className="text-[11.5px] font-bold text-slate-850 dark:text-slate-200">{member.name}</p>
+                                <p className="text-[9px] text-slate-450 font-medium">{member.plan}</p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <span className={`text-[10px] font-black ${member.color} block`}>{member.status}</span>
+                              <span className="text-[9px] text-slate-400 font-medium block mt-0.5">{member.date}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === "saas" && (
+                    <div className="rounded-3xl border border-slate-200 dark:border-white/[0.08] shadow-2xl overflow-hidden bg-slate-900/50 dark:bg-black/40 text-left">
+                      <div className="px-5 py-3 border-b border-slate-100 dark:border-white/[0.06] bg-slate-50 dark:bg-black/10 flex items-center justify-between text-[11px] font-bold text-slate-500">
+                        <span>API LOGS</span>
+                        <span className="text-[#1ea465] font-mono">POST /v1/pix</span>
+                      </div>
+                      <div className="p-5">
+                        <pre className="text-[10.5px] font-mono text-emerald-400 bg-slate-900 dark:bg-black/60 rounded-xl p-4 border border-slate-200/5 dark:border-white/[0.06] overflow-x-auto select-all leading-relaxed">
+                          {`{
+  "id": "pay_pix_932km10a",
+  "status": "approved",
+  "amount": 149.90,
+  "client": {
+    "name": "Matheus Silva",
+    "email": "matheus@email.com"
+  },
+  "created_at": "2026-06-11T03:30:00Z"
+}`}
+                        </pre>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+
+          {/* Team Photo Sub-banner */}
+          <Reveal delay={0.15} className="mt-20">
+            <div className="rounded-[32px] border border-slate-200/60 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.015] p-6 sm:p-8 grid md:grid-cols-12 gap-8 items-center text-left">
+              <div className="md:col-span-7 flex flex-col gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-[#1ea465]">
+                  <Sparkles size={20} />
+                </div>
+                <h3 className="text-[24px] font-black tracking-tight text-slate-905 dark:text-white leading-tight">
+                  Construído por quem entende de escala
+                </h3>
+                <p className="text-[13.5px] text-slate-550 dark:text-slate-400 leading-relaxed font-medium">
+                  Somos um time apaixonado por performance. Desenvolvemos o DiretoPay com foco em uptime de 99.97% e processamento instantâneo. Venda de forma automatizada e tenha tranquilidade total para focar no crescimento da sua marca.
+                </p>
+              </div>
+              <div className="md:col-span-5 relative rounded-2xl overflow-hidden shadow-xl border border-slate-200 dark:border-white/[0.06] aspect-video md:aspect-[4/3] bg-slate-100 dark:bg-black/30">
+                <img
+                  src="/team_diretopay.png"
+                  alt="DiretoPay Team"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </Reveal>
