@@ -62,7 +62,7 @@ export default class ErrorBoundary extends Component {
               Recarregar
             </button>
           </div>
-          {process.env.NODE_ENV === 'development' && this.state.error && (
+          {this.state.error && (
             <pre style={{
               fontSize: 11, color: 'rgba(255,100,100,0.7)',
               background: 'rgba(255,0,0,0.05)', padding: 12,

@@ -29,15 +29,15 @@ if (!$isAuth) {
     <title>DiretoPay — Dashboard</title>
     
     <!-- React Build Assets -->
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js?v=63">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js?v=63">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-react-B6YjI7Jz.js?v=63">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-motion-BCgFC3qs.js?v=63">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-router-Dg8CQPxv.js?v=63">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-icons-Ch5mnukh.js?v=63">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/utils-DCsqA19A.js?v=63">
-    <script type="module" crossorigin src="/assets/dashboard-react/index-DTQh1he4.js?v=63"></script>
-    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-Jfce1TJy.css?v=63">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js?v=64">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js?v=64">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-react-B6YjI7Jz.js?v=64">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-motion-BCgFC3qs.js?v=64">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-router-Dg8CQPxv.js?v=64">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-icons-Ch5mnukh.js?v=64">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/utils-DCsqA19A.js?v=64">
+    <script type="module" crossorigin src="/assets/dashboard-react/index-DBGR4wEl.js?v=64"></script>
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-Jfce1TJy.css?v=64">
     
     <!-- Preload fonts to avoid layout shift -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">

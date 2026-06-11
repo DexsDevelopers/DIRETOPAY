@@ -9,12 +9,16 @@ const isPublicPath = (pathname) =>
     pathname.startsWith('/p/') ||
     (pathname.startsWith('/chat/') && pathname.length > 6);
 
+function safeStorage(fn, fallback) {
+    try { return fn(); } catch { return fallback; }
+}
+
 export function ThemeProvider({ children }) {
     const location = useLocation();
     const [isDark, setIsDark] = useState(() => {
-        const saved = localStorage.getItem('direto_theme');
+        const saved = safeStorage(() => localStorage.getItem('direto_theme'), null);
         if (saved) return saved === 'dark';
-        return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+        return window.matchMedia?.('(prefers-color-scheme: dark)')?.matches ?? false;
     });
 
     useEffect(() => {
@@ -24,7 +28,7 @@ export function ThemeProvider({ children }) {
         } else {
             html.classList.remove('dark');
         }
-        localStorage.setItem('direto_theme', isDark ? 'dark' : 'light');
+        safeStorage(() => localStorage.setItem('direto_theme', isDark ? 'dark' : 'light'));
     }, [isDark, location.pathname]);
 
     const toggleTheme = () => setIsDark(d => !d);
