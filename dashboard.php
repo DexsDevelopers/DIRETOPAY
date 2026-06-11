@@ -6,11 +6,9 @@ require_once 'includes/db.php';
 
 $isAuth = isLoggedIn();
 
-// Se não logado, redireciona pro login
-if (!$isAuth) {
-    header('Location: /login');
-    exit;
-}
+// Redireciona sempre para /dashboard para garantir a versão atualizada do SPA
+header('Location: /dashboard');
+exit;
 ?>
 <!doctype html>
 <html lang="pt-BR">
