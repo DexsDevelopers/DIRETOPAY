@@ -106,8 +106,37 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
 }
 ?>
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" translate="no" class="notranslate">
   <head>
+    <script>
+      // Prevent React from crashing when browser extensions or translation tools modify the DOM
+      if (typeof window !== 'undefined') {
+        const originalRemoveChild = Node.prototype.removeChild;
+        Node.prototype.removeChild = function (child) {
+          try {
+            return originalRemoveChild.call(this, child);
+          } catch (error) {
+            if (error.name === 'NotFoundError') {
+              console.warn('Prevented React removeChild crash:', error);
+              return child;
+            }
+            throw error;
+          }
+        };
+        const originalInsertBefore = Node.prototype.insertBefore;
+        Node.prototype.insertBefore = function (newNode, referenceNode) {
+          try {
+            return originalInsertBefore.call(this, newNode, referenceNode);
+          } catch (error) {
+            if (error.name === 'NotFoundError') {
+              console.warn('Prevented React insertBefore crash:', error);
+              return newNode;
+            }
+            throw error;
+          }
+        };
+      }
+    </script>
     <base href="/">
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
@@ -127,15 +156,15 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
     <title>DiretoPay - Plataforma de Pagamentos</title>
 
     <!-- React Build Assets -->
-    <script type="module" crossorigin src="/assets/dashboard-react/index-T-pPO16l.js?v=66"></script>
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js?v=66">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-He-U0hDw.js?v=66">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-router-Dg8CQPxv.js?v=66">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-motion-BCgFC3qs.js?v=66">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-icons-Ch5mnukh.js?v=66">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-react-B6YjI7Jz.js?v=66">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/utils-DCsqA19A.js?v=66">
-    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-Jfce1TJy.css?v=66">
+    <script type="module" crossorigin src="/assets/dashboard-react/index-BoI_dR8z.js?v=67"></script>
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-WehaI0Q3.js?v=67">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-DkalkS0U.js?v=67">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-router-Crjtektr.js?v=67">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-motion-BfnOqO3c.js?v=67">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-icons-BUPMymzo.js?v=67">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-react-zlTQWXeU.js?v=67">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/utils-BItpez6K.js?v=67">
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/index-Jfce1TJy.css?v=67">
 
     <!-- React Checkout Chunk Preload -->
     <?php if ($requestPath && strpos($requestPath, '/p/') === 0): ?>

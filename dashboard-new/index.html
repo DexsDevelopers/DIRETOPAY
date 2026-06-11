@@ -1,6 +1,35 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" translate="no" class="notranslate">
   <head>
+    <script>
+      // Prevent React from crashing when browser extensions or translation tools modify the DOM
+      if (typeof window !== 'undefined') {
+        const originalRemoveChild = Node.prototype.removeChild;
+        Node.prototype.removeChild = function (child) {
+          try {
+            return originalRemoveChild.call(this, child);
+          } catch (error) {
+            if (error.name === 'NotFoundError') {
+              console.warn('Prevented React removeChild crash:', error);
+              return child;
+            }
+            throw error;
+          }
+        };
+        const originalInsertBefore = Node.prototype.insertBefore;
+        Node.prototype.insertBefore = function (newNode, referenceNode) {
+          try {
+            return originalInsertBefore.call(this, newNode, referenceNode);
+          } catch (error) {
+            if (error.name === 'NotFoundError') {
+              console.warn('Prevented React insertBefore crash:', error);
+              return newNode;
+            }
+            throw error;
+          }
+        };
+      }
+    </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="shortcut icon" href="/favicon.ico" />
