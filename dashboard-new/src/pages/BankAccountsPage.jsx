@@ -35,7 +35,7 @@ const accounts = [
     fees: [
       {
         icon: <Percent size={11} />,
-        label: "8% + R$0,99 / transação",
+        label: "10% + R$0,99 / transação",
         color:
           "dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/20 bg-emerald-50 text-emerald-700 border-emerald-200",
       },
@@ -78,7 +78,7 @@ const accounts = [
     fees: [
       {
         icon: <Percent size={11} />,
-        label: "4,00% + R$1,00 / transação",
+        label: "6,00% + R$1,00 / transação",
         color:
           "dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/20 bg-emerald-50 text-emerald-700 border-emerald-200",
       },
@@ -108,7 +108,7 @@ const accounts = [
     fees: [
       {
         icon: <Percent size={11} />,
-        label: "7,00% + R$1,00 / transação",
+        label: "9,00% + R$1,00 / transação",
         color:
           "dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/20 bg-emerald-50 text-emerald-700 border-emerald-200",
       },
@@ -137,7 +137,7 @@ const accounts = [
     fees: [
       {
         icon: <Percent size={11} />,
-        label: "3,99% + R$0,25 / transação",
+        label: "5,99% + R$0,25 / transação",
         color:
           "dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/20 bg-emerald-50 text-emerald-700 border-emerald-200",
       },
@@ -155,6 +155,70 @@ const accounts = [
       },
     ],
   },
+  {
+    id: "nominal5",
+    num: "05",
+    name: "Nominal 5",
+    subtitle: "BrPagg",
+    badge: "⚡ Novo",
+    badgeDark: "bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/30",
+    badgeLight: "bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200",
+    accentDark: "from-fuchsia-500/10 via-fuchsia-500/3 to-transparent",
+    accentLight: "from-fuchsia-50 via-fuchsia-50/30 to-transparent",
+    iconBgDark: "bg-fuchsia-500/15 text-fuchsia-400",
+    iconBgLight: "bg-fuchsia-100 text-fuchsia-600",
+    description:
+      "Conta nominal 5 integrada com a BrPagg. Processamento PIX estável e taxas altamente competitivas.",
+    fees: [
+      {
+        icon: <Percent size={11} />,
+        label: "5,50% + R$1,00 / transação",
+        color:
+          "dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/20 bg-emerald-50 text-emerald-700 border-emerald-200",
+      },
+      {
+        icon: <Zap size={11} />,
+        label: "Repasse rápido",
+        color:
+          "dark:bg-green-500/15 dark:text-green-300 dark:border-green-500/20 bg-green-50 text-green-700 border-green-200",
+      },
+    ],
+  },
+  {
+    id: "nominal6",
+    num: "06",
+    name: "Nominal 6",
+    subtitle: "SyncPayments",
+    badge: "⭐ Recomendado",
+    badgeDark: "bg-blue-500/20 text-blue-300 border border-blue-500/30",
+    badgeLight: "bg-blue-100 text-blue-700 border border-blue-200",
+    accentDark: "from-blue-500/20 via-blue-500/5 to-transparent",
+    accentLight: "from-blue-50 via-blue-50/30 to-transparent",
+    iconBgDark: "bg-blue-500/20 text-blue-400",
+    iconBgLight: "bg-blue-100 text-blue-600",
+    description:
+      "Conta nominal integrada à SyncPayments. Altíssima taxa de conversão, liquidação em tempo real e segurança avançada.",
+    fees: [
+      {
+        icon: <Percent size={11} />,
+        label: "4,99% + R$2,00 / transação",
+        color:
+          "dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/20 bg-emerald-50 text-emerald-700 border-emerald-200",
+      },
+      {
+        icon: <Zap size={11} />,
+        label: "Cash-out automático",
+        color:
+          "dark:bg-green-500/15 dark:text-green-300 dark:border-green-500/20 bg-green-50 text-green-700 border-green-200",
+      },
+      {
+        icon: <TrendingUp size={11} />,
+        label: "Excelente conversão",
+        color:
+          "dark:bg-blue-500/15 dark:text-blue-300 dark:border-blue-500/20 bg-blue-50 text-blue-700 border-blue-200",
+      },
+    ],
+  },
 ];
 
 export default function BankAccountsPage() {
@@ -165,6 +229,13 @@ export default function BankAccountsPage() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [ezzyAcquirer, setEzzyAcquirer] = useState("");
+  const [roundRobin, setRoundRobin] = useState({
+    enabled: false,
+    current_nominal: "nominal1",
+    ativos: [],
+    loading: true,
+    toggling: false,
+  });
   const [ezzyAcquirers, setEzzyAcquirers] = useState([]);
   const [loadingAcquirers, setLoadingAcquirers] = useState(false);
 
@@ -179,6 +250,43 @@ export default function BankAccountsPage() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    fetch("/save_round_robin.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "get" }),
+    })
+      .then((r) => r.json())
+      .then((d) =>
+        setRoundRobin((prev) => ({
+          ...prev,
+          enabled: d.enabled || false,
+          current_nominal: d.current_nominal || "nominal1",
+          ativos: d.ativos || [],
+          loading: false,
+        }))
+      )
+      .catch(() => setRoundRobin((prev) => ({ ...prev, loading: false })));
+  }, []);
+
+  const handleRoundRobinToggle = async () => {
+    if (roundRobin.toggling) return;
+    const newEnabled = !roundRobin.enabled;
+    setRoundRobin((prev) => ({ ...prev, toggling: true }));
+    try {
+      const res = await fetch("/save_round_robin.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "toggle", enabled: newEnabled }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setRoundRobin((prev) => ({ ...prev, enabled: newEnabled }));
+      }
+    } catch {}
+    setRoundRobin((prev) => ({ ...prev, toggling: false }));
+  };
 
   useEffect(() => {
     if (selected === "nominal4") {
@@ -294,8 +402,122 @@ export default function BankAccountsPage() {
         </span>
       </div>
 
+      {/* Card de Controle de Distribuição */}
+      <div
+        className={cn(
+          "relative rounded-2xl border overflow-hidden transition-all duration-500 p-5",
+          roundRobin.enabled
+            ? "border-emerald-500/40 bg-emerald-950/10 shadow-lg shadow-emerald-500/5"
+            : isDark
+              ? "border-white/[0.08] bg-white/[0.03]"
+              : "border-gray-200 bg-white shadow-sm"
+        )}
+      >
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div
+              className={cn(
+                "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-all",
+                roundRobin.enabled
+                  ? "bg-emerald-500 text-white shadow-[0_4px_14px_rgba(16,185,129,0.4)]"
+                  : isDark
+                    ? "bg-white/[0.07] text-gray-400"
+                    : "bg-gray-100 text-gray-500"
+              )}
+            >
+              {roundRobin.toggling ? (
+                <Loader2 className="animate-spin text-sm" size={20} />
+              ) : (
+                <span>🔀</span>
+              )}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span
+                  className={cn(
+                    "text-sm font-bold",
+                    isDark ? "text-white" : "text-gray-900"
+                  )}
+                >
+                  Distribuição Automática (Rodízio)
+                </span>
+                {roundRobin.enabled && (
+                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500 text-white uppercase animate-pulse">
+                    Ativo
+                  </span>
+                )}
+              </div>
+              <p
+                className={cn(
+                  "text-xs mt-0.5",
+                  isDark ? "text-gray-500" : "text-gray-400"
+                )}
+              >
+                {roundRobin.enabled
+                  ? `Rodízio contínuo entre ${roundRobin.ativos.length} nominais ativas`
+                  : "Distribui as novas cobranças geradas entre as nominais habilitadas"}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={handleRoundRobinToggle}
+            disabled={roundRobin.toggling}
+            className={cn(
+              "w-14 h-7 rounded-full relative transition-all duration-300",
+              roundRobin.enabled ? "bg-emerald-500" : "bg-gray-200 dark:bg-white/10"
+            )}
+          >
+            <div
+              className={cn(
+                "w-5 h-5 rounded-full bg-white absolute top-1 transition-all",
+                roundRobin.enabled ? "left-8" : "left-1"
+              )}
+            />
+          </button>
+        </div>
+
+        {/* Linha com a visualização do rodízio em andamento */}
+        {roundRobin.enabled && roundRobin.ativos.length > 0 && (
+          <div
+            className={cn(
+              "mt-4 p-3 rounded-xl border flex items-center gap-3 flex-wrap",
+              isDark
+                ? "border-emerald-500/20 bg-emerald-500/5"
+                : "border-emerald-200 bg-emerald-50"
+            )}
+          >
+            <span
+              className={cn(
+                "text-xs font-bold",
+                isDark ? "text-emerald-400" : "text-emerald-700"
+              )}
+            >
+              Fila de Rotação:
+            </span>
+            <div className="flex gap-2 flex-wrap">
+              {roundRobin.ativos.map((nom) => (
+                <span
+                  key={nom}
+                  className={cn(
+                    "text-[10px] font-bold px-2 py-0.5 rounded border transition-all",
+                    nom === roundRobin.current_nominal
+                      ? "bg-emerald-500 text-white border-emerald-400"
+                      : isDark
+                        ? "bg-white/5 text-gray-400 border-white/10"
+                        : "bg-white text-gray-400 border-gray-200"
+                  )}
+                >
+                  {nom === roundRobin.current_nominal && "➔ "} N
+                  {nom.replace("nominal", "")}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Cards */}
-      <div className="space-y-3">
+      <div className={cn("space-y-3", roundRobin.enabled && "opacity-50 pointer-events-none")}>
         {accounts.map((acc) => {
           const isSelected = selected === acc.id;
           return (
@@ -667,7 +889,7 @@ export default function BankAccountsPage() {
       <div className="flex justify-end pt-1">
         <button
           onClick={handleSave}
-          disabled={saving}
+          disabled={saving || roundRobin.enabled}
           className={cn(
             "flex items-center gap-2 px-7 py-3 rounded-xl font-bold text-sm transition-all duration-200",
             saved

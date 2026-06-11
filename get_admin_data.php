@@ -201,4 +201,19 @@ echo json_encode([
         'fee_percent'     => (float)($pdo->query("SELECT `value` FROM settings WHERE `key`='ezzybanking_fee_percent'")->fetchColumn() ?: 5),
         'fee_fixed'       => (float)($pdo->query("SELECT `value` FROM settings WHERE `key`='ezzybanking_fee_fixed'")->fetchColumn() ?: 0.99),
     ],
+    'syncpayments'       => [
+        'enabled'        => $pdo->query("SELECT `value` FROM settings WHERE `key`='syncpayments_enabled'")->fetchColumn() === '1',
+        'client_id'      => $pdo->query("SELECT `value` FROM settings WHERE `key`='syncpayments_client_id'")->fetchColumn() ?: '',
+        'has_secret'     => (bool)$pdo->query("SELECT `value` FROM settings WHERE `key`='syncpayments_client_secret'")->fetchColumn(),
+        'has_wh_secret'  => (bool)$pdo->query("SELECT `value` FROM settings WHERE `key`='syncpayments_webhook_secret'")->fetchColumn(),
+        'fee_percent'    => (float)($pdo->query("SELECT `value` FROM settings WHERE `key`='syncpayments_fee_percent'")->fetchColumn() ?: 2.99),
+        'fee_fixed'      => (float)($pdo->query("SELECT `value` FROM settings WHERE `key`='syncpayments_fee_fixed'")->fetchColumn() ?: 2.00),
+        'payout_fixed'   => (float)($pdo->query("SELECT `value` FROM settings WHERE `key`='syncpayments_payout_fixed'")->fetchColumn() ?: 2.00),
+    ],
+    'brpagg'             => [
+        'enabled'        => $pdo->query("SELECT `value` FROM settings WHERE `key`='brpagg_enabled'")->fetchColumn() === '1',
+        'has_api_key'    => (bool)$pdo->query("SELECT `value` FROM settings WHERE `key`='brpagg_api_key'")->fetchColumn(),
+        'fee_percent'    => (float)($pdo->query("SELECT `value` FROM settings WHERE `key`='brpagg_fee_percent'")->fetchColumn() ?: 3.50),
+        'fee_fixed'      => (float)($pdo->query("SELECT `value` FROM settings WHERE `key`='brpagg_fee_fixed'")->fetchColumn() ?: 1.00),
+    ],
 ]);

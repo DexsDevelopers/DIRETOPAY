@@ -14,6 +14,15 @@ const STATUS_CONFIG = {
     rejected:  { label: 'Negado',    icon: <XCircle size={11} />,     cls: 'bg-red-500/10 text-red-400 border-red-500/20' },
 };
 
+const NOMINAL_CONFIG = {
+    nominal1: { label: 'Nominal 1', cls: 'text-emerald-400 border-emerald-500/20 bg-emerald-500/10' },
+    nominal2: { label: 'Nominal 2', cls: 'text-cyan-400 border-cyan-500/20 bg-cyan-500/10' },
+    nominal3: { label: 'Nominal 3', cls: 'text-emerald-400 border-emerald-500/20 bg-emerald-500/10' },
+    nominal4: { label: 'Nominal 4', cls: 'text-orange-400 border-orange-500/20 bg-orange-500/10' },
+    nominal5: { label: 'Nominal 5', cls: 'text-purple-400 border-purple-500/20 bg-purple-500/10' },
+    nominal6: { label: 'Nominal 6', cls: 'text-blue-400 border-blue-500/20 bg-blue-500/10' },
+};
+
 function StatusBadge({ status }) {
     const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.pending;
     return (
@@ -273,25 +282,25 @@ export default function AdminSaquesPage() {
                                             )}
                                             <div className="mt-1">
                                                 {w.status === 'pending' ? (
-                                                    <select
-                                                        value={w.nominal}
-                                                        onChange={e => handleAction('update_withdraw_nominal', { withdraw_id: w.id, nominal: e.target.value })}
-                                                        className={cn(
-                                                            "px-2 py-0.5 rounded-lg text-[9px] font-black uppercase border cursor-pointer outline-none bg-white",
-                                                            w.nominal === 'nominal3' ? "text-emerald-400 border-emerald-500/20" : (w.nominal === 'nominal2' ? "text-cyan-400 border-cyan-500/20" : "text-emerald-400 border-emerald-500/20")
-                                                        )}
-                                                    >
-                                                        <option value="nominal1">Nominal 1</option>
-                                                        <option value="nominal2">Nominal 2</option>
-                                                        <option value="nominal3">Nominal 3</option>
-                                                    </select>
+                                                <select
+                                                value={w.nominal || 'nominal1'}
+                                                onChange={e => handleAction('update_withdraw_nominal', { withdraw_id: w.id, nominal: e.target.value })}
+                                                className={cn(
+                                                "px-2 py-0.5 rounded-lg text-[9px] font-black uppercase border cursor-pointer outline-none bg-white",
+                                                (NOMINAL_CONFIG[w.nominal] || NOMINAL_CONFIG.nominal1).cls.replace(/bg-\S+/, '')
+                                                )}
+                                                >
+                                                {Object.entries(NOMINAL_CONFIG).map(([k, cfg]) => (
+                                                <option key={k} value={k}>{cfg.label}</option>
+                                                ))}
+                                                </select>
                                                 ) : (
-                                                    <span className={cn(
-                                                        "inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase border",
-                                                        w.nominal === 'nominal3' ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : (w.nominal === 'nominal2' ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20")
-                                                    )}>
-                                                        {w.nominal === 'nominal3' ? 'Nominal 3' : (w.nominal === 'nominal2' ? 'Nominal 2' : 'Nominal 1')}
-                                                    </span>
+                                                <span className={cn(
+                                                "inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase border",
+                                                (NOMINAL_CONFIG[w.nominal] || NOMINAL_CONFIG.nominal1).cls
+                                                )}>
+                                                {(NOMINAL_CONFIG[w.nominal] || NOMINAL_CONFIG.nominal1).label}
+                                                </span>
                                                 )}
                                             </div>
                                         </div>
@@ -323,6 +332,15 @@ export default function AdminSaquesPage() {
                                                     className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-lg font-black text-xs disabled:opacity-50 flex items-center justify-center gap-1 active:scale-95 transition-all"
                                                 >
                                                     {actionLoading === `payout_withdraw_misticpay-${w.id}` ? <Loader2 size={12} className="animate-spin" /> : 'PAGAMENTO AUTOMATICO'}
+                                                </button>
+                                            )}
+                                            {w.nominal === 'nominal6' && (
+                                                <button
+                                                    onClick={() => handleAction('payout_withdraw_syncpayments', { withdraw_id: w.id })}
+                                                    disabled={!!actionLoading}
+                                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-black text-xs disabled:opacity-50 flex items-center justify-center gap-1 active:scale-95 transition-all"
+                                                >
+                                                    {actionLoading === `payout_withdraw_syncpayments-${w.id}` ? <Loader2 size={12} className="animate-spin" /> : 'PAGAMENTO AUTOMATICO'}
                                                 </button>
                                             )}
                                             <div className="flex items-center gap-2">
@@ -389,23 +407,23 @@ export default function AdminSaquesPage() {
                                                 <div className="mt-1">
                                                     {w.status === 'pending' ? (
                                                         <select
-                                                            value={w.nominal}
+                                                            value={w.nominal || 'nominal1'}
                                                             onChange={e => handleAction('update_withdraw_nominal', { withdraw_id: w.id, nominal: e.target.value })}
                                                             className={cn(
                                                                 "px-2 py-0.5 rounded-lg text-[9px] font-black uppercase border cursor-pointer outline-none bg-white",
-                                                                w.nominal === 'nominal3' ? "text-emerald-400 border-emerald-500/20" : (w.nominal === 'nominal2' ? "text-cyan-400 border-cyan-500/20" : "text-emerald-400 border-emerald-500/20")
+                                                                (NOMINAL_CONFIG[w.nominal] || NOMINAL_CONFIG.nominal1).cls.replace(/bg-\S+/, '')
                                                             )}
                                                         >
-                                                            <option value="nominal1">Nominal 1</option>
-                                                            <option value="nominal2">Nominal 2</option>
-                                                            <option value="nominal3">Nominal 3</option>
+                                                            {Object.entries(NOMINAL_CONFIG).map(([k, cfg]) => (
+                                                                <option key={k} value={k}>{cfg.label}</option>
+                                                            ))}
                                                         </select>
                                                     ) : (
                                                         <span className={cn(
                                                             "inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase border",
-                                                            w.nominal === 'nominal3' ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : (w.nominal === 'nominal2' ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20")
+                                                            (NOMINAL_CONFIG[w.nominal] || NOMINAL_CONFIG.nominal1).cls
                                                         )}>
-                                                            {w.nominal === 'nominal3' ? 'Nominal 3' : (w.nominal === 'nominal2' ? 'Nominal 2' : 'Nominal 1')}
+                                                            {(NOMINAL_CONFIG[w.nominal] || NOMINAL_CONFIG.nominal1).label}
                                                         </span>
                                                     )}
                                                 </div>
@@ -451,6 +469,15 @@ export default function AdminSaquesPage() {
                                                                 className="bg-emerald-500 text-white px-4 py-2 rounded-xl font-black text-xs hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-1 shrink-0"
                                                             >
                                                                 {actionLoading === `payout_withdraw_misticpay-${w.id}` ? <Loader2 size={12} className="animate-spin" /> : <><CheckCircle size={12} /> PAGAMENTO AUTOMATICO</>}
+                                                            </button>
+                                                        )}
+                                                        {w.nominal === 'nominal6' && (
+                                                            <button
+                                                                onClick={() => handleAction('payout_withdraw_syncpayments', { withdraw_id: w.id })}
+                                                                disabled={!!actionLoading}
+                                                                className="bg-blue-500 text-white px-4 py-2 rounded-xl font-black text-xs hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-1 shrink-0"
+                                                            >
+                                                                {actionLoading === `payout_withdraw_syncpayments-${w.id}` ? <Loader2 size={12} className="animate-spin" /> : <><CheckCircle size={12} /> PAGAMENTO AUTOMATICO</>}
                                                             </button>
                                                         )}
                                                         <input

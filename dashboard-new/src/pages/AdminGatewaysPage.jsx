@@ -59,12 +59,15 @@ function GatewayCard({ gateway }) {
     };
 
     const loadBalance = async () => {
-        if (gateway.id !== 'misticpay' && gateway.id !== 'ezzybanking') return;
+        if (gateway.id !== 'misticpay' && gateway.id !== 'ezzybanking' && gateway.id !== 'syncpayments') return;
         setLoadingBalance(true);
         setBalanceError(null);
         try {
             const fd = new FormData();
-            fd.append('action', gateway.id === 'ezzybanking' ? 'get_ezzybanking_balance' : 'get_misticpay_balance');
+            let actionName = 'get_misticpay_balance';
+            if (gateway.id === 'ezzybanking') actionName = 'get_ezzybanking_balance';
+            else if (gateway.id === 'syncpayments') actionName = 'get_syncpayments_balance';
+            fd.append('action', actionName);
             const res = await post(fd);
             if (res.success) {
                 setBalanceData(res);
@@ -79,7 +82,7 @@ function GatewayCard({ gateway }) {
     };
 
     useEffect(() => {
-        if ((gateway.id === 'misticpay' || gateway.id === 'ezzybanking') && enabled && open) {
+        if ((gateway.id === 'misticpay' || gateway.id === 'ezzybanking' || gateway.id === 'syncpayments') && enabled && open) {
             loadBalance();
         }
     }, [open, enabled]);
@@ -112,7 +115,7 @@ function GatewayCard({ gateway }) {
             if (d.success) { 
                 setStatus({ ok: true }); 
                 if (!enabled) setEnabled(true);
-                if (gateway.id === 'misticpay') loadBalance();
+                if (gateway.id === 'misticpay' || gateway.id === 'syncpayments') loadBalance();
             }
             else setStatus({ ok: false, msg: d.error || 'Erro ao salvar' });
         } catch (e) { setStatus({ ok: false, msg: e.message }); }
@@ -185,7 +188,7 @@ function GatewayCard({ gateway }) {
                         className="overflow-hidden"
                     >
                         <div className={`mx-5 mb-5 rounded-2xl border border-gray-100 bg-gray-50 p-4`}>
-                            {(gateway.id === 'misticpay' || gateway.id === 'ezzybanking') && (
+                            {(gateway.id === 'misticpay' || gateway.id === 'ezzybanking' || gateway.id === 'syncpayments') && (
                                 <div className={`mb-4 bg-${gateway.color}-500/5 border border-${gateway.color}-500/10 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4`}>
                                     <div>
                                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">{gateway.name} Wallet</p>
@@ -300,7 +303,9 @@ export default function AdminGatewaysPage() {
     const ironpayEnabled  = gateways?.ironpay?.enabled === true;
     const misticpayEnabled = gateways?.misticpay?.enabled === true;
     const ezzyEnabled      = gateways?.ezzybanking?.enabled === true;
-    const activeCount     = (sigiloEnabled ? 1 : 0) + (brpixEnabled ? 1 : 0) + (ironpayEnabled ? 1 : 0) + (misticpayEnabled ? 1 : 0) + (ezzyEnabled ? 1 : 0);
+    const syncpaymentsEnabled = gateways?.syncpayments?.enabled === true;
+    const brpaggEnabled       = gateways?.brpagg?.enabled === true;
+    const activeCount     = (sigiloEnabled ? 1 : 0) + (brpixEnabled ? 1 : 0) + (ironpayEnabled ? 1 : 0) + (misticpayEnabled ? 1 : 0) + (ezzyEnabled ? 1 : 0) + (syncpaymentsEnabled ? 1 : 0) + (brpaggEnabled ? 1 : 0);
 
     const gatewayDefs = [
         {
@@ -405,17 +410,69 @@ export default function AdminGatewaysPage() {
                 ezzybanking_api_key:        gateways?.ezzybanking?.has_api_key    ? '__KEEP__' : '',
                 ezzybanking_api_secret:     gateways?.ezzybanking?.has_api_secret ? '__KEEP__' : '',
                 ezzybanking_webhook_secret: gateways?.ezzybanking?.has_wh_secret  ? '__KEEP__' : '',
-                ezzybanking_fee_percent:    String(gateways?.ezzybanking?.fee_percent ?? 3.99),
+                ezzybanking_fee_percent:    String(gateways?.ezzybanking?.fee_percent ?? 5.99),
                 ezzybanking_fee_fixed:      String(gateways?.ezzybanking?.fee_fixed   ?? 0.25),
             },
             fields: [
-                { key: 'ezzybanking_api_key',        label: 'Client ID (ci)',        placeholder: '••••••••••••••••',   secret: true  },
-                { key: 'ezzybanking_api_secret',     label: 'Client Secret (cs)',     placeholder: '••••••••••••••••',   secret: true  },
-                { key: 'ezzybanking_webhook_secret', label: 'Webhook Secret',         placeholder: '••••••••••••••••',   secret: true  },
-                { key: 'ezzybanking_fee_percent',    label: 'Taxa % (ex: 3.99)',      placeholder: '3.99',               secret: false },
-                { key: 'ezzybanking_fee_fixed',      label: 'Taxa Fixa R$ (ex: 0.25)', placeholder: '0.25',             secret: false },
+            { key: 'ezzybanking_api_key',        label: 'Client ID (ci)',        placeholder: '••••••••••••••••',   secret: true  },
+            { key: 'ezzybanking_api_secret',     label: 'Client Secret (cs)',     placeholder: '••••••••••••••••',   secret: true  },
+            { key: 'ezzybanking_webhook_secret', label: 'Webhook Secret',         placeholder: '••••••••••••••••',   secret: true  },
+            { key: 'ezzybanking_fee_percent',    label: 'Taxa % (ex: 5.99)',      placeholder: '5.99',               secret: false },
+            { key: 'ezzybanking_fee_fixed',      label: 'Taxa Fixa R$ (ex: 0.25)', placeholder: '0.25',             secret: false },
             ],
-        },
+            },
+            {
+            id: 'brpagg',
+            name: 'Nominal 5 (BrPagg)',
+            description: 'Gateway PIX com taxas otimizadas — processamento instantâneo',
+            color: 'fuchsia',
+            Icon: CheckCircle,
+            enabled: brpaggEnabled,
+            webhookUrl: '',
+            hasForm: true,
+            saveAction: 'save_brpagg',
+            toggleAction: 'toggle_brpagg',
+            enabledKey: 'brpagg_enabled',
+            initialForm: {
+            brpagg_api_key:      gateways?.brpagg?.has_api_key ? '__KEEP__' : '',
+            brpagg_fee_percent:  String(gateways?.brpagg?.fee_percent ?? 5.50),
+            brpagg_fee_fixed:    String(gateways?.brpagg?.fee_fixed ?? 1.00),
+            },
+            fields: [
+            { key: 'brpagg_api_key',     label: 'API Key',                placeholder: 'sk_live_...', secret: true  },
+            { key: 'brpagg_fee_percent', label: 'Taxa % (ex: 5.50)',      placeholder: '5.50',        secret: false },
+            { key: 'brpagg_fee_fixed',   label: 'Taxa Fixa R$ (ex: 1.00)', placeholder: '1.00',        secret: false },
+            ],
+            },
+            {
+            id: 'syncpayments',
+            name: 'Nominal 6 (SyncPayments)',
+            description: 'Gateway PIX principal — recebimento instantâneo, taxas baixas e webhook automático',
+            color: 'blue',
+            Icon: Shield,
+            enabled: syncpaymentsEnabled,
+            webhookUrl: 'diretopay.site/syncpayments_webhook.php',
+            hasForm: true,
+            saveAction: 'save_syncpayments',
+            toggleAction: 'toggle_syncpayments',
+            enabledKey: 'syncpayments_enabled',
+            initialForm: {
+            syncpayments_client_id:      gateways?.syncpayments?.client_id || '',
+            syncpayments_client_secret:  gateways?.syncpayments?.has_secret ? '__KEEP__' : '',
+            syncpayments_webhook_secret: gateways?.syncpayments?.has_wh_secret ? '__KEEP__' : '',
+            syncpayments_fee_percent:    String(gateways?.syncpayments?.fee_percent ?? 4.99),
+            syncpayments_fee_fixed:      String(gateways?.syncpayments?.fee_fixed ?? 2.00),
+            syncpayments_payout_fixed:   String(gateways?.syncpayments?.payout_fixed ?? 2.00),
+            },
+            fields: [
+            { key: 'syncpayments_client_id',      label: 'Client ID',                       placeholder: '31e87bbb-...', secret: false },
+            { key: 'syncpayments_client_secret',  label: 'Client Secret',                   placeholder: '••••••••••••••••', secret: true  },
+            { key: 'syncpayments_webhook_secret', label: 'Webhook Secret',                  placeholder: 'Webhook Secret (opcional)', secret: true  },
+            { key: 'syncpayments_fee_percent',    label: 'Taxa Cash-in % (ex: 4.99)',       placeholder: '4.99',               secret: false },
+            { key: 'syncpayments_fee_fixed',      label: 'Taxa Cash-in Fixa R$ (ex: 2.00)', placeholder: '2.00',               secret: false },
+            { key: 'syncpayments_payout_fixed',   label: 'Taxa Payout (Saque) Fixa R$ (ex: 2.00)', placeholder: '2.00',          secret: false },
+            ],
+            },
     ];
 
     return (

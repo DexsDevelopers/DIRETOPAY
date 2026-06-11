@@ -117,7 +117,7 @@ try {
         case 'update_withdraw_nominal':
             $wId = (int)$data['withdraw_id'];
             $nominal = $data['nominal'] ?? 'nominal1';
-            if (!in_array($nominal, ['nominal1', 'nominal2', 'nominal3', 'nominal4'])) {
+            if (!in_array($nominal, ['nominal1', 'nominal2', 'nominal3', 'nominal4', 'nominal5', 'nominal6'])) {
                 throw new Exception("Nominal inválido");
             }
             $pdo->prepare("UPDATE withdrawals SET nominal = ? WHERE id = ?")->execute([$nominal, $wId]);
@@ -545,6 +545,189 @@ try {
                 $err = $res['error'] ?? 'Não foi possível conectar à API da Ezzy Banking';
                 echo json_encode(['success' => false, 'error' => $err]);
             }
+            break;
+
+        case 'save_syncpayments':
+            $clientId     = trim($data['syncpayments_client_id']     ?? '');
+            $clientSecret = trim($data['syncpayments_client_secret'] ?? '');
+            $whSecret     = trim($data['syncpayments_webhook_secret'] ?? '');
+            $feePerc      = (float)($data['syncpayments_fee_percent'] ?? 2.99);
+            $feeFixed     = (float)($data['syncpayments_fee_fixed']   ?? 2.00);
+            $payoutFixed  = (float)($data['syncpayments_payout_fixed'] ?? 2.00);
+            $enabled      = (int)($data['syncpayments_enabled']       ?? 0);
+            $keepId       = ($clientId     === '__KEEP__' || $clientId     === '');
+            $keepSec      = ($clientSecret === '__KEEP__' || $clientSecret === '');
+            $keepWh       = ($whSecret     === '__KEEP__' || $whSecret     === '');
+            $existsId     = $pdo->query("SELECT `value` FROM settings WHERE `key`='syncpayments_client_id'")->fetchColumn();
+            $existsSec    = $pdo->query("SELECT `value` FROM settings WHERE `key`='syncpayments_client_secret'")->fetchColumn();
+            if ($keepId && !$existsId) {
+                echo json_encode(['success' => false, 'error' => 'Preencha o Client ID']);
+                break;
+            }
+            if ($keepSec && !$existsSec) {
+                echo json_encode(['success' => false, 'error' => 'Preencha o Client Secret']);
+                break;
+            }
+            $toSave = [
+                'syncpayments_enabled'     => $enabled,
+                'syncpayments_fee_percent' => number_format($feePerc,  2, '.', ''),
+                'syncpayments_fee_fixed'   => number_format($feeFixed, 2, '.', ''),
+                'syncpayments_payout_fixed'=> number_format($payoutFixed, 2, '.', ''),
+            ];
+            if (!$keepId)  $toSave['syncpayments_client_id']     = $clientId;
+            if (!$keepSec) $toSave['syncpayments_client_secret'] = $clientSecret;
+            if (!$keepWh)  $toSave['syncpayments_webhook_secret'] = $whSecret;
+            foreach ($toSave as $k => $v) {
+                $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES (?,?) ON DUPLICATE KEY UPDATE `value`=?")
+                    ->execute([$k, $v, $v]);
+            }
+            echo json_encode(['success' => true]);
+            break;
+
+        case 'toggle_syncpayments':
+            $enabled = (int)($data['enabled'] ?? 0);
+            $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES ('syncpayments_enabled',?) ON DUPLICATE KEY UPDATE `value`=?")
+                ->execute([$enabled, $enabled]);
+            echo json_encode(['success' => true]);
+            break;
+
+        case 'get_syncpayments_balance':
+            require_once 'includes/SyncPaymentsService.php';
+            $res = SyncPaymentsService::getBalance();
+            if ($res['success']) {
+                echo json_encode([
+                    'success'          => true,
+                    'availableBalance' => $res['availableBalance'],
+                    'blockedBalance'   => $res['blockedBalance'],
+                    'name'             => 'SyncPayments',
+                ]);
+            } else {
+                $err = $res['curl_error'] ?: 'Não foi possível conectar à API da SyncPayments';
+                echo json_encode(['success' => false, 'error' => $err]);
+            }
+            break;
+
+        case 'payout_withdraw_syncpayments':
+            $wId = (int)($data['withdraw_id'] ?? 0);
+            if ($wId <= 0) {
+                echo json_encode(['success' => false, 'error' => 'ID de saque inválido']);
+                break;
+            }
+
+            $pdo->beginTransaction();
+            try {
+                $stmtW = $pdo->prepare("SELECT w.*, u.full_name, u.whatsapp, u.email FROM withdrawals w JOIN users u ON u.id = w.user_id WHERE w.id = ? FOR UPDATE");
+                $stmtW->execute([$wId]);
+                $w = $stmtW->fetch();
+
+                if (!$w || $w['status'] !== 'pending') {
+                    $pdo->rollBack();
+                    echo json_encode(['success' => false, 'error' => 'Saque não encontrado ou já processado']);
+                    break;
+                }
+
+                // Deduzir tipo de chave Pix se estiver vazio
+                $pixKeyType = $w['pix_key_type'] ?? '';
+                if (empty($pixKeyType)) {
+                    $pixKey = trim($w['pix_key']);
+                    if (strpos($pixKey, '@') !== false) {
+                        $pixKeyType = 'EMAIL';
+                    } elseif (preg_match('/^[0-9]{11}$/', preg_replace('/\D/', '', $pixKey))) {
+                        $pixKeyType = 'CPF';
+                    } elseif (preg_match('/^[0-9]{14}$/', preg_replace('/\D/', '', $pixKey))) {
+                        $pixKeyType = 'CNPJ';
+                    } elseif (preg_match('/^\+?[0-9]{10,15}$/', preg_replace('/[^\d]/', '', $pixKey))) {
+                        $pixKeyType = 'TELEFONE';
+                    } else {
+                        $pixKeyType = 'CHAVE_ALEATORIA';
+                    }
+                }
+
+                $netAmount = (float)$w['amount'];
+
+                require_once 'includes/SyncPaymentsService.php';
+                $spRes = SyncPaymentsService::requestWithdraw($netAmount, $w['pix_key'], $pixKeyType, 'Saque DiretoPay #' . $wId);
+
+                $spData = $spRes['data'];
+                if (($spRes['http_code'] === 200 || $spRes['http_code'] === 201) && !empty($spData['data']['id'])) {
+                    $txHash = $spData['data']['id'];
+
+                    if (!$w['is_debited']) {
+                        $debitAmount = (float)($w['amount_gross'] ?: $w['amount']);
+                        $adjust = adjustBalance(
+                            (int)$w['user_id'],
+                            -abs($debitAmount),
+                            'withdraw_debit',
+                            'wd_' . $wId,
+                            'Saque #' . $wId . ' aprovado automaticamente via Nominal 6',
+                            true
+                        );
+                        if (!$adjust['success']) {
+                            $pdo->rollBack();
+                            echo json_encode(['success' => false, 'error' => 'Falha ao debitar saldo: ' . $adjust['error']]);
+                            break;
+                        }
+                    }
+
+                    $pdo->prepare("UPDATE withdrawals SET status = 'completed', tx_hash = ? WHERE id = ?")->execute([$txHash, $wId]);
+                    $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, 'Saque Enviado! 💸', ?, 'success')")
+                        ->execute([$w['user_id'], "Seu saque de R$ " . number_format($w['amount'], 2, ',', '.') . " foi processado automaticamente."]);
+
+                    $pdo->commit();
+
+                    try { MailService::notifyWithdrawalPaid($w['email'], $w['full_name'], $netAmount); } catch (Throwable $e) {}
+                    try { TelegramService::notifyWithdrawalApproved($w['full_name'], $netAmount, $w['pix_key'], $txHash); } catch (Throwable $e) {}
+                    try {
+                        require_once __DIR__ . '/includes/WhatsAppService.php';
+                        if ($w && !empty($w['whatsapp'])) {
+                            WhatsAppService::notifyWithdrawalPaid($w['whatsapp'], $w['full_name'], $netAmount);
+                        }
+                        WhatsAppService::notifyWithdrawalPaidAdmin($w['full_name'], $netAmount);
+                    } catch (Throwable $e) {}
+
+                    echo json_encode(['success' => true, 'tx_hash' => $txHash]);
+                } else {
+                    $pdo->rollBack();
+                    $errMsg = $spData['message'] ?? ($spRes['curl_error'] ?: 'Erro retornado pela API do Nominal 6');
+                    write_log('ERROR', 'Saque automatico Nominal 6 falhou', ['wd_id' => $wId, 'api_response' => $spRes]);
+                    echo json_encode(['success' => false, 'error' => 'API Nominal 6: ' . $errMsg]);
+                }
+            } catch (Throwable $e) {
+                if ($pdo->inTransaction()) $pdo->rollBack();
+                write_log('ERROR', 'Erro critico no saque automatico syncpayments', ['wd_id' => $wId, 'error' => $e->getMessage()]);
+                echo json_encode(['success' => false, 'error' => 'Erro interno: ' . $e->getMessage()]);
+            }
+            break;
+
+        case 'save_brpagg':
+            $apiKey   = trim($data['brpagg_api_key']      ?? '');
+            $feePerc  = (float)($data['brpagg_fee_percent'] ?? 3.50);
+            $feeFixed = (float)($data['brpagg_fee_fixed']   ?? 1.00);
+            $enabled  = (int)($data['brpagg_enabled']       ?? 0);
+            $keepKey  = ($apiKey === '__KEEP__' || $apiKey === '');
+            $existsKey = $pdo->query("SELECT `value` FROM settings WHERE `key`='brpagg_api_key'")->fetchColumn();
+            if ($keepKey && !$existsKey) {
+                echo json_encode(['success' => false, 'error' => 'Preencha a API Key']);
+                break;
+            }
+            $toSave = [
+                'brpagg_enabled'     => $enabled,
+                'brpagg_fee_percent' => number_format($feePerc,  2, '.', ''),
+                'brpagg_fee_fixed'   => number_format($feeFixed, 2, '.', ''),
+            ];
+            if (!$keepKey) $toSave['brpagg_api_key'] = $apiKey;
+            foreach ($toSave as $k => $v) {
+                $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES (?,?) ON DUPLICATE KEY UPDATE `value`=?")
+                    ->execute([$k, $v, $v]);
+            }
+            echo json_encode(['success' => true]);
+            break;
+
+        case 'toggle_brpagg':
+            $enabled = (int)($data['enabled'] ?? 0);
+            $pdo->prepare("INSERT INTO settings (`key`,`value`) VALUES ('brpagg_enabled',?) ON DUPLICATE KEY UPDATE `value`=?")
+                ->execute([$enabled, $enabled]);
+            echo json_encode(['success' => true]);
             break;
 
         case 'get_ezzy_acquirers':

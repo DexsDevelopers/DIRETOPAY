@@ -242,6 +242,34 @@ try {
         $pdo->exec("ALTER TABLE users ADD COLUMN ezzy_acquirer VARCHAR(100) NULL DEFAULT NULL");
     } catch (PDOException $e) {}
 
+    // Auto-Migração: Controle de rodízio de nominal
+    try {
+        $pdo->exec("ALTER TABLE users ADD COLUMN round_robin_enabled TINYINT(1) DEFAULT 0");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: Nominal da transação
+    try {
+        $pdo->exec("ALTER TABLE transactions ADD COLUMN nominal VARCHAR(20) DEFAULT NULL");
+    } catch (PDOException $e) {}
+
+    // Auto-Migração: Configurações do SyncPayments (Nominal 6) e Rodízio
+    try {
+        $pdo->exec("INSERT IGNORE INTO settings (`key`, `value`) VALUES ('syncpayments_enabled', '1')");
+        $pdo->exec("INSERT IGNORE INTO settings (`key`, `value`) VALUES ('syncpayments_client_id', '31e87bbb-7aff-47cf-8537-9de170825ac9')");
+        $pdo->exec("INSERT IGNORE INTO settings (`key`, `value`) VALUES ('syncpayments_client_secret', 'f41b988d-f79d-44f9-8c5d-d4ae1df423fc')");
+        $pdo->exec("INSERT IGNORE INTO settings (`key`, `value`) VALUES ('syncpayments_webhook_secret', '')");
+        $pdo->exec("INSERT IGNORE INTO settings (`key`, `value`) VALUES ('syncpayments_fee_percent', '4.99')");
+        $pdo->exec("INSERT IGNORE INTO settings (`key`, `value`) VALUES ('syncpayments_fee_fixed', '2.00')");
+        $pdo->exec("INSERT IGNORE INTO settings (`key`, `value`) VALUES ('syncpayments_payout_fixed', '2.00')");
+        $pdo->exec("INSERT IGNORE INTO settings (`key`, `value`) VALUES ('round_robin_enabled', '0')");
+        $pdo->exec("INSERT IGNORE INTO settings (`key`, `value`) VALUES ('round_robin_index', '0')");
+        
+        // Forçar atualização das taxas de todos os nominais (+2%) no banco
+        $pdo->exec("INSERT INTO settings (`key`, `value`) VALUES ('syncpayments_fee_percent', '4.99') ON DUPLICATE KEY UPDATE `value` = '4.99'");
+        $pdo->exec("INSERT INTO settings (`key`, `value`) VALUES ('brpagg_fee_percent', '5.50') ON DUPLICATE KEY UPDATE `value` = '5.50'");
+        $pdo->exec("INSERT INTO settings (`key`, `value`) VALUES ('ezzybanking_fee_percent', '5.99') ON DUPLICATE KEY UPDATE `value` = '5.99'");
+    } catch (PDOException $e) {}
+
     // Auto-Migração: Coluna affiliate_id (quem indicou o usuário)
     try {
         $pdo->exec("ALTER TABLE users ADD COLUMN affiliate_id INT NULL DEFAULT NULL");

@@ -267,8 +267,13 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                 <motion.div 
                                     initial={{ opacity: 0, y: 10 }} 
                                     animate={{ opacity: 1, y: 0 }}
-                                    onClick={handleSwitchNominal}
-                                    className="bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-2 border-amber-500/30 hover:border-amber-500/50 rounded-2xl p-5 cursor-pointer hover:bg-amber-500/[0.06] dark:hover:bg-amber-500/[0.12] transition-all select-none group relative overflow-hidden shadow-sm"
+                                    onClick={userData?.round_robin_enabled ? undefined : handleSwitchNominal}
+                                    className={cn(
+                                        "border-2 rounded-2xl p-5 select-none relative overflow-hidden transition-all shadow-sm group",
+                                        userData?.round_robin_enabled
+                                            ? "bg-gray-100/30 dark:bg-white/[0.02] border-gray-200 dark:border-white/5 opacity-60 cursor-not-allowed pointer-events-none"
+                                            : "bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-amber-500/30 hover:border-amber-500/50 cursor-pointer hover:bg-amber-500/[0.06] dark:hover:bg-amber-500/[0.12]"
+                                    )}
                                 >
                                     <div className="flex gap-4 items-start">
                                         <div className="p-3 bg-amber-500/10 dark:bg-amber-500/20 rounded-xl text-amber-500 shrink-0 group-hover:scale-105 transition-transform">
@@ -279,7 +284,9 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                                 Deu aviso de golpe no PIX?
                                             </h4>
                                             <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed mt-1.5 font-medium">
-                                                Se o banco do cliente exibiu um alerta ao pagar, clique aqui para trocar de rota nominal automaticamente e resolver na hora.
+                                                {userData?.round_robin_enabled
+                                                    ? "O rodízio automático está ativo e gerencia a alternância de nominais dinamicamente."
+                                                    : "Se o banco do cliente exibiu um alerta ao pagar, clique aqui para trocar de rota nominal automaticamente e resolver na hora."}
                                             </p>
                                             
                                             <div className="flex flex-col gap-3 mt-3">
@@ -288,15 +295,23 @@ export default function PixPage({ handleManualPix, activePix, setActivePix, bala
                                                         <Check size={14} className="stroke-[3]" /> {switchSuccess}
                                                     </div>
                                                 )}
-                                                <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-extrabold transition-colors shadow-sm self-start group-hover:scale-[1.02] active:scale-[0.98]">
-                                                    {switchSuccess ? 'Alternar Rota Novamente' : 'Alternar Rota Automaticamente'} <ChevronRight size={14} className="stroke-[3]" />
-                                                </div>
+                                                {userData?.round_robin_enabled ? (
+                                                    <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-gray-200 dark:bg-white/5 text-gray-400 dark:text-gray-500 rounded-lg text-xs font-bold self-start">
+                                                        Alternação bloqueada (Rodízio Ativo)
+                                                    </div>
+                                                ) : (
+                                                    <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-extrabold transition-colors shadow-sm self-start group-hover:scale-[1.02] active:scale-[0.98]">
+                                                        {switchSuccess ? 'Alternar Rota Novamente' : 'Alternar Rota Automaticamente'} <ChevronRight size={14} className="stroke-[3]" />
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
                                     <div className="absolute top-4 right-4 shrink-0">
                                         <span className="text-[10px] font-black text-amber-800 dark:text-amber-200 uppercase tracking-wider bg-amber-500/15 dark:bg-amber-500/25 px-2.5 py-1 rounded-lg border border-amber-500/20">
-                                            Ativo: {userData?.preferred_nominal === 'nominal3' ? 'Nominal 3' : (userData?.preferred_nominal === 'nominal2' ? 'Nominal 2' : 'Nominal 1')}
+                                            {userData?.round_robin_enabled
+                                                ? "Fila Ativa"
+                                                : `Ativo: ${userData?.preferred_nominal === 'nominal6' ? 'Nominal 6' : (userData?.preferred_nominal === 'nominal5' ? 'Nominal 5' : (userData?.preferred_nominal === 'nominal4' ? 'Nominal 4' : (userData?.preferred_nominal === 'nominal3' ? 'Nominal 3' : (userData?.preferred_nominal === 'nominal2' ? 'Nominal 2' : 'Nominal 1'))))}`}
                                         </span>
                                     </div>
                                 </motion.div>

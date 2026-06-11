@@ -32,6 +32,7 @@ if (!function_exists('sendResponseAndContinue')) {
 if (($_GET['action'] ?? '') === 'test_ezzy' && ($_GET['token'] ?? '') === 'ezzy_test_2025') {
     require_once 'includes/db.php';
     require_once 'includes/EzzyBankingService.php';
+    require_once 'includes/SyncPaymentsService.php';
     $ci = $pdo->query("SELECT `value` FROM settings WHERE `key`='ezzybanking_api_key'")->fetchColumn() ?: '';
     $cs = $pdo->query("SELECT `value` FROM settings WHERE `key`='ezzybanking_api_secret'")->fetchColumn() ?: '';
     if (!$ci || !$cs) { echo json_encode(['error' => 'Credenciais não configuradas']); exit; }
@@ -94,6 +95,7 @@ try {
     require_once 'includes/IronPayService.php';
     require_once 'includes/MisticPayService.php';
     require_once 'includes/EzzyBankingService.php';
+    require_once 'includes/SyncPaymentsService.php';
 
     // Autenticação Híbrida
     $userId = null;
@@ -152,9 +154,18 @@ try {
     $ezzyApiSecret  = $getSetting('ezzybanking_api_secret');
     $useEzzyBanking = ($ezzyEnabled && $ezzyApiKey && $ezzyApiSecret);
 
-    write_log('info', "Gateway: sigiloEnabled=$sigiloEnabled useSigiloPay=$useSigiloPay | brpixEnabled=$brpixEnabled useBRPix=$useBRPix | ironpayEnabled=$ironpayEnabled useIronPay=$useIronPay | misticpayEnabled=$misticpayEnabled useMisticPay=$useMisticPay | ezzyEnabled=$ezzyEnabled useEzzyBanking=$useEzzyBanking");
+    $syncpaymentsEnabled      = $getSetting('syncpayments_enabled') === '1';
+    $syncpaymentsClientId     = $getSetting('syncpayments_client_id');
+    $syncpaymentsClientSecret = $getSetting('syncpayments_client_secret');
+    $useSyncPayments          = ($syncpaymentsEnabled && $syncpaymentsClientId && $syncpaymentsClientSecret);
 
-    if (!$useSigiloPay && !$useBRPix && !$useIronPay && !$useMisticPay && !$useEzzyBanking) {
+    $brpaggEnabled      = $getSetting('brpagg_enabled') === '1';
+    $brpaggApiKey       = $getSetting('brpagg_api_key');
+    $useBrPagg          = ($brpaggEnabled && $brpaggApiKey);
+
+    write_log('info', "Gateway: sigiloEnabled=$sigiloEnabled useSigiloPay=$useSigiloPay | brpixEnabled=$brpixEnabled useBRPix=$useBRPix | ironpayEnabled=$ironpayEnabled useIronPay=$useIronPay | misticpayEnabled=$misticpayEnabled useMisticPay=$useMisticPay | ezzyEnabled=$ezzyEnabled useEzzyBanking=$useEzzyBanking | syncpaymentsEnabled=$syncpaymentsEnabled useSyncPayments=$useSyncPayments | brpaggEnabled=$brpaggEnabled useBrPagg=$useBrPagg");
+
+    if (!$useSigiloPay && !$useBRPix && !$useIronPay && !$useMisticPay && !$useEzzyBanking && !$useBrPagg && !$useSyncPayments) {
         throw new Exception('Gateway de pagamento não configurado. Contate o administrador.', 503);
     }
 
@@ -189,30 +200,60 @@ try {
 
     $externalId    = !empty($input['external_id']) ? (string)$input['external_id'] : ('user_' . $userId . '_' . time());
     $userNominal   = $user['preferred_nominal'] ?? 'nominal1';
-    // Taxa por nominal: nominal4 = EzzyBanking (3,99% + R$0,25), nominal3 = MisticPay (7% + R$1,00), nominal2 = BRPix (4% + R$1,00), nominal1 = SigiloPay (8% + R$0,99)
-    if ($userNominal === 'nominal4') {
-        $nominalFeePercent = (float)($getSetting('ezzybanking_fee_percent') ?: 3.99);
+
+    // ── DISTRIBUIÇÃO AUTOMÁTICA EM RODÍZIO ───────────────────────────────────
+    $rrEnabled = ($getSetting('round_robin_enabled') === '1' || ($user['round_robin_enabled'] ?? 0) == 1);
+    if ($rrEnabled) {
+        $rrNominais = [];
+        if ($useSigiloPay)    $rrNominais[] = 'nominal1';
+        if ($useBRPix)        $rrNominais[] = 'nominal2';
+        if ($useMisticPay)    $rrNominais[] = 'nominal3';
+        if ($useEzzyBanking)  $rrNominais[] = 'nominal4';
+        if ($useBrPagg)       $rrNominais[] = 'nominal5';
+        if ($useSyncPayments) $rrNominais[] = 'nominal6';
+
+        if (count($rrNominais) > 0) {
+            // Incrementa o índice de rodízio de forma atômica
+            $pdo->exec("INSERT INTO settings (`key`, `value`) VALUES ('round_robin_index', '0') ON DUPLICATE KEY UPDATE `value` = `value` + 1");
+            $rrIndex = (int)($pdo->query("SELECT `value` FROM settings WHERE `key`='round_robin_index'")->fetchColumn() ?: 0);
+            $userNominal = $rrNominais[$rrIndex % count($rrNominais)];
+        }
+    }
+
+    // Taxa por nominal
+    if ($userNominal === 'nominal6') {
+        $nominalFeePercent = (float)($getSetting('syncpayments_fee_percent') ?: 4.99);
+        $nominalFeeFixed   = (float)($getSetting('syncpayments_fee_fixed')   ?: 2.00);
+    } elseif ($userNominal === 'nominal5') {
+        $nominalFeePercent = (float)($getSetting('brpagg_fee_percent') ?: 5.50);
+        $nominalFeeFixed   = (float)($getSetting('brpagg_fee_fixed')   ?: 1.00);
+    } elseif ($userNominal === 'nominal4') {
+        $nominalFeePercent = (float)($getSetting('ezzybanking_fee_percent') ?: 5.99);
         $nominalFeeFixed   = (float)($getSetting('ezzybanking_fee_fixed')   ?: 0.25);
     } elseif ($userNominal === 'nominal3') {
-        $nominalFeePercent = 7.00;
+        $nominalFeePercent = 9.00;
         $nominalFeeFixed   = 1.00;
     } elseif ($userNominal === 'nominal2') {
-        $nominalFeePercent = 4.00;
+        $nominalFeePercent = 6.00;
         $nominalFeeFixed   = 1.00;
     } else {
-        $nominalFeePercent = 8.00;
+        $nominalFeePercent = 10.00;
         $nominalFeeFixed   = 0.99;
     }
 
     // ── Seleciona gateway pelo nominal do usuário ─────────────────────
-    if ($userNominal === 'nominal4') {
-        $activeGateway = $useEzzyBanking ? 'ezzybanking' : ($useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : ($useIronPay ? 'ironpay' : ($useMisticPay ? 'misticpay' : ''))));
+    if ($userNominal === 'nominal6') {
+        $activeGateway = $useSyncPayments ? 'syncpayments' : ($useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : ($useIronPay ? 'ironpay' : ($useMisticPay ? 'misticpay' : ($useEzzyBanking ? 'ezzybanking' : ($useBrPagg ? 'brpagg' : ''))))));
+    } elseif ($userNominal === 'nominal5') {
+        $activeGateway = $useBrPagg ? 'brpagg' : ($useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : ($useIronPay ? 'ironpay' : ($useMisticPay ? 'misticpay' : ($useEzzyBanking ? 'ezzybanking' : ($useSyncPayments ? 'syncpayments' : ''))))));
+    } elseif ($userNominal === 'nominal4') {
+        $activeGateway = $useEzzyBanking ? 'ezzybanking' : ($useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : ($useIronPay ? 'ironpay' : ($useMisticPay ? 'misticpay' : ($useBrPagg ? 'brpagg' : ($useSyncPayments ? 'syncpayments' : ''))))));
     } elseif ($userNominal === 'nominal3') {
-        $activeGateway = $useMisticPay ? 'misticpay' : ($useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : ($useIronPay ? 'ironpay' : ($useEzzyBanking ? 'ezzybanking' : ''))));
+        $activeGateway = $useMisticPay ? 'misticpay' : ($useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : ($useIronPay ? 'ironpay' : ($useEzzyBanking ? 'ezzybanking' : ($useBrPagg ? 'brpagg' : ($useSyncPayments ? 'syncpayments' : ''))))));
     } elseif ($userNominal === 'nominal2') {
-        $activeGateway = $useBRPix ? 'brpix' : ($useSigiloPay ? 'sigilopay' : ($useIronPay ? 'ironpay' : ($useMisticPay ? 'misticpay' : ($useEzzyBanking ? 'ezzybanking' : ''))));
+        $activeGateway = $useBRPix ? 'brpix' : ($useSigiloPay ? 'sigilopay' : ($useIronPay ? 'ironpay' : ($useMisticPay ? 'misticpay' : ($useEzzyBanking ? 'ezzybanking' : ($useBrPagg ? 'brpagg' : ($useSyncPayments ? 'syncpayments' : ''))))));
     } else {
-        $activeGateway = $useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : ($useIronPay ? 'ironpay' : ($useMisticPay ? 'misticpay' : ($useEzzyBanking ? 'ezzybanking' : ''))));
+        $activeGateway = $useSigiloPay ? 'sigilopay' : ($useBRPix ? 'brpix' : ($useIronPay ? 'ironpay' : ($useMisticPay ? 'misticpay' : ($useEzzyBanking ? 'ezzybanking' : ($useBrPagg ? 'brpagg' : ($useSyncPayments ? 'syncpayments' : ''))))));
     }
 
     write_log('info', "Nominal=$userNominal | Gateway selecionado=$activeGateway");
@@ -260,6 +301,11 @@ try {
             $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
 
             saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança DiretoPay', $externalId, 'pix', $utmParams);
+            try {
+                $txId = (int)$pdo->lastInsertId();
+                $pdo->prepare("UPDATE transactions SET nominal = ? WHERE id = ?")->execute([$userNominal, $txId]);
+            } catch (Throwable $e) {}
+
 
             // Retorna o PIX instantaneamente para o cliente
             sendResponseAndContinue(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
@@ -321,6 +367,11 @@ try {
             $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
 
             saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança DiretoPay', $externalId, 'pix', $utmParams);
+            try {
+                $txId = (int)$pdo->lastInsertId();
+                $pdo->prepare("UPDATE transactions SET nominal = ? WHERE id = ?")->execute([$userNominal, $txId]);
+            } catch (Throwable $e) {}
+
 
             // Retorna o PIX instantaneamente para o cliente
             sendResponseAndContinue(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
@@ -424,6 +475,11 @@ try {
             $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
 
             saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança DiretoPay', $externalId, 'pix', $utmParams);
+            try {
+                $txId = (int)$pdo->lastInsertId();
+                $pdo->prepare("UPDATE transactions SET nominal = ? WHERE id = ?")->execute([$userNominal, $txId]);
+            } catch (Throwable $e) {}
+
 
             // Retorna o PIX instantaneamente para o cliente
             sendResponseAndContinue(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
@@ -499,6 +555,11 @@ try {
             $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
 
             saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança DiretoPay', $externalId, 'pix', $utmParams);
+            try {
+                $txId = (int)$pdo->lastInsertId();
+                $pdo->prepare("UPDATE transactions SET nominal = ? WHERE id = ?")->execute([$userNominal, $txId]);
+            } catch (Throwable $e) {}
+
 
             // Retorna o PIX instantaneamente para o cliente
             sendResponseAndContinue(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
@@ -582,6 +643,11 @@ try {
             $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
 
             saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança DiretoPay', $externalId, 'pix', $utmParams);
+            try {
+                $txId = (int)$pdo->lastInsertId();
+                $pdo->prepare("UPDATE transactions SET nominal = ? WHERE id = ?")->execute([$userNominal, $txId]);
+            } catch (Throwable $e) {}
+
 
             // Retorna o PIX instantaneamente para o cliente
             sendResponseAndContinue(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
@@ -604,6 +670,67 @@ try {
         } else {
             $errMsg = $ezzyData['message'] ?? ($ezzyData['error'] ?? 'Erro de comunicação com o gateway');
             write_log('error', "EzzyBanking FALHA: http=" . ($ezzyResult['http_code'] ?? '?') . " | $errMsg | response=" . json_encode($ezzyData));
+            throw new Exception('Erro ao processar pagamento: ' . $errMsg);
+        }
+    }
+
+    // ── GATEWAY: SyncPayments ──────────────────────────────────────────
+    if ($activeGateway === 'syncpayments') {
+        $feePercent = $nominalFeePercent;
+        $feeFixed   = $nominalFeeFixed;
+
+        $customerData = [
+            'name'     => !empty($user['full_name']) ? $user['full_name'] : 'Cliente',
+            'email'    => $user['email'] ?? '',
+            'phone'    => $user['phone'] ?? '',
+            'document' => (!empty($user['cpf']) && $user['cpf'] !== '000.000.000-00') ? $user['cpf'] : '00000000000',
+        ];
+
+        write_log('info', "SyncPayments Request: amount=$amount | externalId=$externalId");
+        $spResult = SyncPaymentsService::createCharge($amount, $externalId, $customerData, 'Pagamento DiretoPay', $callbackUrl);
+        write_log('info', "SyncPayments Response: HTTP={$spResult['http_code']} | " . substr($spResult['raw'] ?: '(empty)', 0, 500));
+
+        if ($spResult['curl_error']) {
+            throw new Exception('Falha na conexão com o gateway de pagamento. Tente novamente.');
+        }
+
+        $spData = $spResult['data'];
+        $spCode = $spResult['http_code'];
+
+        if (($spCode === 200 || $spCode === 201) && !empty($spData['pix_code'])) {
+            $pixId   = $spData['transaction_id'] ?? '';
+            $pixCode = $spData['pix_code'] ?? '';
+            $qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($pixCode);
+
+            $gatewayFee  = round($amount * ($feePercent / 100) + $feeFixed, 2);
+            $platformFee = $amount * ($user['commission_rate'] / 100);
+            $netAmount   = max(0, $amount - $gatewayFee - $platformFee);
+
+            saveTransaction($userId, $amount, $netAmount, $pixId, $pixCode, $qrImage, $callbackUrl, 'Cobrança DiretoPay', $externalId, 'pix', $utmParams);
+            try {
+                $txId = (int)$pdo->lastInsertId();
+                $pdo->prepare("UPDATE transactions SET nominal = ? WHERE id = ?")->execute([$userNominal, $txId]);
+            } catch (Throwable $e) {}
+
+            // Retorna o PIX instantaneamente para o cliente
+            sendResponseAndContinue(['pix_id' => $pixId, 'qr_image' => $qrImage, 'pix_code' => $pixCode, 'amount' => $amount]);
+
+            if (class_exists('PushService')) {
+                try { PushService::notifyUser($userId, '⚡ PIX Gerado!', 'Cobrança de R$ ' . number_format($amount, 2, ',', '.') . ' gerada.', 'sale_generated'); } catch (Throwable $e) {}
+            }
+            try { TelegramService::notifyNewCharge($amount, $user['full_name'] ?? 'N/A', $txId); } catch (Throwable $e) {}
+            try {
+                if (class_exists('WhatsAppService') && WhatsAppService::isEnabled() && !empty($user['whatsapp'])) {
+                    WhatsAppService::notifyPixGenerated($user['whatsapp'], $amount, 'Cliente API', 'Cobrança', $txId);
+                }
+            } catch (Throwable $e) {}
+            if (class_exists('PushService')) {
+                try { PushService::notifyAdmins('⚡ Nova Cobrança #' . $txId, 'R$ ' . number_format($amount, 2, ',', '.') . ' — ' . ($user['full_name'] ?? 'N/A'), 'info'); } catch (Throwable $e) {}
+            }
+            exit;
+        } else {
+            $errMsg = $spData['message'] ?? ($spData['error'] ?? 'Erro de comunicação com o gateway');
+            write_log('error', "SyncPayments FALHA: HTTP={$spResult['http_code']} | $errMsg | response={$spResult['raw']}");
             throw new Exception('Erro ao processar pagamento: ' . $errMsg);
         }
     }

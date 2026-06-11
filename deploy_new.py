@@ -1,4 +1,4 @@
-﻿import paramiko
+import paramiko
 import os
 import re
 
@@ -120,7 +120,9 @@ php_files = [
     'api.php',
     'get_dashboard_data.php',
     'save_nominal.php',
+    'save_round_robin.php',
     'misticpay_webhook.php',
+    'syncpayments_webhook.php',
     'webhook.php',
     'sigilopay_webhook.php',
     'check_checkout_status.php',
@@ -160,7 +162,8 @@ includes_files = [
     'TelegramService.php',
     'WhatsAppService.php',
     'db.php',
-    'MisticPayService.php'
+    'MisticPayService.php',
+    'SyncPaymentsService.php'
 ]
 
 print("Enviando arquivos de inclusão...")

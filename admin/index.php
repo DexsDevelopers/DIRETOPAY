@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['update_preferred_nominal'])) {
         $userId = (int)$_POST['user_id'];
         $nominal = $_POST['preferred_nominal'] ?? 'nominal1';
-        if (in_array($nominal, ['nominal1', 'nominal2', 'nominal3', 'nominal4'])) {
+        if (in_array($nominal, ['nominal1', 'nominal2', 'nominal3', 'nominal4', 'nominal5', 'nominal6'])) {
             $stmt = $pdo->prepare("UPDATE users SET preferred_nominal = ? WHERE id = ?");
             $stmt->execute([$nominal, $userId]);
         }
@@ -148,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['update_withdraw_nominal'])) {
         $wId = (int)$_POST['withdraw_id'];
         $nominal = $_POST['nominal'] ?? 'nominal1';
-        if (in_array($nominal, ['nominal1', 'nominal2', 'nominal3', 'nominal4'])) {
+        if (in_array($nominal, ['nominal1', 'nominal2', 'nominal3', 'nominal4', 'nominal5', 'nominal6'])) {
             $stmt = $pdo->prepare("UPDATE withdrawals SET nominal = ? WHERE id = ?");
             $stmt->execute([$nominal, $wId]);
         }
@@ -933,6 +933,8 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                                             <option value="nominal2" <?php echo $u['preferred_nominal'] === 'nominal2' ? 'selected' : ''; ?>>Nominal 2</option>
                                             <option value="nominal3" <?php echo $u['preferred_nominal'] === 'nominal3' ? 'selected' : ''; ?>>Nominal 3</option>
                                             <option value="nominal4" <?php echo $u['preferred_nominal'] === 'nominal4' ? 'selected' : ''; ?>>Nominal 4</option>
+                                            <option value="nominal5" <?php echo $u['preferred_nominal'] === 'nominal5' ? 'selected' : ''; ?>>Nominal 5</option>
+                                            <option value="nominal6" <?php echo $u['preferred_nominal'] === 'nominal6' ? 'selected' : ''; ?>>Nominal 6</option>
                                         </select>
                                         <input type="hidden" name="update_preferred_nominal" value="1">
                                     </form>
@@ -1024,12 +1026,27 @@ $totalProfit = $stmtProfit->fetchColumn() ?: 0;
                                             $bgStyle = 'rgba(16, 185, 129, 0.15)';
                                             $colorStyle = '#10b981';
                                             $borderStyle = 'rgba(16, 185, 129, 0.25)';
+                                        } elseif ($w['nominal_display'] === 'nominal4') {
+                                            $bgStyle = 'rgba(249, 115, 22, 0.15)';
+                                            $colorStyle = '#f97316';
+                                            $borderStyle = 'rgba(249, 115, 22, 0.25)';
+                                        } elseif ($w['nominal_display'] === 'nominal5') {
+                                            $bgStyle = 'rgba(168, 85, 247, 0.15)';
+                                            $colorStyle = '#a855f7';
+                                            $borderStyle = 'rgba(168, 85, 247, 0.25)';
+                                        } elseif ($w['nominal_display'] === 'nominal6') {
+                                            $bgStyle = 'rgba(59, 130, 246, 0.15)';
+                                            $colorStyle = '#3b82f6';
+                                            $borderStyle = 'rgba(59, 130, 246, 0.25)';
                                         }
                                         ?>
                                         <select name="nominal" onchange="this.form.submit()" style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; background: <?php echo $bgStyle; ?>; color: <?php echo $colorStyle; ?>; border: 1px solid <?php echo $borderStyle; ?>; text-transform: uppercase; cursor: pointer; outline: none;">
                                             <option value="nominal1" <?php echo $w['nominal_display'] === 'nominal1' ? 'selected' : ''; ?> style="background:#000; color:#fff;">Nominal 1</option>
                                             <option value="nominal2" <?php echo $w['nominal_display'] === 'nominal2' ? 'selected' : ''; ?> style="background:#000; color:#fff;">Nominal 2</option>
                                             <option value="nominal3" <?php echo $w['nominal_display'] === 'nominal3' ? 'selected' : ''; ?> style="background:#000; color:#fff;">Nominal 3</option>
+                                            <option value="nominal4" <?php echo $w['nominal_display'] === 'nominal4' ? 'selected' : ''; ?> style="background:#000; color:#fff;">Nominal 4</option>
+                                            <option value="nominal5" <?php echo $w['nominal_display'] === 'nominal5' ? 'selected' : ''; ?> style="background:#000; color:#fff;">Nominal 5</option>
+                                            <option value="nominal6" <?php echo $w['nominal_display'] === 'nominal6' ? 'selected' : ''; ?> style="background:#000; color:#fff;">Nominal 6</option>
                                         </select>
                                         <input type="hidden" name="update_withdraw_nominal" value="1">
                                     </form>
