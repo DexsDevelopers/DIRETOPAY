@@ -128,8 +128,57 @@ const FAQ_DATA = [
   },
 ];
 
+const MILESTONE_PLATES = [
+  {
+    id: "10k",
+    amount: "10K",
+    title: "Ao você faturar",
+    badge: "10k",
+    desc: "Primeira prova de que o jogo é real. Você saiu do zero.",
+    subdesc: "Ao faturar R$ 10.000 na DiretoPay, você garante a nossa primeira placa física exclusiva para marcar o início da sua jornada.",
+    image: "/assets/placa-10k-D-keX8kW.webp"
+  },
+  {
+    id: "100k",
+    amount: "100K",
+    title: "Ao você faturar",
+    badge: "100k",
+    desc: "A consistência gera escala. Você provou que seu método funciona.",
+    subdesc: "O marco dos seis dígitos faturados. Uma placa de metal premium para consolidar o crescimento do seu negócio.",
+    image: "/assets/placa-100k-L8htTMxu.webp"
+  },
+  {
+    id: "250k",
+    amount: "250K",
+    title: "Ao você faturar",
+    badge: "250k",
+    desc: "O caminho da consolidação. Seu negócio atinge o profissionalismo.",
+    subdesc: "Bater R$ 250.000 faturados te coloca em um patamar de alto nível. Receba a placa de acrílico premium na sua casa.",
+    image: "/assets/placa-250k-p9cuG3oH.webp"
+  },
+  {
+    id: "500k",
+    amount: "500K",
+    title: "Ao você faturar",
+    badge: "500k",
+    desc: "Meio caminho para o milhão. Um feito para quem joga grande.",
+    subdesc: "Meio milhão de reais faturados na DiretoPay. Você garante nossa placa de luxo exclusiva e mentoria direta com os fundadores.",
+    image: "/assets/placa-500k-Dywjx6p8.webp"
+  },
+  {
+    id: "1m",
+    amount: "1M",
+    title: "Ao você faturar",
+    badge: "1M",
+    desc: "O topo absoluto. O clube dos sete dígitos é o seu lugar.",
+    subdesc: "Um milhão de reais faturados! O troféu Black definitivo para eternizar sua conquista no topo do mercado digital.",
+    image: "/assets/placa-1milhao-D7KkbHhg.webp"
+  }
+];
+
 export default function LandingPage() {
   const { isDark, toggleTheme } = useTheme();
+  const [activePlate, setActivePlate] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [tickerIdx, setTickerIdx] = useState(0);
@@ -1266,6 +1315,143 @@ export default function LandingPage() {
             </div>
           </Reveal>
 
+        </div>
+      </section>
+
+      {/* ── SECTION: AWARDS / RECOMPENSAS CAROUSEL ── */}
+      <section className={`relative z-10 py-24 px-5 border-t border-slate-200/60 dark:border-white/[0.06] overflow-hidden ${isDark ? 'bg-[#0d0d14]' : 'bg-[#faf9ff]'}`}>
+        {/* decorative glows */}
+        <div className={`absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none ${isDark ? 'bg-emerald-500/5' : 'bg-emerald-500/10'}`} />
+        <div className={`absolute bottom-0 right-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none ${isDark ? 'bg-emerald-700/8' : 'bg-emerald-500/10'}`} />
+        
+        <div className="max-w-5xl mx-auto relative z-10">
+          <div className="text-center max-w-3xl mx-auto mb-16 flex flex-col items-center">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-sm font-black mb-6">
+              <Trophy size={16} /> Programa de Recompensas
+            </motion.div>
+            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
+              className={`text-[32px] sm:text-[48px] font-black tracking-[-0.03em] leading-[1.0] mb-4 ${isDark ? 'text-white' : 'text-slate-900'}`}>A DiretoPay vibra a cada meta batida!</motion.h2>
+            <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
+              className="text-slate-500 dark:text-slate-400 text-[15px] sm:text-[16px] max-w-xl">Reconhecemos sua performance com prêmios exclusivos. Cada marco é uma conquista celebrada.</motion.p>
+          </div>
+
+          {/* Interactive Plate Carousel Block */}
+          <div className={`grid lg:grid-cols-2 gap-12 items-center p-8 sm:p-12 rounded-[40px] border ${isDark ? 'bg-[#13131c]/60 border-white/5' : 'bg-white border-slate-200'} shadow-2xl relative`}>
+            {/* Lado Esquerdo - Informacoes */}
+            <div className="space-y-8 flex flex-col justify-center">
+              <div>
+                <span className="text-xs font-black text-gray-400 uppercase tracking-widest">
+                  {MILESTONE_PLATES[activePlate].title}
+                </span>
+                
+                <div className="mt-3 flex items-center gap-3">
+                  <motion.div 
+                    key={activePlate}
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className={`px-6 py-2 text-3xl sm:text-4xl font-[1000] rounded-2xl w-fit tracking-tight border ${
+                      isDark 
+                        ? 'bg-emerald-950/30 text-[#1ea465] border-emerald-500/30 shadow-[0_0_20px_rgba(30,164,101,0.15)]'
+                        : 'bg-emerald-50 text-[#1ea465] border-emerald-200'
+                    }`}
+                  >
+                    {MILESTONE_PLATES[activePlate].amount}
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Card com o premio */}
+              <motion.div
+                key={`perk-${activePlate}`}
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                className={`p-6 rounded-3xl border flex gap-4 ${
+                  isDark ? 'bg-white/[0.02] border-white/5' : 'bg-slate-50 border-slate-200'
+                }`}
+              >
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${
+                  isDark ? 'bg-[#1ea465]/10 text-[#1ea465]' : 'bg-emerald-500/10 text-[#1ea465]'
+                }`}>
+                  <Trophy size={20} className="fill-current" />
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Você recebe</span>
+                  <p className={`text-sm sm:text-base font-black leading-snug ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {MILESTONE_PLATES[activePlate].desc}
+                  </p>
+                  <p className="text-xs text-slate-550 dark:text-slate-400 leading-normal mt-2 font-medium">
+                    {MILESTONE_PLATES[activePlate].subdesc}
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Controles de Navegacao */}
+              <div className="flex flex-col gap-4">
+                {/* Tab list */}
+                <div className="flex flex-wrap gap-2">
+                  {MILESTONE_PLATES.map((plate, index) => (
+                    <button
+                      key={plate.id}
+                      onClick={() => setActivePlate(index)}
+                      className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all ${
+                        activePlate === index
+                          ? 'bg-[#1ea465] text-white border-[#1ea465] shadow-[0_4px_12px_rgba(30,164,101,0.25)]'
+                          : isDark
+                            ? 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
+                            : 'bg-slate-100 border-slate-200 text-slate-500 hover:text-slate-900'
+                      }`}
+                    >
+                      {plate.amount}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Dots */}
+                <div className="flex items-center gap-2 pt-2">
+                  {MILESTONE_PLATES.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setActivePlate(index)}
+                      className={`h-2.5 rounded-full transition-all duration-300 ${
+                        activePlate === index 
+                          ? 'w-6 bg-[#1ea465]' 
+                          : 'w-2.5 bg-gray-400/40 hover:bg-gray-400/70'
+                      }`}
+                      title={`Ver placa ${MILESTONE_PLATES[index].amount}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Lado Direito - Imagem da Placa */}
+            <div className="flex flex-col items-center justify-center relative">
+              {/* Ambient glow behind image */}
+              <div className="absolute inset-0 bg-[#1ea465]/10 rounded-full blur-[80px] pointer-events-none" />
+
+              <motion.div
+                key={`image-${activePlate}`}
+                initial={{ scale: 0.9, opacity: 0, y: 10 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                transition={{ type: "spring", stiffness: 100, damping: 15 }}
+                className="relative w-full max-w-[280px] aspect-[3/4] flex items-center justify-center"
+              >
+                <img
+                  src={MILESTONE_PLATES[activePlate].image}
+                  alt={`Placa de ${MILESTONE_PLATES[activePlate].amount} faturados DiretoPay`}
+                  className="w-full h-full object-contain filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] select-none pointer-events-none"
+                />
+              </motion.div>
+
+              {/* Entregas tag */}
+              <div className="mt-8 flex items-center gap-2 text-[10px] sm:text-xs font-black text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full uppercase tracking-wider">
+                <Trophy size={14} className="fill-current" />
+                Mais de 500 placas já entregues para nossos sellers!
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
