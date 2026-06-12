@@ -3,8 +3,10 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/assets/dashboard-react/',
   plugins: [react()],
   build: {
+    assetsDir: '',
     sourcemap: false,
     minify: 'esbuild',
     // Aumenta o limite do aviso (chunks de páginas grandes são esperados)

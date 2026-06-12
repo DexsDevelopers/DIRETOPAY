@@ -1,4 +1,4 @@
-const CACHE_NAME = 'diretopay-v1';
+const CACHE_NAME = 'diretopay-v2';
 
 // Install - sem cache.addAll para garantir que o SW sempre ativa
 self.addEventListener('install', (event) => {

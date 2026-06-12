@@ -23,7 +23,7 @@ if hasattr(sys.stderr, "reconfigure"):
         pass
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-DIST_DIR = os.path.join(ROOT, "dashboard-new", "dist", "assets")
+DIST_DIR = os.path.join(ROOT, "dashboard-new", "dist")
 DEST_DIR = os.path.join(ROOT, "assets", "dashboard-react")
 DIST_HTML = os.path.join(ROOT, "dashboard-new", "dist", "index.html")
 INDEX_PHP = os.path.join(ROOT, "index.php")
@@ -50,6 +50,8 @@ print(f"▶ Copiando assets → {DEST_DIR}")
 os.makedirs(DEST_DIR, exist_ok=True)
 copied = 0
 for fname in os.listdir(DIST_DIR):
+    if fname in ["index.html", "favicon.ico"]:
+        continue
     src = os.path.join(DIST_DIR, fname)
     dst = os.path.join(DEST_DIR, fname)
     if os.path.isfile(src):
@@ -68,15 +70,22 @@ def extract(pattern):
     return m.group(1) if m else None
 
 
-new_main_js = extract(r'src="/assets/(index-[^"]+\.js)"')
-new_main_css = extract(r'href="/assets/(index-[^"]+\.css)"')
-new_icons = extract(r'href="/assets/(vendor-icons-[^"]+\.js)"')
-new_motion = extract(r'href="/assets/(vendor-motion-[^"]+\.js)"')
-new_router = extract(r'href="/assets/(vendor-router-[^"]+\.js)"')
-new_charts = extract(r'href="/assets/(vendor-charts-[^"]+\.js)"')
-new_react = extract(r'href="/assets/(vendor-react-[^"]+\.js)"')
-new_runtime = extract(r'href="/assets/(rolldown-runtime-[^"]+\.js)"')
-new_utils = extract(r'href="/assets/(utils-[^"]+\.js)"')
+new_main_js = extract(r'src="[^"]*/(index-[^"]+\.js)"')
+new_main_css = extract(r'href="[^"]*/(index-[^"]+\.css)"')
+new_icons = extract(r'href="[^"]*/(vendor-icons-[^"]+\.js)"')
+new_motion = extract(r'href="[^"]*/(vendor-motion-[^"]+\.js)"')
+new_router = extract(r'href="[^"]*/(vendor-router-[^"]+\.js)"')
+new_charts = extract(r'href="[^"]*/(vendor-charts-[^"]+\.js)"')
+new_react = extract(r'href="[^"]*/(vendor-react-[^"]+\.js)"')
+new_runtime = extract(r'href="[^"]*/(rolldown-runtime-[^"]+\.js)"')
+new_utils = extract(r'href="[^"]*/(utils-[^"]+\.js)"')
+
+# Extract checkout page chunk dynamically
+checkout_file = None
+for fname in os.listdir(DIST_DIR):
+    if fname.startswith("CheckoutPage-") and fname.endswith(".js"):
+        checkout_file = fname
+        break
 
 print(f"  JS:      {new_main_js}")
 print(f"  CSS:     {new_main_css}")
@@ -87,6 +96,7 @@ print(f"  Charts:  {new_charts}")
 print(f"  React:   {new_react}")
 print(f"  Runtime: {new_runtime}")
 print(f"  Utils:   {new_utils}")
+print(f"  Checkout:{checkout_file}")
 
 # ── 5. Bump version number in index.php ─────────────────────────────────────
 with open(INDEX_PHP, encoding="utf-8") as f:
@@ -107,19 +117,33 @@ if not old_block:
     sys.exit("Não encontrei o bloco <!-- React Build Assets --> no index.php")
 
 new_block = f"""<!-- React Build Assets -->
-    <script type="module" crossorigin src="/assets/dashboard-react/{new_main_js}?v={new_v}"></script>
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_runtime}?v={new_v}">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_charts}?v={new_v}">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_router}?v={new_v}">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_motion}?v={new_v}">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_icons}?v={new_v}">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_react}?v={new_v}">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_utils}?v={new_v}">
-    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/{new_main_css}?v={new_v}">
+    <script type="module" crossorigin src="/assets/dashboard-react/{new_main_js}"></script>
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_runtime}">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_charts}">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_router}">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_motion}">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_icons}">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_react}">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{new_utils}">
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-react/{new_main_css}">
 
     <!-- React Checkout Chunk Preload -->"""
 
 php_new = php[: old_block.start()] + new_block + php[old_block.end() :]
+
+# Replace the React Checkout Chunk Preload block
+checkout_block = re.search(
+    r"<!-- React Checkout Chunk Preload -->(.*?)<!-- React Checkout Chunk Preload End -->",
+    php_new,
+    re.DOTALL,
+)
+if checkout_block and checkout_file:
+    new_checkout_block = f"""<!-- React Checkout Chunk Preload -->
+    <?php if ($requestPath && strpos($requestPath, '/p/') === 0): ?>
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/{checkout_file}">
+    <?php endif; ?>
+    <!-- React Checkout Chunk Preload End -->"""
+    php_new = php_new[: checkout_block.start()] + new_checkout_block + php_new[checkout_block.end() :]
 
 # Also update favicon reference in index.php
 php_new = re.sub(
