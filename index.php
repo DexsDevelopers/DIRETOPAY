@@ -156,7 +156,7 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
     <title>DiretoPay - Plataforma de Pagamentos</title>
 
     <!-- React Build Assets -->
-    <script type="module" crossorigin src="/assets/dashboard-react/index-BFR2KcCY.js"></script>
+    <script type="module" crossorigin src="/assets/dashboard-react/index-0fqWd69W.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/rolldown-runtime-CZ0f5lOa.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-charts-DsLVvlGC.js">
     <link rel="modulepreload" crossorigin href="/assets/dashboard-react/vendor-router-rhVru3fv.js">
@@ -168,7 +168,7 @@ if ($requestPath && strpos($requestPath, '/p/') === 0) {
 
     <!-- React Checkout Chunk Preload -->
     <?php if ($requestPath && strpos($requestPath, '/p/') === 0): ?>
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/CheckoutPage-DMHEmKEs.js">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-react/CheckoutPage-DWY4Gdhx.js">
     <?php endif; ?>
     <!-- React Checkout Chunk Preload End -->
 

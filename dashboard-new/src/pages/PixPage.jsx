@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import PixModal from '../components/PixModal';
 import { BorderBeam, SpotlightCard, NeonCard, ShinyText, RippleButton, GlareCard } from '../components/AnimatedUI';
+import { cn } from '../lib/utils';
 
 const KEY_TYPES = [
     { value: 'cpf',    label: 'CPF',       icon: User        },
